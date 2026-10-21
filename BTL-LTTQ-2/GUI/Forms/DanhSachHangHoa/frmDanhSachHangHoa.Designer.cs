@@ -58,6 +58,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.lblNhomHang = new System.Windows.Forms.Label();
             this.cboNhomHang = new System.Windows.Forms.ComboBox();
             this.splitterBoLoc = new System.Windows.Forms.Splitter();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.pnlTop.SuspendLayout();
             this.grpTop.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvHangHoa)).BeginInit();
@@ -360,11 +361,20 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.splitterBoLoc.TabIndex = 0;
             this.splitterBoLoc.TabStop = false;
             // 
+            // panel1
+            // 
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel1.Location = new System.Drawing.Point(387, 832);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(1395, 21);
+            this.panel1.TabIndex = 3;
+            // 
             // frmDanhSachHangHoa
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1782, 853);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.dgvHangHoa);
             this.Controls.Add(this.pnlBoLoc);
             this.Controls.Add(this.pnlTop);
@@ -419,5 +429,6 @@ namespace BTL_LTTQ_2.GUI.Forms
         private System.Windows.Forms.GroupBox grpThoiGianTao;
         private System.Windows.Forms.Label lblTrangThai;
         private System.Windows.Forms.ComboBox cboTrangThai;
+        private System.Windows.Forms.Panel panel1;
     }
 }
