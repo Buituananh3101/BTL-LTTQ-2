@@ -12,6 +12,20 @@ namespace BTL_LTTQ_2.GUI.Forms
 
         private void FormMain_Load(object sender, EventArgs e)
         {
+            // Thiết lập chế độ kết xuất System giúp menu và statusbar sắc nét, không bị vệt mờ gradient
+            menuStrip1.RenderMode = ToolStripRenderMode.System;
+            statusStrip1.RenderMode = ToolStripRenderMode.System;
+
+            // Đổi màu nền vùng làm việc MDI sang màu sáng hiện đại
+            foreach (Control ctrl in this.Controls)
+            {
+                if (ctrl is MdiClient mdiClient)
+                {
+                    mdiClient.BackColor = System.Drawing.Color.FromArgb(240, 242, 245);
+                    break;
+                }
+            }
+
             // Thiết lập thông tin trạng thái ở góc dưới
             tssNguoiDung.Text = "Người dùng: Quản trị viên (quanly)";
             tssKho.Text = "Kho: Kho trung tâm";

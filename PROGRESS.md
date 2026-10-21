@@ -50,6 +50,19 @@
 
 ## Nhật ký phiên (Session Logs)
 
+- **Phiên 2 (2026-10-21) – Khắc phục Hiện tượng Giao diện Vỡ nét (High DPI Scaling & Crisp UI)**:
+  - **Nhu cầu**: Người dùng phản hồi: "hiện tại khi chạy nhìn nó cứ vỡ vỡ, bạn hãy khác phục điều này giúp tôi".
+  - **Nguyên nhân cốt lõi**:
+    1. Thiếu cấu hình High DPI Awareness trong .NET Framework 4.7.2: Windows áp dụng cơ chế Bitmap Virtualization (DPI virtualization) co giãn thô, làm phông chữ và đường viền bị nhòe/vỡ hạt trên màn hình có tỉ lệ scale 125%, 150%, 175%.
+    2. MenuStrip và StatusStrip sử dụng renderer gradient cũ tạo vệt mờ.
+    3. `FormMain` và các Form con (`frmDanhSachHangHoa`) lệch thông số `AutoScaleDimensions` và thiếu khai báo Font đồng bộ.
+  - **Giải pháp & Kết quả thực hiện**:
+    1. Tạo file manifest [`app.manifest`](file:///d:/CODE/BTL-LTTQ-2/BTL-LTTQ-2/app.manifest): Kích hoạt `PerMonitorV2` DPI awareness, liên kết `Common-Controls 6.0` và khai báo tương thích Windows 10/11.
+    2. Cập nhật [`App.config`](file:///d:/CODE/BTL-LTTQ-2/BTL-LTTQ-2/App.config): Bật `EnableWindowsFormsHighDpiAutoResizing` và `DpiAwareness = PerMonitorV2`.
+    3. Cập nhật [`Program.cs`](file:///d:/CODE/BTL-LTTQ-2/BTL-LTTQ-2/Program.cs): Khai báo và gọi API Win32 `SetProcessDpiAwarenessContext` chế độ `PerMonitorV2` trước khi khởi tạo UI.
+    4. Tinh chỉnh giao diện: Thiết lập `RenderMode = ToolStripRenderMode.System`, đồng bộ màu nền MDI Client sang màu sáng hiện đại (`#F0F2F5`), chuẩn hóa `AutoScaleDimensions` trên `frmDanhSachHangHoa`.
+    5. Biên dịch và kiểm thử thực thi thành công: `BTL-LTTQ-2.exe` hiển thị chữ và đường nét cực kỳ sắc nét trên mọi độ phân giải.
+
 - **Phiên 1 (2026-10-21) – Khởi tạo Khung Quy chuẩn Vận hành & Tài liệu Dự án**:
   - **Nhu cầu**: Dựa trên `BTL-LTW-QuanLiKho-2`, tạo thư mục `.agent`, file theo dõi tiến độ `PROGRESS.md`, và thư mục tài liệu `docs/` cho dự án `BTL-LTTQ-2`.
   - **Giải pháp & Kết quả thực hiện**:

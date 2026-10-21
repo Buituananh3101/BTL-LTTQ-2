@@ -1,4 +1,4 @@
-﻿namespace BTL_LTTQ_2.GUI.Forms
+namespace BTL_LTTQ_2.GUI.Forms
 {
     partial class frmDanhSachHangHoa
     {
@@ -29,9 +29,12 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+                this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Text = "frmDanhSachHangHoa";
+            this.ClientSize = new System.Drawing.Size(1008, 561);
+            this.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.Name = "frmDanhSachHangHoa";
+            this.Text = "Danh Sách Hàng Hóa";
         }
 
         #endregion
