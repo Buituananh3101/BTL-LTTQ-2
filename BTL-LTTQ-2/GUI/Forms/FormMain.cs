@@ -46,7 +46,6 @@ namespace BTL_LTTQ_2.GUI.Forms
 
             frmDanhSachHangHoa frm = new frmDanhSachHangHoa();
             frm.MdiParent = this;
-            frm.WindowState = FormWindowState.Maximized;
             frm.Show();
         }
 
