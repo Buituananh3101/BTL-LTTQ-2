@@ -151,6 +151,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.btnHangHoa.TabIndex = 2;
             this.btnHangHoa.Text = "+ Hàng hóa";
             this.btnHangHoa.UseVisualStyleBackColor = true;
+            this.btnHangHoa.Click += new System.EventHandler(this.btnHangHoa_Click);
             // 
             // lblTimKiem
             // 
