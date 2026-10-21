@@ -1,0 +1,72 @@
+# Tiến độ dự án BTL-LTTQ-2
+
+**Cập nhật lần cuối**: 2026-10-21 – Thiết lập Khung Quy chuẩn Vận hành AI (.agent, docs, PROGRESS.md) & Kết nối CSDL WinForms (Phiên 1)
+
+---
+
+## Đang làm
+- [ ] Xây dựng Lớp quản lý phiên toàn cục `BLL/SessionContext.cs` và Tiện ích băm mật khẩu `BLL/PasswordHelper.cs` (SHA-256).
+- [ ] Thiết kế và hoàn thiện Form Đăng nhập (`frmDangNhap`) hỗ trợ chọn chi nhánh kho làm việc.
+- [ ] Hoàn thiện Form Danh sách Hàng hóa (`frmDanhSachHangHoa`) kết nối dữ liệu thật từ SQL Server qua `DataProcessing.cs` và View `vw_TonKhoHienTai`.
+
+---
+
+## Việc kế tiếp
+1. **Xác thực & Phân quyền**: Hoàn tất `frmDangNhap`, tích hợp phân quyền MenuStrip và StatusStrip trên `FormMain`.
+2. **Quản lý Danh mục (CRUD Master Data)**:
+   - Form Thêm/Sửa Hàng hóa (`frmHangHoaChiTiet`) có hỗ trợ ảnh và định mức tồn kho.
+   - Form Danh mục Nhóm hàng & Đơn vị tính.
+   - Form Danh mục Chi nhánh Kho & phân quyền `TaiKhoanKho`.
+   - Form Danh mục Nhà cung cấp.
+3. **Quản lý Kho & Chứng từ Biến động**:
+   - Form Nhập hàng từ Nhà cung cấp (`frmNhapHang`) - Tự tính giá vốn MAC, cộng tồn.
+   - Form Kiểm kê & Cân bằng kho (`frmKiemKho`) - Khóa vĩnh viễn phiếu sau khi cân bằng.
+   - Form Chuyển kho liên chi nhánh (`frmChuyenKho`) - Luồng 2 bước Xuất chuyển / Nhận hàng.
+   - Form Trả hàng nhập (`frmTraHangNhap`) & Xuất hủy (`frmXuatHuy`).
+4. **Báo cáo & Thống kê**:
+   - Báo cáo Tồn kho đa chi nhánh (`frmBaoCaoTonKho`).
+   - Báo cáo Thẻ kho chi tiết theo mặt hàng (`frmTheKho`).
+   - Tiện ích xuất dữ liệu ra file Excel.
+
+---
+
+## Bảng Tổng hợp Tiến độ Các Phân hệ (WBS Overview)
+
+| STT | Phân hệ / Chức năng | Mô tả chi tiết | Trạng thái |
+|:---:|---|---|:---:|
+| 1 | **Khởi tạo Kiến trúc & CSDL** | Solution WinForms .NET 4.7.2, `DataProcessing.cs`, CSDL `QuanLyKhoPhuQuocLTW` | Hoàn thành 100% |
+| 2 | **Quy chuẩn Vận hành AI** | Thư mục `.agent/rules/`, `AGENTS.md`, `PROGRESS.md`, `docs/` | Hoàn thành 100% |
+| 3 | **Giao diện Khung MDI** | `FormMain` MDI Container, MenuStrip 5 phân hệ, StatusStrip trạng thái | Hoàn thành 100% |
+| 4 | **Xác thực & Phân quyền** | `SessionContext`, SHA-256 `PasswordHelper`, `frmDangNhap`, phân quyền menu | Đang thực hiện |
+| 5 | **Danh mục Hàng hóa** | `frmDanhSachHangHoa`, `frmHangHoaChiTiet`, tìm kiếm F3, lọc tồn kho | Đang thực hiện |
+| 6 | **Danh mục Cơ bản** | CRUD Nhóm hàng, Đơn vị tính, Chi nhánh Kho, Nhà cung cấp | Chưa bắt đầu |
+| 7 | **Phiếu Nhập hàng** | `frmNhapHang`, tính giá vốn bình quân (MAC), cộng tồn dynamic | Chưa bắt đầu |
+| 8 | **Kiểm kê & Cân bằng kho** | `frmKiemKho`, nạp tồn sổ sách, sinh phiếu điều chỉnh, khóa vĩnh viễn | Chưa bắt đầu |
+| 9 | **Chuyển kho Liên chi nhánh** | `frmChuyenKho`, 2 bước Xuất kho ➜ Nhận kho, chặn tồn âm kho nguồn | Chưa bắt đầu |
+| 10 | **Trả hàng nhập & Xuất hủy** | `frmTraHangNhap`, `frmXuatHuy`, kiểm tra tồn kho trước khi xuất | Chưa bắt đầu |
+| 11 | **Báo cáo Tồn kho & Thẻ kho** | Báo cáo tồn đa kho, Thẻ kho từ `vw_BienDongKho`, xuất file Excel | Chưa bắt đầu |
+
+---
+
+## Nhật ký phiên (Session Logs)
+
+- **Phiên 1 (2026-10-21) – Khởi tạo Khung Quy chuẩn Vận hành & Tài liệu Dự án**:
+  - **Nhu cầu**: Dựa trên `BTL-LTW-QuanLiKho-2`, tạo thư mục `.agent`, file theo dõi tiến độ `PROGRESS.md`, và thư mục tài liệu `docs/` cho dự án `BTL-LTTQ-2`.
+  - **Giải pháp & Kết quả thực hiện**:
+    1. Nghiên cứu cấu trúc và kế thừa toàn bộ tri thức kiến trúc, nghiệp vụ kho từ `BTL-LTW-QuanLiKho-2`.
+    2. Tạo thư mục `.agent/rules/` gồm 5 bộ luật cốt lõi đã điều chỉnh phù hợp với WinForms và ADO.NET:
+       - `01-phong-cach-code.md`: Quy ước lập trình WinForms, đặt tên controls, phân tầng DAL/BLL/GUI.
+       - `02-nghiep-vu-kho.md`: Nghiệp vụ kho, tính tồn động qua `vw_TonKhoHienTai`, trạng thái chứng từ, luật bất biến khóa phiếu kiểm kho đã cân bằng.
+       - `03-giao-dien-layout.md`: Tiêu chuẩn giao diện MDI, DataGridView chuẩn mực, Master-Detail, MessageBox.
+       - `04-xac-thuc-phan-quyen.md`: Đăng nhập SHA-256, lớp toàn cục `SessionContext`, phân quyền vai trò và phân quyền kho `TaiKhoanKho`.
+       - `05-co-so-du-lieu.md`: Thao tác ADO.NET thuần với `DataProcessing.cs`, phòng chống 100% SQL Injection, 3 nguyên tắc vàng CSDL.
+    3. Tạo file chỉ dẫn trung tâm `AGENTS.md` tại thư mục gốc với 12 Luật cốt lõi và quy trình đầu/cuối phiên.
+    4. Thiết lập thư mục `docs/`:
+       - `docs/quyet-dinh.md`: Sổ ghi nhận quyết định kiến trúc và công nghệ.
+       - `docs/van-de-can-xu-ly.md`: Backlog 18 đầu việc phân chia theo 4 nhóm.
+       - `docs/so-do-er-va-rm-csdl.md`: Mô hình hóa ERD & Relational Model CSDL `QuanLyKhoPhuQuocLTW`.
+       - `docs/so-do-activity-nghiep-vu.md`: Lưu đồ Activity nghiệp vụ Nhập, Kiểm, Chuyển, Trả, Xuất.
+       - `docs/so-do-use-case.md`: Sơ đồ Use Case phân quyền các vai trò.
+       - Thư mục `docs/specs/`: 13 file đặc tả kỹ thuật và mẫu đặc tả chức năng.
+       - Sao chép các script SQL `database_update.sql`, `DuLieuMau.sql`, `fix_mojibake.sql`.
+    5. Tạo file `PROGRESS.md` theo dõi tiến độ và lộ trình phát triển chi tiết.

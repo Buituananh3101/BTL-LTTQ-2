@@ -8,11 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace BTL_LTTQ_2
+namespace BTL_LTTQ_2.GUI.Forms
 {
-    public partial class Form1 : Form
+    public partial class frmDanhSachHangHoa : Form
     {
-        public Form1()
+        public frmDanhSachHangHoa()
         {
             InitializeComponent();
         }
