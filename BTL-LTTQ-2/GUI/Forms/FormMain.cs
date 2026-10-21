@@ -26,15 +26,15 @@ namespace BTL_LTTQ_2.GUI.Forms
                 }
             }
 
-            // Thiết lập thông tin trạng thái ở góc dưới
+            // Thiết lập thông tin trạng thái ở góc trái dưới
             tssNguoiDung.Text = "Người dùng: Quản trị viên (quanly)";
             tssKho.Text = "Kho: Kho trung tâm";
             tssThoiGian.Text = "Thời gian: " + DateTime.Now.ToString("dd/MM/yyyy HH:mm");
         }
 
-        private void menuHangHoa_Click(object sender, EventArgs e)
+        private void menuDanhSachHangHoa_Click(object sender, EventArgs e)
         {
-            // Kiểm tra xem form đã mở chưa, nếu mở rồi thì Active lên trước
+            // Kiểm tra xem form danh sách hàng hóa đã mở chưa, nếu đã mở thì kích hoạt (Active) lên trước
             foreach (Form form in this.MdiChildren)
             {
                 if (form is frmDanhSachHangHoa)
@@ -71,6 +71,11 @@ namespace BTL_LTTQ_2.GUI.Forms
         private void menuThongTin_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Hệ thống Quản lý Kho - BTL Lập trình trực quan\nPhiên bản: 1.0\nNền tảng: Windows Forms .NET Framework", "Thông tin phần mềm", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void mnuTraHangNhap_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
