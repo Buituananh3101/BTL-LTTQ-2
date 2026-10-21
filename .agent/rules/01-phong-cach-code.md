@@ -3,8 +3,8 @@
 ## 1. Ngôn ngữ & Quy ước đặt tên
 
 ### 1.1. Tên lớp, phương thức & biến (C#)
-- **Tên lớp Form / GUI**: Bắt đầu bằng tiền tố `frm` hoặc `Form`, viết theo PascalCase tiếng Việt không dấu.
-  - Ví dụ: `FormMain`, `frmDanhSachHangHoa`, `frmHangHoaChiTiet`, `frmNhapHang`, `frmKiemKho`, `frmChuyenKho`, `frmDangNhap`.
+- **Tên lớp Form / GUI**: Bắt đầu bằng tiền tố `frm`, viết theo PascalCase tiếng Việt không dấu.
+  - Ví dụ: `frmMain`, `frmDanhSachHangHoa`, `frmHangHoaChiTiet`, `frmNhapHang`, `frmKiemKho`, `frmChuyenKho`, `frmDangNhap`.
 - **Tên lớp nghiệp vụ / DTO**: Viết theo PascalCase tiếng Việt không dấu.
   - Ví dụ: `HangHoa`, `Kho`, `PhieuNhap`, `ChiTietPhieuNhap`, `SessionContext`, `DataProcessing`.
 - **Tên phương thức**: PascalCase mô tả hành động rõ ràng.
@@ -62,7 +62,7 @@ Hệ thống tuân thủ kiến trúc phân tầng rõ ràng:
    - Chứa logic kiểm tra hợp lệ, tính toán tồn kho, kiểm tra chặn tồn âm, băm mật khẩu SHA-256 (`PasswordHelper`), quản lý phiên (`SessionContext`).
 3. **`GUI` (Graphical User Interface)**:
    - Các Form giao diện đặt trong thư mục `GUI/Forms/`.
-   - Form cha MDI [`FormMain.cs`](../../BTL-LTTQ-2/GUI/Forms/FormMain.cs) điều hướng và hiển thị các Form con.
+   - Form cha MDI [`frmMain.cs`](../../BTL-LTTQ-2/GUI/Forms/frmMain.cs) điều hướng và hiển thị các Form con.
 
 ---
 
@@ -102,7 +102,7 @@ public partial class frmDanhSachHangHoa : Form
 }
 ```
 
-### 3.2. Quản lý Mở Form con trong MDI Form (`FormMain`)
+### 3.2. Quản lý Mở Form con trong MDI Form (`frmMain`)
 Khi click mở một Form con, **luôn kiểm tra xem Form đó đã được mở hay chưa**. Nếu đã mở thì kích hoạt (`Activate()`), không tạo instance mới gây tràn bộ nhớ:
 ```csharp
 private void mnuHangHoa_Click(object sender, EventArgs e)

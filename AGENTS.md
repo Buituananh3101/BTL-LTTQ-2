@@ -14,7 +14,7 @@
 ## 2. Quy trình đầu phiên (Bắt buộc trước khi viết code)
 1. **Đọc `AGENTS.md` và `PROGRESS.md`**: Nắm rõ luật cốt lõi, tiến độ hiện tại, việc đang dở và danh sách backlog.
 2. **Đọc đặc tả chức năng**: Nếu làm chức năng X, đọc file `docs/specs/<chức-năng>.md`. Nếu chưa có, tạo nháp từ `docs/specs/_mau-dac-ta.md` và hỏi người dùng xác nhận trước khi code.
-3. **Tóm tắt đầu phiên (3–5 dòng)**: Báo cáo với người dùng: *"Tôi hiểu phiên này làm gì, dự kiến tác động vào các file nào"*. Chờ người dùng đồng ý nếu chỉnh sửa các file dùng chung (`FormMain.cs`, `DataProcessing.cs`, `App.config`, CSDL).
+3. **Tóm tắt đầu phiên (3–5 dòng)**: Báo cáo với người dùng: *"Tôi hiểu phiên này làm gì, dự kiến tác động vào các file nào"*. Chờ người dùng đồng ý nếu chỉnh sửa các file dùng chung (`frmMain.cs`, `DataProcessing.cs`, `App.config`, CSDL).
 
 ---
 
@@ -33,7 +33,7 @@
 
 ## 4. 12 Luật cốt lõi không được vi phạm
 1. **Tên tiếng Việt trong code**: Toàn bộ Form, Model, Bảng, Cột phải dùng tiếng Việt không dấu PascalCase (`HangHoa`, `MaKho`, `SoLuong`). Tiền tố control WinForms chuẩn (`btnThem`, `txtMaHang`, `dgvHangHoa`). Cấm tự ý dùng tiếng Anh lộn xộn.
-2. **Mô hình MDI duy nhất**: Dùng duy nhất `FormMain` làm form cha MDI (`IsMdiContainer = true`). Khi mở form con phải kiểm tra và `Activate()` nếu form đã mở, tránh mở trùng lặp.
+2. **Mô hình MDI duy nhất**: Dùng duy nhất `frmMain` làm form cha MDI (`IsMdiContainer = true`). Khi mở form con phải kiểm tra và `Activate()` nếu form đã mở, tránh mở trùng lặp.
 3. **Quản lý biến động kho tập trung**: Mọi biến động tồn kho (nhập, xuất, chuyển, cân bằng) phải tuân theo quy tắc trong `.agent/rules/02-nghiep-vu-kho.md`.
 4. **Tồn kho thực tế tính qua `vw_TonKhoHienTai`**: Tồn kho sổ sách hiện thời tính động từ View `vw_TonKhoHienTai` (dựa trên phiếu nhập, xuất, chuyển, điều chỉnh), không tạo bảng tồn kho tĩnh.
 5. **Cấm sửa/xóa chứng từ đã hoàn thành**: Phiếu tạm (`NHAP`) được sửa/xóa. Phiếu đã xong (`DA_XAC_NHAN`, `DA_DIEU_CHINH`, `DA_NHAN`, `DA_TRA_HANG`) **tuyệt đối không được sửa hay xóa**. Chỉ được phép HỦY (`TrangThai = 'HUY'`).

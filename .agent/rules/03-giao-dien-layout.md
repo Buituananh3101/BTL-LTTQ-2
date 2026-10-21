@@ -1,9 +1,9 @@
 # 03. Giao diện, Layout & Thành phần WinForms
 
-## 1. Mô hình Giao diện MDI chuẩn (`FormMain`)
+## 1. Mô hình Giao diện MDI chuẩn (`frmMain`)
 
 Hệ thống sử dụng mô hình **MDI (Multiple Document Interface)**:
-- **Form cha (`FormMain`)**:
+- **Form cha (`frmMain`)**:
   - `IsMdiContainer = true`.
   - Phông chữ toàn hệ thống: `Segoe UI`, kích thước `9.5pt` hoặc `9pt`.
   - MenuStrip điều hướng: Gồm 5 menu chính: **Hệ thống**, **Danh mục**, **Quản lý kho**, **Báo cáo**, **Trợ giúp**.

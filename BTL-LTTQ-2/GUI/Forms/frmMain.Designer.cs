@@ -1,6 +1,6 @@
 namespace BTL_LTTQ_2.GUI.Forms
 {
-    partial class FormMain
+    partial class frmMain
     {
         private System.ComponentModel.IContainer components = null;
 
@@ -292,7 +292,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.tssThoiGian.Size = new System.Drawing.Size(78, 20);
             this.tssThoiGian.Text = "Thời gian: ";
             // 
-            // FormMain
+            // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -302,11 +302,11 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip1;
-            this.Name = "FormMain";
+            this.Name = "frmMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Hệ Thống Quản Lý Kho";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            this.Load += new System.EventHandler(this.FormMain_Load);
+            this.Load += new System.EventHandler(this.frmMain_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);

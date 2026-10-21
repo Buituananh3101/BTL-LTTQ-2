@@ -12,7 +12,7 @@
 ---
 
 ## Việc kế tiếp
-1. **Xác thực & Phân quyền**: Hoàn tất `frmDangNhap`, tích hợp phân quyền MenuStrip và StatusStrip trên `FormMain`.
+1. **Xác thực & Phân quyền**: Hoàn tất `frmDangNhap`, tích hợp phân quyền MenuStrip và StatusStrip trên `frmMain`.
 2. **Quản lý Danh mục (CRUD Master Data)**:
    - Form Thêm/Sửa Hàng hóa (`frmHangHoaChiTiet`) có hỗ trợ ảnh và định mức tồn kho.
    - Form Danh mục Nhóm hàng & Đơn vị tính.
@@ -36,7 +36,7 @@
 |:---:|---|---|:---:|
 | 1 | **Khởi tạo Kiến trúc & CSDL** | Solution WinForms .NET 4.7.2, `DataProcessing.cs`, CSDL `QuanLyKhoPhuQuocLTW` | Hoàn thành 100% |
 | 2 | **Quy chuẩn Vận hành AI** | Thư mục `.agent/rules/`, `AGENTS.md`, `PROGRESS.md`, `docs/` | Hoàn thành 100% |
-| 3 | **Giao diện Khung MDI** | `FormMain` MDI Container, MenuStrip 5 phân hệ, StatusStrip trạng thái | Hoàn thành 100% |
+| 3 | **Giao diện Khung MDI** | `frmMain` MDI Container, MenuStrip 5 phân hệ, StatusStrip trạng thái | Hoàn thành 100% |
 | 4 | **Xác thực & Phân quyền** | `SessionContext`, SHA-256 `PasswordHelper`, `frmDangNhap`, phân quyền menu | Đang thực hiện |
 | 5 | **Danh mục Hàng hóa** | `frmDanhSachHangHoa`, `frmHangHoaChiTiet`, tìm kiếm F3, lọc tồn kho | Đang thực hiện |
 | 6 | **Danh mục Cơ bản** | CRUD Nhóm hàng, Đơn vị tính, Chi nhánh Kho, Nhà cung cấp | Chưa bắt đầu |

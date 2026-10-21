@@ -3,14 +3,14 @@ using System.Windows.Forms;
 
 namespace BTL_LTTQ_2.GUI.Forms
 {
-    public partial class FormMain : Form
+    public partial class frmMain : Form
     {
-        public FormMain()
+        public frmMain()
         {
             InitializeComponent();
         }
 
-        private void FormMain_Load(object sender, EventArgs e)
+        private void frmMain_Load(object sender, EventArgs e)
         {
             // Thiết lập chế độ kết xuất System giúp menu và statusbar sắc nét, không bị vệt mờ gradient
             menuStrip1.RenderMode = ToolStripRenderMode.System;

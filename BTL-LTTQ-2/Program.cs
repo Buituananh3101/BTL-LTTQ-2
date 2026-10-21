@@ -51,7 +51,7 @@ namespace BTL_LTTQ_2
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FormMain());
+            Application.Run(new frmMain());
         }
     }
 }

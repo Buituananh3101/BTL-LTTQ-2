@@ -14,7 +14,7 @@
 - [x] **[TASK-01] Khởi tạo Solution WinForms .NET 4.7.2 & Kết nối CSDL**
   - Cấu hình chuỗi kết nối `QuanLyKhoConnection` tới `localhost\SQLEXPRESS;Database=QuanLyKhoPhuQuocLTW` trong `App.config`.
   - Xây dựng lớp tiện ích ADO.NET thuần `DAL/DataProcessing.cs` hỗ trợ `ReadData`, `ChangeData`, `ReadValue`, `ChangeDataTransaction`.
-- [x] **[TASK-02] Thiết kế Form chính MDI (`FormMain`)**
+- [x] **[TASK-02] Thiết kế Form chính MDI (`frmMain`)**
   - Thiết lập thuộc tính `IsMdiContainer = true`.
   - Tạo cấu trúc MenuStrip hoàn chỉnh: Hệ thống, Danh mục, Quản lý kho, Báo cáo, Trợ giúp.
   - Tạo StatusStrip góc dưới hiển thị: Người dùng, Kho đang làm việc, Thời gian hiện tại.

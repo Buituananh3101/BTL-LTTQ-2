@@ -72,7 +72,7 @@ public static class SessionContext
 
 ## 3. Phân quyền Chức năng theo Vai trò (Role-based Authorization)
 
-Khi `FormMain` khởi động sau khi đăng nhập thành công, gọi phương thức `PhanQuyenMenu()` để cấu hình ẩn/hiện hoặc vô hiệu hóa các mục menu:
+Khi `frmMain` khởi động sau khi đăng nhập thành công, gọi phương thức `PhanQuyenMenu()` để cấu hình ẩn/hiện hoặc vô hiệu hóa các mục menu:
 
 ```csharp
 private void PhanQuyenMenu()

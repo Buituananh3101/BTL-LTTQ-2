@@ -12,7 +12,6 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -33,6 +32,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -49,26 +51,26 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DAL\DataProcessing.cs" />
-    <Compile Include="GUI\Forms\FormMain.cs">
+    <Compile Include="GUI\Forms\frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GUI\Forms\FormMain.Designer.cs">
-      <DependentUpon>FormMain.cs</DependentUpon>
+    <Compile Include="GUI\Forms\frmMain.Designer.cs">
+      <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="GUI\Forms\FormMain.resx">
-      <DependentUpon>FormMain.cs</DependentUpon>
+    <EmbeddedResource Include="GUI\Forms\frmMain.resx">
+      <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>
-    <Compile Include="GUI\Forms\frmDanhSachHangHoa.cs">
+    <Compile Include="GUI\Forms\DanhSachHangHoa\frmDanhSachHangHoa.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GUI\Forms\frmDanhSachHangHoa.Designer.cs">
+    <Compile Include="GUI\Forms\DanhSachHangHoa\frmDanhSachHangHoa.Designer.cs">
       <DependentUpon>frmDanhSachHangHoa.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="GUI\Forms\DanhSachHangHoa\frmDanhSachHangHoa.resx">
+      <DependentUpon>frmDanhSachHangHoa.cs</DependentUpon>
+    </EmbeddedResource>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="GUI\Forms\frmDanhSachHangHoa.resx">
-      <DependentUpon>frmDanhSachHangHoa.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -78,6 +80,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -90,7 +93,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="app.manifest" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
