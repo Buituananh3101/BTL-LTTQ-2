@@ -17,4 +17,5 @@
 - **2026-10-21 (Phiên 1)** – Mọi chứng từ đã hoàn thành (`DA_XAC_NHAN`, `DA_NHAN`, `DA_DUYET`) không được sửa/xóa, chỉ cho phép HỦY – Cập nhật `TrangThai = 'HUY'` để View tồn kho tự động loại trừ.
 - **2026-10-21 (Phiên 1)** – Quản lý hàng hóa và tồn kho theo 1 Đơn vị tính cơ bản duy nhất – Tránh phát sinh số lẻ tồn kho và quy đổi phức tạp.
 - **2026-10-21 (Phiên 1)** – Toàn bộ truy vấn SQL có tham số nhập từ giao diện BẮT BUỘC dùng `SqlParameter` – Ngăn chặn tuyệt đối lỗ hổng SQL Injection.
-- **2026-10-21 (Phiên 1)** – Các thao tác lưu chứng từ kèm nhiều dòng chi tiết BẮT BUỘC bọc trong Transaction – Dùng `DataProcessing.ChangeDataTransaction` để đảm bảo tính toàn vẹn ACID.
+- **2026-10-21 (Phiên 2)** – Nguyên tắc phát triển tinh gọn: "Làm đến đâu, thiếu gì thêm đó" – AI tuyệt đối không tự ý tạo trước các lớp trừu tượng (BaseForm, Helper dư thừa...) khi chưa có yêu cầu cụ thể, đảm bảo người dùng nắm quyền kiểm soát 100% từng bước phát triển của dự án.
+- **2026-10-21 (Phiên 2)** – Cấu hình PerMonitorV2 High DPI qua app.manifest và App.config – Khắc phục triệt để hiện tượng vỡ nét/mờ chữ toàn hệ thống mà không cần chỉnh sửa từng file form.

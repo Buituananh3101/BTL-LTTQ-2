@@ -44,6 +44,7 @@
 10. **Chuẩn hóa DataGridView & Trải nghiệm WinForms**: DataGridView phải định dạng theo quy chuẩn trong `.agent/rules/03-giao-dien-layout.md` (màu dòng xen kẽ, căn phải số lượng/đơn giá định dạng `N0`, căn giữa mã/ngày, FullRowSelect, ReadOnly).
 11. **Không tự ý thêm thư viện ngoài**: Không tự ý cài đặt thêm NuGet package nặng hoặc thư viện bên ngoài khi chưa hỏi ý kiến người dùng.
 12. **Bảo toàn và đồng bộ tài liệu đặc tả**: Khi thay đổi code/luồng/file của chức năng X, BẮT BUỘC đồng bộ lại `docs/specs/<chức-năng>.md` ngay trong phiên đó.
+13. **Nguyên tắc "Làm đến đâu thiếu gì thêm đó"**: AI tuyệt đối không tự ý viết trước các tầng trừu tượng (BaseForm, Helper, Service...), không làm tắt, không sinh file rác khi người dùng chưa yêu cầu. Từng bước đi phải rõ ràng, tối giản, để người dùng nắm và kiểm soát 100% dự án.
 
 ---
 
