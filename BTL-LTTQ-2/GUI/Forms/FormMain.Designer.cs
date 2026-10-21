@@ -31,10 +31,12 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.mnuDanhMuc = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuDanhSachHangHoa = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuNhomHang = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuDonViTinh = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuViTriHang = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuMuaHang = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuNhaCungCap = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuNhapHang = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuTraHangNhap = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuBaoCao = new System.Windows.Forms.ToolStripMenuItem();
@@ -47,8 +49,6 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.tssNguoiDung = new System.Windows.Forms.ToolStripStatusLabel();
             this.tssKho = new System.Windows.Forms.ToolStripStatusLabel();
             this.tssThoiGian = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -144,8 +144,8 @@ namespace BTL_LTTQ_2.GUI.Forms
             // 
             this.mnuDanhMuc.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuDanhSachHangHoa,
-            this.mnuNhomHang,
             this.toolStripSeparator3,
+            this.mnuNhomHang,
             this.mnuDonViTinh,
             this.mnuViTriHang});
             this.mnuDanhMuc.Name = "mnuDanhMuc";
@@ -165,17 +165,22 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.mnuNhomHang.Size = new System.Drawing.Size(235, 26);
             this.mnuNhomHang.Text = "Nhóm hàng";
             // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(232, 6);
+            // 
             // mnuDonViTinh
             // 
             this.mnuDonViTinh.Name = "mnuDonViTinh";
             this.mnuDonViTinh.Size = new System.Drawing.Size(235, 26);
-            this.mnuDonViTinh.Text = "Đơn vị tính hàng";
+            this.mnuDonViTinh.Text = "Đơn vị tính";
             // 
             // mnuViTriHang
             // 
             this.mnuViTriHang.Name = "mnuViTriHang";
             this.mnuViTriHang.Size = new System.Drawing.Size(235, 26);
-            this.mnuViTriHang.Text = "Vị trí hàng";
+            this.mnuViTriHang.Text = "Vị trí";
             // 
             // mnuMuaHang
             // 
@@ -193,6 +198,11 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.mnuNhaCungCap.Name = "mnuNhaCungCap";
             this.mnuNhaCungCap.Size = new System.Drawing.Size(193, 26);
             this.mnuNhaCungCap.Text = "Nhà cung cấp";
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(190, 6);
             // 
             // mnuNhapHang
             // 
@@ -281,16 +291,6 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.tssThoiGian.Name = "tssThoiGian";
             this.tssThoiGian.Size = new System.Drawing.Size(78, 20);
             this.tssThoiGian.Text = "Thời gian: ";
-            // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(232, 6);
-            // 
-            // toolStripSeparator4
-            // 
-            this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(221, 6);
             // 
             // FormMain
             // 
