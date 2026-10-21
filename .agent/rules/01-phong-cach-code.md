@@ -12,19 +12,39 @@
 - **Tên biến cục bộ & tham số**: camelCase tiếng Việt không dấu hoặc tiếng Anh ngắn gọn.
   - Ví dụ: `dtHangHoa`, `maKho`, `soLuong`, `sqlQuery`, `parameters`.
 
-### 1.2. Quy ước đặt tên WinForms Controls (Chuẩn tiền tố)
-Mọi control kéo thả trên Form phải được đổi tên có ý nghĩa, bắt đầu bằng tiền tố loại control:
-- `btn`: Button (ví dụ: `btnThem`, `btnSua`, `btnXoa`, `btnLuu`, `btnDong`, `btnTimKiem`)
-- `txt`: TextBox (ví dụ: `txtMaHang`, `txtTenHang`, `txtTimKiem`, `txtGhiChu`)
-- `cbo`: ComboBox (ví dụ: `cboNhomHang`, `cboDonViTinh`, `cboKho`, `cboTrangThai`)
-- `dgv`: DataGridView (ví dụ: `dgvHangHoa`, `dgvChiTietPhieu`, `dgvTonKho`)
-- `lbl`: Label (ví dụ: `lblTieuDe`, `lblTongTien`, `lblTongSoLuong`)
-- `dtp`: DateTimePicker (ví dụ: `dtpNgayLap`, `dtpTuNgay`, `dtpDenNgay`)
-- `chk`: CheckBox (ví dụ: `chkHoatDong`, `chkGiaGomThue`)
-- `rdo`: RadioButton (ví dụ: `rdoTatCa`, `rdoConHang`, `rdoHetHang`)
-- `mnu`: ToolStripMenuItem / MenuStrip (ví dụ: `mnuHeThong`, `mnuHangHoa`, `mnuNhapHang`)
-- `tss`: ToolStripStatusLabel (ví dụ: `tssNguoiDung`, `tssKho`, `tssThoiGian`)
-- `pic`: PictureBox (ví dụ: `picHinhAnh`)
+### 1.2. Quy ước đặt tên WinForms Controls (Nguyên tắc: Tiền tố + Tên theo đúng Text hiển thị)
+Mọi control kéo thả trên Form phải được đổi tên bám sát nội dung nhãn/chức năng hiển thị (`Text`) của thành phần đó, viết bằng **tiếng Việt không dấu PascalCase**, bắt đầu bằng tiền tố loại control:
+
+- **Nguyên tắc vàng**: "Text hiển thị tên gì thì tên biến đặt theo đúng chữ đó" (bỏ dấu và ký tự đặc biệt như `+`, `?`, `-`).
+  - Nút `+ Hàng hóa` ➜ `btnHangHoa`
+  - Nút `Nhập file` ➜ `btnNhapFile`
+  - Nút `Xuất file` ➜ `btnXuatFile`
+  - Nút `Hiện cột` ➜ `btnHienCot`
+  - Nút `?` ➜ `btnHuongDanSuDung` (với các ký hiệu đặc biệt, đặt theo đúng ý nghĩa hành động)
+  - Nhãn "Tìm kiếm" / Ô nhập tìm kiếm ➜ `lblTimKiem` / `txtTimKiem`
+  - Lưới hiển thị danh sách đối tượng ➜ `dgv` + Tên đối tượng (ví dụ: `dgvHangHoa`, `dgvNhapHang`, `dgvKiemKho`)
+  - ComboBox & Label đi kèm ➜ `cbo` / `lbl` + Tên nhãn (ví dụ: `cboNhomHang` / `lblNhomHang`, `cboNhaCungCap` / `lblNhaCungCap`, `cboTrangThai` / `lblTrangThai`)
+  - Bộ chọn ngày & Label đi kèm ➜ `dtpTuNgay` / `lblTuNgay`, `dtpDenNgay` / `lblDenNgay`
+  - Vùng chứa: GroupBox ➜ `grp...` (ví dụ: `grpBoLoc`, `grpThoiGianTao`), Panel ➜ `pnl...` (ví dụ: `pnlTop`, `pnlBoLoc`), Splitter ➜ `splitter...`
+
+- **Danh mục tiền tố chuẩn**:
+  - `btn`: Button
+  - `txt`: TextBox
+  - `cbo`: ComboBox
+  - `dgv`: DataGridView
+  - `lbl`: Label
+  - `dtp`: DateTimePicker
+  - `grp`: GroupBox
+  - `pnl`: Panel
+  - `splitter`: Splitter
+  - `chk`: CheckBox
+  - `rdo`: RadioButton
+  - `mnu`: ToolStripMenuItem / MenuStrip
+  - `tss`: ToolStripStatusLabel
+  - `pic`: PictureBox
+
+> [!IMPORTANT]
+> **Bảo toàn thiết kế của người dùng**: Khi người dùng tự tay dựng giao diện trên Designer, AI tuyệt đối **GIỮ NGUYÊN 100% GIAO DIỆN** (vị trí `Location`, kích thước `Size`, màu sắc, font, anchor, dock), chỉ hỗ trợ đổi tên biến chuẩn chỉ theo đúng quy tắc trên.
 
 ### 1.3. Comment & Giao diện
 - **Comment trong code**: Tiếng Việt ngắn gọn, giải thích từng bước logic xử lý (ví dụ: `// 1. Kiểm tra dữ liệu đầu vào`, `// 2. Mở giao dịch lưu phiếu và chi tiết`).
