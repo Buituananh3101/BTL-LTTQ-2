@@ -38,6 +38,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.txtGiaBan = new System.Windows.Forms.TextBox();
             this.txtGiaVon = new System.Windows.Forms.TextBox();
             this.pnlThongTinCoBan = new System.Windows.Forms.Panel();
+            this.button1 = new System.Windows.Forms.Button();
             this.picAnhPhu4 = new System.Windows.Forms.PictureBox();
             this.picAnhPhu3 = new System.Windows.Forms.PictureBox();
             this.picAnhPhu2 = new System.Windows.Forms.PictureBox();
@@ -174,6 +175,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // 
             // pnlThongTinCoBan
             // 
+            this.pnlThongTinCoBan.Controls.Add(this.button1);
             this.pnlThongTinCoBan.Controls.Add(this.picAnhPhu4);
             this.pnlThongTinCoBan.Controls.Add(this.picAnhPhu3);
             this.pnlThongTinCoBan.Controls.Add(this.picAnhPhu2);
@@ -194,6 +196,16 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.pnlThongTinCoBan.Name = "pnlThongTinCoBan";
             this.pnlThongTinCoBan.Size = new System.Drawing.Size(1182, 253);
             this.pnlThongTinCoBan.TabIndex = 2;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(1086, 28);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(23, 23);
+            this.button1.TabIndex = 4;
+            this.button1.Text = "x";
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button1.UseVisualStyleBackColor = true;
             // 
             // picAnhPhu4
             // 
@@ -245,7 +257,6 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // 
             // cboNhomHang
             // 
-            this.cboNhomHang.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
             this.cboNhomHang.FormattingEnabled = true;
             this.cboNhomHang.Location = new System.Drawing.Point(62, 203);
             this.cboNhomHang.Name = "cboNhomHang";
@@ -254,7 +265,6 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // 
             // cboDonVi
             // 
-            this.cboDonVi.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
             this.cboDonVi.FormattingEnabled = true;
             this.cboDonVi.Location = new System.Drawing.Point(462, 47);
             this.cboDonVi.Name = "cboDonVi";
@@ -331,7 +341,6 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // 
             // cboViTri
             // 
-            this.cboViTri.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
             this.cboViTri.FormattingEnabled = true;
             this.cboViTri.Location = new System.Drawing.Point(45, 74);
             this.cboViTri.Name = "cboViTri";
@@ -607,5 +616,6 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
         private System.Windows.Forms.PictureBox picAnhPhu3;
         private System.Windows.Forms.PictureBox picAnhPhu2;
         private System.Windows.Forms.PictureBox picAnhPhu1;
+        private System.Windows.Forms.Button button1;
     }
 }

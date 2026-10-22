@@ -325,6 +325,13 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
         {
             danhSachPic = new PictureBox[] { picAnhDaiDien, picAnhPhu1, picAnhPhu2, picAnhPhu3, picAnhPhu4 };
 
+            if (button1 != null)
+            {
+                button1.Cursor = Cursors.Hand;
+                toolTipAnh.SetToolTip(button1, "Bỏ chọn / Xóa ảnh trong khung to");
+                button1.BringToFront();
+            }
+
             for (int i = 0; i < danhSachPic.Length; i++)
             {
                 int index = i;
@@ -385,6 +392,11 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             CapNhatHienThi5Anh();
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            XoaAnhSlot(0);
+        }
+
         private void picAnhDaiDien_Click(object sender, EventArgs e)
         {
             ChonAnhChoSlot(0);
@@ -404,6 +416,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
 
             danhSachAnh[index] = tempImg;
             danhSachByteAnh[index] = tempBytes;
+            duLieuAnhHienTai = danhSachByteAnh[0];
 
             CapNhatHienThi5Anh();
             daChonAnhMoi = true;
@@ -414,6 +427,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             if (index < 0 || index >= 5) return;
             danhSachAnh[index] = null;
             danhSachByteAnh[index] = null;
+            daChonAnhMoi = true;
             CapNhatHienThi5Anh();
             if (index == 0)
             {
@@ -482,6 +496,11 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             {
                 danhSachPic[i].Image = danhSachAnh[i];
                 danhSachPic[i].BackColor = Color.White;
+            }
+
+            if (button1 != null)
+            {
+                button1.BringToFront();
             }
         }
 
