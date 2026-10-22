@@ -591,40 +591,100 @@ namespace BTL_LTTQ_2.GUI.Forms
 
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
-                sfd.Filter = "File CSV (*.csv)|*.csv|Tất cả tệp (*.*)|*.*";
-                sfd.FileName = $"DanhSachHangHoa_{DateTime.Now:yyyyMMdd_HHmm}.csv";
+                sfd.Title = "Xuất danh sách hàng hóa";
+                sfd.Filter = "File Excel (*.xls)|*.xls|File CSV (*.csv)|*.csv";
+                sfd.FileName = $"DanhSachHangHoa_{DateTime.Now:yyyyMMdd_HHmm}.xls";
 
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
                     try
                     {
-                        StringBuilder sb = new StringBuilder();
+                        string ext = Path.GetExtension(sfd.FileName).ToLower();
 
-                        // Ghi tiêu đề cột (bỏ cột ẩn colMaHang)
-                        List<string> headers = new List<string>();
-                        foreach (DataGridViewColumn col in dgvHangHoa.Columns)
+                        if (ext == ".xls")
                         {
-                            if (col.Visible) headers.Add($"\"{col.HeaderText}\"");
-                        }
-                        sb.AppendLine(string.Join(",", headers));
+                            // Xuất định dạng bảng tính Excel (HTML Table UTF-8): Mở bằng Excel tự động chia từng cột, kẻ viền, căn lề chuẩn
+                            StringBuilder sb = new StringBuilder();
+                            sb.AppendLine("<!DOCTYPE html>");
+                            sb.AppendLine("<html><head><meta http-equiv=\"content-type\" content=\"application/vnd.ms-excel; charset=UTF-8\" />");
+                            sb.AppendLine("<style>");
+                            sb.AppendLine("table { border-collapse: collapse; font-family: Segoe UI, Tahoma, sans-serif; font-size: 11pt; }");
+                            sb.AppendLine("th { background-color: #E2E8F0; color: #0F172A; font-weight: bold; border: 1px solid #94A3B8; padding: 8px 12px; }");
+                            sb.AppendLine("td { border: 1px solid #CBD5E1; padding: 6px 10px; }");
+                            sb.AppendLine(".text { mso-number-format: '\\@'; text-align: left; }");
+                            sb.AppendLine(".center { text-align: center; }");
+                            sb.AppendLine(".number { mso-number-format: '#,##0'; text-align: right; }");
+                            sb.AppendLine("</style></head><body>");
+                            sb.AppendLine("<table>");
 
-                        // Ghi từng dòng dữ liệu
-                        foreach (DataGridViewRow row in dgvHangHoa.Rows)
-                        {
-                            List<string> rowValues = new List<string>();
+                            // Dòng tiêu đề cột
+                            sb.AppendLine("<tr>");
                             foreach (DataGridViewColumn col in dgvHangHoa.Columns)
                             {
                                 if (col.Visible)
                                 {
-                                    string cellVal = row.Cells[col.Index].FormattedValue?.ToString() ?? "";
-                                    rowValues.Add($"\"{cellVal.Replace("\"", "\"\"")}\"");
+                                    sb.AppendLine($"<th>{System.Net.WebUtility.HtmlEncode(col.HeaderText)}</th>");
                                 }
                             }
-                            sb.AppendLine(string.Join(",", rowValues));
+                            sb.AppendLine("</tr>");
+
+                            // Dữ liệu từng dòng
+                            foreach (DataGridViewRow row in dgvHangHoa.Rows)
+                            {
+                                sb.AppendLine("<tr>");
+                                foreach (DataGridViewColumn col in dgvHangHoa.Columns)
+                                {
+                                    if (col.Visible)
+                                    {
+                                        string cellVal = row.Cells[col.Index].FormattedValue?.ToString() ?? "";
+                                        string cssClass = "text";
+                                        if (col.DefaultCellStyle.Alignment == DataGridViewContentAlignment.MiddleRight)
+                                            cssClass = "number";
+                                        else if (col.DefaultCellStyle.Alignment == DataGridViewContentAlignment.MiddleCenter)
+                                            cssClass = "center";
+
+                                        sb.AppendLine($"<td class=\"{cssClass}\">{System.Net.WebUtility.HtmlEncode(cellVal)}</td>");
+                                    }
+                                }
+                                sb.AppendLine("</tr>");
+                            }
+
+                            sb.AppendLine("</table></body></html>");
+                            File.WriteAllText(sfd.FileName, sb.ToString(), new UTF8Encoding(true));
+                        }
+                        else
+                        {
+                            // Xuất định dạng CSV kèm chỉ thị sep=, để Excel nhận diện chuẩn dấu phân cách cột
+                            StringBuilder sb = new StringBuilder();
+                            sb.AppendLine("sep=,");
+
+                            List<string> headers = new List<string>();
+                            foreach (DataGridViewColumn col in dgvHangHoa.Columns)
+                            {
+                                if (col.Visible)
+                                {
+                                    headers.Add($"\"{col.HeaderText.Replace("\"", "\"\"")}\"");
+                                }
+                            }
+                            sb.AppendLine(string.Join(",", headers));
+
+                            foreach (DataGridViewRow row in dgvHangHoa.Rows)
+                            {
+                                List<string> rowValues = new List<string>();
+                                foreach (DataGridViewColumn col in dgvHangHoa.Columns)
+                                {
+                                    if (col.Visible)
+                                    {
+                                        string cellVal = row.Cells[col.Index].FormattedValue?.ToString() ?? "";
+                                        rowValues.Add($"\"{cellVal.Replace("\"", "\"\"")}\"");
+                                    }
+                                }
+                                sb.AppendLine(string.Join(",", rowValues));
+                            }
+
+                            File.WriteAllText(sfd.FileName, sb.ToString(), new UTF8Encoding(true));
                         }
 
-                        // Ghi ra file với UTF-8 BOM để Excel hiển thị đúng tiếng Việt
-                        File.WriteAllText(sfd.FileName, sb.ToString(), Encoding.UTF8);
                         MessageBox.Show("Xuất file thành công tại:\n" + sfd.FileName, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     catch (Exception ex)

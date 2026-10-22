@@ -16,6 +16,11 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
         private byte[] duLieuAnhHienTai = null;
         private bool daChonAnhMoi = false;
 
+        private readonly Image[] danhSachAnh = new Image[5];
+        private readonly byte[][] danhSachByteAnh = new byte[5][];
+        private PictureBox[] danhSachPic;
+        private readonly ToolTip toolTipAnh = new ToolTip();
+
         public frmHangHoa()
         {
             InitializeComponent();
@@ -73,6 +78,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             //}
 
             //
+            KhoiTao5KhungAnh();
             NapCombobox();
 
             if (maHangHienTai > 0)
@@ -231,10 +237,12 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                     if (row["HinhAnh"] != DBNull.Value)
                     {
                         duLieuAnhHienTai = (byte[])row["HinhAnh"];
+                        danhSachByteAnh[0] = duLieuAnhHienTai;
                         using (MemoryStream ms = new MemoryStream(duLieuAnhHienTai))
                         {
-                            picAnhDaiDien.Image = Image.FromStream(ms);
+                            danhSachAnh[0] = Image.FromStream(ms);
                         }
+                        CapNhatHienThi5Anh();
                     }
                 }
             }
@@ -246,30 +254,173 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
 
         #endregion
 
-        #region Chọn ảnh & Thao tác
+        #region Quản lý 5 khung ảnh & Thao tác
+
+        private void KhoiTao5KhungAnh()
+        {
+            danhSachPic = new PictureBox[] { picAnhDaiDien, picAnhPhu1, picAnhPhu2, picAnhPhu3, picAnhPhu4 };
+
+            for (int i = 0; i < danhSachPic.Length; i++)
+            {
+                int index = i;
+                PictureBox pic = danhSachPic[i];
+                pic.SizeMode = PictureBoxSizeMode.Zoom;
+                pic.Cursor = Cursors.Hand;
+                pic.BorderStyle = BorderStyle.FixedSingle;
+
+                // Tooltip chỉ dẫn
+                if (index == 0)
+                {
+                    toolTipAnh.SetToolTip(pic, "Ảnh chính (ô to) sẽ được lưu vào cơ sở dữ liệu khi bấm Lưu.\nClick để chọn/thay ảnh mới. Click chuột phải để xóa.");
+                }
+                else
+                {
+                    toolTipAnh.SetToolTip(pic, $"Ảnh phụ #{index}.\nClick chuột trái để đổi ảnh này lên ô to (làm ảnh chính).\nClick chuột phải để xóa hoặc chọn ảnh mới.");
+                }
+
+                // Menu chuột phải
+                ContextMenuStrip cms = new ContextMenuStrip();
+                ToolStripMenuItem mnuChon = new ToolStripMenuItem("Chọn / Đổi ảnh...");
+                mnuChon.Click += (s, e) => ChonAnhChoSlot(index);
+                cms.Items.Add(mnuChon);
+
+                if (index > 0)
+                {
+                    ToolStripMenuItem mnuDoiLenTo = new ToolStripMenuItem("Đổi lên ô to (Làm ảnh chính)");
+                    mnuDoiLenTo.Click += (s, e) => HoanDoiAnhVoiOTo(index);
+                    cms.Items.Add(mnuDoiLenTo);
+                }
+
+                ToolStripMenuItem mnuXoa = new ToolStripMenuItem("Xóa ảnh này");
+                mnuXoa.Click += (s, e) => XoaAnhSlot(index);
+                cms.Items.Add(mnuXoa);
+
+                pic.ContextMenuStrip = cms;
+
+                // Sự kiện click chuột trái cho 4 ô phụ (ô to dùng picAnhDaiDien_Click)
+                if (index > 0)
+                {
+                    pic.Click += (s, e) =>
+                    {
+                        if (danhSachAnh[index] != null)
+                        {
+                            // Đã có ảnh -> Hoán đổi với ô to!
+                            HoanDoiAnhVoiOTo(index);
+                        }
+                        else
+                        {
+                            // Chưa có ảnh -> Mở chọn ảnh cho ô này
+                            ChonAnhChoSlot(index);
+                        }
+                    };
+                }
+            }
+
+            CapNhatHienThi5Anh();
+        }
 
         private void picAnhDaiDien_Click(object sender, EventArgs e)
+        {
+            ChonAnhChoSlot(0);
+        }
+
+        private void HoanDoiAnhVoiOTo(int index)
+        {
+            if (index <= 0 || index >= 5) return;
+            if (danhSachAnh[index] == null && danhSachAnh[0] == null) return;
+
+            // Hoán đổi ảnh giữa ô to (slot 0) và ô nhỏ (slot index)
+            Image tempImg = danhSachAnh[0];
+            byte[] tempBytes = danhSachByteAnh[0];
+
+            danhSachAnh[0] = danhSachAnh[index];
+            danhSachByteAnh[0] = danhSachByteAnh[index];
+
+            danhSachAnh[index] = tempImg;
+            danhSachByteAnh[index] = tempBytes;
+
+            CapNhatHienThi5Anh();
+            daChonAnhMoi = true;
+        }
+
+        private void XoaAnhSlot(int index)
+        {
+            if (index < 0 || index >= 5) return;
+            danhSachAnh[index] = null;
+            danhSachByteAnh[index] = null;
+            CapNhatHienThi5Anh();
+            if (index == 0)
+            {
+                duLieuAnhHienTai = null;
+                daChonAnhMoi = true;
+            }
+        }
+
+        private void ChonAnhChoSlot(int slotBatDau)
         {
             using (OpenFileDialog ofd = new OpenFileDialog())
             {
                 ofd.Filter = "Ảnh (*.jpg;*.jpeg;*.png;*.bmp)|*.jpg;*.jpeg;*.png;*.bmp|Tất cả tệp (*.*)|*.*";
-                ofd.Title = "Chọn ảnh hàng hóa";
+                ofd.Title = "Chọn ảnh hàng hóa (có thể chọn cùng lúc nhiều ảnh)";
+                ofd.Multiselect = true;
 
-                if (ofd.ShowDialog() == DialogResult.OK)
+                if (ofd.ShowDialog() == DialogResult.OK && ofd.FileNames.Length > 0)
                 {
-                    try
+                    int currentSlot = slotBatDau;
+                    for (int f = 0; f < ofd.FileNames.Length; f++)
                     {
-                        duLieuAnhHienTai = File.ReadAllBytes(ofd.FileName);
-                        using (MemoryStream ms = new MemoryStream(duLieuAnhHienTai))
+                        // Nếu vượt quá 5 slot hoặc các file sau slotBatDau, tìm slot trống kế tiếp
+                        if (currentSlot >= 5 || (f > 0 && danhSachAnh[currentSlot] != null))
                         {
-                            picAnhDaiDien.Image = Image.FromStream(ms);
+                            currentSlot = -1;
+                            for (int k = 0; k < 5; k++)
+                            {
+                                if (danhSachAnh[k] == null)
+                                {
+                                    currentSlot = k;
+                                    break;
+                                }
+                            }
+                            if (currentSlot == -1) break; // Cả 5 ô đều đã có ảnh
                         }
-                        daChonAnhMoi = true;
+
+                        try
+                        {
+                            byte[] bytes = File.ReadAllBytes(ofd.FileNames[f]);
+                            using (MemoryStream ms = new MemoryStream(bytes))
+                            {
+                                danhSachAnh[currentSlot] = Image.FromStream(ms);
+                                danhSachByteAnh[currentSlot] = bytes;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Không thể tải ảnh: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+
+                        currentSlot++;
                     }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Không thể tải ảnh: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+
+                    CapNhatHienThi5Anh();
+                    daChonAnhMoi = true;
+                }
+            }
+        }
+
+        private void CapNhatHienThi5Anh()
+        {
+            if (danhSachPic == null) return;
+
+            for (int i = 0; i < 5; i++)
+            {
+                danhSachPic[i].Image = danhSachAnh[i];
+                if (danhSachAnh[i] != null)
+                {
+                    danhSachPic[i].BackColor = Color.White;
+                }
+                else
+                {
+                    danhSachPic[i].BackColor = SystemColors.ActiveBorder;
                 }
             }
         }
@@ -334,6 +485,9 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             string quyCach = null;
             string moTa = txtMoTa.Text.Trim();
             string viTri = cboViTri.Text.Trim();
+
+            // Luôn lấy dữ liệu ảnh ở ô to (slot 0) để lưu vào cơ sở dữ liệu
+            duLieuAnhHienTai = danhSachByteAnh[0];
 
             try
             {
