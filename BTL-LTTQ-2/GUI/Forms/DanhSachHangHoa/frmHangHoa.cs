@@ -15,6 +15,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
     {
         private int maHangHienTai = 0; // 0: Thêm mới, > 0: Chỉnh sửa
         private byte[] duLieuAnhHienTai = null;
+        private string trangThaiHienTai = "DANG_BAN";
         private bool daChonAnhMoi = false;
 
         private readonly Image[] danhSachAnh = new Image[5];
@@ -69,6 +70,12 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
 
             //
             KhoiTao5KhungAnh();
+
+            if (button2 != null)
+            {
+                button2.Cursor = Cursors.Hand;
+                toolTipAnh.SetToolTip(button2, "Xóa hàng hóa này khỏi hệ thống");
+            }
             NapCombobox();
 
             if (maHangHienTai > 0)
@@ -82,6 +89,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                 txtTonKho.BackColor = Color.FromArgb(243, 244, 246);
 
                 NapThongTinHangHoa();
+                if (button2 != null) button2.Visible = true;
             }
             else
             {
@@ -97,6 +105,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                 txtDinhMucTonCaoNhat.Text = "0";
 
                 SinhMaHangGoiY();
+                if (button2 != null) button2.Visible = false;
             }
         }
 
@@ -195,6 +204,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
 
                     txtMaHang.Text = row["MaHangNoiBo"]?.ToString();
                     txtTenHang.Text = row["TenHang"]?.ToString();
+                    trangThaiHienTai = row["TrangThai"]?.ToString() ?? "DANG_BAN";
                     txtMoTa.Text = row["MoTa"]?.ToString();
                     cboViTri.Text = row["ViTri"]?.ToString();
 
@@ -533,6 +543,185 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
 
             return bmpMoi;
         }
+
+        #region Xử lý Xóa hàng hóa
+
+        private void btnXoa_Click(object sender, EventArgs e)
+        {
+            XoaHangHoa();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            XoaHangHoa();
+        }
+
+        private void XoaHangHoa()
+        {
+            if (maHangHienTai <= 0)
+            {
+                MessageBox.Show("Hàng hóa này chưa được lưu vào hệ thống nên không thể xóa!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            try
+            {
+                // 1. Kiểm tra ràng buộc chứng từ kho & giao dịch
+                string sqlKiemTra = @"
+                    SELECT 
+                        (SELECT COUNT(1) FROM ChiTietPhieuNhap WHERE MaHang = @MaHang) AS DemNhap,
+                        (SELECT COUNT(1) FROM ChiTietPhieuXuat WHERE MaHang = @MaHang) AS DemXuat,
+                        (SELECT COUNT(1) FROM ChiTietDonBan WHERE MaHang = @MaHang) AS DemBan,
+                        (SELECT COUNT(1) FROM ChiTietPhieuTraHangNhap WHERE MaHang = @MaHang) AS DemTra,
+                        (SELECT COUNT(1) FROM ChiTietPhieuChuyenKho WHERE MaHang = @MaHang) AS DemChuyen,
+                        (SELECT COUNT(1) FROM ChiTietPhieuKiemKe WHERE MaHang = @MaHang) AS DemKiem;";
+
+                DataTable dtCheck = DataProcessing.ReadData(sqlKiemTra, new SqlParameter[] { new SqlParameter("@MaHang", maHangHienTai) });
+                if (dtCheck != null && dtCheck.Rows.Count > 0)
+                {
+                    DataRow r = dtCheck.Rows[0];
+                    int demNhap = Convert.ToInt32(r["DemNhap"]);
+                    int demXuat = Convert.ToInt32(r["DemXuat"]);
+                    int demBan = Convert.ToInt32(r["DemBan"]);
+                    int demTra = Convert.ToInt32(r["DemTra"]);
+                    int demChuyen = Convert.ToInt32(r["DemChuyen"]);
+                    int demKiem = Convert.ToInt32(r["DemKiem"]);
+
+                    int tongGiaoDich = demNhap + demXuat + demBan + demTra + demChuyen + demKiem;
+                    if (tongGiaoDich > 0)
+                    {
+                        string lyDo = "";
+                        if (demNhap > 0) lyDo += $"\n- {demNhap} dòng phiếu nhập kho";
+                        if (demXuat > 0) lyDo += $"\n- {demXuat} dòng phiếu xuất kho";
+                        if (demBan > 0) lyDo += $"\n- {demBan} dòng đơn bán hàng";
+                        if (demTra > 0) lyDo += $"\n- {demTra} dòng phiếu trả hàng nhập";
+                        if (demChuyen > 0) lyDo += $"\n- {demChuyen} dòng phiếu chuyển kho";
+                        if (demKiem > 0) lyDo += $"\n- {demKiem} dòng phiếu kiểm kê";
+
+                        if (trangThaiHienTai == "NGUNG_BAN")
+                        {
+                            MessageBox.Show(
+                                $"Không thể xóa hàng hóa '{txtTenHang.Text}' ({txtMaHang.Text}) vì đã phát sinh chứng từ giao dịch trong hệ thống:{lyDo}\n\nQuy chuẩn quản lý kho không cho phép xóa dữ liệu đã có lịch sử giao dịch nhằm bảo toàn tính toàn vẹn sổ sách.\n\nHàng hóa này hiện tại đã ở trạng thái 'Ngừng bán'.",
+                                "Không thể xóa hàng hóa",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Warning);
+                            return;
+                        }
+
+                        DialogResult hoiChuyen = MessageBox.Show(
+                            $"Không thể xóa hàng hóa '{txtTenHang.Text}' ({txtMaHang.Text}) vì đã phát sinh chứng từ giao dịch trong hệ thống:{lyDo}\n\nQuy chuẩn quản lý kho không cho phép xóa dữ liệu đã có lịch sử giao dịch nhằm bảo toàn tính toàn vẹn sổ sách.\n\nBạn có muốn chuyển trạng thái hàng hóa này sang 'Ngừng bán' không?",
+                            "Không thể xóa hàng hóa - Chuyển sang Ngừng bán",
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Question,
+                            MessageBoxDefaultButton.Button1);
+
+                        if (hoiChuyen == DialogResult.Yes)
+                        {
+                            string sqlUpdateTrangThai = "UPDATE HangHoa SET TrangThai = 'NGUNG_BAN' WHERE MaHang = @MaHang;";
+                            DataProcessing.ChangeData(sqlUpdateTrangThai, new SqlParameter[] { new SqlParameter("@MaHang", maHangHienTai) });
+
+                            MessageBox.Show(
+                                $"Đã chuyển trạng thái hàng hóa '{txtTenHang.Text}' sang 'Ngừng bán' thành công!",
+                                "Thông báo",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Information);
+
+                            this.DialogResult = DialogResult.OK;
+                            this.Close();
+                        }
+
+                        return;
+                    }
+                }
+
+                // 2. Kiểm tra tồn kho thực tế hiện tại
+                object objTon = DataProcessing.ReadValue(
+                    "SELECT ISNULL(SUM(SoLuongTon), 0) FROM vw_TonKhoHienTai WHERE MaHang = @MaHang",
+                    new SqlParameter[] { new SqlParameter("@MaHang", maHangHienTai) });
+                decimal tonKho = objTon != null && decimal.TryParse(objTon.ToString(), out decimal t) ? t : 0;
+                if (tonKho > 0)
+                {
+                    if (trangThaiHienTai == "NGUNG_BAN")
+                    {
+                        MessageBox.Show(
+                            $"Không thể xóa hàng hóa '{txtTenHang.Text}' vì vẫn còn tồn kho ({tonKho:N0})!\n\nHàng hóa này hiện tại đã ở trạng thái 'Ngừng bán'.",
+                            "Không thể xóa hàng hóa",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    DialogResult hoiChuyenTon = MessageBox.Show(
+                        $"Không thể xóa hàng hóa '{txtTenHang.Text}' vì vẫn còn tồn kho ({tonKho:N0})!\n\nBạn có muốn chuyển trạng thái hàng hóa này sang 'Ngừng bán' không?",
+                        "Không thể xóa hàng hóa - Chuyển sang Ngừng bán",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question,
+                        MessageBoxDefaultButton.Button1);
+
+                    if (hoiChuyenTon == DialogResult.Yes)
+                    {
+                        string sqlUpdateTrangThai = "UPDATE HangHoa SET TrangThai = 'NGUNG_BAN' WHERE MaHang = @MaHang;";
+                        DataProcessing.ChangeData(sqlUpdateTrangThai, new SqlParameter[] { new SqlParameter("@MaHang", maHangHienTai) });
+
+                        MessageBox.Show(
+                            $"Đã chuyển trạng thái hàng hóa '{txtTenHang.Text}' sang 'Ngừng bán' thành công!",
+                            "Thông báo",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+
+                            this.DialogResult = DialogResult.OK;
+                            this.Close();
+                    }
+
+                    return;
+                }
+
+                // 3. Hỏi xác nhận người dùng trước khi xóa vĩnh viễn
+                DialogResult dialog = MessageBox.Show(
+                    $"Bạn có chắc chắn muốn xóa vĩnh viễn hàng hóa '{txtTenHang.Text}' (Mã: {txtMaHang.Text}) khỏi cơ sở dữ liệu không?\n\nLưu ý: Toàn bộ thông tin, hình ảnh và định mức tồn kho liên quan sẽ bị xóa và không thể khôi phục!",
+                    "Xác nhận xóa hàng hóa",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question,
+                    MessageBoxDefaultButton.Button2);
+
+                if (dialog != DialogResult.Yes) return;
+
+                // 4. Thực hiện xóa trong Transaction ADO.NET
+                DataProcessing.ChangeDataTransaction((conn, trans) =>
+                {
+                    // Xóa ảnh trong HinhAnhHangHoa
+                    using (SqlCommand cmdAnh = new SqlCommand("DELETE FROM HinhAnhHangHoa WHERE MaHang = @MaHang;", conn, trans))
+                    {
+                        cmdAnh.Parameters.AddWithValue("@MaHang", maHangHienTai);
+                        cmdAnh.ExecuteNonQuery();
+                    }
+
+                    // Xóa định mức tồn kho trong NguongTonKho
+                    using (SqlCommand cmdNguong = new SqlCommand("DELETE FROM NguongTonKho WHERE MaHang = @MaHang;", conn, trans))
+                    {
+                        cmdNguong.Parameters.AddWithValue("@MaHang", maHangHienTai);
+                        cmdNguong.ExecuteNonQuery();
+                    }
+
+                    // Xóa hàng hóa trong HangHoa
+                    using (SqlCommand cmdHang = new SqlCommand("DELETE FROM HangHoa WHERE MaHang = @MaHang;", conn, trans))
+                    {
+                        cmdHang.Parameters.AddWithValue("@MaHang", maHangHienTai);
+                        cmdHang.ExecuteNonQuery();
+                    }
+                });
+
+                MessageBox.Show($"Đã xóa thành công hàng hóa '{txtTenHang.Text}'!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi xóa hàng hóa: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        #endregion
 
         private void btnBoQua_Click(object sender, EventArgs e)
         {
