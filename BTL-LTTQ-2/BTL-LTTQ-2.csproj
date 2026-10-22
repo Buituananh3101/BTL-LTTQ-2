@@ -50,6 +50,7 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BLL\SessionContext.cs" />
     <Compile Include="DAL\DataProcessing.cs" />
     <Compile Include="GUI\Forms\frmMain.cs">
       <SubType>Form</SubType>

@@ -38,7 +38,7 @@
 | 2 | **Quy chuẩn Vận hành AI** | Thư mục `.agent/rules/`, `AGENTS.md`, `PROGRESS.md`, `docs/` | Hoàn thành 100% |
 | 3 | **Giao diện Khung MDI** | `frmMain` MDI Container, MenuStrip 5 phân hệ, StatusStrip trạng thái | Hoàn thành 100% |
 | 4 | **Xác thực & Phân quyền** | `SessionContext`, SHA-256 `PasswordHelper`, `frmDangNhap`, phân quyền menu | Đang thực hiện |
-| 5 | **Danh mục Hàng hóa** | `frmDanhSachHangHoa`, `frmHangHoaChiTiet`, tìm kiếm F3, lọc tồn kho | Đang thực hiện |
+| 5 | **Danh mục Hàng hóa** | `frmDanhSachHangHoa` (phân trang, lọc, tìm kiếm, xuất file), `frmHangHoa` (Thêm/Sửa) | Hoàn thành 100% |
 | 6 | **Danh mục Cơ bản** | CRUD Nhóm hàng, Đơn vị tính, Chi nhánh Kho, Nhà cung cấp | Chưa bắt đầu |
 | 7 | **Phiếu Nhập hàng** | `frmNhapHang`, tính giá vốn bình quân (MAC), cộng tồn dynamic | Chưa bắt đầu |
 | 8 | **Kiểm kê & Cân bằng kho** | `frmKiemKho`, nạp tồn sổ sách, sinh phiếu điều chỉnh, khóa vĩnh viễn | Chưa bắt đầu |
@@ -49,6 +49,24 @@
 ---
 
 ## Nhật ký phiên (Session Logs)
+
+- **Phiên 3 (2026-10-22) – Hoàn thiện Toàn bộ Logic Danh mục Hàng hóa (`frmDanhSachHangHoa` & `frmHangHoa`)**:
+  - **Nhu cầu**: Hiện thực hóa logic nghiệp vụ nạp dữ liệu, tìm kiếm tức thì, lọc đa chiều, phân trang SQL Server và thêm/sửa hàng hóa bám sát 100% giao diện đã thiết kế.
+  - **Kết quả thực hiện**:
+    1. Tạo [`BLL/SessionContext.cs`](file:///d:/CODE/BTL-LTTQ-2/BTL-LTTQ-2/BLL/SessionContext.cs): Quản trị phiên kho hiện tại (`MaKhoHienTai = 1`), phục vụ tính tồn kho động chính xác qua `vw_TonKhoHienTai`.
+    2. Hoàn thiện [`frmDanhSachHangHoa`](file:///d:/CODE/BTL-LTTQ-2/BTL-LTTQ-2/GUI/Forms/DanhSachHangHoa/frmDanhSachHangHoa.cs):
+       - Tích hợp thanh phân trang SQL `OFFSET ... ROWS FETCH NEXT ... ROWS ONLY` (tùy chọn 10, 20, 50, 100 dòng/trang).
+       - Nạp dữ liệu vào 5 ComboBox bộ lọc: Nhóm hàng, Tiêu chí tồn kho, Nhà cung cấp, Vị trí, Trạng thái kinh doanh, Lọc theo khoảng ngày tạo.
+       - Cấu hình DataGridView hiển thị đẹp, đệm đôi chống giật lag, màu dòng xen kẽ, cảnh báo đỏ khi hết hàng / âm tồn.
+       - Tìm kiếm tức thời theo Mã hàng, Tên hàng, Quy cách.
+       - Xuất danh sách đang hiển thị ra file CSV hỗ trợ tiếng Việt UTF-8 BOM mở bằng Excel.
+       - Click đúp vào dòng để mở form chỉnh sửa thông tin hàng hóa.
+    3. Hoàn thiện [`frmHangHoa`](file:///d:/CODE/BTL-LTTQ-2/BTL-LTTQ-2/GUI/Forms/DanhSachHangHoa/frmHangHoa.cs):
+       - Hỗ trợ 2 chế độ: Thêm mới (`maHang = 0`) và Cập nhật (`maHang > 0`).
+       - Tự động gợi ý mã hàng khi thêm mới; kiểm tra chống trùng mã hàng nội bộ.
+       - Nạp danh mục nhóm hàng, đơn vị tính, vị trí, ảnh đại diện (`HinhAnh`), định mức tồn kho cao/thấp nhất (`NguongTonKho`).
+       - Lưu dữ liệu an toàn bọc trong `DataProcessing.ChangeDataTransaction`.
+    4. Kiểm tra biên dịch Rebuild toàn bộ solution: **0 Warning(s), 0 Error(s)**.
 
 - **Phiên 2 (2026-10-21) – Khắc phục Hiện tượng Giao diện Vỡ nét (High DPI Scaling & Crisp UI)**:
   - **Nhu cầu**: Người dùng phản hồi: "hiện tại khi chạy nhìn nó cứ vỡ vỡ, bạn hãy khác phục điều này giúp tôi".

@@ -234,11 +234,14 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // picAnhDaiDien
             // 
             this.picAnhDaiDien.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.picAnhDaiDien.Cursor = System.Windows.Forms.Cursors.Hand;
             this.picAnhDaiDien.Location = new System.Drawing.Point(910, 27);
             this.picAnhDaiDien.Name = "picAnhDaiDien";
             this.picAnhDaiDien.Size = new System.Drawing.Size(200, 200);
             this.picAnhDaiDien.TabIndex = 2;
+            this.picAnhDaiDien.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picAnhDaiDien.TabStop = false;
+            this.picAnhDaiDien.Click += new System.EventHandler(this.picAnhDaiDien_Click);
             // 
             // cboNhomHang
             // 
@@ -498,6 +501,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.btnLuu.TabIndex = 0;
             this.btnLuu.Text = "Lưu";
             this.btnLuu.UseVisualStyleBackColor = true;
+            this.btnLuu.Click += new System.EventHandler(this.btnLuu_Click);
             // 
             // btnBoQua
             // 
@@ -507,6 +511,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.btnBoQua.TabIndex = 0;
             this.btnBoQua.Text = "Bỏ qua";
             this.btnBoQua.UseVisualStyleBackColor = true;
+            this.btnBoQua.Click += new System.EventHandler(this.btnBoQua_Click);
             // 
             // frmHangHoa
             // 
@@ -521,6 +526,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.Controls.Add(this.pnlTop);
             this.Name = "frmHangHoa";
             this.Text = "frmHangHoa";
+            this.Load += new System.EventHandler(this.frmHangHoa_Load);
             this.pnlTop.ResumeLayout(false);
             this.grpTieuDe.ResumeLayout(false);
             this.grpTieuDe.PerformLayout();
