@@ -54,7 +54,6 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.cboNhaCungCap = new System.Windows.Forms.ComboBox();
             this.lblNhomHang = new System.Windows.Forms.Label();
             this.cboNhomHang = new System.Windows.Forms.ComboBox();
-            this.splitterBoLoc = new System.Windows.Forms.Splitter();
             this.pnlPhanTrang = new System.Windows.Forms.Panel();
             this.lblTongSoHang = new System.Windows.Forms.Label();
             this.lblSoDongMoiTrang = new System.Windows.Forms.Label();
@@ -62,6 +61,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.btnTrangTruoc = new System.Windows.Forms.Button();
             this.lblTrangHienTai = new System.Windows.Forms.Label();
             this.btnTrangSau = new System.Windows.Forms.Button();
+            this.splitterBoLoc = new System.Windows.Forms.Splitter();
             this.pnlTop.SuspendLayout();
             this.grpTop.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvHangHoa)).BeginInit();
@@ -77,7 +77,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.pnlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlTop.Location = new System.Drawing.Point(0, 0);
             this.pnlTop.Name = "pnlTop";
-            this.pnlTop.Size = new System.Drawing.Size(1782, 103);
+            this.pnlTop.Size = new System.Drawing.Size(1782, 84);
             this.pnlTop.TabIndex = 0;
             // 
             // grpTop
@@ -94,7 +94,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.grpTop.Controls.Add(this.txtTimKiem);
             this.grpTop.Location = new System.Drawing.Point(0, 3);
             this.grpTop.Name = "grpTop";
-            this.grpTop.Size = new System.Drawing.Size(1782, 67);
+            this.grpTop.Size = new System.Drawing.Size(1782, 60);
             this.grpTop.TabIndex = 0;
             this.grpTop.TabStop = false;
             // 
@@ -111,7 +111,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             // btnHuongDanSuDung
             // 
             this.btnHuongDanSuDung.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnHuongDanSuDung.Location = new System.Drawing.Point(1714, 21);
+            this.btnHuongDanSuDung.Location = new System.Drawing.Point(1711, 21);
             this.btnHuongDanSuDung.Name = "btnHuongDanSuDung";
             this.btnHuongDanSuDung.Size = new System.Drawing.Size(43, 29);
             this.btnHuongDanSuDung.TabIndex = 5;
@@ -132,7 +132,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             // btnXuatFile
             // 
             this.btnXuatFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnXuatFile.Location = new System.Drawing.Point(1471, 21);
+            this.btnXuatFile.Location = new System.Drawing.Point(1474, 21);
             this.btnXuatFile.Name = "btnXuatFile";
             this.btnXuatFile.Size = new System.Drawing.Size(110, 29);
             this.btnXuatFile.TabIndex = 3;
@@ -143,7 +143,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             // btnNhapFile
             // 
             this.btnNhapFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnNhapFile.Location = new System.Drawing.Point(1342, 21);
+            this.btnNhapFile.Location = new System.Drawing.Point(1348, 21);
             this.btnNhapFile.Name = "btnNhapFile";
             this.btnNhapFile.Size = new System.Drawing.Size(110, 29);
             this.btnNhapFile.TabIndex = 3;
@@ -180,13 +180,14 @@ namespace BTL_LTTQ_2.GUI.Forms
             // 
             // dgvHangHoa
             // 
+            this.dgvHangHoa.AllowUserToResizeRows = false;
             this.dgvHangHoa.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvHangHoa.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvHangHoa.Location = new System.Drawing.Point(387, 103);
+            this.dgvHangHoa.Location = new System.Drawing.Point(387, 84);
             this.dgvHangHoa.Name = "dgvHangHoa";
             this.dgvHangHoa.RowHeadersWidth = 51;
             this.dgvHangHoa.RowTemplate.Height = 24;
-            this.dgvHangHoa.Size = new System.Drawing.Size(1395, 708);
+            this.dgvHangHoa.Size = new System.Drawing.Size(1395, 727);
             this.dgvHangHoa.TabIndex = 2;
             this.dgvHangHoa.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvHangHoa_CellDoubleClick);
             this.dgvHangHoa.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvHangHoa_CellFormatting);
@@ -196,9 +197,9 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.pnlBoLoc.Controls.Add(this.grpBoLoc);
             this.pnlBoLoc.Controls.Add(this.splitterBoLoc);
             this.pnlBoLoc.Dock = System.Windows.Forms.DockStyle.Left;
-            this.pnlBoLoc.Location = new System.Drawing.Point(0, 103);
+            this.pnlBoLoc.Location = new System.Drawing.Point(0, 84);
             this.pnlBoLoc.Name = "pnlBoLoc";
-            this.pnlBoLoc.Size = new System.Drawing.Size(387, 750);
+            this.pnlBoLoc.Size = new System.Drawing.Size(387, 769);
             this.pnlBoLoc.TabIndex = 1;
             // 
             // grpBoLoc
@@ -215,13 +216,11 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.grpBoLoc.Controls.Add(this.cboNhaCungCap);
             this.grpBoLoc.Controls.Add(this.lblNhomHang);
             this.grpBoLoc.Controls.Add(this.cboNhomHang);
-            this.grpBoLoc.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpBoLoc.Location = new System.Drawing.Point(0, 3);
+            this.grpBoLoc.Location = new System.Drawing.Point(12, 9);
             this.grpBoLoc.Name = "grpBoLoc";
-            this.grpBoLoc.Size = new System.Drawing.Size(387, 747);
+            this.grpBoLoc.Size = new System.Drawing.Size(360, 717);
             this.grpBoLoc.TabIndex = 1;
             this.grpBoLoc.TabStop = false;
-            this.grpBoLoc.Text = "Bộ lọc";
             // 
             // grpThoiGianTao
             // 
@@ -231,7 +230,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.grpThoiGianTao.Controls.Add(this.lblDenNgay);
             this.grpThoiGianTao.Location = new System.Drawing.Point(18, 513);
             this.grpThoiGianTao.Name = "grpThoiGianTao";
-            this.grpThoiGianTao.Size = new System.Drawing.Size(342, 108);
+            this.grpThoiGianTao.Size = new System.Drawing.Size(322, 108);
             this.grpThoiGianTao.TabIndex = 11;
             this.grpThoiGianTao.TabStop = false;
             // 
@@ -313,7 +312,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.cboTrangThai.FormattingEnabled = true;
             this.cboTrangThai.Location = new System.Drawing.Point(18, 421);
             this.cboTrangThai.Name = "cboTrangThai";
-            this.cboTrangThai.Size = new System.Drawing.Size(342, 29);
+            this.cboTrangThai.Size = new System.Drawing.Size(322, 29);
             this.cboTrangThai.TabIndex = 5;
             this.cboTrangThai.SelectedIndexChanged += new System.EventHandler(this.BoLoc_SelectedIndexChanged);
             // 
@@ -323,7 +322,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.cboViTri.FormattingEnabled = true;
             this.cboViTri.Location = new System.Drawing.Point(18, 335);
             this.cboViTri.Name = "cboViTri";
-            this.cboViTri.Size = new System.Drawing.Size(342, 29);
+            this.cboViTri.Size = new System.Drawing.Size(322, 29);
             this.cboViTri.TabIndex = 5;
             this.cboViTri.SelectedIndexChanged += new System.EventHandler(this.BoLoc_SelectedIndexChanged);
             // 
@@ -333,7 +332,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.cboTieuChiTon.FormattingEnabled = true;
             this.cboTieuChiTon.Location = new System.Drawing.Point(18, 160);
             this.cboTieuChiTon.Name = "cboTieuChiTon";
-            this.cboTieuChiTon.Size = new System.Drawing.Size(342, 29);
+            this.cboTieuChiTon.Size = new System.Drawing.Size(322, 29);
             this.cboTieuChiTon.TabIndex = 5;
             this.cboTieuChiTon.SelectedIndexChanged += new System.EventHandler(this.BoLoc_SelectedIndexChanged);
             // 
@@ -352,7 +351,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.cboNhaCungCap.FormattingEnabled = true;
             this.cboNhaCungCap.Location = new System.Drawing.Point(18, 249);
             this.cboNhaCungCap.Name = "cboNhaCungCap";
-            this.cboNhaCungCap.Size = new System.Drawing.Size(342, 29);
+            this.cboNhaCungCap.Size = new System.Drawing.Size(322, 29);
             this.cboNhaCungCap.TabIndex = 3;
             this.cboNhaCungCap.SelectedIndexChanged += new System.EventHandler(this.BoLoc_SelectedIndexChanged);
             // 
@@ -371,19 +370,9 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.cboNhomHang.FormattingEnabled = true;
             this.cboNhomHang.Location = new System.Drawing.Point(18, 76);
             this.cboNhomHang.Name = "cboNhomHang";
-            this.cboNhomHang.Size = new System.Drawing.Size(342, 29);
+            this.cboNhomHang.Size = new System.Drawing.Size(322, 29);
             this.cboNhomHang.TabIndex = 1;
             this.cboNhomHang.SelectedIndexChanged += new System.EventHandler(this.BoLoc_SelectedIndexChanged);
-            // 
-            // splitterBoLoc
-            // 
-            this.splitterBoLoc.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.splitterBoLoc.Dock = System.Windows.Forms.DockStyle.Top;
-            this.splitterBoLoc.Location = new System.Drawing.Point(0, 0);
-            this.splitterBoLoc.Name = "splitterBoLoc";
-            this.splitterBoLoc.Size = new System.Drawing.Size(387, 3);
-            this.splitterBoLoc.TabIndex = 0;
-            this.splitterBoLoc.TabStop = false;
             // 
             // pnlPhanTrang
             // 
@@ -413,7 +402,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             // 
             this.lblSoDongMoiTrang.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSoDongMoiTrang.AutoSize = true;
-            this.lblSoDongMoiTrang.Location = new System.Drawing.Point(990, 11);
+            this.lblSoDongMoiTrang.Location = new System.Drawing.Point(951, 12);
             this.lblSoDongMoiTrang.Name = "lblSoDongMoiTrang";
             this.lblSoDongMoiTrang.Size = new System.Drawing.Size(71, 21);
             this.lblSoDongMoiTrang.TabIndex = 1;
@@ -429,7 +418,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             "20",
             "50",
             "100"});
-            this.cboSoDongMoiTrang.Location = new System.Drawing.Point(1065, 7);
+            this.cboSoDongMoiTrang.Location = new System.Drawing.Point(1035, 7);
             this.cboSoDongMoiTrang.Name = "cboSoDongMoiTrang";
             this.cboSoDongMoiTrang.Size = new System.Drawing.Size(70, 29);
             this.cboSoDongMoiTrang.TabIndex = 2;
@@ -438,7 +427,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             // btnTrangTruoc
             // 
             this.btnTrangTruoc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnTrangTruoc.Location = new System.Drawing.Point(1148, 6);
+            this.btnTrangTruoc.Location = new System.Drawing.Point(1118, 6);
             this.btnTrangTruoc.Name = "btnTrangTruoc";
             this.btnTrangTruoc.Size = new System.Drawing.Size(80, 31);
             this.btnTrangTruoc.TabIndex = 3;
@@ -450,7 +439,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             // 
             this.lblTrangHienTai.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTrangHienTai.AutoSize = true;
-            this.lblTrangHienTai.Location = new System.Drawing.Point(1238, 11);
+            this.lblTrangHienTai.Location = new System.Drawing.Point(1211, 11);
             this.lblTrangHienTai.Name = "lblTrangHienTai";
             this.lblTrangHienTai.Size = new System.Drawing.Size(85, 21);
             this.lblTrangHienTai.TabIndex = 4;
@@ -459,13 +448,23 @@ namespace BTL_LTTQ_2.GUI.Forms
             // btnTrangSau
             // 
             this.btnTrangSau.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnTrangSau.Location = new System.Drawing.Point(1312, 6);
+            this.btnTrangSau.Location = new System.Drawing.Point(1309, 6);
             this.btnTrangSau.Name = "btnTrangSau";
             this.btnTrangSau.Size = new System.Drawing.Size(80, 31);
             this.btnTrangSau.TabIndex = 5;
             this.btnTrangSau.Text = "Sau ▶";
             this.btnTrangSau.UseVisualStyleBackColor = true;
             this.btnTrangSau.Click += new System.EventHandler(this.btnTrangSau_Click);
+            // 
+            // splitterBoLoc
+            // 
+            this.splitterBoLoc.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.splitterBoLoc.Dock = System.Windows.Forms.DockStyle.Top;
+            this.splitterBoLoc.Location = new System.Drawing.Point(0, 0);
+            this.splitterBoLoc.Name = "splitterBoLoc";
+            this.splitterBoLoc.Size = new System.Drawing.Size(387, 1);
+            this.splitterBoLoc.TabIndex = 0;
+            this.splitterBoLoc.TabStop = false;
             // 
             // frmDanhSachHangHoa
             // 
@@ -495,6 +494,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.pnlPhanTrang.ResumeLayout(false);
             this.pnlPhanTrang.PerformLayout();
             this.ResumeLayout(false);
+
         }
         #endregion
         private System.Windows.Forms.Panel pnlTop;
@@ -509,7 +509,6 @@ namespace BTL_LTTQ_2.GUI.Forms
         private System.Windows.Forms.Button btnHuongDanSuDung;
         private System.Windows.Forms.Label lblTieuDe;
         private System.Windows.Forms.Panel pnlBoLoc;
-        private System.Windows.Forms.Splitter splitterBoLoc;
         private System.Windows.Forms.GroupBox grpBoLoc;
         private System.Windows.Forms.Label lblViTri;
         private System.Windows.Forms.Label lblTieuChiTon;
@@ -534,5 +533,6 @@ namespace BTL_LTTQ_2.GUI.Forms
         private System.Windows.Forms.Button btnTrangTruoc;
         private System.Windows.Forms.Label lblTrangHienTai;
         private System.Windows.Forms.Button btnTrangSau;
+        private System.Windows.Forms.Splitter splitterBoLoc;
     }
 }

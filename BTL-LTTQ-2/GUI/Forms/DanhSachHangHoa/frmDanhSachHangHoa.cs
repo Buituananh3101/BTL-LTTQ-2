@@ -49,6 +49,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             dgvHangHoa.Columns.Clear();
             dgvHangHoa.AllowUserToAddRows = false;
             dgvHangHoa.AllowUserToDeleteRows = false;
+            dgvHangHoa.AllowUserToResizeRows = false;
             dgvHangHoa.ReadOnly = true;
             dgvHangHoa.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvHangHoa.MultiSelect = false;
