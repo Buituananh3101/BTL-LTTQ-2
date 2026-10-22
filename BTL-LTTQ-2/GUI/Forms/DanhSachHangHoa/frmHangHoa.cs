@@ -49,6 +49,28 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
 
         private void frmHangHoa_Load(object sender, EventArgs e)
         {
+            // Căn giữa vùng làm việc MDI (khắc phục việc Windows MDI bỏ qua thuộc tính CenterScreen)
+            if (this.MdiParent != null)
+            {
+                MdiClient mdiClient = null;
+                foreach (Control c in this.MdiParent.Controls)
+                {
+                    if (c is MdiClient mc) { mdiClient = mc; break; }
+                }
+
+                int clientW = mdiClient != null ? mdiClient.ClientSize.Width : this.MdiParent.ClientSize.Width;
+                int clientH = mdiClient != null ? mdiClient.ClientSize.Height : this.MdiParent.ClientSize.Height;
+
+                this.Location = new Point(
+                    Math.Max(0, (clientW - this.Width) / 2),
+                    Math.Max(0, (clientH - this.Height) / 2)
+                );
+            }
+            else
+            {
+                this.CenterToScreen();
+            }
+
             NapCombobox();
 
             if (maHangHienTai > 0)
