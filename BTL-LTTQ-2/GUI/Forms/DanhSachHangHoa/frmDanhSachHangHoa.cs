@@ -244,6 +244,10 @@ namespace BTL_LTTQ_2.GUI.Forms
             {
                 cboSoDongMoiTrang.SelectedIndex = 1; // 20 dòng
             }
+
+            // 7. Khoảng thời gian tạo (Mặc định từ đầu năm đến ngày hiện tại)
+            dtpTuNgay.Value = new DateTime(DateTime.Now.Year, 1, 1);
+            dtpDenNgay.Value = DateTime.Today;
         }
 
         #endregion
@@ -305,16 +309,9 @@ namespace BTL_LTTQ_2.GUI.Forms
                 }
 
                 // Lọc theo khoảng ngày tạo
-                if (dtpTuNgay.Checked)
-                {
-                    whereSql.Append(" AND h.NgayTao >= @TuNgay ");
-                    parameters.Add(new SqlParameter("@TuNgay", dtpTuNgay.Value.Date));
-                }
-                if (dtpDenNgay.Checked)
-                {
-                    whereSql.Append(" AND h.NgayTao < @DenNgay ");
-                    parameters.Add(new SqlParameter("@DenNgay", dtpDenNgay.Value.Date.AddDays(1)));
-                }
+                whereSql.Append(" AND h.NgayTao >= @TuNgay AND h.NgayTao < @DenNgay ");
+                parameters.Add(new SqlParameter("@TuNgay", dtpTuNgay.Value.Date));
+                parameters.Add(new SqlParameter("@DenNgay", dtpDenNgay.Value.Date.AddDays(1)));
 
                 // Lọc tiêu chí tồn
                 if (cboTieuChiTon.SelectedIndex == 1) // Còn hàng (> 0)

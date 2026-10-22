@@ -6,7 +6,6 @@ namespace BTL_LTTQ_2.GUI.Forms
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
-
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
@@ -19,9 +18,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             }
             base.Dispose(disposing);
         }
-
         #region Windows Form Designer generated code
-
         /// <summary>
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
@@ -240,22 +237,18 @@ namespace BTL_LTTQ_2.GUI.Forms
             // 
             // dtpTuNgay
             // 
-            this.dtpTuNgay.Checked = false;
             this.dtpTuNgay.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.dtpTuNgay.Location = new System.Drawing.Point(92, 23);
             this.dtpTuNgay.Name = "dtpTuNgay";
-            this.dtpTuNgay.ShowCheckBox = true;
             this.dtpTuNgay.Size = new System.Drawing.Size(227, 29);
             this.dtpTuNgay.TabIndex = 9;
             this.dtpTuNgay.ValueChanged += new System.EventHandler(this.BoLoc_SelectedIndexChanged);
             // 
             // dtpDenNgay
             // 
-            this.dtpDenNgay.Checked = false;
             this.dtpDenNgay.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.dtpDenNgay.Location = new System.Drawing.Point(92, 63);
             this.dtpDenNgay.Name = "dtpDenNgay";
-            this.dtpDenNgay.ShowCheckBox = true;
             this.dtpDenNgay.Size = new System.Drawing.Size(227, 29);
             this.dtpDenNgay.TabIndex = 10;
             this.dtpDenNgay.ValueChanged += new System.EventHandler(this.BoLoc_SelectedIndexChanged);
@@ -502,11 +495,8 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.pnlPhanTrang.ResumeLayout(false);
             this.pnlPhanTrang.PerformLayout();
             this.ResumeLayout(false);
-
         }
-
         #endregion
-
         private System.Windows.Forms.Panel pnlTop;
         private System.Windows.Forms.DataGridView dgvHangHoa;
         private System.Windows.Forms.TextBox txtTimKiem;
