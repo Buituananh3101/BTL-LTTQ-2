@@ -593,30 +593,42 @@ namespace BTL_LTTQ_2.GUI.Forms
             }
         }
 
-        // Bấm nút Hiện cột mở popup tùy chọn hiển thị cột ngay dưới nút
+        // Bấm nút Hiện cột mở form tùy chọn cột xuất hiện ngay dưới nút btnHienCot
         private void btnHienCot_Click(object sender, EventArgs e)
         {
-            // Kiểm tra nếu popup frmHienCot đã mở thì đóng lại (hành vi bật/tắt toggle)
             foreach (Form openForm in Application.OpenForms)
             {
                 if (openForm is frmHienCot)
                 {
-                    openForm.Close();
+                    openForm.Activate();
+                    openForm.BringToFront();
                     return;
                 }
             }
 
             frmHienCot frm = new frmHienCot(this.dgvHangHoa);
-
-            // Tính toán vị trí popup hiển thị ngay bên dưới nút btnHienCot, căn theo mép phải
-            Point btnScreenPos = btnHienCot.PointToScreen(new Point(0, btnHienCot.Height + 2));
-            int posX = btnScreenPos.X + btnHienCot.Width - frm.Width;
-            int posY = btnScreenPos.Y;
-
-            // Đảm bảo không bị tràn ra ngoài rìa trái màn hình
-            posX = Math.Max(10, posX);
-
             frm.StartPosition = FormStartPosition.Manual;
+
+            // Tính toạ độ hiển thị ngay phía dưới nút btnHienCot (căn thẳng mép phải nút)
+            Point btnPos = btnHienCot.PointToScreen(Point.Empty);
+            int posX = btnPos.X + btnHienCot.Width - frm.Width;
+            int posY = btnPos.Y + btnHienCot.Height + 2;
+
+            // Bảo đảm form không bị tràn ra ngoài màn hình làm việc
+            Rectangle workingArea = Screen.FromControl(btnHienCot).WorkingArea;
+            if (posX + frm.Width > workingArea.Right)
+            {
+                posX = workingArea.Right - frm.Width;
+            }
+            if (posX < workingArea.Left)
+            {
+                posX = workingArea.Left;
+            }
+            if (posY + frm.Height > workingArea.Bottom)
+            {
+                posY = btnPos.Y - frm.Height - 2;
+            }
+
             frm.Location = new Point(posX, posY);
             frm.Show(this);
             frm.BringToFront();

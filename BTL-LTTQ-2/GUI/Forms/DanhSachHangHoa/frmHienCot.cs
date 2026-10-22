@@ -1,5 +1,4 @@
 using System;
-using System.Drawing;
 using System.Windows.Forms;
 
 namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
@@ -11,7 +10,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
         public frmHienCot()
         {
             InitializeComponent();
-            CaiDatSuKienPopup();
+            CaiDatSuKienPhim();
         }
 
         public frmHienCot(DataGridView dgv) : this()
@@ -21,37 +20,9 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             DangKySuKienCot();
         }
 
-        /// <summary>
-        /// Tạo hiệu ứng bóng đổ (Drop Shadow) tự nhiên chuẩn Windows
-        /// </summary>
-        protected override CreateParams CreateParams
+        private void CaiDatSuKienPhim()
         {
-            get
-            {
-                CreateParams cp = base.CreateParams;
-                cp.ClassStyle |= 0x00020000; // CS_DROPSHADOW
-                return cp;
-            }
-        }
-
-        /// <summary>
-        /// Vẽ viền 1px màu xám nhạt xung quanh form popup
-        /// </summary>
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            base.OnPaint(e);
-            using (Pen borderPen = new Pen(Color.FromArgb(203, 213, 225), 1))
-            {
-                e.Graphics.DrawRectangle(borderPen, 0, 0, this.ClientSize.Width - 1, this.ClientSize.Height - 1);
-            }
-        }
-
-        private void CaiDatSuKienPopup()
-        {
-            // Tự động đóng popup khi người dùng bấm chuột ra ngoài cửa sổ
-            this.Deactivate += (s, e) => this.Close();
-
-            // Nhấn phím Escape để đóng nhanh
+            // Nhấn phím Escape để đóng form
             this.KeyDown += (s, e) =>
             {
                 if (e.KeyCode == Keys.Escape)

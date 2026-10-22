@@ -49,7 +49,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.lblHienThiCot.AutoSize = true;
             this.lblHienThiCot.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblHienThiCot.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(41)))), ((int)(((byte)(59)))));
-            this.lblHienThiCot.Location = new System.Drawing.Point(18, 14);
+            this.lblHienThiCot.Location = new System.Drawing.Point(20, 16);
             this.lblHienThiCot.Name = "lblHienThiCot";
             this.lblHienThiCot.Size = new System.Drawing.Size(104, 23);
             this.lblHienThiCot.TabIndex = 0;
@@ -63,7 +63,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.chkHinhAnh.Cursor = System.Windows.Forms.Cursors.Hand;
             this.chkHinhAnh.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkHinhAnh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
-            this.chkHinhAnh.Location = new System.Drawing.Point(18, 45);
+            this.chkHinhAnh.Location = new System.Drawing.Point(24, 48);
             this.chkHinhAnh.Name = "chkHinhAnh";
             this.chkHinhAnh.Size = new System.Drawing.Size(95, 25);
             this.chkHinhAnh.TabIndex = 1;
@@ -78,7 +78,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.chkMaHang.Cursor = System.Windows.Forms.Cursors.Hand;
             this.chkMaHang.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkMaHang.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
-            this.chkMaHang.Location = new System.Drawing.Point(18, 72);
+            this.chkMaHang.Location = new System.Drawing.Point(24, 76);
             this.chkMaHang.Name = "chkMaHang";
             this.chkMaHang.Size = new System.Drawing.Size(93, 25);
             this.chkMaHang.TabIndex = 2;
@@ -93,7 +93,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.chkTenHang.Cursor = System.Windows.Forms.Cursors.Hand;
             this.chkTenHang.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkTenHang.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
-            this.chkTenHang.Location = new System.Drawing.Point(18, 99);
+            this.chkTenHang.Location = new System.Drawing.Point(24, 104);
             this.chkTenHang.Name = "chkTenHang";
             this.chkTenHang.Size = new System.Drawing.Size(95, 25);
             this.chkTenHang.TabIndex = 3;
@@ -108,7 +108,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.chkNhomHang.Cursor = System.Windows.Forms.Cursors.Hand;
             this.chkNhomHang.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkNhomHang.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
-            this.chkNhomHang.Location = new System.Drawing.Point(18, 126);
+            this.chkNhomHang.Location = new System.Drawing.Point(24, 132);
             this.chkNhomHang.Name = "chkNhomHang";
             this.chkNhomHang.Size = new System.Drawing.Size(114, 25);
             this.chkNhomHang.TabIndex = 4;
@@ -123,7 +123,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.chkDonViTinh.Cursor = System.Windows.Forms.Cursors.Hand;
             this.chkDonViTinh.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkDonViTinh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
-            this.chkDonViTinh.Location = new System.Drawing.Point(18, 153);
+            this.chkDonViTinh.Location = new System.Drawing.Point(24, 160);
             this.chkDonViTinh.Name = "chkDonViTinh";
             this.chkDonViTinh.Size = new System.Drawing.Size(108, 25);
             this.chkDonViTinh.TabIndex = 5;
@@ -138,7 +138,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.chkGiaBan.Cursor = System.Windows.Forms.Cursors.Hand;
             this.chkGiaBan.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkGiaBan.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
-            this.chkGiaBan.Location = new System.Drawing.Point(18, 180);
+            this.chkGiaBan.Location = new System.Drawing.Point(24, 188);
             this.chkGiaBan.Name = "chkGiaBan";
             this.chkGiaBan.Size = new System.Drawing.Size(85, 25);
             this.chkGiaBan.TabIndex = 6;
@@ -153,7 +153,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.chkGiaVon.Cursor = System.Windows.Forms.Cursors.Hand;
             this.chkGiaVon.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkGiaVon.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
-            this.chkGiaVon.Location = new System.Drawing.Point(18, 207);
+            this.chkGiaVon.Location = new System.Drawing.Point(24, 216);
             this.chkGiaVon.Name = "chkGiaVon";
             this.chkGiaVon.Size = new System.Drawing.Size(84, 25);
             this.chkGiaVon.TabIndex = 7;
@@ -168,7 +168,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.chkTonKho.Cursor = System.Windows.Forms.Cursors.Hand;
             this.chkTonKho.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkTonKho.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
-            this.chkTonKho.Location = new System.Drawing.Point(175, 45);
+            this.chkTonKho.Location = new System.Drawing.Point(185, 48);
             this.chkTonKho.Name = "chkTonKho";
             this.chkTonKho.Size = new System.Drawing.Size(89, 25);
             this.chkTonKho.TabIndex = 8;
@@ -183,7 +183,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.chkKhachDat.Cursor = System.Windows.Forms.Cursors.Hand;
             this.chkKhachDat.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkKhachDat.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
-            this.chkKhachDat.Location = new System.Drawing.Point(175, 72);
+            this.chkKhachDat.Location = new System.Drawing.Point(185, 76);
             this.chkKhachDat.Name = "chkKhachDat";
             this.chkKhachDat.Size = new System.Drawing.Size(101, 25);
             this.chkKhachDat.TabIndex = 9;
@@ -198,7 +198,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.chkViTri.Cursor = System.Windows.Forms.Cursors.Hand;
             this.chkViTri.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkViTri.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
-            this.chkViTri.Location = new System.Drawing.Point(175, 99);
+            this.chkViTri.Location = new System.Drawing.Point(185, 104);
             this.chkViTri.Name = "chkViTri";
             this.chkViTri.Size = new System.Drawing.Size(65, 25);
             this.chkViTri.TabIndex = 10;
@@ -213,7 +213,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.chkThoiGianTao.Cursor = System.Windows.Forms.Cursors.Hand;
             this.chkThoiGianTao.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkThoiGianTao.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
-            this.chkThoiGianTao.Location = new System.Drawing.Point(175, 126);
+            this.chkThoiGianTao.Location = new System.Drawing.Point(185, 132);
             this.chkThoiGianTao.Name = "chkThoiGianTao";
             this.chkThoiGianTao.Size = new System.Drawing.Size(126, 25);
             this.chkThoiGianTao.TabIndex = 11;
@@ -228,7 +228,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.chkDuKienHetHang.Cursor = System.Windows.Forms.Cursors.Hand;
             this.chkDuKienHetHang.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkDuKienHetHang.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
-            this.chkDuKienHetHang.Location = new System.Drawing.Point(175, 153);
+            this.chkDuKienHetHang.Location = new System.Drawing.Point(185, 160);
             this.chkDuKienHetHang.Name = "chkDuKienHetHang";
             this.chkDuKienHetHang.Size = new System.Drawing.Size(150, 25);
             this.chkDuKienHetHang.TabIndex = 12;
@@ -243,7 +243,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.chkTrangThai.Cursor = System.Windows.Forms.Cursors.Hand;
             this.chkTrangThai.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkTrangThai.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
-            this.chkTrangThai.Location = new System.Drawing.Point(175, 180);
+            this.chkTrangThai.Location = new System.Drawing.Point(185, 188);
             this.chkTrangThai.Name = "chkTrangThai";
             this.chkTrangThai.Size = new System.Drawing.Size(102, 25);
             this.chkTrangThai.TabIndex = 13;
@@ -254,7 +254,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(340, 246);
+            this.ClientSize = new System.Drawing.Size(356, 260);
             this.Controls.Add(this.chkTrangThai);
             this.Controls.Add(this.chkDuKienHetHang);
             this.Controls.Add(this.chkThoiGianTao);
@@ -269,11 +269,12 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.Controls.Add(this.chkMaHang);
             this.Controls.Add(this.chkHinhAnh);
             this.Controls.Add(this.lblHienThiCot);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.KeyPreview = true;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "frmHienCot";
-            this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Hiển thị cột";
             this.ResumeLayout(false);
             this.PerformLayout();
