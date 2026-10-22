@@ -432,7 +432,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             "kg"});
             this.cboDonViTrongLuong.Location = new System.Drawing.Point(657, 74);
             this.cboDonViTrongLuong.Name = "cboDonViTrongLuong";
-            this.cboDonViTrongLuong.Size = new System.Drawing.Size(76, 25);
+            this.cboDonViTrongLuong.Size = new System.Drawing.Size(73, 25);
             this.cboDonViTrongLuong.TabIndex = 3;
             // 
             // lblDonViTrongLuong
