@@ -1,4 +1,4 @@
-namespace BTL_LTTQ_2.GUI.Forms
+﻿namespace BTL_LTTQ_2.GUI.Forms
 {
     partial class frmMain
     {
@@ -197,6 +197,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             // 
             this.mnuNhaCungCap.Name = "mnuNhaCungCap";
             this.mnuNhaCungCap.Size = new System.Drawing.Size(193, 26);
+            this.mnuNhaCungCap.Click += new System.EventHandler(this.mnuNhaCungCap_Click);
             this.mnuNhaCungCap.Text = "Nhà cung cấp";
             // 
             // toolStripSeparator4

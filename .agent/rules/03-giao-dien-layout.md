@@ -116,3 +116,10 @@ Mọi thông báo giao tiếp với người dùng phải tuân theo 4 cấp đ�
    ```csharp
    MessageBox.Show("Đã xảy ra lỗi khi kết nối CSDL: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
    ```
+
+---
+
+## 6. Tiêu chuẩn Nút bấm & Thành phần Thao tác (Button & Action Controls)
+
+- **100% Hiển thị Tiếng Việt có dấu**: Toàn bộ nút bấm và menu chức năng bắt buộc phải đặt hiển thị bằng tiếng Việt có dấu. Tuyệt đối không để sót các nhãn tiếng Anh (ví dụ: chức năng nhập file trong `frmNhaCungCap` không được để là "Import file" mà phải để là "Nhập file", "Xuất file" thay vì "Export file", "Lưu", "Bỏ qua", "Thêm mới", "Sửa", "Xóa"...).
+- **Không tự ý thêm màu sắc**: Mọi nút bấm nghiệp vụ phải giữ nguyên phong cách WinForms mặc định của hệ thống (`UseVisualStyleBackColor = true`). Tuyệt đối không tự ý gán màu nền (`BackColor`), viền phẳng (`FlatStyle = Flat`, `FlatAppearance`), hay màu chữ (`ForeColor = White`) tùy tiện khi người dùng chưa yêu cầu rõ ràng.

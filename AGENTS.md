@@ -31,7 +31,7 @@
 
 ---
 
-## 4. 12 Luật cốt lõi không được vi phạm
+## 4. 15 Luật cốt lõi không được vi phạm
 1. **Tên tiếng Việt trong code**: Toàn bộ Form, Model, Bảng, Cột phải dùng tiếng Việt không dấu PascalCase (`HangHoa`, `MaKho`, `SoLuong`). Tiền tố control WinForms chuẩn (`btnThem`, `txtMaHang`, `dgvHangHoa`). Cấm tự ý dùng tiếng Anh lộn xộn.
 2. **Mô hình MDI duy nhất**: Dùng duy nhất `frmMain` làm form cha MDI (`IsMdiContainer = true`). Khi mở form con phải kiểm tra và `Activate()` nếu form đã mở, tránh mở trùng lặp.
 3. **Quản lý biến động kho tập trung**: Mọi biến động tồn kho (nhập, xuất, chuyển, cân bằng) phải tuân theo quy tắc trong `.agent/rules/02-nghiep-vu-kho.md`.
@@ -45,6 +45,8 @@
 11. **Không tự ý thêm thư viện ngoài**: Không tự ý cài đặt thêm NuGet package nặng hoặc thư viện bên ngoài khi chưa hỏi ý kiến người dùng.
 12. **Bảo toàn và đồng bộ tài liệu đặc tả**: Khi thay đổi code/luồng/file của chức năng X, BẮT BUỘC đồng bộ lại `docs/specs/<chức-năng>.md` ngay trong phiên đó.
 13. **Nguyên tắc "Làm đến đâu thiếu gì thêm đó"**: AI tuyệt đối không tự ý viết trước các tầng trừu tượng (BaseForm, Helper, Service...), không làm tắt, không sinh file rác khi người dùng chưa yêu cầu. Từng bước đi phải rõ ràng, tối giản, để người dùng nắm và kiểm soát 100% dự án.
+14. **Hiển thị tiếng Việt 100% cho mọi nút bấm và chức năng**: Tất cả các nút bấm (`Button`), menu, nhãn và chức năng trên giao diện bắt buộc hiển thị nhãn bằng **tiếng Việt có dấu** rõ ràng, dễ hiểu. Ví dụ: chức năng "Nhập file" trong `frmNhaCungCap` hay bất kỳ form nào không được để là "Import file" mà phải để là "Nhập file", "Xuất file" thay vì "Export file". Tuyệt đối không để sót từ tiếng Anh trên giao diện người dùng.
+15. **Không tự ý thêm màu cho các nút và chức năng**: Các nút bấm và thành phần chức năng trên giao diện không được tự ý thêm màu sắc tùy tiện (`BackColor`, `ForeColor`, `FlatStyle`...) khi người dùng chưa yêu cầu. Mặc định luôn sử dụng phong cách nút bấm WinForms chuẩn (`UseVisualStyleBackColor = true`).
 
 ---
 
@@ -54,7 +56,7 @@
 |---|---|---|
 | [`.agent/rules/01-phong-cach-code.md`](./.agent/rules/01-phong-cach-code.md) | Quy ước đặt tên, kiến trúc phân tầng, quản lý Form MDI | Khi tạo hoặc sửa Form, xử lý sự kiện |
 | [`.agent/rules/02-nghiep-vu-kho.md`](./.agent/rules/02-nghiep-vu-kho.md) | Nghiệp vụ tồn kho động, trạng thái chứng từ, khóa phiếu | Khi code nhập, xuất, chuyển, kiểm kho |
-| [`.agent/rules/03-giao-dien-layout.md`](./.agent/rules/03-giao-dien-layout.md) | Chuẩn giao diện WinForms, DataGridView, Master-Detail | Khi dựng giao diện Form mới hoặc sửa bố cục |
+| [`.agent/rules/03-giao-dien-layout.md`](./.agent/rules/03-giao-dien-layout.md) | Chuẩn giao diện WinForms, DataGridView, Master-Detail, Nút bấm & Màu sắc | Khi dựng giao diện Form mới hoặc sửa bố cục |
 | [`.agent/rules/04-xac-thuc-phan-quyen.md`](./.agent/rules/04-xac-thuc-phan-quyen.md) | Đăng nhập SHA-256, SessionContext, phân quyền menu và kho | Khi làm tính năng đăng nhập, đổi mật khẩu, phân quyền |
 | [`.agent/rules/05-co-so-du-lieu.md`](./.agent/rules/05-co-so-du-lieu.md) | ADO.NET thuần với DataProcessing, 3 Nguyên tắc CSDL | Khi viết câu lệnh SQL, truy vấn hoặc thay đổi CSDL |
 | [`docs/specs/danh-sach-hang-hoa.md`](./docs/specs/danh-sach-hang-hoa.md) | Đặc tả Quản lý Hàng hóa (Khuôn mẫu cho Danh mục CRUD) | Khuôn mẫu làm các danh mục Kho, NCC, Khách hàng |
