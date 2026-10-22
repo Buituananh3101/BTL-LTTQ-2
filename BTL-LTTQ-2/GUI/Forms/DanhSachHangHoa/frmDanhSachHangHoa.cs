@@ -142,33 +142,36 @@ namespace BTL_LTTQ_2.GUI.Forms
                 DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleRight, Format = "N0" }
             });
 
-            // Cột 8: Dự kiến hết hàng
+            // Cột 8: Dự kiến hết hàng (Mặc định ẩn khi mới load)
             dgvHangHoa.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "colDuKienHetHang",
                 DataPropertyName = "DuKienHetHang",
                 HeaderText = "Dự kiến hết",
                 Width = 110,
+                Visible = false,
                 DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleCenter }
             });
 
-            // Cột 9: Vị trí
+            // Cột 9: Vị trí (Mặc định ẩn khi mới load)
             dgvHangHoa.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "colViTri",
                 DataPropertyName = "ViTri",
                 HeaderText = "Vị trí",
                 Width = 90,
+                Visible = false,
                 DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleCenter }
             });
 
-            // Cột 10: Thời gian tạo
+            // Cột 10: Thời gian tạo (Mặc định ẩn khi mới load)
             dgvHangHoa.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "colThoiGianTao",
                 DataPropertyName = "NgayTao",
                 HeaderText = "Thời gian tạo",
                 Width = 140,
+                Visible = false,
                 DefaultCellStyle = new DataGridViewCellStyle 
                 { 
                     Alignment = DataGridViewContentAlignment.MiddleCenter,
@@ -176,13 +179,14 @@ namespace BTL_LTTQ_2.GUI.Forms
                 }
             });
 
-            // Cột 11: Trạng thái
+            // Cột 11: Trạng thái (Mặc định ẩn khi mới load)
             dgvHangHoa.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "colTrangThai",
                 DataPropertyName = "TrangThai",
                 HeaderText = "Trạng thái",
                 Width = 120,
+                Visible = false,
                 DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleCenter }
             });
         }

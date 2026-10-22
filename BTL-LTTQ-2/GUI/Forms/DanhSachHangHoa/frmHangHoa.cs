@@ -304,26 +304,24 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                 int idx = cboNhomHang.FindStringExact(cboNhomHang.Text.Trim());
                 if (idx >= 0) cboNhomHang.SelectedIndex = idx;
             }
-            if (cboNhomHang.SelectedValue == null)
+            if (cboNhomHang.SelectedValue == null || !int.TryParse(cboNhomHang.SelectedValue.ToString(), out int maNhom) || maNhom <= 0)
             {
                 MessageBox.Show("Vui lòng chọn Nhóm hàng hợp lệ!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cboNhomHang.Focus();
                 return;
             }
-            int maNhom = Convert.ToInt32(cboNhomHang.SelectedValue);
 
             if (cboDonVi.SelectedIndex < 0 && !string.IsNullOrWhiteSpace(cboDonVi.Text))
             {
                 int idx = cboDonVi.FindStringExact(cboDonVi.Text.Trim());
                 if (idx >= 0) cboDonVi.SelectedIndex = idx;
             }
-            if (cboDonVi.SelectedValue == null)
+            if (cboDonVi.SelectedValue == null || !int.TryParse(cboDonVi.SelectedValue.ToString(), out int maDVT) || maDVT <= 0)
             {
                 MessageBox.Show("Vui lòng chọn Đơn vị tính hợp lệ!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cboDonVi.Focus();
                 return;
             }
-            int maDVT = Convert.ToInt32(cboDonVi.SelectedValue);
 
             // Chuyển đổi số tiền
             decimal.TryParse(txtGiaVon.Text.Replace(",", "").Replace(".", ""), out decimal giaVon);

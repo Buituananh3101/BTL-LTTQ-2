@@ -178,8 +178,6 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // chkKhachDat
             // 
             this.chkKhachDat.AutoSize = true;
-            this.chkKhachDat.Checked = true;
-            this.chkKhachDat.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkKhachDat.Cursor = System.Windows.Forms.Cursors.Hand;
             this.chkKhachDat.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkKhachDat.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
@@ -193,8 +191,6 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // chkViTri
             // 
             this.chkViTri.AutoSize = true;
-            this.chkViTri.Checked = true;
-            this.chkViTri.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkViTri.Cursor = System.Windows.Forms.Cursors.Hand;
             this.chkViTri.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkViTri.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
@@ -208,8 +204,6 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // chkThoiGianTao
             // 
             this.chkThoiGianTao.AutoSize = true;
-            this.chkThoiGianTao.Checked = true;
-            this.chkThoiGianTao.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkThoiGianTao.Cursor = System.Windows.Forms.Cursors.Hand;
             this.chkThoiGianTao.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkThoiGianTao.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
@@ -223,8 +217,6 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // chkDuKienHetHang
             // 
             this.chkDuKienHetHang.AutoSize = true;
-            this.chkDuKienHetHang.Checked = true;
-            this.chkDuKienHetHang.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkDuKienHetHang.Cursor = System.Windows.Forms.Cursors.Hand;
             this.chkDuKienHetHang.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkDuKienHetHang.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
@@ -238,8 +230,6 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // chkTrangThai
             // 
             this.chkTrangThai.AutoSize = true;
-            this.chkTrangThai.Checked = true;
-            this.chkTrangThai.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkTrangThai.Cursor = System.Windows.Forms.Cursors.Hand;
             this.chkTrangThai.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkTrangThai.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
