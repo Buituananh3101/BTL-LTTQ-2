@@ -89,7 +89,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                 txtTonKho.BackColor = Color.FromArgb(243, 244, 246);
 
                 NapThongTinHangHoa();
-                if (button2 != null) button2.Visible = true;
+
             }
             else
             {
@@ -105,7 +105,8 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                 txtDinhMucTonCaoNhat.Text = "0";
 
                 SinhMaHangGoiY();
-                if (button2 != null) button2.Visible = false;
+                CapNhatGiaoDienNutXoa();
+
             }
         }
 
@@ -319,6 +320,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                     }
 
                     CapNhatHienThi5Anh();
+                    CapNhatGiaoDienNutXoa();
                 }
             }
             catch (Exception ex)
@@ -493,6 +495,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                     }
 
                     CapNhatHienThi5Anh();
+                    CapNhatGiaoDienNutXoa();
                     daChonAnhMoi = true;
                 }
             }
@@ -546,14 +549,89 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
 
         #region Xử lý Xóa hàng hóa
 
+        private void CapNhatGiaoDienNutXoa()
+        {
+            if (button2 == null) return;
+
+            if (maHangHienTai <= 0)
+            {
+                button2.Visible = false;
+                return;
+            }
+
+            button2.Visible = true;
+            button2.UseVisualStyleBackColor = true;
+            button2.ForeColor = SystemColors.ControlText;
+            if (btnLuu != null) button2.Font = btnLuu.Font;
+
+            if (trangThaiHienTai == "NGUNG_BAN")
+            {
+                button2.Text = "Bán lại";
+                toolTipAnh.SetToolTip(button2, "Kích hoạt kinh doanh trở lại cho mặt hàng này");
+            }
+            else
+            {
+                button2.Text = "Xóa";
+                toolTipAnh.SetToolTip(button2, "Xóa hàng hóa này khỏi hệ thống");
+            }
+        }
+
+        private void KichHoatBanLai()
+        {
+            if (maHangHienTai <= 0) return;
+
+            DialogResult dialog = MessageBox.Show(
+                $"Bạn có chắc chắn muốn kích hoạt kinh doanh trở lại cho mặt hàng '{txtTenHang.Text}' ({txtMaHang.Text}) không?",
+                "Kích hoạt bán lại",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question,
+                MessageBoxDefaultButton.Button1);
+
+            if (dialog != DialogResult.Yes) return;
+
+            try
+            {
+                string sqlUpdate = "UPDATE HangHoa SET TrangThai = 'DANG_BAN' WHERE MaHang = @MaHang;";
+                int rows = DataProcessing.ChangeData(sqlUpdate, new SqlParameter[] { new SqlParameter("@MaHang", maHangHienTai) });
+
+                if (rows > 0)
+                {
+                    MessageBox.Show(
+                        $"Đã kích hoạt kinh doanh trở lại cho hàng hóa '{txtTenHang.Text}' thành công!",
+                        "Thông báo",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+
+                    this.DialogResult = DialogResult.OK;
+                    this.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi kích hoạt bán lại hàng hóa: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private void btnXoa_Click(object sender, EventArgs e)
         {
-            XoaHangHoa();
+            ThucHienThaoTacXoaHoacBanLai();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            XoaHangHoa();
+            ThucHienThaoTacXoaHoacBanLai();
+        }
+
+        private void ThucHienThaoTacXoaHoacBanLai()
+        {
+            if (trangThaiHienTai == "NGUNG_BAN")
+            {
+                KichHoatBanLai();
+            }
+            else
+            {
+                XoaHangHoa();
+            }
         }
 
         private void XoaHangHoa()
