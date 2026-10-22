@@ -51,6 +51,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                 lblTieuDe.Text = "Cập nhật nhà cung cấp";
                 this.Text = "Cập nhật thông tin nhà cung cấp";
                 grpCongNo.Visible = true;
+                this.ClientSize = new Size(960, 705);
                 NapThongTinNhaCungCap();
             }
             else
@@ -58,6 +59,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                 lblTieuDe.Text = "Tạo nhà cung cấp";
                 this.Text = "Thêm nhà cung cấp mới";
                 grpCongNo.Visible = false;
+                this.ClientSize = new Size(960, 610);
                 SinhMaNccGoiY();
             }
         }

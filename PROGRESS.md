@@ -1,6 +1,6 @@
 # Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-22 – Chuẩn hóa Header CheckBox, Xóa nút thêm nhóm ở `frmDonViCapHang` & Tinh chỉnh tỉ lệ nút thêm nhóm ở `frmNhaCungCap` (Phiên 9)
+**Cập nhật lần cuối**: 2026-10-22 – Tái thiết kế toàn diện Form Thêm/Sửa Nhà cung cấp (`frmDonViCapHang`) chuẩn hóa theo Form Tạo hàng hóa (`frmHangHoa`) (Phiên 10)
 
 ---
 
@@ -15,6 +15,7 @@
 - [x] Xóa nút thêm nhóm trong `frmDonViCapHang`, mở rộng ComboBox Nhóm NCC thẳng tắp với các trường bên dưới.
 - [x] Tinh chỉnh tỉ lệ nút "+" tạo nhanh nhóm trên `frmNhaCungCap` về hình vuông hoàn hảo `29x29px` căn thẳng hàng.
 - [x] Chuẩn hóa Header CheckBox bằng `CheckBoxRenderer`, giải quyết triệt để lỗi Chọn tất cả / Bỏ chọn tất cả và không bỏ sót dòng cuối.
+- [x] Tái thiết kế toàn diện Form Chi tiết Nhà cung cấp (`frmDonViCapHang`) theo form Tạo hàng hóa (`frmHangHoa`): nhãn đặt trên ô nhập, trường Địa chỉ chuyển thành ô nhiều dòng (Multiline), tối ưu hóa diện tích hiển thị (960x720).
 - [ ] Xây dựng Lớp quản lý phiên toàn cục `BLL/SessionContext.cs` và Tiện ích băm mật khẩu `BLL/PasswordHelper.cs` (SHA-256).
 - [ ] Thiết kế và hoàn thiện Form Đăng nhập (`frmDangNhap`) hỗ trợ chọn chi nhánh kho làm việc.
 
@@ -58,6 +59,24 @@
 ---
 
 ## Nhật ký phiên (Session Logs)
+
+- **Phiên 10 (2026-10-22) – Tái thiết kế toàn diện Form Thêm/Sửa Nhà cung cấp (`frmDonViCapHang`) chuẩn hóa theo Form Tạo hàng hóa (`frmHangHoa`)**:
+  - **Nhu cầu**: Người dùng phản hồi: "Phần frmDonViCapHang đang để trống khá nhiều không gian. Tôi muốn thiết kế giống với form Thêm hàng hóa này (trường địa chỉ nên để multiline)" kèm hình ảnh chụp form `frmHangHoa`.
+  - **Nguyên nhân cốt lõi**:
+    1. Form `frmDonViCapHang` ban đầu thiết kế với kích thước nhỏ `782x653`, nhãn đặt bên trái ô nhập (Left-aligned) khiến các trường bị dồn cục, để trống nhiều diện tích bên phải và bên dưới.
+    2. Trường `txtDiaChi` trước đó chỉ là ô nhập 1 dòng (Single-line), gây khó khăn khi nhập địa chỉ chi tiết (số nhà, đường, phường/xã, quận/huyện).
+  - **Kết quả thực hiện**:
+    1. **Nâng cấp không gian & Bố cục chuẩn mực**: Mở rộng kích thước form lên `960x720` (vừa vặn, thoáng đãng trên cả màn hình HD lẫn Full HD). Đồng bộ chiều cao động (`610px` khi thêm mới, `705px` khi chỉnh sửa có khối công nợ).
+    2. **Đồng bộ phong cách theo `frmHangHoa`**:
+       - Toàn bộ nhãn (`Label`) được đưa lên TRÊN ô nhập liệu (`TextBox` / `ComboBox`), font `Segoe UI` rõ nét, hiện đại.
+       - **Khối Thông tin cơ bản**:
+         - Cột trái (400px): `Mã nhà cung cấp` (`txtMaNcc`), `Tên nhà cung cấp (*)` (`txtTenDonVi`), `Nhóm nhà cung cấp` (`cboNhomNcc`).
+         - Cột phải (450px): `Mã số thuế` (`txtMaSoThue`), `Địa chỉ` (`txtDiaChi` - **Multiline**, chiều cao 99px, thanh cuộn `ScrollBars = Vertical`, cân xứng hoàn hảo với 2 hàng input bên trái tương tự ô `Mô tả` bên `frmHangHoa`).
+       - **Khối GroupBox "Thông tin liên hệ" (`grpLienHe`)**: Tiêu đề in đậm, gồm 3 cột thẳng hàng: `Điện thoại`, `Email`, `Khu vực`.
+       - **Khối GroupBox "Trạng thái & Ghi chú" (`grpGhiChu`)**: Tiêu đề in đậm, gồm `Trạng thái` và `Ghi chú` (Multiline).
+       - **Khối GroupBox "Giao dịch & Công nợ" (`grpCongNo`)**: Tiêu đề in đậm, hiển thị khi chỉnh sửa hồ sơ.
+       - **Thanh thao tác Bottom (`pnlBottom`)**: Nút `Bỏ qua` và `Lưu` chuẩn WinForms (`UseVisualStyleBackColor = true`), căn phải.
+    3. **Kiểm tra biên dịch**: Chạy MSBuild thành công **0 Error(s)**.
 
 - **Phiên 9 (2026-10-22) – Chuẩn hóa Header CheckBox VisualStyles, Xóa nút thêm nhóm ở `frmDonViCapHang` & Cân đối tỉ lệ nút ở `frmNhaCungCap`**:
   - **Nhu cầu**: Người dùng yêu cầu: (1) Ô chọn tất cả ở tiêu đề cột CheckBox phải có giao diện giống 100% các ô bên dưới; (2) Sửa lỗi ô chọn tất cả không hoạt động khi chưa chọn gì, và khi có dòng chọn nhấn vào thì bỏ chọn tất cả nhưng bị giữ lại dòng cuối cùng; (3) Xóa nút thêm nhóm ở trong `frmDonViCapHang`; (4) Điều chỉnh lại tỷ lệ nút thêm nhóm ở `frmNhaCungCap`.

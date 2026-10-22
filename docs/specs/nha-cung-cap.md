@@ -83,6 +83,24 @@
 - Định dạng cột số tiền: Căn phải `MiddleRight`, Format `"N0"`. Nợ cần trả > 0 hiển thị màu đỏ in đậm.
 - Định dạng trạng thái: Căn giữa `MiddleCenter`. "Đang hoạt động" màu `ForestGreen`, "Ngừng hoạt động" màu `Gray`.
 
+### 3.4. Form Chi tiết Nhà cung cấp (`frmDonViCapHang` - Chuẩn hóa theo `frmHangHoa`):
+- **Bố cục tổng thể**: Độ rộng `960px`, chiều cao động (`610px` khi thêm mới, `705px` khi sửa), các nhãn thông tin (`Label`) luôn nằm phía TRÊN ô nhập liệu (`TextBox` / `ComboBox`), tối ưu hóa toàn bộ không gian trống.
+- **Khối Thông tin cơ bản**:
+  - Cột 1 (trái, 400px): `Mã nhà cung cấp` (`txtMaNcc`), `Tên nhà cung cấp (*)` (`txtTenDonVi`), `Nhóm nhà cung cấp` (`cboNhomNcc`).
+  - Cột 2 (phải, 450px): `Mã số thuế` (`txtMaSoThue`), `Địa chỉ` (`txtDiaChi` - ô nhập nhiều dòng `Multiline = true`, chiều cao 99px có `ScrollBars = Vertical` cân xứng với 2 dòng input bên trái).
+- **Khối GroupBox "Thông tin liên hệ" (`grpLienHe`)**:
+  - Tiêu đề đậm `Thông tin liên hệ`.
+  - Gồm 3 cột thẳng hàng: `Điện thoại` (`txtDienThoai`), `Email` (`txtEmail`), `Khu vực` (`txtKhuVuc`).
+- **Khối GroupBox "Trạng thái & Ghi chú" (`grpGhiChu`)**:
+  - Tiêu đề đậm `Trạng thái & Ghi chú`.
+  - Cột trái: `Trạng thái` (`cboTrangThai` DropDownList).
+  - Cột phải: `Ghi chú` (`txtGhiChu` Multiline).
+- **Khối GroupBox "Giao dịch & Công nợ" (`grpCongNo`)**:
+  - Tiêu đề đậm `Giao dịch & Công nợ`, chỉ hiển thị khi mở ở chế độ chỉnh sửa (`maDonViCapHang > 0`).
+  - Hiển thị `Tổng tiền mua hàng` (`lblTongMuaVal`) và `Nợ cần trả hiện tại` (`lblNoHienTaiVal`).
+- **Thanh thao tác Bottom (`pnlBottom`)**:
+  - Nút `Bỏ qua` (`btnBoQua`) và `Lưu` (`btnLuu`) chuẩn WinForms (`UseVisualStyleBackColor = true`), căn phải (`Anchor = Bottom, Right`).
+
 ---
 
 ## 4. Quy tắc Nghiệp vụ Bất biến
