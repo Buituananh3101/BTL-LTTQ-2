@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -945,7 +945,6 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                     }
                 });
 
-                MessageBox.Show("Lưu thông tin hàng hóa thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }
