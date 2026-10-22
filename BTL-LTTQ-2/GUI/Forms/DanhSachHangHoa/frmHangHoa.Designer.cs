@@ -245,6 +245,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // 
             // cboNhomHang
             // 
+            this.cboNhomHang.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
             this.cboNhomHang.FormattingEnabled = true;
             this.cboNhomHang.Location = new System.Drawing.Point(62, 203);
             this.cboNhomHang.Name = "cboNhomHang";
@@ -253,6 +254,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // 
             // cboDonVi
             // 
+            this.cboDonVi.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
             this.cboDonVi.FormattingEnabled = true;
             this.cboDonVi.Location = new System.Drawing.Point(462, 47);
             this.cboDonVi.Name = "cboDonVi";
@@ -329,6 +331,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // 
             // cboViTri
             // 
+            this.cboViTri.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
             this.cboViTri.FormattingEnabled = true;
             this.cboViTri.Location = new System.Drawing.Point(45, 74);
             this.cboViTri.Name = "cboViTri";

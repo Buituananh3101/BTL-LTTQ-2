@@ -142,7 +142,17 @@ namespace BTL_LTTQ_2.GUI.Forms
                 DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleRight, Format = "N0" }
             });
 
-            // Cột 8: Vị trí
+            // Cột 8: Dự kiến hết hàng
+            dgvHangHoa.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colDuKienHetHang",
+                DataPropertyName = "DuKienHetHang",
+                HeaderText = "Dự kiến hết",
+                Width = 110,
+                DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleCenter }
+            });
+
+            // Cột 9: Vị trí
             dgvHangHoa.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "colViTri",
@@ -152,7 +162,21 @@ namespace BTL_LTTQ_2.GUI.Forms
                 DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleCenter }
             });
 
-            // Cột 9: Trạng thái
+            // Cột 10: Thời gian tạo
+            dgvHangHoa.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colThoiGianTao",
+                DataPropertyName = "NgayTao",
+                HeaderText = "Thời gian tạo",
+                Width = 140,
+                DefaultCellStyle = new DataGridViewCellStyle 
+                { 
+                    Alignment = DataGridViewContentAlignment.MiddleCenter,
+                    Format = "dd/MM/yyyy HH:mm"
+                }
+            });
+
+            // Cột 11: Trạng thái
             dgvHangHoa.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "colTrangThai",
@@ -165,6 +189,15 @@ namespace BTL_LTTQ_2.GUI.Forms
 
         private void NapDuLieuBoLoc()
         {
+            Action locDuLieu = () =>
+            {
+                if (isLoaded)
+                {
+                    trangHienTai = 1;
+                    HienThiDanhSach();
+                }
+            };
+
             // 1. Nhóm hàng
             try
             {
@@ -174,9 +207,7 @@ namespace BTL_LTTQ_2.GUI.Forms
                 drAllNhom["TenNhom"] = "-- Tất cả nhóm hàng --";
                 dtNhom.Rows.InsertAt(drAllNhom, 0);
 
-                cboNhomHang.DataSource = dtNhom;
-                cboNhomHang.ValueMember = "MaNhom";
-                cboNhomHang.DisplayMember = "TenNhom";
+                ComboboxHelper.CaiDatTimKiem(cboNhomHang, dtNhom, "TenNhom", "MaNhom", locDuLieu);
                 cboNhomHang.SelectedIndex = 0;
             }
             catch (Exception ex)
@@ -185,14 +216,13 @@ namespace BTL_LTTQ_2.GUI.Forms
             }
 
             // 2. Tiêu chí tồn
-            cboTieuChiTon.Items.Clear();
-            cboTieuChiTon.Items.AddRange(new object[] {
+            List<string> listTieuChiTon = new List<string> {
                 "-- Tất cả tồn kho --",
                 "Còn hàng (> 0)",
                 "Hết hàng (= 0)",
                 "Dưới định mức tồn"
-            });
-            cboTieuChiTon.SelectedIndex = 0;
+            };
+            ComboboxHelper.CaiDatTimKiem(cboTieuChiTon, listTieuChiTon, locDuLieu);
 
             // 3. Nhà cung cấp
             try
@@ -203,9 +233,7 @@ namespace BTL_LTTQ_2.GUI.Forms
                 drAllNCC["TenDonVi"] = "-- Tất cả nhà cung cấp --";
                 dtNCC.Rows.InsertAt(drAllNCC, 0);
 
-                cboNhaCungCap.DataSource = dtNCC;
-                cboNhaCungCap.ValueMember = "MaDonViCapHang";
-                cboNhaCungCap.DisplayMember = "TenDonVi";
+                ComboboxHelper.CaiDatTimKiem(cboNhaCungCap, dtNCC, "TenDonVi", "MaDonViCapHang", locDuLieu);
                 cboNhaCungCap.SelectedIndex = 0;
             }
             catch (Exception ex)
@@ -217,29 +245,25 @@ namespace BTL_LTTQ_2.GUI.Forms
             try
             {
                 DataTable dtViTri = DataProcessing.ReadData("SELECT DISTINCT ViTri FROM HangHoa WHERE ViTri IS NOT NULL AND LTRIM(RTRIM(ViTri)) <> '' ORDER BY ViTri");
-                cboViTri.Items.Clear();
-                cboViTri.Items.Add("-- Tất cả vị trí --");
+                List<string> listViTri = new List<string> { "-- Tất cả vị trí --" };
                 foreach (DataRow row in dtViTri.Rows)
                 {
-                    cboViTri.Items.Add(row["ViTri"].ToString());
+                    listViTri.Add(row["ViTri"].ToString());
                 }
-                cboViTri.SelectedIndex = 0;
+                ComboboxHelper.CaiDatTimKiem(cboViTri, listViTri, locDuLieu);
             }
             catch
             {
-                cboViTri.Items.Clear();
-                cboViTri.Items.Add("-- Tất cả vị trí --");
-                cboViTri.SelectedIndex = 0;
+                ComboboxHelper.CaiDatTimKiem(cboViTri, new List<string> { "-- Tất cả vị trí --" }, locDuLieu);
             }
 
             // 5. Trạng thái
-            cboTrangThai.Items.Clear();
-            cboTrangThai.Items.AddRange(new object[] {
+            List<string> listTrangThai = new List<string> {
                 "-- Tất cả trạng thái --",
                 "Đang kinh doanh",
                 "Ngừng kinh doanh"
-            });
-            cboTrangThai.SelectedIndex = 0;
+            };
+            ComboboxHelper.CaiDatTimKiem(cboTrangThai, listTrangThai, locDuLieu);
 
             // 6. Số dòng mỗi trang
             if (cboSoDongMoiTrang.Items.Count > 0 && cboSoDongMoiTrang.SelectedIndex < 0)
@@ -357,16 +381,30 @@ namespace BTL_LTTQ_2.GUI.Forms
                 parameters.Add(new SqlParameter("@Skip", skip));
                 parameters.Add(new SqlParameter("@Take", soDongMoiTrang));
 
-                // 3. Lấy dữ liệu phân trang
+                // 3. Lấy dữ liệu phân trang kèm tốc độ bán 30 ngày và Dự kiến hết hàng
                 string sqlData = $@"
                     SELECT h.MaHang, h.MaHangNoiBo, h.TenHang, nh.TenNhom, dvt.TenDVT,
                            h.GiaBanThamKhao, h.GiaVon, ISNULL(tk.SoLuongTon, 0) AS SoLuongTon,
-                           h.ViTri, h.TrangThai, ISNULL(ntk.TonToiThieu, 0) AS TonToiThieu
+                           CASE 
+                               WHEN ISNULL(tk.SoLuongTon, 0) <= 0 THEN N'Hết hàng'
+                               WHEN ISNULL(x30.XuatBan30Ngay, 0) <= 0 THEN N'> 90 ngày'
+                               WHEN CAST(ISNULL(tk.SoLuongTon, 0) AS FLOAT) / (CAST(x30.XuatBan30Ngay AS FLOAT) / 30.0) > 90 THEN N'> 90 ngày'
+                               ELSE CONCAT(CAST(ROUND(CAST(ISNULL(tk.SoLuongTon, 0) AS FLOAT) / (CAST(x30.XuatBan30Ngay AS FLOAT) / 30.0), 0) AS INT), N' ngày')
+                           END AS DuKienHetHang,
+                           h.ViTri, h.NgayTao, h.TrangThai, ISNULL(ntk.TonToiThieu, 0) AS TonToiThieu
                     FROM HangHoa h
                     LEFT JOIN NhomHang nh ON h.MaNhom = nh.MaNhom
                     LEFT JOIN DonViTinh dvt ON h.MaDVT = dvt.MaDVT
                     LEFT JOIN vw_TonKhoHienTai tk ON h.MaHang = tk.MaHang AND tk.MaKho = @MaKho
                     LEFT JOIN NguongTonKho ntk ON h.MaHang = ntk.MaHang AND ntk.MaKho = @MaKho
+                    LEFT JOIN (
+                        SELECT MaHang, SUM(SoLuongGiam) AS XuatBan30Ngay
+                        FROM vw_BienDongKho
+                        WHERE MaKho = @MaKho 
+                          AND SoLuongGiam > 0
+                          AND NgayGiaoDich >= DATEADD(day, -30, GETDATE())
+                        GROUP BY MaHang
+                    ) x30 ON h.MaHang = x30.MaHang
                     {whereSql}
                     ORDER BY h.MaHang DESC
                     OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY;";

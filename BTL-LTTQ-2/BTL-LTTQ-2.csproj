@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BLL\SessionContext.cs" />
+    <Compile Include="BLL\ComboboxHelper.cs" />
     <Compile Include="DAL\DataProcessing.cs" />
     <Compile Include="GUI\Forms\DanhSachHangHoa\frmHienCot.cs">
       <SubType>Form</SubType>

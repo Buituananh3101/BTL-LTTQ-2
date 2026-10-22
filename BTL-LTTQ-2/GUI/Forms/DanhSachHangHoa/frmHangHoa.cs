@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
@@ -111,9 +112,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             try
             {
                 DataTable dtNhom = DataProcessing.ReadData("SELECT MaNhom, TenNhom FROM NhomHang WHERE TrangThai = 'HOAT_DONG' ORDER BY TenNhom");
-                cboNhomHang.DataSource = dtNhom;
-                cboNhomHang.ValueMember = "MaNhom";
-                cboNhomHang.DisplayMember = "TenNhom";
+                ComboboxHelper.CaiDatTimKiem(cboNhomHang, dtNhom, "TenNhom", "MaNhom");
             }
             catch (Exception ex)
             {
@@ -124,9 +123,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             try
             {
                 DataTable dtDVT = DataProcessing.ReadData("SELECT MaDVT, TenDVT FROM DonViTinh ORDER BY TenDVT");
-                cboDonVi.DataSource = dtDVT;
-                cboDonVi.ValueMember = "MaDVT";
-                cboDonVi.DisplayMember = "TenDVT";
+                ComboboxHelper.CaiDatTimKiem(cboDonVi, dtDVT, "TenDVT", "MaDVT");
             }
             catch (Exception ex)
             {
@@ -137,11 +134,12 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             try
             {
                 DataTable dtViTri = DataProcessing.ReadData("SELECT DISTINCT ViTri FROM HangHoa WHERE ViTri IS NOT NULL AND LTRIM(RTRIM(ViTri)) <> '' ORDER BY ViTri");
-                cboViTri.Items.Clear();
+                List<string> listViTri = new List<string>();
                 foreach (DataRow row in dtViTri.Rows)
                 {
-                    cboViTri.Items.Add(row["ViTri"].ToString());
+                    listViTri.Add(row["ViTri"].ToString());
                 }
+                ComboboxHelper.CaiDatTimKiem(cboViTri, listViTri);
             }
             catch
             {
@@ -301,17 +299,27 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                 return;
             }
 
+            if (cboNhomHang.SelectedIndex < 0 && !string.IsNullOrWhiteSpace(cboNhomHang.Text))
+            {
+                int idx = cboNhomHang.FindStringExact(cboNhomHang.Text.Trim());
+                if (idx >= 0) cboNhomHang.SelectedIndex = idx;
+            }
             if (cboNhomHang.SelectedValue == null)
             {
-                MessageBox.Show("Vui lòng chọn Nhóm hàng!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Vui lòng chọn Nhóm hàng hợp lệ!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cboNhomHang.Focus();
                 return;
             }
             int maNhom = Convert.ToInt32(cboNhomHang.SelectedValue);
 
+            if (cboDonVi.SelectedIndex < 0 && !string.IsNullOrWhiteSpace(cboDonVi.Text))
+            {
+                int idx = cboDonVi.FindStringExact(cboDonVi.Text.Trim());
+                if (idx >= 0) cboDonVi.SelectedIndex = idx;
+            }
             if (cboDonVi.SelectedValue == null)
             {
-                MessageBox.Show("Vui lòng chọn Đơn vị tính!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Vui lòng chọn Đơn vị tính hợp lệ!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cboDonVi.Focus();
                 return;
             }

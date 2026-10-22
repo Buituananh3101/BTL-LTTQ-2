@@ -309,33 +309,30 @@ namespace BTL_LTTQ_2.GUI.Forms
             // 
             // cboTrangThai
             // 
-            this.cboTrangThai.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboTrangThai.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
             this.cboTrangThai.FormattingEnabled = true;
             this.cboTrangThai.Location = new System.Drawing.Point(18, 421);
             this.cboTrangThai.Name = "cboTrangThai";
             this.cboTrangThai.Size = new System.Drawing.Size(322, 29);
             this.cboTrangThai.TabIndex = 5;
-            this.cboTrangThai.SelectedIndexChanged += new System.EventHandler(this.BoLoc_SelectedIndexChanged);
             // 
             // cboViTri
             // 
-            this.cboViTri.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboViTri.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
             this.cboViTri.FormattingEnabled = true;
             this.cboViTri.Location = new System.Drawing.Point(18, 335);
             this.cboViTri.Name = "cboViTri";
             this.cboViTri.Size = new System.Drawing.Size(322, 29);
             this.cboViTri.TabIndex = 5;
-            this.cboViTri.SelectedIndexChanged += new System.EventHandler(this.BoLoc_SelectedIndexChanged);
             // 
             // cboTieuChiTon
             // 
-            this.cboTieuChiTon.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboTieuChiTon.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
             this.cboTieuChiTon.FormattingEnabled = true;
             this.cboTieuChiTon.Location = new System.Drawing.Point(18, 160);
             this.cboTieuChiTon.Name = "cboTieuChiTon";
             this.cboTieuChiTon.Size = new System.Drawing.Size(322, 29);
             this.cboTieuChiTon.TabIndex = 5;
-            this.cboTieuChiTon.SelectedIndexChanged += new System.EventHandler(this.BoLoc_SelectedIndexChanged);
             // 
             // lblNhaCungCap
             // 
@@ -348,13 +345,12 @@ namespace BTL_LTTQ_2.GUI.Forms
             // 
             // cboNhaCungCap
             // 
-            this.cboNhaCungCap.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboNhaCungCap.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
             this.cboNhaCungCap.FormattingEnabled = true;
             this.cboNhaCungCap.Location = new System.Drawing.Point(18, 249);
             this.cboNhaCungCap.Name = "cboNhaCungCap";
             this.cboNhaCungCap.Size = new System.Drawing.Size(322, 29);
             this.cboNhaCungCap.TabIndex = 3;
-            this.cboNhaCungCap.SelectedIndexChanged += new System.EventHandler(this.BoLoc_SelectedIndexChanged);
             // 
             // lblNhomHang
             // 
@@ -367,13 +363,12 @@ namespace BTL_LTTQ_2.GUI.Forms
             // 
             // cboNhomHang
             // 
-            this.cboNhomHang.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboNhomHang.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
             this.cboNhomHang.FormattingEnabled = true;
             this.cboNhomHang.Location = new System.Drawing.Point(18, 76);
             this.cboNhomHang.Name = "cboNhomHang";
             this.cboNhomHang.Size = new System.Drawing.Size(322, 29);
             this.cboNhomHang.TabIndex = 1;
-            this.cboNhomHang.SelectedIndexChanged += new System.EventHandler(this.BoLoc_SelectedIndexChanged);
             // 
             // pnlPhanTrang
             // 
