@@ -55,7 +55,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             dgvHangHoa.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvHangHoa.MultiSelect = false;
             dgvHangHoa.RowHeadersVisible = false;
-            dgvHangHoa.RowTemplate.Height = 32;
+            dgvHangHoa.RowTemplate.Height = 48;
             dgvHangHoa.BackgroundColor = Color.White;
             dgvHangHoa.BorderStyle = BorderStyle.None;
 
@@ -72,7 +72,22 @@ namespace BTL_LTTQ_2.GUI.Forms
                 Visible = false
             });
 
-            // Cột 1: Mã hàng nội bộ
+            // Cột 1: Hình ảnh (Tạo thành hình vuông 48x48)
+            dgvHangHoa.Columns.Add(new DataGridViewImageColumn
+            {
+                Name = "colHinhAnh",
+                DataPropertyName = "HinhAnh",
+                HeaderText = "",
+                Width = 48,
+                ImageLayout = DataGridViewImageCellLayout.Zoom,
+                DefaultCellStyle = new DataGridViewCellStyle
+                {
+                    Alignment = DataGridViewContentAlignment.MiddleCenter,
+                    NullValue = null
+                }
+            });
+
+            // Cột 2: Mã hàng nội bộ
             dgvHangHoa.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "colMaHangNoiBo",
@@ -387,7 +402,7 @@ namespace BTL_LTTQ_2.GUI.Forms
 
                 // 3. Lấy dữ liệu phân trang kèm tốc độ bán 30 ngày và Dự kiến hết hàng
                 string sqlData = $@"
-                    SELECT h.MaHang, h.MaHangNoiBo, h.TenHang, nh.TenNhom, dvt.TenDVT,
+                    SELECT h.MaHang, h.HinhAnh, h.MaHangNoiBo, h.TenHang, nh.TenNhom, dvt.TenDVT,
                            h.GiaBanThamKhao, h.GiaVon, ISNULL(tk.SoLuongTon, 0) AS SoLuongTon,
                            CASE 
                                WHEN ISNULL(tk.SoLuongTon, 0) <= 0 THEN N'Hết hàng'
@@ -415,6 +430,12 @@ namespace BTL_LTTQ_2.GUI.Forms
 
                 DataTable dtHangHoa = DataProcessing.ReadData(sqlData, parameters.ToArray());
                 dgvHangHoa.DataSource = dtHangHoa;
+
+                // Cố định chiều cao dòng 48px để ô cột hình ảnh luôn tạo thành hình vuông 48x48
+                foreach (DataGridViewRow r in dgvHangHoa.Rows)
+                {
+                    r.Height = 48;
+                }
 
                 // 4. Cập nhật thanh phân trang
                 CapNhatGiaoDienPhanTrang();
@@ -511,6 +532,72 @@ namespace BTL_LTTQ_2.GUI.Forms
                         e.CellStyle.Font = new Font(dgvHangHoa.Font, FontStyle.Bold);
                     }
                 }
+            }
+        }
+
+        // Vẽ ô cột hình ảnh thành một khung hình vuông hoàn hảo
+        private void dgvHangHoa_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        {
+            if (e.RowIndex >= 0 && e.ColumnIndex >= 0 && dgvHangHoa.Columns[e.ColumnIndex].Name == "colHinhAnh")
+            {
+                // Vẽ màu nền dòng (màu xen kẽ hoặc màu khi click chọn dòng)
+                e.PaintBackground(e.CellBounds, true);
+
+                // Tính toán kích thước cạnh hình vuông căn giữa ô
+                int squareSize = Math.Min(e.CellBounds.Width, e.CellBounds.Height) - 8;
+                if (squareSize > 10)
+                {
+                    int squareX = e.CellBounds.X + (e.CellBounds.Width - squareSize) / 2;
+                    int squareY = e.CellBounds.Y + (e.CellBounds.Height - squareSize) / 2;
+                    Rectangle squareRect = new Rectangle(squareX, squareY, squareSize, squareSize);
+
+                    // Vẽ khung hình vuông nền sáng viền mỏng thanh lịch
+                    using (SolidBrush bgBrush = new SolidBrush(Color.FromArgb(248, 250, 252)))
+                    using (Pen borderPen = new Pen(Color.FromArgb(226, 232, 240), 1))
+                    {
+                        e.Graphics.FillRectangle(bgBrush, squareRect);
+                        e.Graphics.DrawRectangle(borderPen, squareRect);
+                    }
+
+                    // Nếu ô có dữ liệu ảnh thì vẽ ảnh vào trong khung vuông
+                    if (e.Value != null && e.Value != DBNull.Value)
+                    {
+                        Image img = null;
+                        if (e.Value is Image i)
+                        {
+                            img = i;
+                        }
+                        else if (e.Value is byte[] bytes && bytes.Length > 0)
+                        {
+                            try
+                            {
+                                using (MemoryStream ms = new MemoryStream(bytes))
+                                {
+                                    img = Image.FromStream(ms);
+                                }
+                            }
+                            catch { }
+                        }
+
+                        if (img != null)
+                        {
+                            int pad = 2;
+                            int maxW = squareSize - pad * 2;
+                            int maxH = squareSize - pad * 2;
+                            float scale = Math.Min((float)maxW / img.Width, (float)maxH / img.Height);
+                            int drawW = Math.Max(1, (int)(img.Width * scale));
+                            int drawH = Math.Max(1, (int)(img.Height * scale));
+                            int drawX = squareRect.X + (squareRect.Width - drawW) / 2;
+                            int drawY = squareRect.Y + (squareRect.Height - drawH) / 2;
+
+                            e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                            e.Graphics.DrawImage(img, new Rectangle(drawX, drawY, drawW, drawH));
+                            img.Dispose();
+                        }
+                    }
+                }
+
+                e.Handled = true;
             }
         }
 
@@ -621,7 +708,7 @@ namespace BTL_LTTQ_2.GUI.Forms
                             sb.AppendLine("<tr>");
                             foreach (DataGridViewColumn col in dgvHangHoa.Columns)
                             {
-                                if (col.Visible)
+                                if (col.Visible && !(col is DataGridViewImageColumn))
                                 {
                                     sb.AppendLine($"<th>{System.Net.WebUtility.HtmlEncode(col.HeaderText)}</th>");
                                 }
@@ -634,7 +721,7 @@ namespace BTL_LTTQ_2.GUI.Forms
                                 sb.AppendLine("<tr>");
                                 foreach (DataGridViewColumn col in dgvHangHoa.Columns)
                                 {
-                                    if (col.Visible)
+                                    if (col.Visible && !(col is DataGridViewImageColumn))
                                     {
                                         string cellVal = row.Cells[col.Index].FormattedValue?.ToString() ?? "";
                                         string cssClass = "text";
@@ -661,7 +748,7 @@ namespace BTL_LTTQ_2.GUI.Forms
                             List<string> headers = new List<string>();
                             foreach (DataGridViewColumn col in dgvHangHoa.Columns)
                             {
-                                if (col.Visible)
+                                if (col.Visible && !(col is DataGridViewImageColumn))
                                 {
                                     headers.Add($"\"{col.HeaderText.Replace("\"", "\"\"")}\"");
                                 }
@@ -673,7 +760,7 @@ namespace BTL_LTTQ_2.GUI.Forms
                                 List<string> rowValues = new List<string>();
                                 foreach (DataGridViewColumn col in dgvHangHoa.Columns)
                                 {
-                                    if (col.Visible)
+                                    if (col.Visible && !(col is DataGridViewImageColumn))
                                     {
                                         string cellVal = row.Cells[col.Index].FormattedValue?.ToString() ?? "";
                                         rowValues.Add($"\"{cellVal.Replace("\"", "\"\"")}\"");

@@ -50,6 +50,17 @@
 
 ## Nhật ký phiên (Session Logs)
 
+- **Phiên 4 (2026-10-22) – Hoàn thiện Form Ẩn Hiện Cột (`frmHienCot`), Dự Báo Hết Hàng, Xuất File Excel Chuẩn & Lưu Trọn Vẹn 5 Ảnh**:
+  - **Nhu cầu**: Thiết kế form tùy chọn ẩn/hiện cột theo mẫu ảnh người dùng; định vị ngay dưới nút; kích hoạt tính toán cột "Dự kiến hết hàng" và "Thời gian tạo"; sửa lỗi xuất file bị dồn 1 cột; lưu toàn bộ 5 ảnh hàng hóa vào CSDL.
+  - **Kết quả thực hiện**:
+    1. Hoàn thiện [`frmHienCot`](file:///d:/CODE/BTL-LTTQ-2/BTL-LTTQ-2/GUI/Forms/DanhSachHangHoa/frmHienCot.cs): Giao diện 13 CheckBox xếp 2 cột đúng 100% nhãn/text theo ảnh. Mở chuẩn vị trí ngay dưới nút `btnHienCot`, chống tràn màn hình.
+    2. Cấu hình mặc định khi load: 5 cột *Khách đặt, Vị trí, Thời gian tạo, Dự kiến hết, Trạng thái* mặc định ẩn (`Visible = false`) và bỏ chọn CheckBox.
+    3. Triển khai cột **"Dự kiến hết"** (Phương án 1): Tính động tốc độ bán 30 ngày từ `vw_BienDongKho`, chia cho tồn kho ra số ngày còn lại (`X ngày`, `Hết hàng`, `> 90 ngày`), hiển thị chữ thường đồng bộ.
+    4. Bổ sung cột **"Thời gian tạo"** (`colThoiGianTao`) chuẩn `dd/MM/yyyy HH:mm`.
+    5. Nâng cấp chức năng **"Xuất file"**: Hỗ trợ xuất File Excel (`.xls` HTML Table UTF-8) tự động chia từng cột, kẻ viền, căn lề và định dạng số, triệt tiêu hoàn toàn lỗi bị dồn vào cột A.
+    6. Nâng cấp xử lý **5 ảnh hàng hóa** trên [`frmHangHoa`](file:///d:/CODE/BTL-LTTQ-2/BTL-LTTQ-2/GUI/Forms/DanhSachHangHoa/frmHangHoa.cs): Đồng bộ lưu toàn bộ 5 slot ảnh vào bảng CSDL `HinhAnhHangHoa` (`MaHang, DuLieuAnh, ThuTu, LaAnhChinh`) bọc trong Transaction; tự động nạp đầy đủ cả 5 ảnh khi mở sửa.
+    7. Biên dịch dự án: **0 Warning(s), 0 Error(s)**.
+
 - **Phiên 3 (2026-10-22) – Hoàn thiện Toàn bộ Logic Danh mục Hàng hóa (`frmDanhSachHangHoa` & `frmHangHoa`)**:
   - **Nhu cầu**: Hiện thực hóa logic nghiệp vụ nạp dữ liệu, tìm kiếm tức thì, lọc đa chiều, phân trang SQL Server và thêm/sửa hàng hóa bám sát 100% giao diện đã thiết kế.
   - **Kết quả thực hiện**:

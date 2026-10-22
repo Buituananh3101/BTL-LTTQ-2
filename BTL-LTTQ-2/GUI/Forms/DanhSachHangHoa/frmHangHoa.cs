@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using BTL_LTTQ_2.BLL;
 using BTL_LTTQ_2.DAL;
@@ -40,17 +41,6 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.DoubleBuffered = true;
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
             this.UpdateStyles();
-        }
-
-        // Bật WS_EX_COMPOSITED để vẽ form nguyên khối trong bộ nhớ đệm, chống chớp giật
-        protected override CreateParams CreateParams
-        {
-            get
-            {
-                CreateParams cp = base.CreateParams;
-                cp.ExStyle |= 0x02000000; // WS_EX_COMPOSITED
-                return cp;
-            }
         }
 
         private void frmHangHoa_Load(object sender, EventArgs e)
@@ -233,17 +223,92 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                     txtDinhMucTonThapNhat.Text = Convert.ToDecimal(row["TonToiThieu"]).ToString("N0");
                     txtDinhMucTonCaoNhat.Text = Convert.ToDecimal(row["TonCaoNhat"]).ToString("N0");
 
-                    // Hiển thị ảnh
-                    if (row["HinhAnh"] != DBNull.Value)
+                    // Hiển thị 5 ảnh hàng hóa
+                    for (int i = 0; i < 5; i++)
+                    {
+                        danhSachAnh[i] = null;
+                        danhSachByteAnh[i] = null;
+                    }
+                    duLieuAnhHienTai = null;
+
+                    // 1. Đọc tất cả ảnh của hàng hóa từ bảng HinhAnhHangHoa
+                    try
+                    {
+                        string sqlDocAnh = "SELECT DuLieuAnh, ThuTu, LaAnhChinh FROM HinhAnhHangHoa WHERE MaHang = @MaHang ORDER BY ThuTu ASC";
+                        DataTable dtAnh = DataProcessing.ReadData(sqlDocAnh, new SqlParameter[] { new SqlParameter("@MaHang", maHangHienTai) });
+
+                        if (dtAnh != null && dtAnh.Rows.Count > 0)
+                        {
+                            int currentSlotIndex = 0;
+                            foreach (DataRow rAnh in dtAnh.Rows)
+                            {
+                                if (rAnh["DuLieuAnh"] != DBNull.Value)
+                                {
+                                    byte[] rawBytes = (byte[])rAnh["DuLieuAnh"];
+                                    int thuTu = Convert.ToInt32(rAnh["ThuTu"]);
+                                    bool laAnhChinh = (rAnh["LaAnhChinh"] != DBNull.Value && Convert.ToBoolean(rAnh["LaAnhChinh"]));
+
+                                    int slot;
+                                    if (laAnhChinh && danhSachAnh[0] == null)
+                                    {
+                                        slot = 0;
+                                    }
+                                    else if (thuTu >= 1 && thuTu <= 5 && !dtAnh.AsEnumerable().Any(x => Convert.ToInt32(x["ThuTu"]) == 0))
+                                    {
+                                        slot = thuTu - 1;
+                                    }
+                                    else if (thuTu >= 0 && thuTu < 5)
+                                    {
+                                        slot = thuTu;
+                                    }
+                                    else
+                                    {
+                                        slot = currentSlotIndex;
+                                    }
+
+                                    if (slot >= 0 && slot < 5)
+                                    {
+                                        try
+                                        {
+                                            using (MemoryStream ms = new MemoryStream(rawBytes))
+                                            using (Image rawImg = Image.FromStream(ms))
+                                            {
+                                                danhSachAnh[slot] = XuLyAnhNenTrang(rawImg, out byte[] whiteBytes);
+                                                danhSachByteAnh[slot] = whiteBytes;
+                                            }
+                                        }
+                                        catch { }
+
+                                        if (slot == 0)
+                                        {
+                                            duLieuAnhHienTai = danhSachByteAnh[0];
+                                        }
+                                    }
+                                    currentSlotIndex++;
+                                }
+                            }
+                        }
+                    }
+                    catch { }
+
+                    // 2. Nếu bảng HinhAnhHangHoa chưa có (hàng hóa cũ), lấy từ cột HangHoa.HinhAnh
+                    if (danhSachAnh[0] == null && row["HinhAnh"] != DBNull.Value)
                     {
                         duLieuAnhHienTai = (byte[])row["HinhAnh"];
-                        danhSachByteAnh[0] = duLieuAnhHienTai;
-                        using (MemoryStream ms = new MemoryStream(duLieuAnhHienTai))
+                        try
                         {
-                            danhSachAnh[0] = Image.FromStream(ms);
+                            using (MemoryStream ms = new MemoryStream(duLieuAnhHienTai))
+                            using (Image rawImg = Image.FromStream(ms))
+                            {
+                                danhSachAnh[0] = XuLyAnhNenTrang(rawImg, out byte[] whiteBytes);
+                                danhSachByteAnh[0] = whiteBytes;
+                                duLieuAnhHienTai = whiteBytes;
+                            }
                         }
-                        CapNhatHienThi5Anh();
+                        catch { }
                     }
+
+                    CapNhatHienThi5Anh();
                 }
             }
             catch (Exception ex)
@@ -267,11 +332,12 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                 pic.SizeMode = PictureBoxSizeMode.Zoom;
                 pic.Cursor = Cursors.Hand;
                 pic.BorderStyle = BorderStyle.FixedSingle;
+                pic.BackColor = Color.White;
 
                 // Tooltip chỉ dẫn
                 if (index == 0)
                 {
-                    toolTipAnh.SetToolTip(pic, "Ảnh chính (ô to) sẽ được lưu vào cơ sở dữ liệu khi bấm Lưu.\nClick để chọn/thay ảnh mới. Click chuột phải để xóa.");
+                    toolTipAnh.SetToolTip(pic, "Ảnh chính (ô to). Click để chọn/thay ảnh mới. Click chuột phải để xóa.");
                 }
                 else
                 {
@@ -386,11 +452,12 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
 
                         try
                         {
-                            byte[] bytes = File.ReadAllBytes(ofd.FileNames[f]);
-                            using (MemoryStream ms = new MemoryStream(bytes))
+                            byte[] rawBytes = File.ReadAllBytes(ofd.FileNames[f]);
+                            using (MemoryStream ms = new MemoryStream(rawBytes))
+                            using (Image rawImg = Image.FromStream(ms))
                             {
-                                danhSachAnh[currentSlot] = Image.FromStream(ms);
-                                danhSachByteAnh[currentSlot] = bytes;
+                                danhSachAnh[currentSlot] = XuLyAnhNenTrang(rawImg, out byte[] whiteBytes);
+                                danhSachByteAnh[currentSlot] = whiteBytes;
                             }
                         }
                         catch (Exception ex)
@@ -414,15 +481,38 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             for (int i = 0; i < 5; i++)
             {
                 danhSachPic[i].Image = danhSachAnh[i];
-                if (danhSachAnh[i] != null)
-                {
-                    danhSachPic[i].BackColor = Color.White;
-                }
-                else
-                {
-                    danhSachPic[i].BackColor = SystemColors.ActiveBorder;
-                }
+                danhSachPic[i].BackColor = Color.White;
             }
+        }
+
+        /// <summary>
+        /// Xử lý đổ nền trắng #FFFFFF cho ảnh (đặc biệt là ảnh PNG trong suốt) để tránh bị đen nền trong WinForms.
+        /// </summary>
+        private static Image XuLyAnhNenTrang(Image imgGoc, out byte[] bytesOutput)
+        {
+            if (imgGoc == null)
+            {
+                bytesOutput = null;
+                return null;
+            }
+
+            Bitmap bmpMoi = new Bitmap(imgGoc.Width, imgGoc.Height, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+            using (Graphics g = Graphics.FromImage(bmpMoi))
+            {
+                g.Clear(Color.White);
+                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+                g.DrawImage(imgGoc, new Rectangle(0, 0, imgGoc.Width, imgGoc.Height));
+            }
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                bmpMoi.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                bytesOutput = ms.ToArray();
+            }
+
+            return bmpMoi;
         }
 
         private void btnBoQua_Click(object sender, EventArgs e)
@@ -587,6 +677,40 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                             }
 
                             cmd.ExecuteNonQuery();
+                        }
+                    }
+
+                    // Lưu toàn bộ 5 ảnh vào bảng HinhAnhHangHoa
+                    if (daChonAnhMoi || maHangHienTai == 0)
+                    {
+                        string sqlXoaAnh = "DELETE FROM HinhAnhHangHoa WHERE MaHang = @MaHang;";
+                        using (SqlCommand cmdXoa = new SqlCommand(sqlXoaAnh, conn, trans))
+                        {
+                            cmdXoa.Parameters.AddWithValue("@MaHang", maHangHienTai);
+                            cmdXoa.ExecuteNonQuery();
+                        }
+
+                        string sqlChenAnh = @"
+                            INSERT INTO HinhAnhHangHoa (MaHang, DuLieuAnh, ThuTu, LaAnhChinh, NgayTao)
+                            VALUES (@MaHang, @DuLieuAnh, @ThuTu, @LaAnhChinh, GETDATE());";
+
+                        for (int i = 0; i < 5; i++)
+                        {
+                            if (danhSachByteAnh[i] != null && danhSachByteAnh[i].Length > 0)
+                            {
+                                using (SqlCommand cmdAnh = new SqlCommand(sqlChenAnh, conn, trans))
+                                {
+                                    cmdAnh.Parameters.AddWithValue("@MaHang", maHangHienTai);
+                                    cmdAnh.Parameters.AddWithValue("@ThuTu", i + 1);
+                                    cmdAnh.Parameters.AddWithValue("@LaAnhChinh", (i == 0));
+
+                                    SqlParameter paramBytes = new SqlParameter("@DuLieuAnh", SqlDbType.VarBinary);
+                                    paramBytes.Value = danhSachByteAnh[i];
+                                    cmdAnh.Parameters.Add(paramBytes);
+
+                                    cmdAnh.ExecuteNonQuery();
+                                }
+                            }
                         }
                     }
 

@@ -54,6 +54,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.cboNhaCungCap = new System.Windows.Forms.ComboBox();
             this.lblNhomHang = new System.Windows.Forms.Label();
             this.cboNhomHang = new System.Windows.Forms.ComboBox();
+            this.splitterBoLoc = new System.Windows.Forms.Splitter();
             this.pnlPhanTrang = new System.Windows.Forms.Panel();
             this.lblTongSoHang = new System.Windows.Forms.Label();
             this.lblSoDongMoiTrang = new System.Windows.Forms.Label();
@@ -61,7 +62,8 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.btnTrangTruoc = new System.Windows.Forms.Button();
             this.lblTrangHienTai = new System.Windows.Forms.Label();
             this.btnTrangSau = new System.Windows.Forms.Button();
-            this.splitterBoLoc = new System.Windows.Forms.Splitter();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             this.pnlTop.SuspendLayout();
             this.grpTop.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvHangHoa)).BeginInit();
@@ -205,6 +207,8 @@ namespace BTL_LTTQ_2.GUI.Forms
             // 
             // grpBoLoc
             // 
+            this.grpBoLoc.Controls.Add(this.button2);
+            this.grpBoLoc.Controls.Add(this.button1);
             this.grpBoLoc.Controls.Add(this.grpThoiGianTao);
             this.grpBoLoc.Controls.Add(this.lblTrangThai);
             this.grpBoLoc.Controls.Add(this.lblViTri);
@@ -309,7 +313,6 @@ namespace BTL_LTTQ_2.GUI.Forms
             // 
             // cboTrangThai
             // 
-            this.cboTrangThai.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
             this.cboTrangThai.FormattingEnabled = true;
             this.cboTrangThai.Location = new System.Drawing.Point(18, 421);
             this.cboTrangThai.Name = "cboTrangThai";
@@ -318,16 +321,14 @@ namespace BTL_LTTQ_2.GUI.Forms
             // 
             // cboViTri
             // 
-            this.cboViTri.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
             this.cboViTri.FormattingEnabled = true;
             this.cboViTri.Location = new System.Drawing.Point(18, 335);
             this.cboViTri.Name = "cboViTri";
-            this.cboViTri.Size = new System.Drawing.Size(322, 29);
+            this.cboViTri.Size = new System.Drawing.Size(284, 29);
             this.cboViTri.TabIndex = 5;
             // 
             // cboTieuChiTon
             // 
-            this.cboTieuChiTon.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
             this.cboTieuChiTon.FormattingEnabled = true;
             this.cboTieuChiTon.Location = new System.Drawing.Point(18, 160);
             this.cboTieuChiTon.Name = "cboTieuChiTon";
@@ -345,7 +346,6 @@ namespace BTL_LTTQ_2.GUI.Forms
             // 
             // cboNhaCungCap
             // 
-            this.cboNhaCungCap.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
             this.cboNhaCungCap.FormattingEnabled = true;
             this.cboNhaCungCap.Location = new System.Drawing.Point(18, 249);
             this.cboNhaCungCap.Name = "cboNhaCungCap";
@@ -363,12 +363,21 @@ namespace BTL_LTTQ_2.GUI.Forms
             // 
             // cboNhomHang
             // 
-            this.cboNhomHang.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
             this.cboNhomHang.FormattingEnabled = true;
             this.cboNhomHang.Location = new System.Drawing.Point(18, 76);
             this.cboNhomHang.Name = "cboNhomHang";
-            this.cboNhomHang.Size = new System.Drawing.Size(322, 29);
+            this.cboNhomHang.Size = new System.Drawing.Size(284, 29);
             this.cboNhomHang.TabIndex = 1;
+            // 
+            // splitterBoLoc
+            // 
+            this.splitterBoLoc.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.splitterBoLoc.Dock = System.Windows.Forms.DockStyle.Top;
+            this.splitterBoLoc.Location = new System.Drawing.Point(0, 0);
+            this.splitterBoLoc.Name = "splitterBoLoc";
+            this.splitterBoLoc.Size = new System.Drawing.Size(387, 1);
+            this.splitterBoLoc.TabIndex = 0;
+            this.splitterBoLoc.TabStop = false;
             // 
             // pnlPhanTrang
             // 
@@ -452,15 +461,27 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.btnTrangSau.UseVisualStyleBackColor = true;
             this.btnTrangSau.Click += new System.EventHandler(this.btnTrangSau_Click);
             // 
-            // splitterBoLoc
+            // button1
             // 
-            this.splitterBoLoc.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.splitterBoLoc.Dock = System.Windows.Forms.DockStyle.Top;
-            this.splitterBoLoc.Location = new System.Drawing.Point(0, 0);
-            this.splitterBoLoc.Name = "splitterBoLoc";
-            this.splitterBoLoc.Size = new System.Drawing.Size(387, 1);
-            this.splitterBoLoc.TabIndex = 0;
-            this.splitterBoLoc.TabStop = false;
+            this.button1.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button1.Location = new System.Drawing.Point(308, 76);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(29, 29);
+            this.button1.TabIndex = 12;
+            this.button1.Text = "+";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
+            // button2
+            // 
+            this.button2.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button2.Location = new System.Drawing.Point(308, 335);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(29, 29);
+            this.button2.TabIndex = 12;
+            this.button2.Text = "+";
+            this.button2.UseVisualStyleBackColor = true;
             // 
             // frmDanhSachHangHoa
             // 
@@ -530,5 +551,7 @@ namespace BTL_LTTQ_2.GUI.Forms
         private System.Windows.Forms.Label lblTrangHienTai;
         private System.Windows.Forms.Button btnTrangSau;
         private System.Windows.Forms.Splitter splitterBoLoc;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button2;
     }
 }

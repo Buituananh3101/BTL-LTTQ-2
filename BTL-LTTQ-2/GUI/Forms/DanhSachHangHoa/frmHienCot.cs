@@ -39,6 +39,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
         {
             if (dgvHangHoa == null) return;
 
+            SetCheckedIfExists("colHinhAnh", chkHinhAnh);
             SetCheckedIfExists("colMaHangNoiBo", chkMaHang);
             SetCheckedIfExists("colTenHang", chkTenHang);
             SetCheckedIfExists("colTenNhom", chkNhomHang);
@@ -65,6 +66,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
         /// </summary>
         private void DangKySuKienCot()
         {
+            chkHinhAnh.CheckedChanged += (s, e) => DoiTrangThaiCot("colHinhAnh", chkHinhAnh.Checked);
             chkMaHang.CheckedChanged += (s, e) => DoiTrangThaiCot("colMaHangNoiBo", chkMaHang.Checked);
             chkTenHang.CheckedChanged += (s, e) => DoiTrangThaiCot("colTenHang", chkTenHang.Checked);
             chkNhomHang.CheckedChanged += (s, e) => DoiTrangThaiCot("colTenNhom", chkNhomHang.Checked);
