@@ -49,27 +49,27 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
 
         private void frmHangHoa_Load(object sender, EventArgs e)
         {
-            // Căn giữa vùng làm việc MDI (khắc phục việc Windows MDI bỏ qua thuộc tính CenterScreen)
-            if (this.MdiParent != null)
-            {
-                MdiClient mdiClient = null;
-                foreach (Control c in this.MdiParent.Controls)
-                {
-                    if (c is MdiClient mc) { mdiClient = mc; break; }
-                }
+            //// Căn giữa vùng làm việc MDI (khắc phục việc Windows MDI bỏ qua thuộc tính CenterScreen)
+            //if (this.MdiParent != null)
+            //{
+            //    MdiClient mdiClient = null;
+            //    foreach (Control c in this.MdiParent.Controls)
+            //    {
+            //        if (c is MdiClient mc) { mdiClient = mc; break; }
+            //    }
 
-                int clientW = mdiClient != null ? mdiClient.ClientSize.Width : this.MdiParent.ClientSize.Width;
-                int clientH = mdiClient != null ? mdiClient.ClientSize.Height : this.MdiParent.ClientSize.Height;
+            //    int clientW = mdiClient != null ? mdiClient.ClientSize.Width : this.MdiParent.ClientSize.Width;
+            //    int clientH = mdiClient != null ? mdiClient.ClientSize.Height : this.MdiParent.ClientSize.Height;
 
-                this.Location = new Point(
-                    Math.Max(0, (clientW - this.Width) / 2),
-                    Math.Max(0, (clientH - this.Height) / 2)
-                );
-            }
-            else
-            {
-                this.CenterToScreen();
-            }
+            //    this.Location = new Point(
+            //        Math.Max(0, (clientW - this.Width) / 2),
+            //        Math.Max(0, (clientH - this.Height) / 2)
+            //    );
+            //}
+            //else
+            //{
+            //    this.CenterToScreen();
+            //}
 
             //
             NapCombobox();
@@ -78,6 +78,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             {
                 lblTaoHangHoa.Text = "Cập nhật hàng hóa";
                 this.Text = "Cập nhật thông tin hàng hóa";
+                btnLuu.Text = "Sửa";
 
                 // Khóa ô tồn kho vì tồn kho tính động qua chứng từ kho
                 txtTonKho.ReadOnly = true;
@@ -89,6 +90,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             {
                 lblTaoHangHoa.Text = "Tạo hàng hóa";
                 this.Text = "Thêm hàng hóa mới";
+                btnLuu.Text = "Lưu";
 
                 txtTonKho.Text = "0";
                 txtGiaVon.Text = "0";
@@ -145,6 +147,16 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             {
                 // Bỏ qua nếu lỗi
             }
+
+            // 4. Đơn vị đo trọng lượng (g, kg)
+            if (cboDonViTrongLuong.Items.Count == 0)
+            {
+                cboDonViTrongLuong.Items.AddRange(new object[] { "g", "kg" });
+            }
+            if (cboDonViTrongLuong.SelectedIndex < 0)
+            {
+                cboDonViTrongLuong.SelectedItem = "kg";
+            }
         }
 
         private void SinhMaHangGoiY()
@@ -167,7 +179,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             {
                 string sql = @"
                     SELECT h.MaHang, h.MaHangNoiBo, h.TenHang, h.MaNhom, h.MaDVT, h.QuyCach,
-                           h.GiaBanThamKhao, h.GiaVon, h.TrangThai, h.HinhAnh, h.ViTri, h.TrongLuong, h.MoTa,
+                           h.GiaBanThamKhao, h.GiaVon, h.TrangThai, h.HinhAnh, h.ViTri, h.TrongLuong, h.DonViTrongLuong, h.MoTa,
                            ISNULL(tk.SoLuongTon, 0) AS SoLuongTon,
                            ISNULL(ntk.TonToiThieu, 0) AS TonToiThieu,
                            ISNULL(ntk.TonCaoNhat, 0) AS TonCaoNhat
@@ -189,7 +201,6 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
 
                     txtMaHang.Text = row["MaHangNoiBo"]?.ToString();
                     txtTenHang.Text = row["TenHang"]?.ToString();
-                    txtMaVach.Text = row["QuyCach"]?.ToString();
                     txtMoTa.Text = row["MoTa"]?.ToString();
                     cboViTri.Text = row["ViTri"]?.ToString();
 
@@ -206,6 +217,15 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                     txtGiaBan.Text = Convert.ToDecimal(row["GiaBanThamKhao"]).ToString("N0");
                     txtTonKho.Text = Convert.ToDecimal(row["SoLuongTon"]).ToString("N0");
                     txtTrongLuong.Text = row["TrongLuong"] != DBNull.Value ? Convert.ToDecimal(row["TrongLuong"]).ToString("N2") : "0";
+
+                    if (row["DonViTrongLuong"] != DBNull.Value && !string.IsNullOrWhiteSpace(row["DonViTrongLuong"].ToString()))
+                    {
+                        cboDonViTrongLuong.SelectedItem = row["DonViTrongLuong"].ToString();
+                    }
+                    else
+                    {
+                        cboDonViTrongLuong.SelectedItem = "kg";
+                    }
                     txtDinhMucTonThapNhat.Text = Convert.ToDecimal(row["TonToiThieu"]).ToString("N0");
                     txtDinhMucTonCaoNhat.Text = Convert.ToDecimal(row["TonCaoNhat"]).ToString("N0");
 
@@ -301,10 +321,11 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             decimal.TryParse(txtGiaVon.Text.Replace(",", "").Replace(".", ""), out decimal giaVon);
             decimal.TryParse(txtGiaBan.Text.Replace(",", "").Replace(".", ""), out decimal giaBan);
             decimal.TryParse(txtTrongLuong.Text.Replace(",", "."), out decimal trongLuong);
+            string donViTrongLuong = cboDonViTrongLuong.SelectedItem?.ToString() ?? "kg";
             decimal.TryParse(txtDinhMucTonThapNhat.Text.Replace(",", "").Replace(".", ""), out decimal tonThapNhat);
             decimal.TryParse(txtDinhMucTonCaoNhat.Text.Replace(",", "").Replace(".", ""), out decimal tonCaoNhat);
 
-            string quyCach = txtMaVach.Text.Trim();
+            string quyCach = null;
             string moTa = txtMoTa.Text.Trim();
             string viTri = cboViTri.Text.Trim();
 
@@ -334,12 +355,12 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                             INSERT INTO HangHoa (
                                 MaNhom, MaDVT, MaHangNoiBo, TenHang, QuyCach, 
                                 GiaBanThamKhao, GiaVon, TrangThai, HinhAnh, NgayTao, 
-                                ViTri, TrongLuong, MoTa
+                                ViTri, TrongLuong, DonViTrongLuong, MoTa
                             ) 
                             VALUES (
                                 @MaNhom, @MaDVT, @MaHangNoiBo, @TenHang, @QuyCach, 
                                 @GiaBan, @GiaVon, 'DANG_BAN', @HinhAnh, GETDATE(), 
-                                @ViTri, @TrongLuong, @MoTa
+                                @ViTri, @TrongLuong, @DonViTrongLuong, @MoTa
                             );
                             SELECT SCOPE_IDENTITY();";
 
@@ -354,6 +375,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                             cmd.Parameters.AddWithValue("@GiaVon", giaVon);
                             cmd.Parameters.AddWithValue("@ViTri", string.IsNullOrEmpty(viTri) ? (object)DBNull.Value : viTri);
                             cmd.Parameters.AddWithValue("@TrongLuong", trongLuong);
+                            cmd.Parameters.AddWithValue("@DonViTrongLuong", donViTrongLuong);
                             cmd.Parameters.AddWithValue("@MoTa", string.IsNullOrEmpty(moTa) ? (object)DBNull.Value : moTa);
 
                             SqlParameter paramHinhAnh = new SqlParameter("@HinhAnh", SqlDbType.VarBinary);
@@ -377,6 +399,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                                 GiaVon = @GiaVon, 
                                 ViTri = @ViTri, 
                                 TrongLuong = @TrongLuong, 
+                                DonViTrongLuong = @DonViTrongLuong, 
                                 MoTa = @MoTa"
                                 + (daChonAnhMoi ? ", HinhAnh = @HinhAnh " : "") +
                             " WHERE MaHang = @MaHang;";
@@ -393,6 +416,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                             cmd.Parameters.AddWithValue("@GiaVon", giaVon);
                             cmd.Parameters.AddWithValue("@ViTri", string.IsNullOrEmpty(viTri) ? (object)DBNull.Value : viTri);
                             cmd.Parameters.AddWithValue("@TrongLuong", trongLuong);
+                            cmd.Parameters.AddWithValue("@DonViTrongLuong", donViTrongLuong);
                             cmd.Parameters.AddWithValue("@MoTa", string.IsNullOrEmpty(moTa) ? (object)DBNull.Value : moTa);
 
                             if (daChonAnhMoi)

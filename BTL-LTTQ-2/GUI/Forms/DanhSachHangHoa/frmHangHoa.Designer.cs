@@ -44,8 +44,8 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.picAnhPhu1 = new System.Windows.Forms.PictureBox();
             this.picAnhDaiDien = new System.Windows.Forms.PictureBox();
             this.cboNhomHang = new System.Windows.Forms.ComboBox();
-            this.txtMaVach = new System.Windows.Forms.TextBox();
-            this.lblMaVach = new System.Windows.Forms.Label();
+            this.cboDonVi = new System.Windows.Forms.ComboBox();
+            this.lblDonVi = new System.Windows.Forms.Label();
             this.txtMoTa = new System.Windows.Forms.TextBox();
             this.txtTenHang = new System.Windows.Forms.TextBox();
             this.lblMoTa = new System.Windows.Forms.Label();
@@ -63,8 +63,8 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.txtDinhMucTonThapNhat = new System.Windows.Forms.TextBox();
             this.lblTonKho = new System.Windows.Forms.Label();
             this.grpViTriTrongLuong = new System.Windows.Forms.GroupBox();
-            this.cboDonVi = new System.Windows.Forms.ComboBox();
-            this.lblDonVi = new System.Windows.Forms.Label();
+            this.cboDonViTrongLuong = new System.Windows.Forms.ComboBox();
+            this.lblDonViTrongLuong = new System.Windows.Forms.Label();
             this.lblTrongLuong = new System.Windows.Forms.Label();
             this.lblTieuDeViTriTrongLuong = new System.Windows.Forms.Label();
             this.txtTrongLuong = new System.Windows.Forms.TextBox();
@@ -145,7 +145,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.lblGiaBan.AutoSize = true;
             this.lblGiaBan.Location = new System.Drawing.Point(442, 55);
             this.lblGiaBan.Name = "lblGiaBan";
-            this.lblGiaBan.Size = new System.Drawing.Size(54, 16);
+            this.lblGiaBan.Size = new System.Drawing.Size(58, 17);
             this.lblGiaBan.TabIndex = 0;
             this.lblGiaBan.Text = "Giá bán";
             // 
@@ -154,7 +154,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.lblGiaVon.AutoSize = true;
             this.lblGiaVon.Location = new System.Drawing.Point(45, 55);
             this.lblGiaVon.Name = "lblGiaVon";
-            this.lblGiaVon.Size = new System.Drawing.Size(53, 16);
+            this.lblGiaVon.Size = new System.Drawing.Size(57, 17);
             this.lblGiaVon.TabIndex = 0;
             this.lblGiaVon.Text = "Giá vốn";
             // 
@@ -162,14 +162,14 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // 
             this.txtGiaBan.Location = new System.Drawing.Point(442, 74);
             this.txtGiaBan.Name = "txtGiaBan";
-            this.txtGiaBan.Size = new System.Drawing.Size(291, 22);
+            this.txtGiaBan.Size = new System.Drawing.Size(291, 23);
             this.txtGiaBan.TabIndex = 1;
             // 
             // txtGiaVon
             // 
             this.txtGiaVon.Location = new System.Drawing.Point(45, 75);
             this.txtGiaVon.Name = "txtGiaVon";
-            this.txtGiaVon.Size = new System.Drawing.Size(291, 22);
+            this.txtGiaVon.Size = new System.Drawing.Size(291, 23);
             this.txtGiaVon.TabIndex = 1;
             // 
             // pnlThongTinCoBan
@@ -180,8 +180,8 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.pnlThongTinCoBan.Controls.Add(this.picAnhPhu1);
             this.pnlThongTinCoBan.Controls.Add(this.picAnhDaiDien);
             this.pnlThongTinCoBan.Controls.Add(this.cboNhomHang);
-            this.pnlThongTinCoBan.Controls.Add(this.txtMaVach);
-            this.pnlThongTinCoBan.Controls.Add(this.lblMaVach);
+            this.pnlThongTinCoBan.Controls.Add(this.cboDonVi);
+            this.pnlThongTinCoBan.Controls.Add(this.lblDonVi);
             this.pnlThongTinCoBan.Controls.Add(this.txtMoTa);
             this.pnlThongTinCoBan.Controls.Add(this.txtTenHang);
             this.pnlThongTinCoBan.Controls.Add(this.lblMoTa);
@@ -248,24 +248,25 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.cboNhomHang.FormattingEnabled = true;
             this.cboNhomHang.Location = new System.Drawing.Point(62, 203);
             this.cboNhomHang.Name = "cboNhomHang";
-            this.cboNhomHang.Size = new System.Drawing.Size(325, 24);
+            this.cboNhomHang.Size = new System.Drawing.Size(325, 25);
             this.cboNhomHang.TabIndex = 3;
             // 
-            // txtMaVach
+            // cboDonVi
             // 
-            this.txtMaVach.Location = new System.Drawing.Point(462, 46);
-            this.txtMaVach.Name = "txtMaVach";
-            this.txtMaVach.Size = new System.Drawing.Size(325, 22);
-            this.txtMaVach.TabIndex = 1;
+            this.cboDonVi.FormattingEnabled = true;
+            this.cboDonVi.Location = new System.Drawing.Point(462, 47);
+            this.cboDonVi.Name = "cboDonVi";
+            this.cboDonVi.Size = new System.Drawing.Size(325, 25);
+            this.cboDonVi.TabIndex = 2;
             // 
-            // lblMaVach
+            // lblDonVi
             // 
-            this.lblMaVach.AutoSize = true;
-            this.lblMaVach.Location = new System.Drawing.Point(459, 27);
-            this.lblMaVach.Name = "lblMaVach";
-            this.lblMaVach.Size = new System.Drawing.Size(58, 16);
-            this.lblMaVach.TabIndex = 0;
-            this.lblMaVach.Text = "Mã vạch";
+            this.lblDonVi.AutoSize = true;
+            this.lblDonVi.Location = new System.Drawing.Point(462, 27);
+            this.lblDonVi.Name = "lblDonVi";
+            this.lblDonVi.Size = new System.Drawing.Size(48, 17);
+            this.lblDonVi.TabIndex = 0;
+            this.lblDonVi.Text = "Đơn vị";
             // 
             // txtMoTa
             // 
@@ -280,7 +281,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // 
             this.txtTenHang.Location = new System.Drawing.Point(62, 125);
             this.txtTenHang.Name = "txtTenHang";
-            this.txtTenHang.Size = new System.Drawing.Size(325, 22);
+            this.txtTenHang.Size = new System.Drawing.Size(325, 23);
             this.txtTenHang.TabIndex = 1;
             // 
             // lblMoTa
@@ -288,7 +289,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.lblMoTa.AutoSize = true;
             this.lblMoTa.Location = new System.Drawing.Point(462, 103);
             this.lblMoTa.Name = "lblMoTa";
-            this.lblMoTa.Size = new System.Drawing.Size(40, 16);
+            this.lblMoTa.Size = new System.Drawing.Size(43, 17);
             this.lblMoTa.TabIndex = 0;
             this.lblMoTa.Text = "Mô tả";
             // 
@@ -297,7 +298,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.lblNhomHang.AutoSize = true;
             this.lblNhomHang.Location = new System.Drawing.Point(62, 184);
             this.lblNhomHang.Name = "lblNhomHang";
-            this.lblNhomHang.Size = new System.Drawing.Size(76, 16);
+            this.lblNhomHang.Size = new System.Drawing.Size(81, 17);
             this.lblNhomHang.TabIndex = 0;
             this.lblNhomHang.Text = "Nhóm hàng";
             // 
@@ -306,7 +307,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.lblTenHang.AutoSize = true;
             this.lblTenHang.Location = new System.Drawing.Point(62, 103);
             this.lblTenHang.Name = "lblTenHang";
-            this.lblTenHang.Size = new System.Drawing.Size(64, 16);
+            this.lblTenHang.Size = new System.Drawing.Size(69, 17);
             this.lblTenHang.TabIndex = 0;
             this.lblTenHang.Text = "Tên hàng";
             // 
@@ -314,7 +315,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // 
             this.txtMaHang.Location = new System.Drawing.Point(62, 47);
             this.txtMaHang.Name = "txtMaHang";
-            this.txtMaHang.Size = new System.Drawing.Size(325, 22);
+            this.txtMaHang.Size = new System.Drawing.Size(325, 23);
             this.txtMaHang.TabIndex = 1;
             // 
             // lblMaHang
@@ -322,16 +323,16 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.lblMaHang.AutoSize = true;
             this.lblMaHang.Location = new System.Drawing.Point(62, 27);
             this.lblMaHang.Name = "lblMaHang";
-            this.lblMaHang.Size = new System.Drawing.Size(59, 16);
+            this.lblMaHang.Size = new System.Drawing.Size(63, 17);
             this.lblMaHang.TabIndex = 0;
             this.lblMaHang.Text = "Mã hàng";
             // 
             // cboViTri
             // 
             this.cboViTri.FormattingEnabled = true;
-            this.cboViTri.Location = new System.Drawing.Point(42, 74);
+            this.cboViTri.Location = new System.Drawing.Point(45, 74);
             this.cboViTri.Name = "cboViTri";
-            this.cboViTri.Size = new System.Drawing.Size(294, 24);
+            this.cboViTri.Size = new System.Drawing.Size(294, 25);
             this.cboViTri.TabIndex = 3;
             // 
             // grpTonKho
@@ -361,9 +362,9 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // 
             // txtTonKho
             // 
-            this.txtTonKho.Location = new System.Drawing.Point(48, 79);
+            this.txtTonKho.Location = new System.Drawing.Point(45, 78);
             this.txtTonKho.Name = "txtTonKho";
-            this.txtTonKho.Size = new System.Drawing.Size(288, 22);
+            this.txtTonKho.Size = new System.Drawing.Size(288, 23);
             this.txtTonKho.TabIndex = 1;
             // 
             // lblDinhMucTonCaoNhat
@@ -371,15 +372,15 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.lblDinhMucTonCaoNhat.AutoSize = true;
             this.lblDinhMucTonCaoNhat.Location = new System.Drawing.Point(823, 59);
             this.lblDinhMucTonCaoNhat.Name = "lblDinhMucTonCaoNhat";
-            this.lblDinhMucTonCaoNhat.Size = new System.Drawing.Size(136, 16);
+            this.lblDinhMucTonCaoNhat.Size = new System.Drawing.Size(150, 17);
             this.lblDinhMucTonCaoNhat.TabIndex = 0;
             this.lblDinhMucTonCaoNhat.Text = "Định mức tồn cao nhất";
             // 
             // txtDinhMucTonCaoNhat
             // 
-            this.txtDinhMucTonCaoNhat.Location = new System.Drawing.Point(826, 78);
+            this.txtDinhMucTonCaoNhat.Location = new System.Drawing.Point(823, 78);
             this.txtDinhMucTonCaoNhat.Name = "txtDinhMucTonCaoNhat";
-            this.txtDinhMucTonCaoNhat.Size = new System.Drawing.Size(288, 22);
+            this.txtDinhMucTonCaoNhat.Size = new System.Drawing.Size(288, 23);
             this.txtDinhMucTonCaoNhat.TabIndex = 1;
             // 
             // lblDinhMucTonThapNhat
@@ -387,15 +388,15 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.lblDinhMucTonThapNhat.AutoSize = true;
             this.lblDinhMucTonThapNhat.Location = new System.Drawing.Point(442, 59);
             this.lblDinhMucTonThapNhat.Name = "lblDinhMucTonThapNhat";
-            this.lblDinhMucTonThapNhat.Size = new System.Drawing.Size(139, 16);
+            this.lblDinhMucTonThapNhat.Size = new System.Drawing.Size(155, 17);
             this.lblDinhMucTonThapNhat.TabIndex = 0;
             this.lblDinhMucTonThapNhat.Text = "Định mức tồn thấp nhất";
             // 
             // txtDinhMucTonThapNhat
             // 
-            this.txtDinhMucTonThapNhat.Location = new System.Drawing.Point(445, 78);
+            this.txtDinhMucTonThapNhat.Location = new System.Drawing.Point(442, 78);
             this.txtDinhMucTonThapNhat.Name = "txtDinhMucTonThapNhat";
-            this.txtDinhMucTonThapNhat.Size = new System.Drawing.Size(288, 22);
+            this.txtDinhMucTonThapNhat.Size = new System.Drawing.Size(288, 23);
             this.txtDinhMucTonThapNhat.TabIndex = 1;
             // 
             // lblTonKho
@@ -403,15 +404,15 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.lblTonKho.AutoSize = true;
             this.lblTonKho.Location = new System.Drawing.Point(45, 59);
             this.lblTonKho.Name = "lblTonKho";
-            this.lblTonKho.Size = new System.Drawing.Size(56, 16);
+            this.lblTonKho.Size = new System.Drawing.Size(60, 17);
             this.lblTonKho.TabIndex = 0;
             this.lblTonKho.Text = "Tồn kho";
             // 
             // grpViTriTrongLuong
             // 
-            this.grpViTriTrongLuong.Controls.Add(this.cboDonVi);
+            this.grpViTriTrongLuong.Controls.Add(this.cboDonViTrongLuong);
             this.grpViTriTrongLuong.Controls.Add(this.cboViTri);
-            this.grpViTriTrongLuong.Controls.Add(this.lblDonVi);
+            this.grpViTriTrongLuong.Controls.Add(this.lblDonViTrongLuong);
             this.grpViTriTrongLuong.Controls.Add(this.lblTrongLuong);
             this.grpViTriTrongLuong.Controls.Add(this.lblTieuDeViTriTrongLuong);
             this.grpViTriTrongLuong.Controls.Add(this.txtTrongLuong);
@@ -422,29 +423,33 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.grpViTriTrongLuong.TabIndex = 1;
             this.grpViTriTrongLuong.TabStop = false;
             // 
-            // cboDonVi
+            // cboDonViTrongLuong
             // 
-            this.cboDonVi.FormattingEnabled = true;
-            this.cboDonVi.Location = new System.Drawing.Point(657, 74);
-            this.cboDonVi.Name = "cboDonVi";
-            this.cboDonVi.Size = new System.Drawing.Size(76, 24);
-            this.cboDonVi.TabIndex = 3;
+            this.cboDonViTrongLuong.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboDonViTrongLuong.FormattingEnabled = true;
+            this.cboDonViTrongLuong.Items.AddRange(new object[] {
+            "g",
+            "kg"});
+            this.cboDonViTrongLuong.Location = new System.Drawing.Point(657, 74);
+            this.cboDonViTrongLuong.Name = "cboDonViTrongLuong";
+            this.cboDonViTrongLuong.Size = new System.Drawing.Size(76, 25);
+            this.cboDonViTrongLuong.TabIndex = 3;
             // 
-            // lblDonVi
+            // lblDonViTrongLuong
             // 
-            this.lblDonVi.AutoSize = true;
-            this.lblDonVi.Location = new System.Drawing.Point(654, 55);
-            this.lblDonVi.Name = "lblDonVi";
-            this.lblDonVi.Size = new System.Drawing.Size(44, 16);
-            this.lblDonVi.TabIndex = 0;
-            this.lblDonVi.Text = "Đơn vị";
+            this.lblDonViTrongLuong.AutoSize = true;
+            this.lblDonViTrongLuong.Location = new System.Drawing.Point(657, 55);
+            this.lblDonViTrongLuong.Name = "lblDonViTrongLuong";
+            this.lblDonViTrongLuong.Size = new System.Drawing.Size(48, 17);
+            this.lblDonViTrongLuong.TabIndex = 0;
+            this.lblDonViTrongLuong.Text = "Đơn vị";
             // 
             // lblTrongLuong
             // 
             this.lblTrongLuong.AutoSize = true;
             this.lblTrongLuong.Location = new System.Drawing.Point(442, 55);
             this.lblTrongLuong.Name = "lblTrongLuong";
-            this.lblTrongLuong.Size = new System.Drawing.Size(79, 16);
+            this.lblTrongLuong.Size = new System.Drawing.Size(85, 17);
             this.lblTrongLuong.TabIndex = 0;
             this.lblTrongLuong.Text = "Trọng lượng";
             // 
@@ -462,7 +467,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // 
             this.txtTrongLuong.Location = new System.Drawing.Point(442, 74);
             this.txtTrongLuong.Name = "txtTrongLuong";
-            this.txtTrongLuong.Size = new System.Drawing.Size(209, 22);
+            this.txtTrongLuong.Size = new System.Drawing.Size(209, 23);
             this.txtTrongLuong.TabIndex = 1;
             // 
             // lblViTri
@@ -470,7 +475,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.lblViTri.AutoSize = true;
             this.lblViTri.Location = new System.Drawing.Point(45, 55);
             this.lblViTri.Name = "lblViTri";
-            this.lblViTri.Size = new System.Drawing.Size(32, 16);
+            this.lblViTri.Size = new System.Drawing.Size(36, 17);
             this.lblViTri.TabIndex = 0;
             this.lblViTri.Text = "Vị trí";
             // 
@@ -523,6 +528,9 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.Controls.Add(this.grpTonKho);
             this.Controls.Add(this.grpGiaVonGiaBan);
             this.Controls.Add(this.pnlTop);
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.Name = "frmHangHoa";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "frmHangHoa";
@@ -560,8 +568,6 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
         private System.Windows.Forms.Label lblMaHang;
         private System.Windows.Forms.PictureBox picAnhDaiDien;
         private System.Windows.Forms.ComboBox cboViTri;
-        private System.Windows.Forms.TextBox txtMaVach;
-        private System.Windows.Forms.Label lblMaVach;
         private System.Windows.Forms.TextBox txtMoTa;
         private System.Windows.Forms.TextBox txtTenHang;
         private System.Windows.Forms.Label lblMoTa;
@@ -584,6 +590,8 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
         private System.Windows.Forms.ComboBox cboNhomHang;
         private System.Windows.Forms.ComboBox cboDonVi;
         private System.Windows.Forms.Label lblDonVi;
+        private System.Windows.Forms.ComboBox cboDonViTrongLuong;
+        private System.Windows.Forms.Label lblDonViTrongLuong;
         private System.Windows.Forms.Label lblTrongLuong;
         private System.Windows.Forms.Label lblTieuDeViTriTrongLuong;
         private System.Windows.Forms.TextBox txtTrongLuong;
