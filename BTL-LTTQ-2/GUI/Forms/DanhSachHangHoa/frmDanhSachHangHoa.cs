@@ -851,11 +851,33 @@ namespace BTL_LTTQ_2.GUI.Forms
                 return;
             }
 
+            // Xác định danh sách dòng cần xuất: Ưu tiên các dòng được tích chọn CheckBox
+            List<DataGridViewRow> danhSachXuat = new List<DataGridViewRow>();
+            foreach (DataGridViewRow row in dgvHangHoa.Rows)
+            {
+                if (Convert.ToBoolean(row.Cells["colChon"].Value ?? false))
+                {
+                    danhSachXuat.Add(row);
+                }
+            }
+
+            bool coDongChon = danhSachXuat.Count > 0;
+            if (!coDongChon)
+            {
+                // Nếu không có dòng nào được tích chọn thì xuất tất cả dòng hiện có trên trang
+                foreach (DataGridViewRow row in dgvHangHoa.Rows)
+                {
+                    danhSachXuat.Add(row);
+                }
+            }
+
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
-                sfd.Title = "Xuất danh sách hàng hóa";
+                sfd.Title = coDongChon ? $"Xuất {danhSachXuat.Count} hàng hóa đã chọn" : "Xuất danh sách hàng hóa";
                 sfd.Filter = "File Excel (*.xls)|*.xls|File CSV (*.csv)|*.csv";
-                sfd.FileName = $"DanhSachHangHoa_{DateTime.Now:yyyyMMdd_HHmm}.xls";
+                sfd.FileName = coDongChon 
+                    ? $"DanhSachHangHoa_DaChon_{DateTime.Now:yyyyMMdd_HHmm}.xls" 
+                    : $"DanhSachHangHoa_{DateTime.Now:yyyyMMdd_HHmm}.xls";
 
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
@@ -891,7 +913,7 @@ namespace BTL_LTTQ_2.GUI.Forms
                             sb.AppendLine("</tr>");
 
                             // Dữ liệu từng dòng
-                            foreach (DataGridViewRow row in dgvHangHoa.Rows)
+                            foreach (DataGridViewRow row in danhSachXuat)
                             {
                                 sb.AppendLine("<tr>");
                                 foreach (DataGridViewColumn col in dgvHangHoa.Columns)
@@ -930,7 +952,7 @@ namespace BTL_LTTQ_2.GUI.Forms
                             }
                             sb.AppendLine(string.Join(",", headers));
 
-                            foreach (DataGridViewRow row in dgvHangHoa.Rows)
+                            foreach (DataGridViewRow row in danhSachXuat)
                             {
                                 List<string> rowValues = new List<string>();
                                 foreach (DataGridViewColumn col in dgvHangHoa.Columns)
@@ -947,7 +969,10 @@ namespace BTL_LTTQ_2.GUI.Forms
                             File.WriteAllText(sfd.FileName, sb.ToString(), new UTF8Encoding(true));
                         }
 
-                        MessageBox.Show("Xuất file thành công tại:\n" + sfd.FileName, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        string thongBao = coDongChon
+                            ? $"Xuất file thành công {danhSachXuat.Count:N0} hàng hóa đã chọn tại:\n{sfd.FileName}"
+                            : $"Xuất file thành công toàn bộ {danhSachXuat.Count:N0} hàng hóa tại:\n{sfd.FileName}";
+                        MessageBox.Show(thongBao, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     catch (Exception ex)
                     {
