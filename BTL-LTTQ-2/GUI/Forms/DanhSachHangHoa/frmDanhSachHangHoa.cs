@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using BTL_LTTQ_2.BLL;
 using BTL_LTTQ_2.DAL;
@@ -592,46 +593,33 @@ namespace BTL_LTTQ_2.GUI.Forms
             }
         }
 
-        // Bấm nút Hiện cột mở form tùy chọn cột (MDI Child giống frmHangHoa)
+        // Bấm nút Hiện cột mở popup tùy chọn hiển thị cột ngay dưới nút
         private void btnHienCot_Click(object sender, EventArgs e)
         {
-            if (this.MdiParent != null)
+            // Kiểm tra nếu popup frmHienCot đã mở thì đóng lại (hành vi bật/tắt toggle)
+            foreach (Form openForm in Application.OpenForms)
             {
-                // Kiểm tra nếu frmHienCot đã mở thì kích hoạt lại, tránh mở trùng lặp
-                foreach (Form child in this.MdiParent.MdiChildren)
+                if (openForm is frmHienCot)
                 {
-                    if (child is frmHienCot)
-                    {
-                        child.Activate();
-                        return;
-                    }
+                    openForm.Close();
+                    return;
                 }
-
-                frmHienCot frm = new frmHienCot();
-                frm.MdiParent = this.MdiParent;
-                frm.StartPosition = FormStartPosition.Manual;
-                int posX = Math.Max(0, (this.MdiParent.ClientSize.Width - frm.Width) / 2);
-                int posY = Math.Max(0, (this.MdiParent.ClientSize.Height - frm.Height) / 2);
-                frm.Location = new Point(posX, posY);
-
-                frm.Show();
-                frm.BringToFront();
             }
-            else
-            {
-                foreach (Form form in Application.OpenForms)
-                {
-                    if (form is frmHienCot)
-                    {
-                        form.Activate();
-                        return;
-                    }
-                }
 
-                frmHienCot frm = new frmHienCot();
-                frm.StartPosition = FormStartPosition.CenterScreen;
-                frm.Show();
-            }
+            frmHienCot frm = new frmHienCot(this.dgvHangHoa);
+
+            // Tính toán vị trí popup hiển thị ngay bên dưới nút btnHienCot, căn theo mép phải
+            Point btnScreenPos = btnHienCot.PointToScreen(new Point(0, btnHienCot.Height + 2));
+            int posX = btnScreenPos.X + btnHienCot.Width - frm.Width;
+            int posY = btnScreenPos.Y;
+
+            // Đảm bảo không bị tràn ra ngoài rìa trái màn hình
+            posX = Math.Max(10, posX);
+
+            frm.StartPosition = FormStartPosition.Manual;
+            frm.Location = new Point(posX, posY);
+            frm.Show(this);
+            frm.BringToFront();
         }
 
         // Hướng dẫn sử dụng

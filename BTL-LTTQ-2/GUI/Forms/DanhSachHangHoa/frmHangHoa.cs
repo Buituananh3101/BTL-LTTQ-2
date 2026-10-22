@@ -19,12 +19,32 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
         {
             InitializeComponent();
             maHangHienTai = 0;
+            BatChongChopGiat();
         }
 
         public frmHangHoa(int maHang)
         {
             InitializeComponent();
             maHangHienTai = maHang;
+            BatChongChopGiat();
+        }
+
+        private void BatChongChopGiat()
+        {
+            this.DoubleBuffered = true;
+            this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
+            this.UpdateStyles();
+        }
+
+        // Bật WS_EX_COMPOSITED để vẽ form nguyên khối trong bộ nhớ đệm, chống chớp giật
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                cp.ExStyle |= 0x02000000; // WS_EX_COMPOSITED
+                return cp;
+            }
         }
 
         private void frmHangHoa_Load(object sender, EventArgs e)
