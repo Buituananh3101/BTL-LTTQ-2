@@ -483,26 +483,56 @@ namespace BTL_LTTQ_2.GUI.Forms
             var cellMaHang = dgvHangHoa.Rows[e.RowIndex].Cells["colMaHang"].Value;
             if (cellMaHang != null && int.TryParse(cellMaHang.ToString(), out int maHang))
             {
-                using (frmHangHoa frm = new frmHangHoa(maHang))
-                {
-                    frm.StartPosition = FormStartPosition.CenterParent;
-                    if (frm.ShowDialog(this) == DialogResult.OK)
-                    {
-                        HienThiDanhSach();
-                    }
-                }
+                MoFormHangHoa(maHang);
             }
         }
 
         // Bấm nút + Hàng hóa mở form thêm mới
         private void btnHangHoa_Click(object sender, EventArgs e)
         {
-            using (frmHangHoa frm = new frmHangHoa())
+            MoFormHangHoa(0);
+        }
+
+        private void MoFormHangHoa(int maHang)
+        {
+            if (this.MdiParent != null)
             {
-                frm.StartPosition = FormStartPosition.CenterParent;
-                if (frm.ShowDialog(this) == DialogResult.OK)
+                // Kiểm tra nếu đã mở form frmHangHoa thì kích hoạt
+                foreach (Form child in this.MdiParent.MdiChildren)
                 {
-                    HienThiDanhSach();
+                    if (child is frmHangHoa)
+                    {
+                        child.Activate();
+                        return;
+                    }
+                }
+
+                frmHangHoa frm = maHang > 0 ? new frmHangHoa(maHang) : new frmHangHoa();
+                frm.MdiParent = this.MdiParent;
+                frm.StartPosition = FormStartPosition.Manual;
+                int posX = Math.Max(0, (this.MdiParent.ClientSize.Width - frm.Width) / 2);
+                int posY = Math.Max(0, (this.MdiParent.ClientSize.Height - frm.Height) / 2);
+                frm.Location = new Point(posX, posY);
+
+                frm.FormClosed += (s, ev) =>
+                {
+                    if (frm.DialogResult == DialogResult.OK)
+                    {
+                        HienThiDanhSach();
+                    }
+                };
+                frm.Show();
+                frm.BringToFront();
+            }
+            else
+            {
+                using (frmHangHoa frm = maHang > 0 ? new frmHangHoa(maHang) : new frmHangHoa())
+                {
+                    frm.StartPosition = FormStartPosition.CenterParent;
+                    if (frm.ShowDialog(this) == DialogResult.OK)
+                    {
+                        HienThiDanhSach();
+                    }
                 }
             }
         }
@@ -559,6 +589,48 @@ namespace BTL_LTTQ_2.GUI.Forms
                         MessageBox.Show("Lỗi khi xuất file: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
+            }
+        }
+
+        // Bấm nút Hiện cột mở form tùy chọn cột (MDI Child giống frmHangHoa)
+        private void btnHienCot_Click(object sender, EventArgs e)
+        {
+            if (this.MdiParent != null)
+            {
+                // Kiểm tra nếu frmHienCot đã mở thì kích hoạt lại, tránh mở trùng lặp
+                foreach (Form child in this.MdiParent.MdiChildren)
+                {
+                    if (child is frmHienCot)
+                    {
+                        child.Activate();
+                        return;
+                    }
+                }
+
+                frmHienCot frm = new frmHienCot();
+                frm.MdiParent = this.MdiParent;
+                frm.StartPosition = FormStartPosition.Manual;
+                int posX = Math.Max(0, (this.MdiParent.ClientSize.Width - frm.Width) / 2);
+                int posY = Math.Max(0, (this.MdiParent.ClientSize.Height - frm.Height) / 2);
+                frm.Location = new Point(posX, posY);
+
+                frm.Show();
+                frm.BringToFront();
+            }
+            else
+            {
+                foreach (Form form in Application.OpenForms)
+                {
+                    if (form is frmHienCot)
+                    {
+                        form.Activate();
+                        return;
+                    }
+                }
+
+                frmHienCot frm = new frmHienCot();
+                frm.StartPosition = FormStartPosition.CenterScreen;
+                frm.Show();
             }
         }
 

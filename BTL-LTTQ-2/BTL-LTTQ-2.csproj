@@ -52,12 +52,21 @@
   <ItemGroup>
     <Compile Include="BLL\SessionContext.cs" />
     <Compile Include="DAL\DataProcessing.cs" />
+    <Compile Include="GUI\Forms\DanhSachHangHoa\frmHienCot.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\DanhSachHangHoa\frmHienCot.Designer.cs">
+      <DependentUpon>frmHienCot.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\Forms\frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="GUI\Forms\frmMain.Designer.cs">
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="GUI\Forms\DanhSachHangHoa\frmHienCot.resx">
+      <DependentUpon>frmHienCot.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>

@@ -238,8 +238,8 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.picAnhDaiDien.Location = new System.Drawing.Point(910, 27);
             this.picAnhDaiDien.Name = "picAnhDaiDien";
             this.picAnhDaiDien.Size = new System.Drawing.Size(200, 200);
-            this.picAnhDaiDien.TabIndex = 2;
             this.picAnhDaiDien.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.picAnhDaiDien.TabIndex = 2;
             this.picAnhDaiDien.TabStop = false;
             this.picAnhDaiDien.Click += new System.EventHandler(this.picAnhDaiDien_Click);
             // 
@@ -515,8 +515,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // 
             // frmHangHoa
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1182, 803);
             this.Controls.Add(this.pnlBottom);
             this.Controls.Add(this.pnlThongTinCoBan);
@@ -525,6 +524,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.Controls.Add(this.grpGiaVonGiaBan);
             this.Controls.Add(this.pnlTop);
             this.Name = "frmHangHoa";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "frmHangHoa";
             this.Load += new System.EventHandler(this.frmHangHoa_Load);
             this.pnlTop.ResumeLayout(false);

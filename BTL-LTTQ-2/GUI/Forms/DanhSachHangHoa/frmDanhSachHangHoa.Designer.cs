@@ -128,6 +128,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.btnHienCot.TabIndex = 4;
             this.btnHienCot.Text = "Hiện cột";
             this.btnHienCot.UseVisualStyleBackColor = true;
+            this.btnHienCot.Click += new System.EventHandler(this.btnHienCot_Click);
             // 
             // btnXuatFile
             // 
