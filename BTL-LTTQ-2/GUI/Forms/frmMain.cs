@@ -1,3 +1,4 @@
+using BTL_LTTQ_2.GUI.Forms.NhapHang;
 using BTL_LTTQ_2.GUI.Forms.NhaCungCap;
 using System;
 using System.Windows.Forms;
@@ -90,9 +91,26 @@ namespace BTL_LTTQ_2.GUI.Forms
             frm.Show();
         }
 
+        private void mnuNhapHang_Click(object sender, EventArgs e)
+        {
+            // Kiểm tra xem form nhập hàng đã mở chưa, nếu đã mở thì kích hoạt (Active) lên trước
+            foreach (Form form in this.MdiChildren)
+            {
+                if (form is frmNhapHang)
+                {
+                    form.Activate();
+                    return;
+                }
+            }
+
+            frmNhapHang frm = new frmNhapHang();
+            frm.MdiParent = this;
+            frm.Show();
+        }
+
         private void mnuTraHangNhap_Click(object sender, EventArgs e)
         {
-
+            MessageBox.Show("Vui lòng mở phiếu nhập hàng cần trả trong danh sách 'Nhập hàng' và nhấn nút 'Trả hàng nhập'.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }
