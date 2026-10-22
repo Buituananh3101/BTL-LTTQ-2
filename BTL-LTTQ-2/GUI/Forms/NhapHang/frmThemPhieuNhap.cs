@@ -1,4 +1,4 @@
-﻿using BTL_LTTQ_2.BLL;
+using BTL_LTTQ_2.BLL;
 using BTL_LTTQ_2.DAL;
 using System;
 using System.Data;
@@ -35,7 +35,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             colThanhTien.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             colXoa.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
-            colSoLuong.DefaultCellStyle.Format = "N2";
+            colSoLuong.DefaultCellStyle.Format = "N0";
             colDonGia.DefaultCellStyle.Format = "N0";
             colGiamGia.DefaultCellStyle.Format = "N0";
             colThanhTien.DefaultCellStyle.Format = "N0";
@@ -334,7 +334,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             }
 
             lblSoMatHang.Text = $"Số mặt hàng: {soMatHang}";
-            lblTongSoLuong.Text = $"Tổng số lượng: {tongSoLuong:N2}";
+            lblTongSoLuong.Text = $"Tổng số lượng: {tongSoLuong:N0}";
             txtTongTienHang.Text = tongTienHang.ToString("N0");
 
             decimal giamGiaTong = 0;
@@ -474,7 +474,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                         )
                         VALUES (
                             @MaKho, @MaDonViCapHang, @MaNVLap, @MaNVXacNhan, @NgayLap, @NgayXacNhan,
-                            'NHAP_HANG', @TrangThai, @GhiChu, @MaPhieu, 0, @SoHoaDon,
+                            'THONG_THUONG', @TrangThai, @GhiChu, @MaPhieu, 0, @SoHoaDon,
                             @GiamGia, @TongTien, @CanTraNcc
                         );
                         SELECT SCOPE_IDENTITY();";
@@ -520,27 +520,15 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                         cmdCt.ExecuteNonQuery();
                     }
 
-                    // 2.3. Cập nhật công nợ nhà cung cấp nếu hoàn thành và còn nợ
-                    if (trangThai == "DA_XAC_NHAN" && canTraNcc > 0)
-                    {
-                        string updateNccSql = @"
-                            UPDATE DonViCapHang 
-                            SET NoCanTraHienTai = ISNULL(NoCanTraHienTai, 0) + @CanTraNcc
-                            WHERE MaDonViCapHang = @MaDonViCapHang";
-                        SqlCommand cmdNcc = new SqlCommand(updateNccSql, conn, trans);
-                        cmdNcc.Parameters.AddWithValue("@CanTraNcc", canTraNcc);
-                        cmdNcc.Parameters.AddWithValue("@MaDonViCapHang", maNcc);
-                        cmdNcc.ExecuteNonQuery();
-                    }
-
-                    // 2.4. Ghi nhật ký thao tác
+                    // 2.3. Ghi nhật ký thao tác
                     string logSql = @"
-                        INSERT INTO NhatKyThaoTac (MaTaiKhoan, ThoiDiem, DoiTuong, HanhDong, ChiTiet)
-                        VALUES (@MaTaiKhoan, GETDATE(), 'PhieuNhap', @HanhDong, @ChiTiet)";
+                        INSERT INTO NhatKyThaoTac (MaTaiKhoan, ThoiDiem, ThaoTac, LoaiDoiTuong, MaDoiTuong, NoiDung)
+                        VALUES (@MaTaiKhoan, GETDATE(), @ThaoTac, 'PhieuNhap', @MaDoiTuong, @NoiDung)";
                     SqlCommand cmdLog = new SqlCommand(logSql, conn, trans);
                     cmdLog.Parameters.AddWithValue("@MaTaiKhoan", SessionContext.MaTaiKhoan > 0 ? SessionContext.MaTaiKhoan : 1);
-                    cmdLog.Parameters.AddWithValue("@HanhDong", trangThai == "DA_XAC_NHAN" ? "HOAN_THANH_NHAP_HANG" : "LUU_TAM_NHAP_HANG");
-                    cmdLog.Parameters.AddWithValue("@ChiTiet", $"Lập phiếu nhập {maPhieu} (ID: {maPhieuNhap}), tổng tiền: {tongCong:N0}, trạng thái: {trangThai}");
+                    cmdLog.Parameters.AddWithValue("@ThaoTac", trangThai == "DA_XAC_NHAN" ? "HOAN_THANH_NHAP_HANG" : "LUU_TAM_NHAP_HANG");
+                    cmdLog.Parameters.AddWithValue("@MaDoiTuong", maPhieu);
+                    cmdLog.Parameters.AddWithValue("@NoiDung", $"Lập phiếu nhập {maPhieu} (ID: {maPhieuNhap}), tổng tiền: {tongCong:N0}, trạng thái: {trangThai}");
                     cmdLog.ExecuteNonQuery();
                 });
 

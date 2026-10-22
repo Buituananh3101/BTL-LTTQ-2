@@ -58,6 +58,11 @@
 ### 3.2. Nút bấm & Nhãn hiển thị:
 - Nút `+ Nhập hàng`: Định dạng WinForms chuẩn (`UseVisualStyleBackColor = true`), không tự ý tô màu tùy tiện.
 - 100% hiển thị tiếng Việt có dấu rõ ràng: `Xóa`, `Xuất file`, `Trả hàng nhập`, `Lưu tạm`, `Hoàn thành`, `Đóng`.
+- Hàng tên cột (Column Header Row) DataGridView: Tuân thủ nghiêm ngặt chuẩn WinForms mặc định (`EnableHeadersVisualStyles = true`), không tự ý đổi màu nền phẳng hay đổi font in đậm; đồng bộ độ rộng các cột (`colChon` 45px, `colMaNcc` 140px) loại bỏ hiện tượng ngắt dòng, giữ chiều cao hàng tiêu đề gọn gàng (22px) và chiều cao dòng dữ liệu chuẩn 32px đồng bộ tuyệt đối với `frmDanhSachHangHoa` và `frmNhaCungCap`.
+- Tên các cột tiêu đề đồng bộ chuẩn mực: `Mã nhà cung cấp`, `Tên nhà cung cấp` (khớp 100% với form Nhà cung cấp).
+- Trạng thái "Đã nhập hàng" trên lưới và form chi tiết: Hiển thị font chữ chuẩn Regular (không in đậm), màu xanh lá nhận diện chuẩn.
+- Số lượng hiển thị trong mọi hộp thoại cảnh báo và thông báo: Định dạng số nguyên chuẩn `N0` (chặn triệt để đuôi số thực `.00`).
+- Quản lý công nợ NCC: Tính toán động từ các phiếu nhập (`PhieuNhap.CanTraNcc`), tuyệt đối không update cột tĩnh không tồn tại trong `DonViCapHang`.
 
 ### 3.3. Chi tiết đơn nhập (`frmChiTietPhieuNhap`):
 - Tham khảo đầy đủ các vùng thông tin từ ảnh mẫu của người dùng:

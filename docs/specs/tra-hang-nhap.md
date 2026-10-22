@@ -78,15 +78,16 @@
 
 1. **Kiểm tra Số lượng trả (`SoLuongTra`)**:
    - $\text{Số lượng trả} \ge 0$: Tuyệt đối không cho phép nhập số âm.
-   - $\text{Số lượng trả} \le \text{Số lượng nhập}$: Không được trả vượt quá số lượng đã nhập trong phiếu gốc.
+   - $\text{Số lượng trả} \le \text{Số lượng nhập}$: Không được trả vượt quá số lượng đã nhập trong phiếu gốc. Thông báo cảnh báo hiển thị định dạng số nguyên `N0` (ví dụ `12` và `10`, chặn hoàn toàn đuôi số thực `.00`).
    - $\text{Số lượng trả} \le \text{Tồn kho hiện tại}$: Không được trả vượt quá số lượng hàng thực tế đang còn trong kho (tránh âm kho).
    - Tổng số lượng trả trên phiếu phải $> 0$ (phải có ít nhất 1 mặt hàng có số lượng trả $> 0$).
 2. **Thuật toán Khấu trừ Tài chính**:
    - **Trường hợp 1**: Cửa hàng chưa trả hết tiền cho NCC ($\text{Nợ đơn gốc} > 0$):
-     - Giá trị hàng trả sẽ ưu tiên bù trừ vào khoản nợ của đơn nhập gốc trước.
+     - Giá trị hàng trả sẽ ưu tiên bù trừ vào khoản nợ của đơn nhập gốc trước (`PhieuNhap.CanTraNcc`).
      - Nếu $\text{Giá trị trả} \le \text{Nợ đơn gốc}$: Toàn bộ giá trị trả được trừ vào nợ. Cửa hàng không phải trả nợ khoản này, NCC không phải trả tiền mặt.
      - Nếu $\text{Giá trị trả} > \text{Nợ đơn gốc}$: Nợ của đơn gốc về 0; phần dư dôi ra chính là số tiền NCC phải trả lại tiền mặt/chuyển khoản cho cửa hàng.
    - **Trường hợp 2**: Cửa hàng đã thanh toán 100% tiền đơn nhập gốc ($\text{Nợ đơn gốc} = 0$):
      - Toàn bộ giá trị hàng trả chuyển thành khoản "Tiền NCC cần hoàn trả lại".
+   - **Lưu ý**: Công nợ NCC được tính động từ chứng từ phiếu nhập, không thực hiện cập nhật cột tĩnh `NoCanTraHienTai` trong `DonViCapHang`.
 3. **Thực thi Giao dịch (Transaction)**:
    - Thao tác lưu phiếu trả hàng, chi tiết hàng trả, cập nhật công nợ đơn nhập gốc và ghi nhật ký thao tác `NhatKyThaoTac` phải được thực thi trọn vẹn trong `DataProcessing.ChangeDataTransaction`. Nếu có bất kỳ lỗi nào, tự động Rollback toàn bộ.

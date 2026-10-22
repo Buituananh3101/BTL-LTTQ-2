@@ -43,7 +43,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             colGiamGia.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             colThanhTien.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 
-            colSoLuong.DefaultCellStyle.Format = "N2";
+            colSoLuong.DefaultCellStyle.Format = "N0";
             colDonGia.DefaultCellStyle.Format = "N0";
             colGiamGia.DefaultCellStyle.Format = "N0";
             colThanhTien.DefaultCellStyle.Format = "N0";
@@ -232,10 +232,11 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 
                             // Ghi nhật ký
                             SqlCommand cmdLog = new SqlCommand(@"
-                                INSERT INTO NhatKyThaoTac (MaTaiKhoan, ThoiDiem, DoiTuong, HanhDong, ChiTiet)
-                                VALUES (@MaTaiKhoan, GETDATE(), 'PhieuNhap', 'XOA_PHIEU_TAM', @ChiTiet)", conn, trans);
+                                INSERT INTO NhatKyThaoTac (MaTaiKhoan, ThoiDiem, ThaoTac, LoaiDoiTuong, MaDoiTuong, NoiDung)
+                                VALUES (@MaTaiKhoan, GETDATE(), 'XOA_PHIEU_TAM', 'PhieuNhap', @MaDoiTuong, @NoiDung)", conn, trans);
                             cmdLog.Parameters.AddWithValue("@MaTaiKhoan", SessionContext.MaTaiKhoan > 0 ? SessionContext.MaTaiKhoan : 1);
-                            cmdLog.Parameters.AddWithValue("@ChiTiet", $"Xóa hoàn toàn phiếu tạm {maPhieu} (ID: {maPhieuNhap})");
+                            cmdLog.Parameters.AddWithValue("@MaDoiTuong", maPhieu);
+                            cmdLog.Parameters.AddWithValue("@NoiDung", $"Xóa hoàn toàn phiếu tạm {maPhieu} (ID: {maPhieuNhap})");
                             cmdLog.ExecuteNonQuery();
                         });
 
@@ -283,7 +284,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                             if (tonHienTai < slNhap)
                             {
                                 MessageBox.Show(
-                                    $"Không thể hủy phiếu nhập vì mặt hàng '{sku} - {ten}' đã phát sinh xuất bán/chuyển kho (Tồn hiện tại: {tonHienTai:N2}, Số lượng phiếu cần trừ: {slNhap:N2}).\nNếu hủy sẽ dẫn đến âm kho!",
+                                    $"Không thể hủy phiếu nhập vì mặt hàng '{sku} - {ten}' đã phát sinh xuất bán/chuyển kho (Tồn hiện tại: {tonHienTai:N0}, Số lượng phiếu cần trừ: {slNhap:N0}).\nNếu hủy sẽ dẫn đến âm kho!",
                                     "Chặn âm kho",
                                     MessageBoxButtons.OK,
                                     MessageBoxIcon.Stop
@@ -299,24 +300,13 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                             cmd.Parameters.AddWithValue("@MaPhieuNhap", maPhieuNhap);
                             cmd.ExecuteNonQuery();
 
-                            // 2. Trừ bớt nợ nhà cung cấp nếu phiếu này còn nợ
-                            if (canTraNccHienTai > 0 && maDonViCapHang > 0)
-                            {
-                                SqlCommand cmdNcc = new SqlCommand(@"
-                                    UPDATE DonViCapHang 
-                                    SET NoCanTraHienTai = CASE WHEN NoCanTraHienTai >= @CanTraNcc THEN NoCanTraHienTai - @CanTraNcc ELSE 0 END 
-                                    WHERE MaDonViCapHang = @MaDonViCapHang", conn, trans);
-                                cmdNcc.Parameters.AddWithValue("@CanTraNcc", canTraNccHienTai);
-                                cmdNcc.Parameters.AddWithValue("@MaDonViCapHang", maDonViCapHang);
-                                cmdNcc.ExecuteNonQuery();
-                            }
-
-                            // 3. Ghi nhật ký thao tác
+                            // 2. Ghi nhật ký thao tác
                             SqlCommand cmdLog = new SqlCommand(@"
-                                INSERT INTO NhatKyThaoTac (MaTaiKhoan, ThoiDiem, DoiTuong, HanhDong, ChiTiet)
-                                VALUES (@MaTaiKhoan, GETDATE(), 'PhieuNhap', 'HUY_PHIEU_NHAP', @ChiTiet)", conn, trans);
+                                INSERT INTO NhatKyThaoTac (MaTaiKhoan, ThoiDiem, ThaoTac, LoaiDoiTuong, MaDoiTuong, NoiDung)
+                                VALUES (@MaTaiKhoan, GETDATE(), 'HUY_PHIEU_NHAP', 'PhieuNhap', @MaDoiTuong, @NoiDung)", conn, trans);
                             cmdLog.Parameters.AddWithValue("@MaTaiKhoan", SessionContext.MaTaiKhoan > 0 ? SessionContext.MaTaiKhoan : 1);
-                            cmdLog.Parameters.AddWithValue("@ChiTiet", $"Hủy/xóa phiếu nhập {maPhieu} (ID: {maPhieuNhap}), hoàn lại tồn kho và nợ NCC");
+                            cmdLog.Parameters.AddWithValue("@MaDoiTuong", maPhieu);
+                            cmdLog.Parameters.AddWithValue("@NoiDung", $"Hủy/xóa phiếu nhập {maPhieu} (ID: {maPhieuNhap}), hoàn lại tồn kho và nợ NCC");
                             cmdLog.ExecuteNonQuery();
                         });
 

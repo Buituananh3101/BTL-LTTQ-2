@@ -1,6 +1,6 @@
-﻿# Tiến độ dự án BTL-LTTQ-2
+# Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-22 – Hoàn thành thiết kế và hiện thực Phân hệ Nhập hàng (`frmNhapHang`, `frmThemPhieuNhap`, `frmChiTietPhieuNhap`) & Form Trả hàng nhập (`frmTraHangNhap`) (Phiên 11)
+**Cập nhật lần cuối**: 2026-10-22 – Khắc phục lỗi lưu hoàn thành / trả hàng, chuẩn hóa hiển thị số lượng số nguyên, đồng bộ hàng tiêu đề cột và trạng thái không in đậm (Phiên 12)
 
 ---
 
@@ -21,6 +21,10 @@
 - [x] Thiết kế Form Chi tiết đơn nhập (`frmChiTietPhieuNhap`): mở khi nhấp đúp vào 1 đơn nhập trên lưới, hiển thị chi tiết header, bảng hàng và khối thanh toán theo ảnh mẫu; **chỉ giữ lại 3 nút chức năng: `Xóa`, `Xuất file`, `Trả hàng nhập`**.
 - [x] Thiết kế Form Trả hàng nhập (`frmTraHangNhap`): mở từ nút `Trả hàng nhập` của form chi tiết; cho chọn số lượng trả kèm logic validation chặt chẽ (chặn âm, chặn vượt số lượng nhập, chặn vượt tồn kho hiện tại) và thuật toán tự động khấu trừ nợ đơn gốc hoặc xác định tiền NCC cần hoàn trả lại; lưu trong Transaction.
 - [x] Bổ sung nhánh `TRA_HANG_NHAP` vào View `vw_BienDongKho` và cập nhật script `docs/database_update.sql`.
+- [x] Sửa triệt để lỗi runtime `Invalid column name 'NoCanTraHienTai'` khi hoàn thành phiếu nhập hoặc thực hiện trả hàng: loại bỏ thao tác UPDATE cột tĩnh không tồn tại trong `DonViCapHang`, tuân thủ nguyên tắc công nợ NCC tính động từ chứng từ nhập.
+- [x] Chuẩn hóa số lượng trong tất cả hộp thoại cảnh báo và thông báo về định dạng số nguyên `N0` (chặn đuôi `.00`).
+- [x] Đồng bộ hàng tên cột (Column Header Row) của `dgvNhapHang` với `frmDanhSachHangHoa` và `frmNhaCungCap` (giữ VisualStyles chuẩn WinForms, không đổi màu nền phẳng hay đổi font in đậm; HeaderText `Mã nhà cung cấp`, `Tên nhà cung cấp`).
+- [x] Bỏ in đậm trạng thái "Đã nhập hàng" trên cả DataGridView và Form Chi tiết đơn nhập hàng (chuyển sang font Regular).
 - [ ] Xây dựng Lớp quản lý phiên toàn cục `BLL/SessionContext.cs` và Tiện ích băm mật khẩu `BLL/PasswordHelper.cs` (SHA-256).
 - [ ] Thiết kế và hoàn thiện Form Đăng nhập (`frmDangNhap`) hỗ trợ chọn chi nhánh kho làm việc.
 
@@ -64,6 +68,26 @@
 
 ## Nhật ký phiên (Session Logs)
 
+- **Phiên 12 (2026-10-22) – Khắc phục lỗi hoàn thành & trả hàng, chuẩn hóa số lượng số nguyên, đồng bộ hàng tiêu đề cột & bỏ in đậm trạng thái**:
+  - **Nhu cầu**: Người dùng phản hồi:
+    1. Số lượng ghi trong các thông báo vẫn là số thực (ví dụ `12.00` và `10.00`).
+    2. Lưu tạm đã thành công, nhưng vẫn gặp lỗi runtime khi Hoàn thành đơn nhập và Trả hàng (`Invalid column name 'NoCanTraHienTai'`).
+    3. Hàng tên cột cần đồng bộ với các form đã có, không được tự ý đổi.
+    4. Trạng thái "Đã nhập hàng" không cần in đậm.
+  - **Kết quả thực hiện**:
+    1. **Khắc phục lỗi CSDL `NoCanTraHienTai`**:
+       - Xóa bỏ hoàn toàn các câu lệnh UPDATE `DonViCapHang.NoCanTraHienTai` trong `frmThemPhieuNhap.cs`, `frmChiTietPhieuNhap.cs` và `frmTraHangNhap.cs`. Tuân thủ nguyên tắc cốt lõi: công nợ NCC được tính toán động từ chứng từ phiếu nhập (`PhieuNhap.CanTraNcc`), bảng `DonViCapHang` không lưu số nợ tĩnh.
+    2. **Đồng bộ hiển thị số lượng nguyên trong thông báo**:
+       - Cập nhật định dạng số lượng trong mọi `MessageBox.Show` (`frmTraHangNhap.cs`, `frmChiTietPhieuNhap.cs`) từ `:N2` sang `:N0` (ví dụ: cảnh báo vượt quá số lượng, xác nhận trả hàng, cảnh báo chặn âm tồn).
+    3. **Đồng bộ hàng tên cột (Column Header Row)**:
+       - Ở `frmNhapHang.cs` và `frmNhapHang.Designer.cs`: Bỏ cấu hình can thiệp style tiêu đề cột (`EnableHeadersVisualStyles = false`, bỏ màu nền phẳng `241, 245, 249`, bỏ font Bold, bỏ chiều cao custom), đưa về VisualStyles mặc định chuẩn Windows Forms 100% giống `frmDanhSachHangHoa` và `frmNhaCungCap`.
+       - Đồng bộ độ rộng cột: tăng `colMaNcc.Width` từ `130` lên `140` (khớp hoàn toàn với `frmNhaCungCap`), loại bỏ hoàn toàn tình trạng ngắt dòng "Mã nhà cung cấp" làm đội chiều cao hàng tiêu đề từ 22px lên 39px; cập nhật `colChon.Width = 45` và `dgvNhapHang.RowHeadersWidth = 51`, đồng bộ font form về `Segoe UI 9.5pt` và `SelectionForeColor` về `Color.FromArgb(30, 41, 59)`. Kết quả hàng tiêu đề cột có chiều cao 22px gọn gàng, đồng bộ tuyệt đối với `frmDanhSachHangHoa` và `frmNhaCungCap`.
+       - Chuẩn hóa tên cột tiêu đề: `Mã nhà cung cấp`, `Tên nhà cung cấp` (khớp hoàn toàn với `frmNhaCungCap`).
+    4. **Bỏ in đậm trạng thái "Đã nhập hàng"**:
+       - Trong `dgvNhapHang_CellFormatting`: Bỏ thiết lập `FontStyle.Bold` khi hiển thị trạng thái `Đã nhập hàng`, chỉ giữ màu xanh lá nhận diện chuẩn với font Regular như `frmDanhSachHangHoa`.
+       - Trong `frmChiTietPhieuNhap.Designer.cs`: Chuyển font của `lblTrangThai` từ Bold sang Regular.
+    5. **Kiểm tra biên dịch**: Roslyn compiler biên dịch mã nguồn C# thành công: **0 Warning(s), 0 Error(s)**.
+
 - **Phiên 11 (2026-10-22) – Thiết kế Phân hệ Nhập hàng (`frmNhapHang`, `frmThemPhieuNhap`, `frmChiTietPhieuNhap`) & Form Trả hàng nhập (`frmTraHangNhap`)**:
   - **Nhu cầu**: Người dùng yêu cầu:
     1. Thiết kế `frmNhapHang` và các form liên quan, đặt tên nút thêm phiếu nhập là `+ Nhập hàng`. Toàn bộ filter bên trái dạng ComboBox theo khuôn mẫu đang có.
@@ -74,9 +98,9 @@
   - **Kết quả thực hiện**:
     1. **Tạo mới 5 Form trong `GUI/Forms/NhapHang/`**:
        - `frmNhapHang.cs`, `.Designer.cs`, `.resx`: Form danh sách đơn nhập hàng, bộ lọc 100% ComboBox (`cboTrangThai`, `cboNhaCungCap`, `cboNguoiTao`, `cboNguoiNhap`, `grpThoiGianTao`), tìm kiếm tức thời, phân trang SQL Server, DataGridView đệm đôi chống giật lag, xuất file CSV UTF-8 BOM, sự kiện double-click mở chi tiết đơn.
-       - `frmThemPhieuNhap.cs`, `.Designer.cs`, `.resx`: Form tạo mới phiếu nhập (nút `+ Nhập hàng`), gợi ý tự động mã `PN00000X`, chọn NCC, kho, thêm/xóa hàng nhập, tính tổng tiền, nợ, lưu tạm (`NHAP`) hoặc hoàn thành (`DA_XAC_NHAN`) trong Transaction. Khắc phục triệt để lỗi truy vấn `GiaNhap` thành `ISNULL(h.GiaVon, 0) AS GiaNhap` và xử lý an toàn dữ liệu rỗng.
-       - `frmChiTietPhieuNhap.cs`, `.Designer.cs`, `.resx`: Form chi tiết đơn nhập hiển thị thông tin header, bảng hàng hóa, khối thanh toán chuẩn theo ảnh mẫu. Cung cấp đúng 3 nút: `Xóa` (xóa phiếu tạm hoặc chuyển trạng thái `HUY` cho phiếu đã xác nhận kèm kiểm tra chặn âm tồn), `Xuất file`, `Trả hàng nhập`.
-       - `frmTraHangNhap.cs`, `.Designer.cs`, `.resx`: Form trả hàng nhập với logic validation kiểm tra số lượng trả (không âm, không vượt số lượng nhập, không vượt tồn kho hiện tại) và thuật toán tự động khấu trừ vào công nợ đơn gốc hoặc tính số tiền NCC cần hoàn trả lại; lưu `PhieuTraHangNhap` và `ChiTietPhieuTraHangNhap` trong Transaction.
+       - `frmThemPhieuNhap.cs`, `.Designer.cs`, `.resx`: Form tạo mới phiếu nhập (nút `+ Nhập hàng`), gợi ý tự động mã `PN00000X`, chọn NCC, kho, thêm/xóa hàng nhập, tính tổng tiền, nợ, lưu tạm (`NHAP`) hoặc hoàn thành (`DA_XAC_NHAN`) trong Transaction. Khắc phục triệt để lỗi truy vấn `GiaNhap` thành `ISNULL(h.GiaVon, 0) AS GiaNhap`, sửa giá trị `LoaiPhieuNhap = 'THONG_THUONG'` tuân thủ CHECK constraint `CK_PhieuNhap_Loai`, đồng bộ số lượng hàng nhập thành số nguyên (`N0`, `DecimalPlaces = 0`).
+       - `frmChiTietPhieuNhap.cs`, `.Designer.cs`, `.resx`: Form chi tiết đơn nhập hiển thị thông tin header, bảng hàng hóa, khối thanh toán chuẩn theo ảnh mẫu. Cung cấp đúng 3 nút: `Xóa` (xóa phiếu tạm hoặc chuyển trạng thái `HUY` cho phiếu đã xác nhận kèm kiểm tra chặn âm tồn), `Xuất file`, `Trả hàng nhập`. Đồng bộ số lượng hiển thị thành số nguyên (`N0`) và sửa các cột ghi nhật ký `NhatKyThaoTac`.
+       - `frmTraHangNhap.cs`, `.Designer.cs`, `.resx`: Form trả hàng nhập với logic validation kiểm tra số lượng trả (không âm, không vượt số lượng nhập, không vượt tồn kho hiện tại) và thuật toán tự động khấu trừ vào công nợ đơn gốc hoặc tính số tiền NCC cần hoàn trả lại; lưu `PhieuTraHangNhap` và `ChiTietPhieuTraHangNhap` trong Transaction. Thiết kế ô nhập số lượng trả rõ ràng bằng hộp TextBox có viền nổi bật (`CellPainting`), hỗ trợ tự động bôi đen khi click (`SelectAll`) và chặn ký tự phi số; chuyển đổi số lượng sang số nguyên (`N0`) đồng bộ toàn hệ thống; chuẩn hóa các cột ghi `NhatKyThaoTac`.
        - `frmHienCotNhapHang.cs`, `.Designer.cs`, `.resx`: Form popup ẩn/hiện cột.
     2. **Đồng bộ Menu và Form MDI**:
        - Cập nhật `frmMain.Designer.cs` và `frmMain.cs` gắn sự kiện `mnuNhapHang_Click` kiểm tra kích hoạt hoặc mở form MDI `frmNhapHang`.

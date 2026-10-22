@@ -41,14 +41,13 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             colDonGiaTra.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             colThanhTien.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 
-            colSoLuongNhap.DefaultCellStyle.Format = "N2";
-            colTonKho.DefaultCellStyle.Format = "N2";
-            colSoLuongTra.DefaultCellStyle.Format = "N2";
+            colSoLuongNhap.DefaultCellStyle.Format = "N0";
+            colTonKho.DefaultCellStyle.Format = "N0";
+            colSoLuongTra.DefaultCellStyle.Format = "N0";
             colDonGiaTra.DefaultCellStyle.Format = "N0";
             colThanhTien.DefaultCellStyle.Format = "N0";
 
-            // Đánh dấu ô số lượng trả có nền vàng nhạt để người dùng biết là ô nhập liệu
-            colSoLuongTra.DefaultCellStyle.BackColor = Color.FromArgb(254, 252, 232);
+            // Đánh dấu ô số lượng trả rõ ràng bằng font chữ đậm
             colSoLuongTra.DefaultCellStyle.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold);
         }
 
@@ -189,7 +188,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                 decimal slNhap = Convert.ToDecimal(dgvHangTra.Rows[e.RowIndex].Cells["colSoLuongNhap"].Value);
                 if (val > slNhap)
                 {
-                    MessageBox.Show($"Số lượng trả ({val:N2}) không được vượt quá số lượng đã nhập ({slNhap:N2})!", "Cảnh báo vượt số lượng", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show($"Số lượng trả ({val:N0}) không được vượt quá số lượng đã nhập ({slNhap:N0})!", "Cảnh báo vượt số lượng", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     e.Cancel = true;
                     return;
                 }
@@ -221,6 +220,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                 decimal.TryParse(row.Cells["colDonGiaTra"].Value.ToString(), out donGia);
 
             decimal slNhap = Convert.ToDecimal(row.Cells["colSoLuongNhap"].Value);
+            slTra = Math.Floor(slTra);
             if (slTra < 0) slTra = 0;
             if (slTra > slNhap) slTra = slNhap;
 
@@ -251,7 +251,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                 }
             }
 
-            lblTongSlTra.Text = $"Tổng số lượng trả: {tongSlTra:N2}";
+            lblTongSlTra.Text = $"Tổng số lượng trả: {tongSlTra:N0}";
             txtTongTienTra.Text = tongTienTra.ToString("N0");
 
             // Tự động tính toán công nợ theo yêu cầu:
@@ -337,7 +337,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                 if (slTra > 0 && slTra > tonKho)
                 {
                     MessageBox.Show(
-                        $"Không thể thực hiện trả hàng vì mặt hàng '{sku} - {ten}' có số lượng trả ({slTra:N2}) vượt quá tồn kho thực tế hiện tại ({tonKho:N2}) tại kho này!\n\nVui lòng kiểm tra lại số lượng tồn thực tế.",
+                        $"Không thể thực hiện trả hàng vì mặt hàng '{sku} - {ten}' có số lượng trả ({slTra:N0}) vượt quá tồn kho thực tế hiện tại ({tonKho:N0}) tại kho này!\n\nVui lòng kiểm tra lại số lượng tồn thực tế.",
                         "Chặn xuất âm tồn kho",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Stop
@@ -372,7 +372,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             }
 
             string xacNhanMsg = $"XÁC NHẬN TRẢ HÀNG CHO NHÀ CUNG CẤP:\n\n" +
-                                $"- Tổng số lượng trả: {tongSlTra:N2} sản phẩm\n" +
+                                $"- Tổng số lượng trả: {tongSlTra:N0} sản phẩm\n" +
                                 $"- Tổng giá trị hoàn lại: {tongTienTra:N0} đ\n" +
                                 $"- Trừ vào công nợ đơn: {truVaoCongNo:N0} đ (Nợ đơn còn lại: {noConLai:N0} đ)\n" +
                                 $"- Số tiền NCC cần hoàn trả lại: {tienNccTraLai:N0} đ\n\n" +
@@ -389,6 +389,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             string ghiChu = txtGhiChu.Text.Trim();
 
             // 4. Bọc trong Transaction an toàn
+            string maPhieuTraMoi = "";
             try
             {
                 DataProcessing.ChangeDataTransaction((conn, trans) =>
@@ -398,6 +399,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                     SqlCommand cmdNextId = new SqlCommand(nextIdSql, conn, trans);
                     int nextId = Convert.ToInt32(cmdNextId.ExecuteScalar());
                     string maPhieuTra = "THN" + nextId.ToString("D6");
+                    maPhieuTraMoi = maPhieuTra;
 
                     // 4.2. Thêm PhieuTraHangNhap
                     string insertPthSql = @"
@@ -464,30 +466,18 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                     cmdPn.Parameters.AddWithValue("@MaPhieuNhap", maPhieuNhap);
                     cmdPn.ExecuteNonQuery();
 
-                    // 4.5. Cập nhật giảm nợ cần trả của DonViCapHang
-                    if (maDonViCapHang > 0 && truVaoCongNo > 0)
-                    {
-                        string updateNccSql = @"
-                            UPDATE DonViCapHang 
-                            SET NoCanTraHienTai = CASE WHEN NoCanTraHienTai >= @TruVaoCongNo THEN NoCanTraHienTai - @TruVaoCongNo ELSE 0 END 
-                            WHERE MaDonViCapHang = @MaDonViCapHang";
-                        SqlCommand cmdNcc = new SqlCommand(updateNccSql, conn, trans);
-                        cmdNcc.Parameters.AddWithValue("@TruVaoCongNo", truVaoCongNo);
-                        cmdNcc.Parameters.AddWithValue("@MaDonViCapHang", maDonViCapHang);
-                        cmdNcc.ExecuteNonQuery();
-                    }
-
-                    // 4.6. Ghi nhật ký kiểm toán thao tác
+                    // 4.5. Ghi nhật ký kiểm toán thao tác
                     string logSql = @"
-                        INSERT INTO NhatKyThaoTac (MaTaiKhoan, ThoiDiem, DoiTuong, HanhDong, ChiTiet)
-                        VALUES (@MaTaiKhoan, GETDATE(), 'PhieuTraHangNhap', 'TRA_HANG_NHAP', @ChiTiet)";
+                        INSERT INTO NhatKyThaoTac (MaTaiKhoan, ThoiDiem, ThaoTac, LoaiDoiTuong, MaDoiTuong, NoiDung)
+                        VALUES (@MaTaiKhoan, GETDATE(), 'TRA_HANG_NHAP', 'PhieuTraHangNhap', @MaDoiTuong, @NoiDung)";
                     SqlCommand cmdLog = new SqlCommand(logSql, conn, trans);
                     cmdLog.Parameters.AddWithValue("@MaTaiKhoan", SessionContext.MaTaiKhoan > 0 ? SessionContext.MaTaiKhoan : 1);
-                    cmdLog.Parameters.AddWithValue("@ChiTiet", $"Lập phiếu trả hàng {maPhieuTra} cho đơn {maPhieuGoc}, tổng SL: {tongSlTra:N2}, tổng tiền: {tongTienTra:N0}, trừ nợ: {truVaoCongNo:N0}, NCC hoàn lại: {tienNccTraLai:N0}");
+                    cmdLog.Parameters.AddWithValue("@MaDoiTuong", maPhieuTra);
+                    cmdLog.Parameters.AddWithValue("@NoiDung", $"Lập phiếu trả hàng {maPhieuTra} cho đơn {maPhieuGoc}, tổng SL: {tongSlTra:N0}, tổng tiền: {tongTienTra:N0}, trừ nợ: {truVaoCongNo:N0}, NCC hoàn lại: {tienNccTraLai:N0}");
                     cmdLog.ExecuteNonQuery();
                 });
 
-                MessageBox.Show($"Xác nhận trả hàng thành công!\nPhiếu trả hàng đã sinh: THN...", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"Xác nhận trả hàng thành công!\nPhiếu trả hàng đã sinh: {maPhieuTraMoi}", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }
@@ -515,5 +505,65 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 
             public override string ToString() => Text;
         }
-    }
+    
+        private void dgvHangTra_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        {
+            if (e.RowIndex >= 0 && e.ColumnIndex == colSoLuongTra.Index)
+            {
+                // 1. Vẽ nền hàng
+                e.PaintBackground(e.ClipBounds, true);
+
+                // 2. Tính toán khung ô nhập liệu dạng hộp TextBox rõ nét
+                Rectangle boxRect = new Rectangle(e.CellBounds.X + 4, e.CellBounds.Y + 4, e.CellBounds.Width - 8, e.CellBounds.Height - 8);
+
+                // 3. Tô nền hộp nhập liệu màu trắng tinh
+                using (SolidBrush brush = new SolidBrush(Color.White))
+                {
+                    e.Graphics.FillRectangle(brush, boxRect);
+                }
+
+                // 4. Vẽ viền hộp nhập liệu: xanh dương đậm nổi bật nếu ô đang active/chọn, viền xám rõ ràng nếu bình thường
+                bool isCurrent = dgvHangTra.CurrentCell != null && dgvHangTra.CurrentCell.RowIndex == e.RowIndex && dgvHangTra.CurrentCell.ColumnIndex == e.ColumnIndex;
+                Color borderColor = isCurrent ? Color.FromArgb(37, 99, 235) : Color.FromArgb(148, 163, 184);
+                int penWidth = isCurrent ? 2 : 1;
+
+                using (Pen pen = new Pen(borderColor, penWidth))
+                {
+                    e.Graphics.DrawRectangle(pen, boxRect);
+                }
+
+                // 5. Vẽ giá trị số lượng căn phải bên trong hộp
+                string valStr = e.FormattedValue != null ? Convert.ToDecimal(e.Value ?? 0).ToString("N0") : "0";
+                Rectangle textRect = new Rectangle(boxRect.X, boxRect.Y, boxRect.Width - 8, boxRect.Height);
+                TextRenderer.DrawText(e.Graphics, valStr, e.CellStyle.Font, textRect, Color.FromArgb(15, 23, 42),
+                    TextFormatFlags.Right | TextFormatFlags.VerticalCenter);
+
+                e.Handled = true;
+            }
+        }
+
+        private void dgvHangTra_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        {
+            if (dgvHangTra.CurrentCell != null && dgvHangTra.CurrentCell.ColumnIndex == colSoLuongTra.Index)
+            {
+                if (e.Control is TextBox tb)
+                {
+                    tb.TextAlign = HorizontalAlignment.Right;
+                    tb.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold);
+                    tb.KeyPress -= Tb_KeyPress;
+                    tb.KeyPress += Tb_KeyPress;
+                    this.BeginInvoke(new Action(() => tb.SelectAll()));
+                }
+            }
+        }
+
+        private void Tb_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Chỉ cho phép nhập số nguyên (0-9) và các phím điều khiển (Backspace)
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+        }
+}
 }

@@ -1,4 +1,4 @@
-namespace BTL_LTTQ_2.GUI.Forms.NhapHang
+﻿namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 {
     partial class frmTraHangNhap
     {
@@ -278,6 +278,8 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             this.dgvHangTra.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvHangTra_CellFormatting);
             this.dgvHangTra.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dgvHangTra_CellValidating);
             this.dgvHangTra.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvHangTra_CellValueChanged);
+            this.dgvHangTra.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dgvHangTra_CellPainting);
+            this.dgvHangTra.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.dgvHangTra_EditingControlShowing);
             // 
             // colStt
             // 
@@ -337,9 +339,9 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             // colSoLuongTra
             // 
             this.colSoLuongTra.DataPropertyName = "SoLuongTra";
-            this.colSoLuongTra.HeaderText = "SL cần trả (*)";
+            this.colSoLuongTra.HeaderText = "SL cần trả [Nhập] (*)";
             this.colSoLuongTra.Name = "colSoLuongTra";
-            this.colSoLuongTra.Width = 110;
+            this.colSoLuongTra.Width = 145;
             // 
             // colDonGiaTra
             // 

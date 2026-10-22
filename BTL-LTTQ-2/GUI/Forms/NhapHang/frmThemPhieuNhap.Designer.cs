@@ -1,4 +1,4 @@
-namespace BTL_LTTQ_2.GUI.Forms.NhapHang
+﻿namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 {
     partial class frmThemPhieuNhap
     {
@@ -298,7 +298,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             // 
             // txtSoLuongNhap
             // 
-            this.txtSoLuongNhap.DecimalPlaces = 2;
+            this.txtSoLuongNhap.DecimalPlaces = 0;
             this.txtSoLuongNhap.Location = new System.Drawing.Point(545, 25);
             this.txtSoLuongNhap.Maximum = new decimal(new int[] {
             1000000,
@@ -309,7 +309,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             1,
             0,
             0,
-            131072});
+            0});
             this.txtSoLuongNhap.Name = "txtSoLuongNhap";
             this.txtSoLuongNhap.Size = new System.Drawing.Size(90, 25);
             this.txtSoLuongNhap.TabIndex = 4;

@@ -441,8 +441,8 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             this.dgvNhapHang.MultiSelect = false;
             this.dgvNhapHang.Name = "dgvNhapHang";
             this.dgvNhapHang.RowHeadersVisible = false;
-            this.dgvNhapHang.RowHeadersWidth = 30;
-            this.dgvNhapHang.RowTemplate.Height = 36;
+            this.dgvNhapHang.RowHeadersWidth = 51;
+            this.dgvNhapHang.RowTemplate.Height = 32;
             this.dgvNhapHang.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvNhapHang.Size = new System.Drawing.Size(1093, 635);
             this.dgvNhapHang.TabIndex = 2;
@@ -466,7 +466,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             this.colChon.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.colChon.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.colChon.TrueValue = true;
-            this.colChon.Width = 38;
+            this.colChon.Width = 45;
             // 
             // colMaPhieu
             // 
@@ -487,16 +487,16 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             // colMaNcc
             // 
             this.colMaNcc.DataPropertyName = "MaNccHienThi";
-            this.colMaNcc.HeaderText = "Mã NCC";
+            this.colMaNcc.HeaderText = "Mã nhà cung cấp";
             this.colMaNcc.Name = "colMaNcc";
             this.colMaNcc.ReadOnly = true;
-            this.colMaNcc.Width = 110;
+            this.colMaNcc.Width = 140;
             // 
             // colTenNcc
             // 
             this.colTenNcc.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.colTenNcc.DataPropertyName = "TenDonVi";
-            this.colTenNcc.HeaderText = "Nhà cung cấp";
+            this.colTenNcc.HeaderText = "Tên nhà cung cấp";
             this.colTenNcc.Name = "colTenNcc";
             this.colTenNcc.ReadOnly = true;
             // 
@@ -541,7 +541,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             this.Controls.Add(this.pnlPhanTrang);
             this.Controls.Add(this.pnlBoLoc);
             this.Controls.Add(this.pnlTop);
-            this.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "frmNhapHang";
             this.Text = "Nhập hàng";

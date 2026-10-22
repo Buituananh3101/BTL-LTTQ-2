@@ -49,22 +49,20 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                 null, dgvNhapHang, new object[] { true });
 
             dgvNhapHang.AutoGenerateColumns = false;
-            dgvNhapHang.EnableHeadersVisualStyles = false;
             dgvNhapHang.ReadOnly = false;
             dgvNhapHang.EditMode = DataGridViewEditMode.EditOnEnter;
+            dgvNhapHang.RowTemplate.Height = 32;
+            dgvNhapHang.RowHeadersWidth = 51;
 
-            // Thiết lập màu sắc và định dạng lưới chuẩn WinForms
-            dgvNhapHang.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(241, 245, 249);
-            dgvNhapHang.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(30, 41, 59);
-            dgvNhapHang.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-            dgvNhapHang.ColumnHeadersHeight = 38;
-
+            // Màu dòng xen kẽ đồng bộ với các form đã có (frmDanhSachHangHoa, frmNhaCungCap)
             dgvNhapHang.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
             dgvNhapHang.DefaultCellStyle.SelectionBackColor = Color.FromArgb(224, 231, 255);
-            dgvNhapHang.DefaultCellStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
+            dgvNhapHang.DefaultCellStyle.SelectionForeColor = Color.FromArgb(30, 41, 59);
 
-            // Căn lề các cột
+            // Đồng bộ độ rộng cột tiêu đề giống frmNhaCungCap (tránh ngắt dòng làm tăng chiều cao hàng tiêu đề)
+            colChon.Width = 45;
             colChon.ReadOnly = false;
+            colMaNcc.Width = 140;
             colMaPhieu.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colThoiGian.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colMaNcc.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -452,7 +450,6 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                 if (tt == "Đã nhập hàng")
                 {
                     e.CellStyle.ForeColor = Color.FromArgb(22, 163, 74);
-                    e.CellStyle.Font = new Font(dgvNhapHang.Font, FontStyle.Bold);
                 }
                 else if (tt == "Phiếu tạm")
                 {
