@@ -59,6 +59,12 @@
     <Compile Include="GUI\Forms\DanhSachHangHoa\frmHienCot.Designer.cs">
       <DependentUpon>frmHienCot.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\Forms\DanhSachHangHoa\frmNhomHang.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\DanhSachHangHoa\frmNhomHang.Designer.cs">
+      <DependentUpon>frmNhomHang.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\Forms\frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -67,6 +73,9 @@
     </Compile>
     <EmbeddedResource Include="GUI\Forms\DanhSachHangHoa\frmHienCot.resx">
       <DependentUpon>frmHienCot.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Forms\DanhSachHangHoa\frmNhomHang.resx">
+      <DependentUpon>frmNhomHang.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>

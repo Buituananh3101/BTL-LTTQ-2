@@ -30,10 +30,8 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.mnuDoiKho = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuDanhMuc = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuDanhSachHangHoa = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuNhomHang = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuDonViTinh = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuViTriHang = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuMuaHang = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuNhaCungCap = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
@@ -145,9 +143,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.mnuDanhMuc.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuDanhSachHangHoa,
             this.toolStripSeparator3,
-            this.mnuNhomHang,
-            this.mnuDonViTinh,
-            this.mnuViTriHang});
+            this.mnuDonViTinh});
             this.mnuDanhMuc.Name = "mnuDanhMuc";
             this.mnuDanhMuc.Size = new System.Drawing.Size(91, 25);
             this.mnuDanhMuc.Text = "H&àng hóa";
@@ -159,12 +155,6 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.mnuDanhSachHangHoa.Text = "Danh sách hàng hóa";
             this.mnuDanhSachHangHoa.Click += new System.EventHandler(this.menuDanhSachHangHoa_Click);
             // 
-            // mnuNhomHang
-            // 
-            this.mnuNhomHang.Name = "mnuNhomHang";
-            this.mnuNhomHang.Size = new System.Drawing.Size(235, 26);
-            this.mnuNhomHang.Text = "Nhóm hàng";
-            // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
@@ -175,12 +165,6 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.mnuDonViTinh.Name = "mnuDonViTinh";
             this.mnuDonViTinh.Size = new System.Drawing.Size(235, 26);
             this.mnuDonViTinh.Text = "Đơn vị tính";
-            // 
-            // mnuViTriHang
-            // 
-            this.mnuViTriHang.Name = "mnuViTriHang";
-            this.mnuViTriHang.Size = new System.Drawing.Size(235, 26);
-            this.mnuViTriHang.Text = "Vị trí";
             // 
             // mnuMuaHang
             // 
@@ -326,9 +310,7 @@ namespace BTL_LTTQ_2.GUI.Forms
         private System.Windows.Forms.ToolStripMenuItem mnuThoat;
         private System.Windows.Forms.ToolStripMenuItem mnuDanhMuc;
         private System.Windows.Forms.ToolStripMenuItem mnuDanhSachHangHoa;
-        private System.Windows.Forms.ToolStripMenuItem mnuNhomHang;
         private System.Windows.Forms.ToolStripMenuItem mnuDonViTinh;
-        private System.Windows.Forms.ToolStripMenuItem mnuViTriHang;
         private System.Windows.Forms.ToolStripMenuItem mnuQuanLyKho;
         private System.Windows.Forms.ToolStripMenuItem mnuChuyenKho;
         private System.Windows.Forms.ToolStripMenuItem mnuKiemKho;
