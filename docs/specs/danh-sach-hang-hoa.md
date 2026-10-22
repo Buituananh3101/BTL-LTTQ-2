@@ -51,7 +51,9 @@
 6. **Vị trí**: Dropdown đa chọn kèm ô tìm kiếm nhanh `.kiot-ms-search`.
 7. **Thời gian tạo**: Hôm nay, Hôm qua, 7 ngày, 30 ngày hoặc tùy chọn ngày (Dual Calendar).
 
-### 3.2. Sắp xếp 3 trạng thái & Ẩn hiện cột:
+### 3.2. Cột Checkbox & Ẩn hiện cột:
+- **Cột CheckBox lựa chọn (colChon)**: Cột cố định đầu tiên (35px) phục vụ chọn từng dòng hoặc chọn tất cả qua Header CheckBox. Click trực tiếp hoặc bấm phím Space để đảo trạng thái chọn tức thì mà không ảnh hưởng trạng thái chỉ đọc của các cột dữ liệu. Cung cấp API LayDanhSachMaHangDaChon() để phục vụ các tác vụ hàng loạt. Tự động loại trừ khi xuất file Excel/CSV.
+- **Sắp xếp 3 trạng thái & Ẩn hiện cột**:
 - **Sắp xếp 3 trạng thái**: Click header: Lần 1 ASC (`bi-arrow-up`) ➜ Lần 2 DESC (`bi-arrow-down`) ➜ Lần 3 Default. Cột căn trái dùng inline-flex chống tràn viền, cột số dùng padding-right 22px cố định icon.
 - **Tùy chọn hiển thị cột**: Nút `#btnColsDropdown` (`bi-view-list`), menu `#colMenu` 2 cột chuẩn chuyên nghiệp. Quản lý qua `KiotFilter.initColumnToggle` lưu `kiot_hang_hoa_cols_v1`. Quản lý 13 cột dữ liệu (`img`, `mahang`, `tenhang`, `nhomhang`, `dvt`, `giaban`, `giavon`, `tonkho`, `khachdat`, `vitri`, `ngaytao`, `dukienhethang`, `trangthai`) + 2 cột cố định. Tự động đồng bộ `colspan` và class `.last-visible-col`. Bảng `#productTable` áp dụng chuẩn `width: max-content; min-width: 760px; table-layout: fixed;` (chuẩn Kiểm tồn & Nhà cung cấp), khóa cố định `width`/`min-width` từng cột chống co rút khi thêm cột. Khung chi tiết `.kiot-detail-fixed-wrap` cố định 992px.
 

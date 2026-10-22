@@ -7,6 +7,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using BTL_LTTQ_2.BLL;
 using BTL_LTTQ_2.DAL;
 using BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa;
@@ -23,6 +24,9 @@ namespace BTL_LTTQ_2.GUI.Forms
 
         // Cờ kiểm soát tránh load lặp khi khởi tạo combobox
         private bool isLoaded = false;
+
+        // Cờ kiểm soát Header CheckBox (Chọn tất cả)
+        private bool isHeaderChecked = false;
 
         public frmDanhSachHangHoa()
         {
@@ -59,6 +63,12 @@ namespace BTL_LTTQ_2.GUI.Forms
             dgvHangHoa.BackgroundColor = Color.White;
             dgvHangHoa.BorderStyle = BorderStyle.None;
 
+            // Đăng ký sự kiện vẽ header và click chọn CheckBox
+            dgvHangHoa.CellPainting += dgvHangHoa_CellPainting;
+            dgvHangHoa.CellClick += dgvHangHoa_CellClick;
+            dgvHangHoa.ColumnHeaderMouseClick += dgvHangHoa_ColumnHeaderMouseClick;
+            dgvHangHoa.KeyDown += dgvHangHoa_KeyDown;
+
             // Màu dòng xen kẽ hiện đại
             dgvHangHoa.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
             dgvHangHoa.DefaultCellStyle.SelectionBackColor = Color.FromArgb(224, 231, 255);
@@ -72,7 +82,19 @@ namespace BTL_LTTQ_2.GUI.Forms
                 Visible = false
             });
 
-            // Cột 1: Hình ảnh (Tạo thành hình vuông 48x48)
+            // Cột 1: Chọn CheckBox
+            dgvHangHoa.Columns.Add(new DataGridViewCheckBoxColumn
+            {
+                Name = "colChon",
+                DataPropertyName = "Chon",
+                HeaderText = "",
+                Width = 35,
+                Resizable = DataGridViewTriState.False,
+                SortMode = DataGridViewColumnSortMode.NotSortable,
+                DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleCenter }
+            });
+
+            // Cột 2: Hình ảnh (Tạo thành hình vuông 48x48)
             dgvHangHoa.Columns.Add(new DataGridViewImageColumn
             {
                 Name = "colHinhAnh",
@@ -429,7 +451,26 @@ namespace BTL_LTTQ_2.GUI.Forms
                     OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY;";
 
                 DataTable dtHangHoa = DataProcessing.ReadData(sqlData, parameters.ToArray());
+
+                // Thêm cột logic Chon vào DataTable để DataGridViewCheckBoxColumn bind chuẩn xác
+                if (!dtHangHoa.Columns.Contains("Chon"))
+                {
+                    dtHangHoa.Columns.Add("Chon", typeof(bool));
+                    dtHangHoa.Columns["Chon"].DefaultValue = false;
+                    foreach (DataRow r in dtHangHoa.Rows)
+                    {
+                        r["Chon"] = false;
+                    }
+                }
+
                 dgvHangHoa.DataSource = dtHangHoa;
+
+                // Reset trạng thái Header CheckBox khi nạp trang mới
+                isHeaderChecked = false;
+                if (dgvHangHoa.Columns.Contains("colChon"))
+                {
+                    dgvHangHoa.InvalidateCell(dgvHangHoa.Columns["colChon"].Index, -1);
+                }
 
                 // Cố định chiều cao dòng 48px để ô cột hình ảnh luôn tạo thành hình vuông 48x48
                 foreach (DataGridViewRow r in dgvHangHoa.Rows)
@@ -535,9 +576,36 @@ namespace BTL_LTTQ_2.GUI.Forms
             }
         }
 
-        // Vẽ ô cột hình ảnh thành một khung hình vuông hoàn hảo
+        // Vẽ Header Checkbox và ô cột hình ảnh thành khung hình vuông
         private void dgvHangHoa_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
+            // 1. Vẽ Header CheckBox cho cột colChon
+            if (e.RowIndex == -1 && e.ColumnIndex >= 0 && dgvHangHoa.Columns[e.ColumnIndex].Name == "colChon")
+            {
+                e.PaintBackground(e.CellBounds, true);
+
+                int boxSize = 14;
+                int x = e.CellBounds.X + (e.CellBounds.Width - boxSize) / 2;
+                int y = e.CellBounds.Y + (e.CellBounds.Height - boxSize) / 2;
+                Rectangle rect = new Rectangle(x, y, boxSize, boxSize);
+
+                if (Application.RenderWithVisualStyles)
+                {
+                    CheckBoxState state = isHeaderChecked
+                        ? CheckBoxState.CheckedNormal
+                        : CheckBoxState.UncheckedNormal;
+                    CheckBoxRenderer.DrawCheckBox(e.Graphics, new Point(x, y), state);
+                }
+                else
+                {
+                    ControlPaint.DrawCheckBox(e.Graphics, rect, isHeaderChecked ? ButtonState.Checked : ButtonState.Normal);
+                }
+
+                e.Handled = true;
+                return;
+            }
+
+            // 2. Vẽ ô cột hình ảnh thành một khung hình vuông hoàn hảo
             if (e.RowIndex >= 0 && e.ColumnIndex >= 0 && dgvHangHoa.Columns[e.ColumnIndex].Name == "colHinhAnh")
             {
                 // Vẽ màu nền dòng (màu xen kẽ hoặc màu khi click chọn dòng)
@@ -601,6 +669,112 @@ namespace BTL_LTTQ_2.GUI.Forms
             }
         }
 
+        private void dgvHangHoa_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0 && e.ColumnIndex >= 0 && dgvHangHoa.Columns[e.ColumnIndex].Name == "colChon")
+            {
+                bool currentVal = Convert.ToBoolean(dgvHangHoa.Rows[e.RowIndex].Cells["colChon"].Value ?? false);
+                bool newVal = !currentVal;
+                dgvHangHoa.Rows[e.RowIndex].Cells["colChon"].Value = newVal;
+                if (dgvHangHoa.DataSource is DataTable dt && e.RowIndex < dt.Rows.Count)
+                {
+                    dt.Rows[e.RowIndex]["Chon"] = newVal;
+                }
+                CapNhatTrangThaiHeaderCheckBox();
+            }
+        }
+
+        private void dgvHangHoa_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.ColumnIndex >= 0 && dgvHangHoa.Columns[e.ColumnIndex].Name == "colChon")
+            {
+                if (dgvHangHoa.Rows.Count == 0) return;
+
+                isHeaderChecked = !isHeaderChecked;
+                foreach (DataGridViewRow row in dgvHangHoa.Rows)
+                {
+                    row.Cells["colChon"].Value = isHeaderChecked;
+                }
+                if (dgvHangHoa.DataSource is DataTable dt)
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        dr["Chon"] = isHeaderChecked;
+                    }
+                }
+                dgvHangHoa.InvalidateCell(e.ColumnIndex, -1);
+            }
+        }
+
+        private void dgvHangHoa_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Space && dgvHangHoa.CurrentRow != null && dgvHangHoa.CurrentRow.Index >= 0)
+            {
+                var cell = dgvHangHoa.CurrentRow.Cells["colChon"];
+                if (cell != null)
+                {
+                    bool currentVal = Convert.ToBoolean(cell.Value ?? false);
+                    bool newVal = !currentVal;
+                    cell.Value = newVal;
+                    if (dgvHangHoa.DataSource is DataTable dt && dgvHangHoa.CurrentRow.Index < dt.Rows.Count)
+                    {
+                        dt.Rows[dgvHangHoa.CurrentRow.Index]["Chon"] = newVal;
+                    }
+                    CapNhatTrangThaiHeaderCheckBox();
+                    e.Handled = true;
+                }
+            }
+        }
+
+        private void CapNhatTrangThaiHeaderCheckBox()
+        {
+            if (dgvHangHoa.Rows.Count == 0)
+            {
+                isHeaderChecked = false;
+                return;
+            }
+
+            bool allChecked = true;
+            foreach (DataGridViewRow row in dgvHangHoa.Rows)
+            {
+                bool val = Convert.ToBoolean(row.Cells["colChon"].Value ?? false);
+                if (!val)
+                {
+                    allChecked = false;
+                    break;
+                }
+            }
+
+            if (isHeaderChecked != allChecked)
+            {
+                isHeaderChecked = allChecked;
+                if (dgvHangHoa.Columns.Contains("colChon"))
+                {
+                    dgvHangHoa.InvalidateCell(dgvHangHoa.Columns["colChon"].Index, -1);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Trả về danh sách MaHang của các dòng đang được tích chọn CheckBox
+        /// </summary>
+        public List<int> LayDanhSachMaHangDaChon()
+        {
+            List<int> ketQua = new List<int>();
+            foreach (DataGridViewRow row in dgvHangHoa.Rows)
+            {
+                if (Convert.ToBoolean(row.Cells["colChon"].Value ?? false))
+                {
+                    var valMaHang = row.Cells["colMaHang"].Value;
+                    if (valMaHang != null && int.TryParse(valMaHang.ToString(), out int maHang))
+                    {
+                        ketQua.Add(maHang);
+                    }
+                }
+            }
+            return ketQua;
+        }
+
         #endregion
 
         #region Hành động & Nút chức năng
@@ -609,6 +783,7 @@ namespace BTL_LTTQ_2.GUI.Forms
         private void dgvHangHoa_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;
+            if (e.ColumnIndex >= 0 && dgvHangHoa.Columns[e.ColumnIndex].Name == "colChon") return;
 
             var cellMaHang = dgvHangHoa.Rows[e.RowIndex].Cells["colMaHang"].Value;
             if (cellMaHang != null && int.TryParse(cellMaHang.ToString(), out int maHang))
@@ -708,7 +883,7 @@ namespace BTL_LTTQ_2.GUI.Forms
                             sb.AppendLine("<tr>");
                             foreach (DataGridViewColumn col in dgvHangHoa.Columns)
                             {
-                                if (col.Visible && !(col is DataGridViewImageColumn))
+                                if (col.Visible && !(col is DataGridViewImageColumn) && !(col is DataGridViewCheckBoxColumn))
                                 {
                                     sb.AppendLine($"<th>{System.Net.WebUtility.HtmlEncode(col.HeaderText)}</th>");
                                 }
@@ -721,7 +896,7 @@ namespace BTL_LTTQ_2.GUI.Forms
                                 sb.AppendLine("<tr>");
                                 foreach (DataGridViewColumn col in dgvHangHoa.Columns)
                                 {
-                                    if (col.Visible && !(col is DataGridViewImageColumn))
+                                    if (col.Visible && !(col is DataGridViewImageColumn) && !(col is DataGridViewCheckBoxColumn))
                                     {
                                         string cellVal = row.Cells[col.Index].FormattedValue?.ToString() ?? "";
                                         string cssClass = "text";
@@ -748,7 +923,7 @@ namespace BTL_LTTQ_2.GUI.Forms
                             List<string> headers = new List<string>();
                             foreach (DataGridViewColumn col in dgvHangHoa.Columns)
                             {
-                                if (col.Visible && !(col is DataGridViewImageColumn))
+                                if (col.Visible && !(col is DataGridViewImageColumn) && !(col is DataGridViewCheckBoxColumn))
                                 {
                                     headers.Add($"\"{col.HeaderText.Replace("\"", "\"\"")}\"");
                                 }
@@ -760,7 +935,7 @@ namespace BTL_LTTQ_2.GUI.Forms
                                 List<string> rowValues = new List<string>();
                                 foreach (DataGridViewColumn col in dgvHangHoa.Columns)
                                 {
-                                    if (col.Visible && !(col is DataGridViewImageColumn))
+                                    if (col.Visible && !(col is DataGridViewImageColumn) && !(col is DataGridViewCheckBoxColumn))
                                     {
                                         string cellVal = row.Cells[col.Index].FormattedValue?.ToString() ?? "";
                                         rowValues.Add($"\"{cellVal.Replace("\"", "\"\"")}\"");
