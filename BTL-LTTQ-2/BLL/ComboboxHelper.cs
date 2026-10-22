@@ -4,6 +4,7 @@ using System.Data;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 
@@ -14,9 +15,71 @@ namespace BTL_LTTQ_2.BLL
     /// Ban đầu hiển thị đầy đủ danh sách; khi gõ phím thì các phần tử trong ComboBox tự lọc theo từ khóa chứa ký tự (hỗ trợ có dấu và không dấu).
     /// Khi tìm thấy: ấn Enter tự động chọn phần tử đầu tiên (không cần bấm mũi tên xuống).
     /// Khi không tìm thấy: ấn Enter tự động khôi phục toàn bộ danh sách và chọn phần tử đầu tiên (-- Tất cả --).
+    /// Giới hạn hiển thị tối đa MaxDropDownItems (mặc định 8 mục) và tự động bật thanh cuộn (scrollbar) để tránh tràn màn hình.
     /// </summary>
     public static class ComboboxHelper
     {
+        [StructLayout(LayoutKind.Sequential)]
+        private struct RECT
+        {
+            public int Left, Top, Right, Bottom;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct COMBOBOXINFO
+        {
+            public int cbSize;
+            public RECT rcItem;
+            public RECT rcButton;
+            public int stateButton;
+            public IntPtr hwndCombo;
+            public IntPtr hwndItem;
+            public IntPtr hwndList;
+        }
+
+        [DllImport("user32.dll")]
+        private static extern bool GetComboBoxInfo(IntPtr hWnd, ref COMBOBOXINFO pcbi);
+
+        [DllImport("user32.dll")]
+        private static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+
+        [DllImport("user32.dll")]
+        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+
+        private const uint SWP_NOMOVE = 0x0002;
+        private const uint SWP_NOZORDER = 0x0004;
+        private const uint SWP_NOACTIVATE = 0x0010;
+
+        /// <summary>
+        /// Cập nhật chiều cao hiển thị của phần thả xuống ComboBox (giới hạn tối đa MaxDropDownItems, mặc định 8 dòng).
+        /// Khắc phục lỗi WinForms bỏ qua MaxDropDownItems khi IntegralHeight = true.
+        /// </summary>
+        public static void CapNhatDoCaoDropdown(ComboBox cbo, int itemCount)
+        {
+            if (cbo == null) return;
+
+            int maxItems = cbo.MaxDropDownItems > 0 ? cbo.MaxDropDownItems : 8;
+            int visibleItems = Math.Min(Math.Max(itemCount, 1), maxItems);
+            int newHeight = visibleItems * cbo.ItemHeight + 2;
+
+            cbo.IntegralHeight = false;
+            cbo.DropDownHeight = newHeight;
+
+            if (cbo.DroppedDown && cbo.IsHandleCreated)
+            {
+                COMBOBOXINFO info = new COMBOBOXINFO();
+                info.cbSize = Marshal.SizeOf(info);
+                if (GetComboBoxInfo(cbo.Handle, ref info) && info.hwndList != IntPtr.Zero)
+                {
+                    RECT r;
+                    GetWindowRect(info.hwndList, out r);
+                    int width = r.Right - r.Left;
+                    if (width <= 0) width = cbo.DropDownWidth;
+                    SetWindowPos(info.hwndList, IntPtr.Zero, 0, 0, width, newHeight, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
+                }
+            }
+        }
+
         /// <summary>
         /// Chuẩn hóa bỏ dấu tiếng Việt phục vụ tìm kiếm linh hoạt (ví dụ: gõ 'nuoc' vẫn tìm thấy 'Nước')
         /// </summary>
@@ -43,6 +106,8 @@ namespace BTL_LTTQ_2.BLL
             cbo.AutoCompleteMode = AutoCompleteMode.None;
             cbo.AutoCompleteSource = AutoCompleteSource.None;
             cbo.DropDownStyle = ComboBoxStyle.DropDown;
+            cbo.IntegralHeight = false;
+            if (cbo.MaxDropDownItems <= 0) cbo.MaxDropDownItems = 8;
 
             // Tạo cột tìm kiếm không dấu nếu chưa có
             string searchCol = "_SearchCol";
@@ -61,7 +126,14 @@ namespace BTL_LTTQ_2.BLL
             cbo.DisplayMember = displayCol;
             cbo.ValueMember = valueCol;
 
+            CapNhatDoCaoDropdown(cbo, dv.Count);
+
             bool isFiltering = false;
+
+            cbo.DropDown += (s, e) =>
+            {
+                CapNhatDoCaoDropdown(cbo, dv.Count);
+            };
 
             cbo.TextUpdate += (s, e) =>
             {
@@ -81,6 +153,7 @@ namespace BTL_LTTQ_2.BLL
                     dv.RowFilter = $"{searchCol} LIKE '%{clean}%'";
                 }
 
+                CapNhatDoCaoDropdown(cbo, dv.Count);
                 cbo.DroppedDown = true;
                 Cursor.Current = Cursors.Default;
                 cbo.Text = text;
@@ -97,10 +170,19 @@ namespace BTL_LTTQ_2.BLL
 
                 try
                 {
+                    bool wasFiltered = !string.IsNullOrEmpty(dv.RowFilter);
+                    if (!wasFiltered)
+                    {
+                        // Người dùng chỉ click chọn bình thường từ danh sách đầy đủ, không lọc
+                        // Giữ nguyên 100% lựa chọn của người dùng
+                        return;
+                    }
+
                     if (dv.Count == 0)
                     {
                         // 1. Không tìm thấy gì mà Enter/Đóng -> Trả lại tất cả, chọn mục đầu tiên (Tất cả)
                         dv.RowFilter = "";
+                        CapNhatDoCaoDropdown(cbo, dv.Count);
                         if (cbo.Items.Count > 0)
                         {
                             cbo.SelectedIndex = 0;
@@ -115,30 +197,21 @@ namespace BTL_LTTQ_2.BLL
                         }
 
                         object currentVal = cbo.SelectedValue;
-                        string currentText = cbo.Text;
 
                         // Khôi phục lại toàn bộ danh sách để lần mở sau hiện hết
                         dv.RowFilter = "";
+                        CapNhatDoCaoDropdown(cbo, dv.Count);
 
                         if (currentVal != null)
                         {
                             cbo.SelectedValue = currentVal;
-                        }
-                        else if (!string.IsNullOrWhiteSpace(currentText))
-                        {
-                            int idx = cbo.FindStringExact(currentText);
-                            if (idx >= 0) cbo.SelectedIndex = idx;
-                            else if (cbo.Items.Count > 0) cbo.SelectedIndex = 0;
-                        }
-                        else if (cbo.Items.Count > 0)
-                        {
-                            cbo.SelectedIndex = 0;
                         }
                     }
                 }
                 catch
                 {
                     dv.RowFilter = "";
+                    CapNhatDoCaoDropdown(cbo, dv.Count);
                     if (cbo.Items.Count > 0) cbo.SelectedIndex = 0;
                 }
                 finally
@@ -146,7 +219,10 @@ namespace BTL_LTTQ_2.BLL
                     cbo.DroppedDown = false;
                     isFiltering = false;
                     onCommitted?.Invoke();
-                    cbo.BeginInvoke(new Action(() => cbo.SelectAll()));
+                    if (!cbo.Focused)
+                    {
+                        cbo.SelectionLength = 0;
+                    }
                 }
             };
 
@@ -172,6 +248,7 @@ namespace BTL_LTTQ_2.BLL
             cbo.Leave += (s, e) =>
             {
                 apDungLuaChon();
+                cbo.SelectionLength = 0;
             };
 
             cbo.Enter += (s, e) =>
@@ -190,6 +267,8 @@ namespace BTL_LTTQ_2.BLL
             cbo.AutoCompleteMode = AutoCompleteMode.None;
             cbo.AutoCompleteSource = AutoCompleteSource.None;
             cbo.DropDownStyle = ComboBoxStyle.DropDown;
+            cbo.IntegralHeight = false;
+            if (cbo.MaxDropDownItems <= 0) cbo.MaxDropDownItems = 8;
 
             cbo.BeginUpdate();
             cbo.Items.Clear();
@@ -197,7 +276,14 @@ namespace BTL_LTTQ_2.BLL
             cbo.EndUpdate();
             if (cbo.Items.Count > 0 && cbo.SelectedIndex < 0) cbo.SelectedIndex = 0;
 
+            CapNhatDoCaoDropdown(cbo, cbo.Items.Count);
+
             bool isFiltering = false;
+
+            cbo.DropDown += (s, e) =>
+            {
+                CapNhatDoCaoDropdown(cbo, cbo.Items.Count);
+            };
 
             cbo.TextUpdate += (s, e) =>
             {
@@ -225,6 +311,7 @@ namespace BTL_LTTQ_2.BLL
                 }
 
                 cbo.EndUpdate();
+                CapNhatDoCaoDropdown(cbo, cbo.Items.Count);
                 cbo.DroppedDown = true;
                 Cursor.Current = Cursors.Default;
 
@@ -242,13 +329,22 @@ namespace BTL_LTTQ_2.BLL
 
                 try
                 {
+                    bool wasFiltered = (cbo.Items.Count != danhSachGoc.Count);
+                    if (!wasFiltered)
+                    {
+                        // Người dùng chỉ click chọn bình thường từ danh sách đầy đủ, không lọc
+                        // Giữ nguyên 100% lựa chọn của người dùng
+                        return;
+                    }
+
                     if (cbo.Items.Count == 0)
                     {
-                        // 1. Không tìm thấy gì mà Enter -> Trả lại tất cả
+                        // 1. Không tìm thấy gì mà Enter -> Trả lại tất cả, chọn mục đầu tiên
                         cbo.BeginUpdate();
                         cbo.Items.Clear();
                         cbo.Items.AddRange(danhSachGoc.ToArray());
                         cbo.EndUpdate();
+                        CapNhatDoCaoDropdown(cbo, cbo.Items.Count);
                         if (cbo.Items.Count > 0)
                         {
                             cbo.SelectedIndex = 0;
@@ -262,23 +358,18 @@ namespace BTL_LTTQ_2.BLL
                             cbo.SelectedIndex = 0;
                         }
 
-                        string currentText = cbo.Text;
+                        object pickedItem = cbo.SelectedItem;
 
                         // Khôi phục lại toàn bộ danh sách để lần mở sau hiện hết
                         cbo.BeginUpdate();
                         cbo.Items.Clear();
                         cbo.Items.AddRange(danhSachGoc.ToArray());
                         cbo.EndUpdate();
+                        CapNhatDoCaoDropdown(cbo, cbo.Items.Count);
 
-                        cbo.Text = currentText;
-                        int idx = cbo.FindStringExact(currentText);
-                        if (idx >= 0)
+                        if (pickedItem != null)
                         {
-                            cbo.SelectedIndex = idx;
-                        }
-                        else if (cbo.Items.Count > 0 && danhSachGoc.Count > 0 && danhSachGoc[0].StartsWith("--"))
-                        {
-                            cbo.SelectedIndex = 0;
+                            cbo.SelectedItem = pickedItem;
                         }
                     }
                 }
@@ -288,6 +379,7 @@ namespace BTL_LTTQ_2.BLL
                     cbo.Items.Clear();
                     cbo.Items.AddRange(danhSachGoc.ToArray());
                     cbo.EndUpdate();
+                    CapNhatDoCaoDropdown(cbo, cbo.Items.Count);
                     if (cbo.Items.Count > 0) cbo.SelectedIndex = 0;
                 }
                 finally
@@ -295,7 +387,10 @@ namespace BTL_LTTQ_2.BLL
                     cbo.DroppedDown = false;
                     isFiltering = false;
                     onCommitted?.Invoke();
-                    cbo.BeginInvoke(new Action(() => cbo.SelectAll()));
+                    if (!cbo.Focused)
+                    {
+                        cbo.SelectionLength = 0;
+                    }
                 }
             };
 
@@ -321,6 +416,7 @@ namespace BTL_LTTQ_2.BLL
             cbo.Leave += (s, e) =>
             {
                 apDungLuaChon();
+                cbo.SelectionLength = 0;
             };
 
             cbo.Enter += (s, e) =>
