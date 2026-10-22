@@ -71,6 +71,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                 this.CenterToScreen();
             }
 
+            //
             NapCombobox();
 
             if (maHangHienTai > 0)
