@@ -19,7 +19,6 @@
             }
             base.Dispose(disposing);
         }
-
         #region Windows Form Designer generated code
 
         /// <summary>
@@ -31,172 +30,263 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.panel3 = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.lblTongSoNhom = new System.Windows.Forms.Label();
+            this.panel2 = new System.Windows.Forms.Panel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.btnXuatFile = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
+            this.btnNhapFile = new System.Windows.Forms.Button();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.splitter2 = new System.Windows.Forms.Splitter();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.splitter1 = new System.Windows.Forms.Splitter();
+            this.btnHuy = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.panel2.SuspendLayout();
-            this.panel3.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
-            // 
+
+            //
             // textBox1
-            // 
+            //
             this.textBox1.Location = new System.Drawing.Point(21, 74);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(251, 22);
+            this.textBox1.Size = new System.Drawing.Size(251, 29);
             this.textBox1.TabIndex = 2;
-            // 
+
+            //
             // label1
-            // 
+            //
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(323, 18);
+            this.label1.Location = new System.Drawing.Point(324, 25);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(62, 16);
+            this.label1.Size = new System.Drawing.Size(74, 21);
             this.label1.TabIndex = 3;
             this.label1.Text = "Tìm kiếm";
-            // 
+
+            //
             // dataGridView1
-            // 
+            //
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView1.Location = new System.Drawing.Point(0, 0);
+            this.dataGridView1.Location = new System.Drawing.Point(326, 78);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(882, 553);
+            this.dataGridView1.Size = new System.Drawing.Size(756, 475);
             this.dataGridView1.TabIndex = 4;
-            // 
+
+            //
             // panel2
-            // 
+            //
             this.panel2.Controls.Add(this.groupBox1);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(882, 56);
+            this.panel2.Size = new System.Drawing.Size(1082, 78);
             this.panel2.TabIndex = 5;
-            // 
-            // panel3
-            // 
-            this.panel3.Controls.Add(this.groupBox2);
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panel3.Location = new System.Drawing.Point(0, 56);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(326, 497);
-            this.panel3.TabIndex = 6;
-            // 
-            // panel1
-            // 
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(326, 518);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(556, 35);
-            this.panel1.TabIndex = 7;
-            // 
+
+            //
             // groupBox1
-            // 
+            //
+            this.groupBox1.Controls.Add(this.btnXuatFile);
             this.groupBox1.Controls.Add(this.label3);
+            this.groupBox1.Controls.Add(this.btnNhapFile);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.textBox2);
             this.groupBox1.Location = new System.Drawing.Point(0, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(882, 44);
+            this.groupBox1.Size = new System.Drawing.Size(1082, 60);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(18, 46);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(67, 16);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "Tên nhóm";
-            // 
+
+            //
+            // btnXuatFile
+            //
+            this.btnXuatFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnXuatFile.Location = new System.Drawing.Point(960, 22);
+            this.btnXuatFile.Name = "btnXuatFile";
+            this.btnXuatFile.Size = new System.Drawing.Size(110, 29);
+            this.btnXuatFile.TabIndex = 6;
+            this.btnXuatFile.Text = "Xuất file";
+            this.btnXuatFile.UseVisualStyleBackColor = true;
+
+            //
+            // label3
+            //
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.label3.Location = new System.Drawing.Point(13, 22);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(111, 22);
+            this.label3.TabIndex = 4;
+            this.label3.Text = "Nhóm hàng";
+
+            //
+            // btnNhapFile
+            //
+            this.btnNhapFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnNhapFile.Location = new System.Drawing.Point(834, 22);
+            this.btnNhapFile.Name = "btnNhapFile";
+            this.btnNhapFile.Size = new System.Drawing.Size(110, 29);
+            this.btnNhapFile.TabIndex = 7;
+            this.btnNhapFile.Text = "Nhập file";
+            this.btnNhapFile.UseVisualStyleBackColor = true;
+
+            //
             // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(391, 15);
+            //
+            this.textBox2.Location = new System.Drawing.Point(413, 22);
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(322, 22);
+            this.textBox2.Size = new System.Drawing.Size(351, 29);
             this.textBox2.TabIndex = 2;
-            // 
+
+            //
+            // panel3
+            //
+            this.panel3.Controls.Add(this.splitter2);
+            this.panel3.Controls.Add(this.groupBox2);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Left;
+            this.panel3.Location = new System.Drawing.Point(0, 78);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(326, 475);
+            this.panel3.TabIndex = 6;
+
+            //
+            // splitter2
+            //
+            this.splitter2.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.splitter2.Dock = System.Windows.Forms.DockStyle.Top;
+            this.splitter2.Location = new System.Drawing.Point(0, 0);
+            this.splitter2.Name = "splitter2";
+            this.splitter2.Size = new System.Drawing.Size(326, 1);
+            this.splitter2.TabIndex = 5;
+            this.splitter2.TabStop = false;
+
+            //
             // groupBox2
-            // 
+            //
+            this.groupBox2.Controls.Add(this.splitter1);
+            this.groupBox2.Controls.Add(this.btnHuy);
             this.groupBox2.Controls.Add(this.button2);
             this.groupBox2.Controls.Add(this.button1);
             this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Controls.Add(this.textBox1);
             this.groupBox2.Location = new System.Drawing.Point(12, 6);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(296, 479);
+            this.groupBox2.Size = new System.Drawing.Size(296, 457);
             this.groupBox2.TabIndex = 4;
             this.groupBox2.TabStop = false;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(197, 115);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 29);
-            this.button1.TabIndex = 4;
-            this.button1.Text = "Thêm";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
+
+            //
+            // splitter1
+            //
+            this.splitter1.BackColor = System.Drawing.SystemColors.Control;
+            this.splitter1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.splitter1.Location = new System.Drawing.Point(3, 25);
+            this.splitter1.Name = "splitter1";
+            this.splitter1.Size = new System.Drawing.Size(290, 1);
+            this.splitter1.TabIndex = 6;
+            this.splitter1.TabStop = false;
+
+            //
+            // btnHuy
+            //
+            this.btnHuy.Location = new System.Drawing.Point(36, 125);
+            this.btnHuy.Name = "btnHuy";
+            this.btnHuy.Size = new System.Drawing.Size(75, 29);
+            this.btnHuy.TabIndex = 5;
+            this.btnHuy.Text = "Hủy";
+            this.btnHuy.UseVisualStyleBackColor = true;
+            this.btnHuy.Visible = false;
+
+            //
             // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(116, 115);
+            //
+            this.button2.Location = new System.Drawing.Point(117, 125);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 29);
             this.button2.TabIndex = 4;
             this.button2.Text = "Sửa";
             this.button2.UseVisualStyleBackColor = true;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.label3.Location = new System.Drawing.Point(12, 15);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(111, 22);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "Nhóm hàng";
-            // 
+
+            //
+            // button1
+            //
+            this.button1.Location = new System.Drawing.Point(198, 125);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 29);
+            this.button1.TabIndex = 4;
+            this.button1.Text = "Thêm";
+            this.button1.UseVisualStyleBackColor = true;
+
+            //
+            // label2
+            //
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(18, 46);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(78, 21);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "Tên nhóm";
+
+            //
+            // panel1
+            //
+            this.panel1.Controls.Add(this.lblTongSoNhom);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel1.Location = new System.Drawing.Point(326, 517);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(756, 36);
+            this.panel1.TabIndex = 5;
+
+            //
+            // lblTongSoNhom
+            //
+            this.lblTongSoNhom.AutoSize = true;
+            this.lblTongSoNhom.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.lblTongSoNhom.Location = new System.Drawing.Point(15, 8);
+            this.lblTongSoNhom.Name = "lblTongSoNhom";
+            this.lblTongSoNhom.Size = new System.Drawing.Size(180, 21);
+            this.lblTongSoNhom.TabIndex = 0;
+            this.lblTongSoNhom.Text = "Tổng số: 0 nhóm hàng";
+
+            //
             // frmNhomHang
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            //
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(882, 553);
+            this.ClientSize = new System.Drawing.Size(1082, 553);
+            this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
-            this.Controls.Add(this.dataGridView1);
+            this.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "frmNhomHang";
-            this.Text = "frmNhomHang";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.Text = "Quản lý nhóm hàng";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.panel2.ResumeLayout(false);
-            this.panel3.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.panel3.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
-
         }
-
         #endregion
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.GroupBox groupBox2;
@@ -204,5 +294,12 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnHuy;
+        private System.Windows.Forms.Splitter splitter1;
+        private System.Windows.Forms.Splitter splitter2;
+        private System.Windows.Forms.Button btnXuatFile;
+        private System.Windows.Forms.Button btnNhapFile;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Label lblTongSoNhom;
     }
 }

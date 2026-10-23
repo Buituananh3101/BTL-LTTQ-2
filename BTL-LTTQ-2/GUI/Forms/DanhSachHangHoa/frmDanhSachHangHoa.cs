@@ -240,21 +240,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             };
 
             // 1. Nhóm hàng
-            try
-            {
-                DataTable dtNhom = DataProcessing.ReadData("SELECT MaNhom, TenNhom FROM NhomHang WHERE TrangThai = 'HOAT_DONG' ORDER BY TenNhom");
-                DataRow drAllNhom = dtNhom.NewRow();
-                drAllNhom["MaNhom"] = 0;
-                drAllNhom["TenNhom"] = "-- Tất cả nhóm hàng --";
-                dtNhom.Rows.InsertAt(drAllNhom, 0);
-
-                ComboboxHelper.CaiDatTimKiem(cboNhomHang, dtNhom, "TenNhom", "MaNhom", locDuLieu);
-                cboNhomHang.SelectedIndex = 0;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi tải danh mục nhóm hàng: " + ex.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
+            NapDanhSachNhomHang(locDuLieu);
 
             // 2. Tiêu chí tồn
             List<string> listTieuChiTon = new List<string> {
@@ -789,6 +775,54 @@ namespace BTL_LTTQ_2.GUI.Forms
             if (cellMaHang != null && int.TryParse(cellMaHang.ToString(), out int maHang))
             {
                 MoFormHangHoa(maHang);
+            }
+        }
+
+        // Bấm nút dấu cộng bên cạnh nhóm hàng để mở frmNhomHang
+        private void btnThemNhomHang_Click(object sender, EventArgs e)
+        {
+            using (frmNhomHang frm = new frmNhomHang())
+            {
+                frm.StartPosition = FormStartPosition.CenterParent;
+                frm.ShowDialog(this);
+                NapDanhSachNhomHang();
+            }
+        }
+
+        public void NapDanhSachNhomHang(Action locDuLieu = null)
+        {
+            try
+            {
+                object selectedVal = cboNhomHang.SelectedValue;
+                DataTable dtNhom = DataProcessing.ReadData("SELECT MaNhom, TenNhom FROM NhomHang WHERE TrangThai = 'HOAT_DONG' ORDER BY TenNhom");
+                DataRow drAllNhom = dtNhom.NewRow();
+                drAllNhom["MaNhom"] = 0;
+                drAllNhom["TenNhom"] = "-- Tất cả nhóm hàng --";
+                dtNhom.Rows.InsertAt(drAllNhom, 0);
+
+                Action action = locDuLieu ?? (() =>
+                {
+                    if (isLoaded)
+                    {
+                        trangHienTai = 1;
+                        HienThiDanhSach();
+                    }
+                });
+
+                ComboboxHelper.CaiDatTimKiem(cboNhomHang, dtNhom, "TenNhom", "MaNhom", action);
+
+                if (selectedVal != null && int.TryParse(selectedVal.ToString(), out int val) && val > 0)
+                {
+                    cboNhomHang.SelectedValue = val;
+                }
+                else
+                {
+                    cboNhomHang.SelectedIndex = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi tải danh mục nhóm hàng: " + ex.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
