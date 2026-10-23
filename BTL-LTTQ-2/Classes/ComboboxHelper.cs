@@ -117,7 +117,15 @@ namespace BTL_LTTQ_2.Classes
             foreach (DataRow row in dt.Rows)
             {
                 string textVal = row[displayCol]?.ToString() ?? "";
-                row[searchCol] = BoDauTiengViet(textVal).ToLower() + " " + textVal.ToLower();
+                string valStr = row[valueCol]?.ToString() ?? "";
+                if (textVal.StartsWith("--") || valStr == "0" || string.IsNullOrEmpty(valStr))
+                {
+                    row[searchCol] = "tat ca all";
+                }
+                else
+                {
+                    row[searchCol] = BoDauTiengViet(textVal).ToLower() + " " + textVal.ToLower();
+                }
             }
 
             DataView dv = new DataView(dt);
@@ -149,7 +157,14 @@ namespace BTL_LTTQ_2.Classes
                 else
                 {
                     string clean = BoDauTiengViet(text.Trim()).ToLower().Replace("'", "''").Replace("[", "[[]").Replace("%", "[%]");
-                    dv.RowFilter = $"{searchCol} LIKE '%{clean}%'";
+                    if (!clean.StartsWith("tat ca") && !clean.StartsWith("all") && !clean.StartsWith("--"))
+                    {
+                        dv.RowFilter = $"{searchCol} LIKE '%{clean}%' AND {searchCol} <> 'tat ca all'";
+                    }
+                    else
+                    {
+                        dv.RowFilter = $"{searchCol} LIKE '%{clean}%'";
+                    }
                 }
 
                 CapNhatDoCaoDropdown(cbo, dv.Count);
@@ -232,6 +247,21 @@ namespace BTL_LTTQ_2.Classes
 
             cbo.SelectionChangeCommitted += (s, e) =>
             {
+                if (isFiltering) return;
+                try
+                {
+                    object currentVal = cbo.SelectedValue;
+                    if (!string.IsNullOrEmpty(dv.RowFilter))
+                    {
+                        dv.RowFilter = "";
+                        CapNhatDoCaoDropdown(cbo, dv.Count);
+                        if (currentVal != null)
+                        {
+                            cbo.SelectedValue = currentVal;
+                        }
+                    }
+                }
+                catch { }
                 onCommitted?.Invoke();
             };
 
@@ -303,9 +333,12 @@ namespace BTL_LTTQ_2.Classes
                 {
                     string textClean = BoDauTiengViet(text.Trim()).ToLower();
                     var matched = danhSachGoc.Where(item =>
-                        item.IndexOf(text.Trim(), StringComparison.OrdinalIgnoreCase) >= 0 ||
-                        BoDauTiengViet(item).IndexOf(textClean, StringComparison.OrdinalIgnoreCase) >= 0
-                    ).ToArray();
+                    {
+                        if (item.StartsWith("--") && !textClean.StartsWith("tat ca") && !textClean.StartsWith("all") && !textClean.StartsWith("--"))
+                            return false;
+                        return item.IndexOf(text.Trim(), StringComparison.OrdinalIgnoreCase) >= 0 ||
+                               BoDauTiengViet(item).IndexOf(textClean, StringComparison.OrdinalIgnoreCase) >= 0;
+                    }).ToArray();
                     cbo.Items.AddRange(matched);
                 }
 
@@ -351,24 +384,23 @@ namespace BTL_LTTQ_2.Classes
                     }
                     else
                     {
-                        // 2. Tìm thấy -> Tự động chọn phần tử đầu tiên nếu người dùng chưa chọn mục khác
+                        // 2. Tìm thấy -> Tự động chọn phần tử đầu tiên nếu chưa chọn
                         if (cbo.SelectedIndex < 0)
                         {
                             cbo.SelectedIndex = 0;
                         }
 
-                        object pickedItem = cbo.SelectedItem;
+                        string selectedVal = cbo.SelectedItem?.ToString();
 
-                        // Khôi phục lại toàn bộ danh sách để lần mở sau hiện hết
                         cbo.BeginUpdate();
                         cbo.Items.Clear();
                         cbo.Items.AddRange(danhSachGoc.ToArray());
                         cbo.EndUpdate();
                         CapNhatDoCaoDropdown(cbo, cbo.Items.Count);
 
-                        if (pickedItem != null)
+                        if (!string.IsNullOrEmpty(selectedVal) && danhSachGoc.Contains(selectedVal))
                         {
-                            cbo.SelectedItem = pickedItem;
+                            cbo.SelectedItem = selectedVal;
                         }
                     }
                 }
@@ -400,6 +432,24 @@ namespace BTL_LTTQ_2.Classes
 
             cbo.SelectionChangeCommitted += (s, e) =>
             {
+                if (isFiltering) return;
+                try
+                {
+                    string selectedText = cbo.SelectedItem?.ToString();
+                    if (cbo.Items.Count != danhSachGoc.Count)
+                    {
+                        cbo.BeginUpdate();
+                        cbo.Items.Clear();
+                        cbo.Items.AddRange(danhSachGoc.ToArray());
+                        cbo.EndUpdate();
+                        CapNhatDoCaoDropdown(cbo, cbo.Items.Count);
+                        if (!string.IsNullOrEmpty(selectedText) && danhSachGoc.Contains(selectedText))
+                        {
+                            cbo.SelectedItem = selectedText;
+                        }
+                    }
+                }
+                catch { }
                 onCommitted?.Invoke();
             };
 

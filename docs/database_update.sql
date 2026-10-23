@@ -1,4 +1,4 @@
-﻿-- =========================================================================================
+-- =========================================================================================
 -- FILE CẬP NHẬT CƠ SỞ DỮ LIỆU: docs/database_update.sql
 -- Dự án: Quản lý kho hàng nhiều kho (QuanLyKhoPhuQuocLTW)
 -- Ngày thực hiện: 2026-10-13
@@ -470,5 +470,18 @@ END
 ELSE
 BEGIN
     PRINT N'[SKIP] Bảng ChiTietPhieuTraHangNhap đã tồn tại.';
+END
+GO
+
+
+-- 8.1. BẢNG PHIEUTRAHANGNHAP: Bổ sung cột MaPhieuNhap (Tham chiếu đơn nhập gốc nếu có)
+IF NOT EXISTS (
+    SELECT 1 FROM sys.columns 
+    WHERE object_id = OBJECT_ID(N'PhieuTraHangNhap') AND name = N'MaPhieuNhap'
+)
+BEGIN
+    ALTER TABLE PhieuTraHangNhap ADD MaPhieuNhap INT NULL 
+        CONSTRAINT FK_PhieuTraHangNhap_PhieuNhap REFERENCES PhieuNhap(MaPhieuNhap);
+    PRINT N'[OK] Đã thêm cột MaPhieuNhap vào bảng PhieuTraHangNhap.';
 END
 GO

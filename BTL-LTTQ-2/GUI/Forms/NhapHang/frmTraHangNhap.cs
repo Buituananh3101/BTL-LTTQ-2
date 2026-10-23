@@ -1,5 +1,5 @@
-using BTL_LTTQ_2.BLL;
-using BTL_LTTQ_2.DAL;
+using BTL_LTTQ_2.Classes;
+
 using System;
 using System.Data;
 using System.Data.SqlClient;
@@ -27,6 +27,11 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 
         private void CauHinhDataGridView()
         {
+            // Báº­t Ä‘á»‡m Ä‘Ã´i chá»‘ng giáº­t lag
+            typeof(DataGridView).InvokeMember("DoubleBuffered",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.SetProperty,
+                null, dgvHangTra, new object[] { true });
+
             dgvHangTra.AutoGenerateColumns = false;
             dgvHangTra.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
             dgvHangTra.DefaultCellStyle.SelectionBackColor = Color.FromArgb(224, 231, 255);
@@ -63,11 +68,16 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             cboNguoiTra.Items.Clear();
             try
             {
-                string sql = "SELECT MaNV, HoTen FROM NhanVien ORDER BY HoTen ASC";
+                string sql = @"
+                    SELECT tk.MaTaiKhoan, ISNULL(nv.HoTen, tk.TenDangNhap) AS HoTen 
+                    FROM TaiKhoan tk 
+                    LEFT JOIN NhanVien nv ON tk.MaNV = nv.MaNV 
+                    WHERE tk.TrangThai = 'HOAT_DONG' OR tk.TrangThai = 'ACTIVE' OR tk.TrangThai IS NULL
+                    ORDER BY HoTen ASC";
                 DataTable dt = DataProcessing.ReadData(sql);
                 foreach (DataRow row in dt.Rows)
                 {
-                    int id = Convert.ToInt32(row["MaNV"]);
+                    int id = Convert.ToInt32(row["MaTaiKhoan"]);
                     string ten = row["HoTen"].ToString();
                     cboNguoiTra.Items.Add(new ComboBoxItem(ten, id));
                 }

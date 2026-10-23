@@ -1,5 +1,6 @@
-using BTL_LTTQ_2.DAL;
+﻿using BTL_LTTQ_2.Classes;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
@@ -13,10 +14,10 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 {
     public partial class frmNhapHang : Form
     {
-        private int currentPage = 1;
-        private int pageSize = 15;
-        private int totalRecords = 0;
-        private int totalPages = 1;
+        private int trangHienTai = 1;
+        private int soDongMoiTrang = 20;
+        private int tongSoBanGhi = 0;
+        private int tongSoTrang = 1;
         private bool isUpdatingCheckAll = false;
         private bool isHeaderChecked = false;
         private bool isHeaderHovered = false;
@@ -25,7 +26,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
         public frmNhapHang()
         {
             InitializeComponent();
-            CauHinhDataGridView();
+            DinhDangLuoi();
             KhoiTaoDebounceTimer();
         }
 
@@ -36,12 +37,12 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             searchDebounceTimer.Tick += (s, e) =>
             {
                 searchDebounceTimer.Stop();
-                currentPage = 1;
-                LoadData();
+                trangHienTai = 1;
+                HienThiDanhSach();
             };
         }
 
-        private void CauHinhDataGridView()
+        private void DinhDangLuoi()
         {
             // Bật DoubleBuffered chống rung giật lưới khi render
             typeof(DataGridView).InvokeMember("DoubleBuffered",
@@ -59,7 +60,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             dgvNhapHang.DefaultCellStyle.SelectionBackColor = Color.FromArgb(224, 231, 255);
             dgvNhapHang.DefaultCellStyle.SelectionForeColor = Color.FromArgb(30, 41, 59);
 
-            // Đồng bộ độ rộng cột tiêu đề giống frmNhaCungCap (tránh ngắt dòng làm tăng chiều cao hàng tiêu đề)
+            // Đồng bộ độ rộng cột tiêu đề giống frmNhaCungCap
             colChon.Width = 45;
             colChon.ReadOnly = false;
             colMaNcc.Width = 140;
@@ -74,20 +75,44 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             colCanTraNcc.DefaultCellStyle.Format = "N0";
             colTongTien.DefaultCellStyle.Format = "N0";
             colThoiGian.DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
+
+            // Đăng ký sự kiện phím Space chọn CheckBox
+            dgvNhapHang.KeyDown += dgvNhapHang_KeyDown;
+        }
+
+        private void dgvNhapHang_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Space && dgvNhapHang.CurrentRow != null)
+            {
+                int rowIndex = dgvNhapHang.CurrentRow.Index;
+                if (rowIndex >= 0 && rowIndex < dgvNhapHang.Rows.Count)
+                {
+                    bool cur = Convert.ToBoolean(dgvNhapHang.Rows[rowIndex].Cells["colChon"].Value ?? false);
+                    dgvNhapHang.Rows[rowIndex].Cells["colChon"].Value = !cur;
+                    dgvNhapHang.EndEdit();
+                    CapNhatTrangThaiHeaderCheck();
+                    e.Handled = true;
+                }
+            }
         }
 
         private void frmNhapHang_Load(object sender, EventArgs e)
         {
             // Thiết lập giá trị mặc định cho bộ lọc ngày
             dtpTuNgay.Value = new DateTime(DateTime.Today.Year, 1, 1);
-            dtpDenNgay.Value = DateTime.Today.AddDays(1);
+            dtpDenNgay.Value = DateTime.Today;
 
             NapDanhSachTrangThai();
             NapDanhSachNhaCungCap();
             NapDanhSachNhanVien();
 
-            cboSoDongMoiTrang.SelectedItem = "15";
-            LoadData();
+            cboSoDongMoiTrang.SelectedItem = "20";
+            if (cboSoDongMoiTrang.SelectedIndex < 0 && cboSoDongMoiTrang.Items.Count > 0)
+            {
+                cboSoDongMoiTrang.SelectedIndex = 1;
+            }
+
+            HienThiDanhSach();
         }
 
         private void NapDanhSachTrangThai()
@@ -100,68 +125,91 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             cboTrangThai.SelectedIndex = 0;
         }
 
-        private void NapDanhSachNhaCungCap()
+        private void NapDanhSachNhaCungCap(Action locDuLieu = null)
         {
-            cboNhaCungCap.Items.Clear();
-            cboNhaCungCap.Items.Add(new ComboBoxItem("Tất cả nhà cung cấp", null));
-
             try
             {
-                string sql = "SELECT MaDonViCapHang, TenDonVi FROM DonViCapHang ORDER BY TenDonVi ASC";
+                string sql = "SELECT MaDonViCapHang, TenDonVi FROM DonViCapHang WHERE TrangThai = 'HOAT_DONG' OR TrangThai = 'ACTIVE' OR TrangThai IS NULL ORDER BY TenDonVi ASC";
                 DataTable dt = DataProcessing.ReadData(sql);
-                foreach (DataRow row in dt.Rows)
+                DataRow drAll = dt.NewRow();
+                drAll["MaDonViCapHang"] = 0;
+                drAll["TenDonVi"] = "-- Táº¥t cáº£ nhÃ  cung cáº¥p --";
+                dt.Rows.InsertAt(drAll, 0);
+
+                Action action = locDuLieu ?? new Action(() =>
                 {
-                    int id = Convert.ToInt32(row["MaDonViCapHang"]);
-                    string ten = row["TenDonVi"].ToString();
-                    cboNhaCungCap.Items.Add(new ComboBoxItem(ten, id));
-                }
+                    trangHienTai = 1;
+                    HienThiDanhSach();
+                });
+
+                ComboboxHelper.CaiDatTimKiem(cboNhaCungCap, dt, "TenDonVi", "MaDonViCapHang", action);
+                cboNhaCungCap.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi nạp danh sách nhà cung cấp: " + ex.Message, "Thông báo lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Lá»—i náº¡p danh sÃ¡ch nhÃ  cung cáº¥p: " + ex.Message, "ThÃ´ng bÃ¡o lá»—i", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
-            cboNhaCungCap.SelectedIndex = 0;
         }
 
-        private void NapDanhSachNhanVien()
+        private void NapDanhSachNhanVien(Action locDuLieu = null)
         {
-            cboNguoiTao.Items.Clear();
-            cboNguoiTao.Items.Add(new ComboBoxItem("Tất cả người tạo", null));
-
-            cboNguoiNhap.Items.Clear();
-            cboNguoiNhap.Items.Add(new ComboBoxItem("Tất cả người nhập", null));
-
             try
             {
-                string sql = "SELECT MaNV, HoTen FROM NhanVien ORDER BY HoTen ASC";
-                DataTable dt = DataProcessing.ReadData(sql);
-                foreach (DataRow row in dt.Rows)
+                string sql = "SELECT MaNV, HoTen FROM NhanVien WHERE TrangThai = 'DANG_LAM' OR TrangThai = 'HOAT_DONG' OR TrangThai IS NULL ORDER BY HoTen ASC";
+                DataTable dtNvl = DataProcessing.ReadData(sql);
+                DataRow drAllNvl = dtNvl.NewRow();
+                drAllNvl["MaNV"] = 0;
+                drAllNvl["HoTen"] = "-- Táº¥t cáº£ ngÆ°á»i táº¡o --";
+                dtNvl.Rows.InsertAt(drAllNvl, 0);
+
+                DataTable dtNvn = dtNvl.Copy();
+                dtNvn.Rows[0]["HoTen"] = "-- Táº¥t cáº£ ngÆ°á»i nháº­p --";
+
+                Action action = locDuLieu ?? new Action(() =>
                 {
-                    int id = Convert.ToInt32(row["MaNV"]);
-                    string ten = row["HoTen"].ToString();
-                    cboNguoiTao.Items.Add(new ComboBoxItem(ten, id));
-                    cboNguoiNhap.Items.Add(new ComboBoxItem(ten, id));
-                }
+                    trangHienTai = 1;
+                    HienThiDanhSach();
+                });
+
+                ComboboxHelper.CaiDatTimKiem(cboNguoiTao, dtNvl, "HoTen", "MaNV", action);
+                cboNguoiTao.SelectedIndex = 0;
+
+                ComboboxHelper.CaiDatTimKiem(cboNguoiNhap, dtNvn, "HoTen", "MaNV", action);
+                cboNguoiNhap.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi nạp danh sách nhân viên: " + ex.Message, "Thông báo lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Lá»—i náº¡p danh sÃ¡ch nhÃ¢n viÃªn: " + ex.Message, "ThÃ´ng bÃ¡o lá»—i", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
-            cboNguoiTao.SelectedIndex = 0;
-            cboNguoiNhap.SelectedIndex = 0;
         }
 
+        // Tương thích gọi từ các form con
         public void LoadData()
+        {
+            HienThiDanhSach();
+        }
+
+        public void HienThiDanhSach()
         {
             try
             {
                 // Thu thập tham số lọc
                 string trangThai = (cboTrangThai.SelectedItem as ComboBoxItem)?.Value?.ToString();
-                int? maNcc = (cboNhaCungCap.SelectedItem as ComboBoxItem)?.Value as int?;
-                int? maNvLap = (cboNguoiTao.SelectedItem as ComboBoxItem)?.Value as int?;
-                int? maNvNhap = (cboNguoiNhap.SelectedItem as ComboBoxItem)?.Value as int?;
+                int? maNcc = null;
+                if (cboNhaCungCap.SelectedValue != null && int.TryParse(cboNhaCungCap.SelectedValue.ToString(), out int nccVal) && nccVal > 0)
+                {
+                    maNcc = nccVal;
+                }
+                int? maNvLap = null;
+                if (cboNguoiTao.SelectedValue != null && int.TryParse(cboNguoiTao.SelectedValue.ToString(), out int nvlVal) && nvlVal > 0)
+                {
+                    maNvLap = nvlVal;
+                }
+                int? maNvNhap = null;
+                if (cboNguoiNhap.SelectedValue != null && int.TryParse(cboNguoiNhap.SelectedValue.ToString(), out int nvnVal) && nvnVal > 0)
+                {
+                    maNvNhap = nvnVal;
+                }
                 DateTime tuNgay = dtpTuNgay.Value.Date;
                 DateTime denNgay = dtpDenNgay.Value.Date.AddDays(1);
                 string timKiem = txtTimKiem.Text.Trim();
@@ -197,12 +245,12 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                 };
 
                 object countObj = DataProcessing.ReadValue(countSql, countParams);
-                totalRecords = Convert.ToInt32(countObj);
-                totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
-                if (totalPages < 1) totalPages = 1;
-                if (currentPage > totalPages) currentPage = totalPages;
+                tongSoBanGhi = Convert.ToInt32(countObj);
+                tongSoTrang = (int)Math.Ceiling((double)tongSoBanGhi / soDongMoiTrang);
+                if (tongSoTrang < 1) tongSoTrang = 1;
+                if (trangHienTai > tongSoTrang) trangHienTai = tongSoTrang;
 
-                int skip = (currentPage - 1) * pageSize;
+                int skip = (trangHienTai - 1) * soDongMoiTrang;
 
                 string querySql = @"
                     SELECT 
@@ -250,7 +298,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                     new SqlParameter("@TimKiem", timKiem),
                     new SqlParameter("@TimKiemLike", "%" + timKiem + "%"),
                     new SqlParameter("@Skip", skip),
-                    new SqlParameter("@Take", pageSize)
+                    new SqlParameter("@Take", soDongMoiTrang)
                 };
 
                 DataTable dt = DataProcessing.ReadData(querySql, queryParams);
@@ -276,16 +324,18 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 
         private void CapNhatThanhPhanTrang()
         {
-            lblTongSoPhieu.Text = $"Tổng số: {totalRecords:N0} phiếu nhập";
-            lblTrangHienTai.Text = $"Trang {currentPage} / {totalPages}";
-            btnTrangTruoc.Enabled = currentPage > 1;
-            btnTrangSau.Enabled = currentPage < totalPages;
+            int tuDong = tongSoBanGhi == 0 ? 0 : (trangHienTai - 1) * soDongMoiTrang + 1;
+            int denDong = Math.Min(trangHienTai * soDongMoiTrang, tongSoBanGhi);
+            lblTongSoPhieu.Text = $"Hiển thị {tuDong:N0} - {denDong:N0} trên tổng số {tongSoBanGhi:N0} phiếu nhập";
+            lblTrangHienTai.Text = $"Trang {trangHienTai} / {tongSoTrang}";
+            btnTrangTruoc.Enabled = trangHienTai > 1;
+            btnTrangSau.Enabled = trangHienTai < tongSoTrang;
         }
 
         private void BoLoc_SelectedIndexChanged(object sender, EventArgs e)
         {
-            currentPage = 1;
-            LoadData();
+            trangHienTai = 1;
+            HienThiDanhSach();
         }
 
         private void txtTimKiem_TextChanged(object sender, EventArgs e)
@@ -298,27 +348,27 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
         {
             if (int.TryParse(cboSoDongMoiTrang.SelectedItem?.ToString(), out int val))
             {
-                pageSize = val;
-                currentPage = 1;
-                LoadData();
+                soDongMoiTrang = val;
+                trangHienTai = 1;
+                HienThiDanhSach();
             }
         }
 
         private void btnTrangTruoc_Click(object sender, EventArgs e)
         {
-            if (currentPage > 1)
+            if (trangHienTai > 1)
             {
-                currentPage--;
-                LoadData();
+                trangHienTai--;
+                HienThiDanhSach();
             }
         }
 
         private void btnTrangSau_Click(object sender, EventArgs e)
         {
-            if (currentPage < totalPages)
+            if (trangHienTai < tongSoTrang)
             {
-                currentPage++;
-                LoadData();
+                trangHienTai++;
+                HienThiDanhSach();
             }
         }
 
@@ -326,9 +376,9 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
         {
             using (frmThemPhieuNhap frm = new frmThemPhieuNhap())
             {
-                if (frm.ShowDialog() == DialogResult.OK)
+                if (frm.ShowDialog(this) == DialogResult.OK)
                 {
-                    LoadData();
+                    HienThiDanhSach();
                 }
             }
         }
@@ -336,46 +386,29 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
         private void dgvNhapHang_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;
-            if (e.ColumnIndex == colChon.Index) return;
+            if (dgvNhapHang.Columns[e.ColumnIndex].Name == "colChon") return;
 
-            MoChiTietPhieu(e.RowIndex);
-        }
-
-        private void MoChiTietPhieu(int rowIndex)
-        {
-            if (rowIndex < 0 || rowIndex >= dgvNhapHang.Rows.Count) return;
-
-            var cellVal = dgvNhapHang.Rows[rowIndex].Cells["colMaPhieuNhap"].Value;
-            if (cellVal != null && int.TryParse(cellVal.ToString(), out int maPhieuNhap))
+            int maPhieuNhap = Convert.ToInt32(dgvNhapHang.Rows[e.RowIndex].Cells["colMaPhieuNhap"].Value);
+            using (frmChiTietPhieuNhap frm = new frmChiTietPhieuNhap(maPhieuNhap))
             {
-                using (frmChiTietPhieuNhap frm = new frmChiTietPhieuNhap(maPhieuNhap))
-                {
-                    frm.ShowDialog();
-                    // Load lại dữ liệu vì phiếu có thể bị xóa/hủy hoặc trả hàng
-                    LoadData();
-                }
+                frm.ShowDialog(this);
+                HienThiDanhSach();
             }
         }
 
         private void btnXuatFile_Click(object sender, EventArgs e)
         {
-            if (dgvNhapHang.Rows.Count == 0)
-            {
-                MessageBox.Show("Không có dữ liệu để xuất file!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
-                sfd.Filter = "CSV File (*.csv)|*.csv|All Files (*.*)|*.*";
-                sfd.FileName = $"DanhSachNhapHang_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
+                sfd.Filter = "File CSV (*.csv)|*.csv|Tất cả tệp (*.*)|*.*";
+                sfd.FileName = $"DanhSachNhapHang_{DateTime.Now:yyyyMMdd_HHmm}.csv";
+
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
                     try
                     {
                         StringBuilder sb = new StringBuilder();
-                        // Dòng tiêu đề
-                        sb.AppendLine("Mã nhập hàng,Thời gian,Mã NCC,Nhà cung cấp,Cần trả NCC,Tổng tiền,Trạng thái");
+                        sb.AppendLine("Mã nhập hàng,Thời gian,Mã NCC,Tên NCC,Cần trả NCC,Tổng tiền,Trạng thái");
 
                         DataTable dt = dgvNhapHang.DataSource as DataTable;
                         if (dt != null)
@@ -408,25 +441,45 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 
         private void btnHienCot_Click(object sender, EventArgs e)
         {
+            foreach (Form openForm in Application.OpenForms)
+            {
+                if (openForm is frmHienCotNhapHang)
+                {
+                    openForm.Activate();
+                    openForm.BringToFront();
+                    return;
+                }
+            }
+
             frmHienCotNhapHang frm = new frmHienCotNhapHang(dgvNhapHang);
+            frm.StartPosition = FormStartPosition.Manual;
+
             Point btnPos = btnHienCot.PointToScreen(Point.Empty);
-            frm.Location = new Point(btnPos.X + btnHienCot.Width - frm.Width, btnPos.Y + btnHienCot.Height + 2);
-            frm.Show();
+            int posX = btnPos.X + btnHienCot.Width - frm.Width;
+            int posY = btnPos.Y + btnHienCot.Height + 2;
+
+            Rectangle workingArea = Screen.FromControl(btnHienCot).WorkingArea;
+            if (posX + frm.Width > workingArea.Right) posX = workingArea.Right - frm.Width;
+            if (posX < workingArea.Left) posX = workingArea.Left;
+            if (posY + frm.Height > workingArea.Bottom) posY = btnPos.Y - frm.Height - 2;
+
+            frm.Location = new Point(posX, posY);
+            frm.Show(this);
+            frm.BringToFront();
         }
 
         private void btnHuongDanSuDung_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(
-                "HƯỚNG DẪN QUẢN LÝ NHẬP HÀNG:\n\n" +
-                "- Bấm '+ Nhập hàng' để lập phiếu nhập hàng mới từ Nhà cung cấp.\n" +
-                "- Nhấp đúp chuột vào một dòng đơn nhập để xem chi tiết, hủy/xóa phiếu hoặc trả hàng.\n" +
-                "- Ở form chi tiết đơn nhập, chọn 'Trả hàng nhập' để hoàn trả một phần hoặc toàn bộ số lượng hàng.\n" +
-                "- Sử dụng các bộ lọc dạng ComboBox bên trái để tra cứu đơn nhập theo trạng thái, nhà cung cấp, người nhập...\n" +
-                "- Bấm 'Xuất file' để lưu danh sách ra định dạng CSV/Excel.",
-                "Hướng dẫn sử dụng",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information
-            );
+            string huongDan = "HƯỚNG DẪN QUẢN LÝ NHẬP HÀNG:\n\n" +
+                              "1. Tìm kiếm: Nhập mã phiếu, mã hóa đơn hoặc tên nhà cung cấp vào ô Tìm kiếm trên đầu.\n" +
+                              "2. Bộ lọc: Chọn Trạng thái, Nhà cung cấp, Người tạo, Người nhập hoặc Khoảng thời gian ở bảng bên trái.\n" +
+                              "3. Lập phiếu nhập mới: Nhấp vào nút '+ Nhập hàng'.\n" +
+                              "4. Xem chi tiết / Trả hàng: Nhấp đúp chuột (Double click) vào bất kỳ dòng đơn nhập nào trên bảng.\n" +
+                              "5. Phân trang: Nhấp nút 'Trước' / 'Sau' hoặc chọn lại số dòng mỗi trang ở góc dưới bảng.\n" +
+                              "6. Xuất file: Nhấp 'Xuất file' để lưu danh sách ra file CSV mở bằng Excel.\n" +
+                              "7. Hiện/Ẩn cột: Nhấp nút 'Hiện cột' để bật/tắt các cột hiển thị trên bảng.";
+
+            MessageBox.Show(huongDan, "Hướng dẫn sử dụng", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void dgvNhapHang_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -7,7 +7,7 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
-using BTL_LTTQ_2.DAL;
+using BTL_LTTQ_2.Classes;
 
 namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
 {
@@ -15,7 +15,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
     {
         // Các biến phục vụ phân trang
         private int trangHienTai = 1;
-        private int soDongMoiTrang = 15;
+        private int soDongMoiTrang = 20;
         private int tongSoBanGhi = 0;
         private int tongSoTrang = 1;
 
@@ -171,7 +171,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
             });
         }
 
-        public void NapDanhSachNhomNCC(int maNhomChon = 0)
+        public void NapDanhSachNhomNCC(int maNhomChon = 0, Action locDuLieu = null)
         {
             try
             {
@@ -189,12 +189,19 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                 DataTable dtNhom = DataProcessing.ReadData(sqlNhom);
                 DataRow drAllNhom = dtNhom.NewRow();
                 drAllNhom["MaNhomNcc"] = 0;
-                drAllNhom["TenNhom"] = "-- Tất cả các nhóm --";
+                drAllNhom["TenNhom"] = "-- Táº¥t cáº£ cÃ¡c nhÃ³m --";
                 dtNhom.Rows.InsertAt(drAllNhom, 0);
 
-                cboNhomNCC.DataSource = dtNhom;
-                cboNhomNCC.ValueMember = "MaNhomNcc";
-                cboNhomNCC.DisplayMember = "TenNhom";
+                Action action = locDuLieu ?? new Action(() =>
+                {
+                    if (isLoaded)
+                    {
+                        trangHienTai = 1;
+                        HienThiDanhSach();
+                    }
+                });
+
+                ComboboxHelper.CaiDatTimKiem(cboNhomNCC, dtNhom, "TenNhom", "MaNhomNcc", action);
 
                 if (maNhomChon > 0)
                 {
@@ -207,7 +214,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải danh mục nhóm nhà cung cấp: " + ex.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Lá»—i táº£i danh má»¥c nhÃ³m nhÃ  cung cáº¥p: " + ex.Message, "ThÃ´ng bÃ¡o", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -254,7 +261,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
             // 6. Số dòng mỗi trang
             if (cboSoDongMoiTrang.Items.Count > 0 && cboSoDongMoiTrang.SelectedIndex < 0)
             {
-                cboSoDongMoiTrang.SelectedIndex = 1; // 15 dòng mặc định
+                cboSoDongMoiTrang.SelectedItem = "20";
             }
         }
 
@@ -435,7 +442,9 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
         private void CapNhatGiaoDienPhanTrang()
         {
             lblTrangHienTai.Text = $"Trang {trangHienTai} / {tongSoTrang}";
-            lblTongSoNCC.Text = $"Tổng số: {tongSoBanGhi:N0} nhà cung cấp";
+            int tuDong = tongSoBanGhi == 0 ? 0 : (trangHienTai - 1) * soDongMoiTrang + 1;
+            int denDong = Math.Min(trangHienTai * soDongMoiTrang, tongSoBanGhi);
+            lblTongSoNCC.Text = $"Hiển thị {tuDong:N0} - {denDong:N0} trên tổng số {tongSoBanGhi:N0} nhà cung cấp";
 
             btnTrangTruoc.Enabled = (trangHienTai > 1);
             btnTrangSau.Enabled = (trangHienTai < tongSoTrang);
@@ -733,49 +742,16 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
 
         private void MoFormDonViCapHang(int maDonViCapHang)
         {
-            if (this.MdiParent != null)
+            using (frmDonViCapHang frm = maDonViCapHang > 0 ? new frmDonViCapHang(maDonViCapHang) : new frmDonViCapHang())
             {
-                // Kiểm tra nếu đã mở form frmDonViCapHang thì kích hoạt
-                foreach (Form child in this.MdiParent.MdiChildren)
+                frm.StartPosition = FormStartPosition.CenterParent;
+                if (frm.ShowDialog(this) == DialogResult.OK)
                 {
-                    if (child is frmDonViCapHang)
-                    {
-                        child.Activate();
-                        return;
-                    }
-                }
-
-                frmDonViCapHang frm = maDonViCapHang > 0 ? new frmDonViCapHang(maDonViCapHang) : new frmDonViCapHang();
-                frm.MdiParent = this.MdiParent;
-                frm.StartPosition = FormStartPosition.Manual;
-                int posX = Math.Max(0, (this.MdiParent.ClientSize.Width - frm.Width) / 2);
-                int posY = Math.Max(0, (this.MdiParent.ClientSize.Height - frm.Height) / 2);
-                frm.Location = new Point(posX, posY);
-
-                frm.FormClosed += (s, ev) =>
-                {
-                    if (frm.DialogResult == DialogResult.OK)
-                    {
-                        HienThiDanhSach();
-                    }
-                };
-                frm.Show();
-                frm.BringToFront();
-            }
-            else
-            {
-                using (frmDonViCapHang frm = maDonViCapHang > 0 ? new frmDonViCapHang(maDonViCapHang) : new frmDonViCapHang())
-                {
-                    frm.StartPosition = FormStartPosition.CenterParent;
-                    if (frm.ShowDialog(this) == DialogResult.OK)
-                    {
-                        HienThiDanhSach();
-                    }
+                    HienThiDanhSach();
                 }
             }
         }
 
-        // Xuất danh sách ra file CSV / Excel
         private void btnXuatFile_Click(object sender, EventArgs e)
         {
             if (dgvNhaCungCap.Rows.Count == 0)
@@ -836,8 +812,18 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
         // Bấm nút Nhập file
         private void btnNhapFile_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Tính năng nhập dữ liệu nhà cung cấp từ file Excel đang được phát triển.\nBạn có thể sử dụng nút '+ Nhà cung cấp' để thêm trực tiếp trên phần mềm.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            using (frmNhapNhaCungCapFile frm = new frmNhapNhaCungCapFile())
+            {
+                if (frm.ShowDialog(this) == DialogResult.OK)
+                {
+                    trangHienTai = 1;
+                    HienThiDanhSach();
+                }
+            }
         }
+
+
+
 
         // Bấm nút Hiện cột mở form tùy chọn cột xuất hiện ngay dưới nút btnHienCot
         private void btnHienCot_Click(object sender, EventArgs e)

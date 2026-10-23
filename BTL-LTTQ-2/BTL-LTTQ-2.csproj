@@ -12,6 +12,7 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <CodePage>65001</CodePage>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -154,6 +155,15 @@
     <EmbeddedResource Include="GUI\Forms\NhaCungCap\frmNhaCungCap.resx">
       <DependentUpon>frmNhaCungCap.cs</DependentUpon>
     </EmbeddedResource>
+    <Compile Include="GUI\Forms\NhaCungCap\frmNhapNhaCungCapFile.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\NhaCungCap\frmNhapNhaCungCapFile.Designer.cs">
+      <DependentUpon>frmNhapNhaCungCapFile.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="GUI\Forms\NhaCungCap\frmNhapNhaCungCapFile.resx">
+      <DependentUpon>frmNhapNhaCungCapFile.cs</DependentUpon>
+    </EmbeddedResource>
     <Compile Include="GUI\Forms\NhapHang\frmHienCotNhapHang.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -198,6 +208,87 @@
     </Compile>
     <EmbeddedResource Include="GUI\Forms\NhapHang\frmTraHangNhap.resx">
       <DependentUpon>frmTraHangNhap.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="GUI\Forms\TraHangNhap\frmHienCotTraHang.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\TraHangNhap\frmHienCotTraHang.Designer.cs">
+      <DependentUpon>frmHienCotTraHang.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="GUI\Forms\TraHangNhap\frmHienCotTraHang.resx">
+      <DependentUpon>frmHienCotTraHang.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="GUI\Forms\TraHangNhap\frmChiTietTraHangNhap.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\TraHangNhap\frmChiTietTraHangNhap.Designer.cs">
+      <DependentUpon>frmChiTietTraHangNhap.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="GUI\Forms\TraHangNhap\frmChiTietTraHangNhap.resx">
+      <DependentUpon>frmChiTietTraHangNhap.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="GUI\Forms\TraHangNhap\frmThemPhieuTraHang.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\TraHangNhap\frmThemPhieuTraHang.Designer.cs">
+      <DependentUpon>frmThemPhieuTraHang.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="GUI\Forms\TraHangNhap\frmThemPhieuTraHang.resx">
+      <DependentUpon>frmThemPhieuTraHang.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="GUI\Forms\TraHangNhap\frmTraHangNhap.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\TraHangNhap\frmTraHangNhap.Designer.cs">
+      <DependentUpon>frmTraHangNhap.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="GUI\Forms\TraHangNhap\frmTraHangNhap.resx">
+      <DependentUpon>frmTraHangNhap.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="GUI\Forms\KiemKho\frmHienCotKiemKho.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\KiemKho\frmHienCotKiemKho.Designer.cs">
+      <DependentUpon>frmHienCotKiemKho.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="GUI\Forms\KiemKho\frmHienCotKiemKho.resx">
+      <DependentUpon>frmHienCotKiemKho.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="GUI\Forms\KiemKho\frmNhapKiemKhoFile.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\KiemKho\frmNhapKiemKhoFile.Designer.cs">
+      <DependentUpon>frmNhapKiemKhoFile.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="GUI\Forms\KiemKho\frmNhapKiemKhoFile.resx">
+      <DependentUpon>frmNhapKiemKhoFile.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="GUI\Forms\KiemKho\frmChiTietKiemKho.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\KiemKho\frmChiTietKiemKho.Designer.cs">
+      <DependentUpon>frmChiTietKiemKho.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="GUI\Forms\KiemKho\frmChiTietKiemKho.resx">
+      <DependentUpon>frmChiTietKiemKho.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="GUI\Forms\KiemKho\frmThemPhieuKiemKho.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\KiemKho\frmThemPhieuKiemKho.Designer.cs">
+      <DependentUpon>frmThemPhieuKiemKho.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="GUI\Forms\KiemKho\frmThemPhieuKiemKho.resx">
+      <DependentUpon>frmThemPhieuKiemKho.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="GUI\Forms\KiemKho\frmKiemKho.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\KiemKho\frmKiemKho.Designer.cs">
+      <DependentUpon>frmKiemKho.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="GUI\Forms\KiemKho\frmKiemKho.resx">
+      <DependentUpon>frmKiemKho.cs</DependentUpon>
     </EmbeddedResource>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

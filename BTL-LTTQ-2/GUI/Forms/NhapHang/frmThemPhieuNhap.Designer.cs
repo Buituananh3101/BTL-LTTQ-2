@@ -1,4 +1,4 @@
-﻿namespace BTL_LTTQ_2.GUI.Forms.NhapHang
+namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 {
     partial class frmThemPhieuNhap
     {
@@ -642,6 +642,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1104, 690);
+            this.CancelButton = this.btnBoQua;
             this.Controls.Add(this.pnlBottom);
             this.Controls.Add(this.grpThanhToan);
             this.Controls.Add(this.grpHangHoa);

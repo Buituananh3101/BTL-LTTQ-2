@@ -120,6 +120,7 @@
             this.mnuKiemKho.Name = "mnuKiemKho";
             this.mnuKiemKho.Size = new System.Drawing.Size(224, 26);
             this.mnuKiemKho.Text = "Kiểm kho";
+            this.mnuKiemKho.Click += new System.EventHandler(this.mnuKiemKho_Click);
             // 
             // mnuChuyenKho
             // 
@@ -201,7 +202,7 @@
             this.mnuTraHangNhap.Name = "mnuTraHangNhap";
             this.mnuTraHangNhap.Size = new System.Drawing.Size(193, 26);
             this.mnuTraHangNhap.Text = "Trả hàng nhập";
-
+            this.mnuTraHangNhap.Click += new System.EventHandler(this.mnuTraHangNhap_Click);
             // 
             // mnuBaoCao
             // 

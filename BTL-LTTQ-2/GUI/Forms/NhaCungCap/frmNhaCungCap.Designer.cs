@@ -1,4 +1,4 @@
-namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
+﻿namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
 {
     partial class frmNhaCungCap
     {
@@ -332,13 +332,13 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
             // 
             // cboNhomNCC
             // 
-            this.cboNhomNCC.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            // this.cboNhomNCC.DropDownStyle managed by ComboboxHelper
             this.cboNhomNCC.FormattingEnabled = true;
             this.cboNhomNCC.Location = new System.Drawing.Point(18, 66);
             this.cboNhomNCC.Name = "cboNhomNCC";
             this.cboNhomNCC.Size = new System.Drawing.Size(287, 25);
             this.cboNhomNCC.TabIndex = 1;
-            this.cboNhomNCC.SelectedIndexChanged += new System.EventHandler(this.BoLoc_SelectedIndexChanged);
+            // this.cboNhomNCC.SelectedIndexChanged managed by ComboboxHelper
             // 
             // lblNhomNCC
             // 
@@ -400,7 +400,6 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
             this.cboSoDongMoiTrang.FormattingEnabled = true;
             this.cboSoDongMoiTrang.Items.AddRange(new object[] {
             "10",
-            "15",
             "20",
             "50",
             "100"});

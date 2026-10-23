@@ -1,4 +1,4 @@
-using BTL_LTTQ_2.GUI.Forms.NhapHang;
+﻿using BTL_LTTQ_2.GUI.Forms.NhapHang;
 using BTL_LTTQ_2.GUI.Forms.NhaCungCap;
 using System;
 using System.Windows.Forms;
@@ -110,7 +110,37 @@ namespace BTL_LTTQ_2.GUI.Forms
 
         private void mnuTraHangNhap_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Vui lòng mở phiếu nhập hàng cần trả trong danh sách 'Nhập hàng' và nhấn nút 'Trả hàng nhập'.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            // Kiểm tra xem form danh sách trả hàng nhập đã mở chưa, nếu đã mở thì kích hoạt (Active) lên trước
+            foreach (Form form in this.MdiChildren)
+            {
+                if (form is BTL_LTTQ_2.GUI.Forms.TraHangNhap.frmTraHangNhap)
+                {
+                    form.Activate();
+                    return;
+                }
+            }
+
+            BTL_LTTQ_2.GUI.Forms.TraHangNhap.frmTraHangNhap frm = new BTL_LTTQ_2.GUI.Forms.TraHangNhap.frmTraHangNhap();
+            frm.MdiParent = this;
+            frm.Show();
+        }
+
+        private void mnuKiemKho_Click(object sender, EventArgs e)
+        {
+            // Kiểm tra xem form danh sách kiểm kho đã mở chưa, nếu đã mở thì kích hoạt (Active) lên trước
+            foreach (Form form in this.MdiChildren)
+            {
+                if (form is BTL_LTTQ_2.GUI.Forms.KiemKho.frmKiemKho)
+                {
+                    form.Activate();
+                    return;
+                }
+            }
+
+            BTL_LTTQ_2.GUI.Forms.KiemKho.frmKiemKho frm = new BTL_LTTQ_2.GUI.Forms.KiemKho.frmKiemKho();
+            frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
+            frm.Show();
         }
     }
 }

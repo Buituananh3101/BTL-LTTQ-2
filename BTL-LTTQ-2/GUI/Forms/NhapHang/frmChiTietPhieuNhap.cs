@@ -1,5 +1,5 @@
-using BTL_LTTQ_2.BLL;
-using BTL_LTTQ_2.DAL;
+﻿using BTL_LTTQ_2.Classes;
+
 using System;
 using System.Data;
 using System.Data.SqlClient;
@@ -30,6 +30,11 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 
         private void CauHinhDataGridView()
         {
+            // Báº­t Ä‘á»‡m Ä‘Ã´i chá»‘ng giáº­t lag
+            typeof(DataGridView).InvokeMember("DoubleBuffered",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.SetProperty,
+                null, dgvChiTiet, new object[] { true });
+
             dgvChiTiet.AutoGenerateColumns = false;
             dgvChiTiet.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
             dgvChiTiet.DefaultCellStyle.SelectionBackColor = Color.FromArgb(224, 231, 255);

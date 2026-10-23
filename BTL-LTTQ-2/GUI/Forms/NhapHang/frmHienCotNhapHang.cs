@@ -40,7 +40,6 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
         {
             if (dgvNhapHang == null) return;
 
-            SetCheckedIfExists("colChon", chkChon);
             SetCheckedIfExists("colMaPhieu", chkMaPhieu);
             SetCheckedIfExists("colThoiGian", chkThoiGian);
             SetCheckedIfExists("colMaNcc", chkMaNcc);
@@ -60,27 +59,21 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 
         private void DangKySuKienCot()
         {
-            if (dgvNhapHang == null) return;
-
-            BindColumn("colChon", chkChon);
-            BindColumn("colMaPhieu", chkMaPhieu);
-            BindColumn("colThoiGian", chkThoiGian);
-            BindColumn("colMaNcc", chkMaNcc);
-            BindColumn("colTenNcc", chkTenNcc);
-            BindColumn("colCanTraNcc", chkCanTraNcc);
-            BindColumn("colTongTien", chkTongTien);
-            BindColumn("colTrangThai", chkTrangThai);
+            chkMaPhieu.CheckedChanged += (s, e) => DoiTrangThaiCot("colMaPhieu", chkMaPhieu.Checked);
+            chkThoiGian.CheckedChanged += (s, e) => DoiTrangThaiCot("colThoiGian", chkThoiGian.Checked);
+            chkMaNcc.CheckedChanged += (s, e) => DoiTrangThaiCot("colMaNcc", chkMaNcc.Checked);
+            chkTenNcc.CheckedChanged += (s, e) => DoiTrangThaiCot("colTenNcc", chkTenNcc.Checked);
+            chkCanTraNcc.CheckedChanged += (s, e) => DoiTrangThaiCot("colCanTraNcc", chkCanTraNcc.Checked);
+            chkTongTien.CheckedChanged += (s, e) => DoiTrangThaiCot("colTongTien", chkTongTien.Checked);
+            chkTrangThai.CheckedChanged += (s, e) => DoiTrangThaiCot("colTrangThai", chkTrangThai.Checked);
         }
 
-        private void BindColumn(string colName, CheckBox chk)
+        private void DoiTrangThaiCot(string colName, bool visible)
         {
-            chk.CheckedChanged += (s, e) =>
+            if (dgvNhapHang != null && dgvNhapHang.Columns.Contains(colName))
             {
-                if (dgvNhapHang.Columns.Contains(colName))
-                {
-                    dgvNhapHang.Columns[colName].Visible = chk.Checked;
-                }
-            };
+                dgvNhapHang.Columns[colName].Visible = visible;
+            }
         }
     }
 }

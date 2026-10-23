@@ -1,0 +1,715 @@
+﻿using BTL_LTTQ_2.Classes;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Drawing;
+using System.Windows.Forms;
+
+namespace BTL_LTTQ_2.GUI.Forms.KiemKho
+{
+    public partial class frmThemPhieuKiemKho : Form
+    {
+        private DataTable dtHangKiem;
+        private DataTable dtDanhSachHang;
+        private bool isCalculating = false;
+
+        public bool DaThayDoiDuLieu { get; private set; } = false;
+
+        public frmThemPhieuKiemKho()
+        {
+            InitializeComponent();
+            KhoiTaoBangHangKiem();
+            CauHinhDataGridView();
+        }
+
+        private void KhoiTaoBangHangKiem()
+        {
+            dtHangKiem = new DataTable();
+            dtHangKiem.Columns.Add("STT", typeof(int));
+            dtHangKiem.Columns.Add("MaHang", typeof(int));
+            dtHangKiem.Columns.Add("MaHangNoiBo", typeof(string));
+            dtHangKiem.Columns.Add("TenHang", typeof(string));
+            dtHangKiem.Columns.Add("TenDVT", typeof(string));
+            dtHangKiem.Columns.Add("TonKho", typeof(decimal));
+            dtHangKiem.Columns.Add("SoLuongThucTe", typeof(decimal));
+            dtHangKiem.Columns.Add("SlChenhLech", typeof(decimal));
+            dtHangKiem.Columns.Add("DonGia", typeof(decimal));
+            dtHangKiem.Columns.Add("GiaTriChenhLech", typeof(decimal));
+        }
+
+        private void CauHinhDataGridView()
+        {
+            // Bật DoubleBuffered chống rung giật
+            typeof(DataGridView).InvokeMember("DoubleBuffered",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.SetProperty,
+                null, dgvHangKiem, new object[] { true });
+
+            dgvHangKiem.AutoGenerateColumns = false;
+            dgvHangKiem.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
+            dgvHangKiem.DefaultCellStyle.SelectionBackColor = Color.FromArgb(224, 231, 255);
+            dgvHangKiem.DefaultCellStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
+
+            colStt.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colMaHangNoiBo.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colDonViTinh.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colTonKho.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            colSoLuongThucTe.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            colSlChenhLech.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            colDonGia.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            colGiaTriChenhLech.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+
+            colTonKho.DefaultCellStyle.Format = "N0";
+            colSoLuongThucTe.DefaultCellStyle.Format = "N0";
+            colSlChenhLech.DefaultCellStyle.Format = "N0";
+            colDonGia.DefaultCellStyle.Format = "N0";
+            colGiaTriChenhLech.DefaultCellStyle.Format = "N0";
+
+            colSoLuongThucTe.DefaultCellStyle.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+
+            dgvHangKiem.DataSource = dtHangKiem;
+        }
+
+        private void frmThemPhieuKiemKho_Load(object sender, EventArgs e)
+        {
+            lblMaPhieuVal.Text = SinhMaPhieuTuDong();
+            dtpThoiDiemChot.Value = DateTime.Now;
+
+            NapDanhSachKho();
+            NapDanhSachNhanVien();
+            NapDanhSachHangHoa();
+
+            TinhToanTongKet();
+        }
+
+        private string SinhMaPhieuTuDong()
+        {
+            try
+            {
+                string sql = "SELECT ISNULL(MAX(MaPhieuKiemKe), 0) + 1 FROM PhieuKiemKe";
+                object val = DataProcessing.ReadValue(sql);
+                int nextId = (val != null && val != DBNull.Value) ? Convert.ToInt32(val) : 1;
+                return "PKK" + nextId.ToString("D6");
+            }
+            catch
+            {
+                return "PKK" + DateTime.Now.ToString("yyMMddHHmm");
+            }
+        }
+
+        private void NapDanhSachKho()
+        {
+            try
+            {
+                string sql = "SELECT MaKho, TenKho FROM Kho WHERE TrangThai = 'HOAT_DONG' OR TrangThai = 'ACTIVE' OR TrangThai IS NULL ORDER BY TenKho ASC";
+                DataTable dt = DataProcessing.ReadData(sql);
+                cboKho.DisplayMember = "TenKho";
+                cboKho.ValueMember = "MaKho";
+                cboKho.DataSource = dt;
+
+                if (SessionContext.MaKhoHienTai > 0)
+                {
+                    cboKho.SelectedValue = SessionContext.MaKhoHienTai;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi nạp danh sách kho: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void NapDanhSachNhanVien()
+        {
+            try
+            {
+                string sql = @"
+                    SELECT 
+                        ISNULL(nv.MaNV, tk.MaTaiKhoan) AS MaNhanVien, 
+                        ISNULL(nv.HoTen, tk.TenDangNhap) AS HoTen 
+                    FROM TaiKhoan tk 
+                    LEFT JOIN NhanVien nv ON tk.MaNV = nv.MaNV 
+                    WHERE tk.TrangThai = 'HOAT_DONG' OR tk.TrangThai = 'ACTIVE' OR tk.TrangThai IS NULL
+                    ORDER BY HoTen ASC";
+                DataTable dt = DataProcessing.ReadData(sql);
+                cboNguoiKiem.DisplayMember = "HoTen";
+                cboNguoiKiem.ValueMember = "MaNhanVien";
+                cboNguoiKiem.DataSource = dt;
+
+                if (SessionContext.MaTaiKhoan > 0)
+                {
+                    cboNguoiKiem.SelectedValue = SessionContext.MaTaiKhoan;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi nạp danh sách nhân viên: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void NapDanhSachHangHoa()
+        {
+            try
+            {
+                int maKho = 1;
+                if (cboKho.SelectedValue != null && int.TryParse(cboKho.SelectedValue.ToString(), out int k))
+                {
+                    maKho = k;
+                }
+
+                string sql = @"
+                    SELECT 
+                        h.MaHang,
+                        h.MaHangNoiBo,
+                        h.TenHang,
+                        N'[' + h.MaHangNoiBo + N'] ' + h.TenHang + N' (Tồn: ' + CAST(CAST(ISNULL(tk.SoLuongTon, 0) AS INT) AS NVARCHAR(10)) + N')' AS HienThi,
+                        ISNULL(dvt.TenDVT, N'Cái') AS TenDVT,
+                        ISNULL(h.GiaVon, 0) AS DonGia,
+                        ISNULL(tk.SoLuongTon, 0) AS TonKho
+                    FROM HangHoa h
+                    LEFT JOIN DonViTinh dvt ON h.MaDVT = dvt.MaDVT
+                    LEFT JOIN vw_TonKhoHienTai tk ON h.MaHang = tk.MaHang AND tk.MaKho = @MaKho
+                    WHERE ISNULL(h.TrangThai, '') NOT IN ('NGUNG_BAN', 'DA_XOA')
+                    ORDER BY h.TenHang ASC";
+
+                SqlParameter[] p = { new SqlParameter("@MaKho", maKho) };
+                dtDanhSachHang = DataProcessing.ReadData(sql, p);
+
+                cboHangHoa.DisplayMember = "HienThi";
+                cboHangHoa.ValueMember = "MaHang";
+                cboHangHoa.DataSource = dtDanhSachHang;
+
+                cboHangHoa_SelectedIndexChanged(null, null);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi nạp danh sách hàng hóa: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void cboKho_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cboKho.SelectedValue != null && int.TryParse(cboKho.SelectedValue.ToString(), out _))
+            {
+                if (dtHangKiem != null && dtHangKiem.Rows.Count > 0)
+                {
+                    DialogResult dr = MessageBox.Show(
+                        "Đổi kho sẽ cập nhật lại số lượng tồn sổ sách của các hàng hóa theo kho mới.\nBạn có muốn tiếp tục?",
+                        "Xác nhận đổi kho",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question);
+
+                    if (dr == DialogResult.No) return;
+                }
+
+                NapDanhSachHangHoa();
+                CapNhatLaiTonKhoTheoKhoMoi();
+            }
+        }
+
+        private void CapNhatLaiTonKhoTheoKhoMoi()
+        {
+            if (dtHangKiem == null || dtHangKiem.Rows.Count == 0 || dtDanhSachHang == null) return;
+
+            foreach (DataRow r in dtHangKiem.Rows)
+            {
+                int maHang = Convert.ToInt32(r["MaHang"]);
+                DataRow[] tim = dtDanhSachHang.Select($"MaHang = {maHang}");
+                if (tim != null && tim.Length > 0)
+                {
+                    decimal tonMoi = Convert.ToDecimal(tim[0]["TonKho"]);
+                    r["TonKho"] = tonMoi;
+                    decimal tt = Convert.ToDecimal(r["SoLuongThucTe"]);
+                    decimal donGia = Convert.ToDecimal(r["DonGia"]);
+                    decimal slLech = tt - tonMoi;
+                    r["SlChenhLech"] = slLech;
+                    r["GiaTriChenhLech"] = slLech * donGia;
+                }
+            }
+            TinhToanTongKet();
+        }
+
+        private void cboHangHoa_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cboHangHoa.SelectedValue != null && int.TryParse(cboHangHoa.SelectedValue.ToString(), out int maHang))
+            {
+                if (dtDanhSachHang != null)
+                {
+                    DataRow[] rows = dtDanhSachHang.Select($"MaHang = {maHang}");
+                    if (rows.Length > 0)
+                    {
+                        decimal ton = Convert.ToDecimal(rows[0]["TonKho"]);
+                        nudSoLuongThucTe.Value = ton >= 0 ? ton : 0;
+                    }
+                }
+            }
+        }
+
+        #region Thao Tác Thêm & Xóa Dòng Hàng
+
+        private void btnThemHang_Click(object sender, EventArgs e)
+        {
+            if (cboHangHoa.SelectedValue == null || !int.TryParse(cboHangHoa.SelectedValue.ToString(), out int maHang))
+            {
+                MessageBox.Show("Vui lòng chọn hàng hóa!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            DataRow[] rows = dtDanhSachHang.Select($"MaHang = {maHang}");
+            if (rows.Length == 0) return;
+
+            DataRow rowHang = rows[0];
+            decimal slThucTe = nudSoLuongThucTe.Value;
+            decimal tonKho = Convert.ToDecimal(rowHang["TonKho"]);
+            decimal donGia = Convert.ToDecimal(rowHang["DonGia"]);
+
+            // Kiểm tra xem hàng này đã có trong bảng chưa
+            DataRow[] daCo = dtHangKiem.Select($"MaHang = {maHang}");
+            if (daCo.Length > 0)
+            {
+                // Cập nhật số lượng thực tế
+                daCo[0]["SoLuongThucTe"] = slThucTe;
+                decimal slLech = slThucTe - tonKho;
+                daCo[0]["SlChenhLech"] = slLech;
+                daCo[0]["GiaTriChenhLech"] = slLech * donGia;
+            }
+            else
+            {
+                // Thêm dòng mới
+                DataRow rMoi = dtHangKiem.NewRow();
+                rMoi["STT"] = dtHangKiem.Rows.Count + 1;
+                rMoi["MaHang"] = maHang;
+                rMoi["MaHangNoiBo"] = rowHang["MaHangNoiBo"];
+                rMoi["TenHang"] = rowHang["TenHang"];
+                rMoi["TenDVT"] = rowHang["TenDVT"];
+                rMoi["TonKho"] = tonKho;
+                rMoi["SoLuongThucTe"] = slThucTe;
+                decimal slLech = slThucTe - tonKho;
+                rMoi["SlChenhLech"] = slLech;
+                rMoi["DonGia"] = donGia;
+                rMoi["GiaTriChenhLech"] = slLech * donGia;
+                dtHangKiem.Rows.Add(rMoi);
+            }
+
+            TinhToanTongKet();
+        }
+
+        private void btnNapToanBoHang_Click(object sender, EventArgs e)
+        {
+            if (dtDanhSachHang == null || dtDanhSachHang.Rows.Count == 0)
+            {
+                MessageBox.Show("Kho hiện tại không có sản phẩm nào!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            DialogResult dr = MessageBox.Show(
+                $"Hệ thống sẽ nạp {dtDanhSachHang.Rows.Count} mặt hàng trong kho vào phiếu kiểm kê.\nBạn có muốn tiếp tục?",
+                "Xác nhận nạp toàn bộ hàng",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (dr == DialogResult.Yes)
+            {
+                dtHangKiem.Clear();
+                int stt = 1;
+                foreach (DataRow r in dtDanhSachHang.Rows)
+                {
+                    DataRow rMoi = dtHangKiem.NewRow();
+                    rMoi["STT"] = stt++;
+                    rMoi["MaHang"] = r["MaHang"];
+                    rMoi["MaHangNoiBo"] = r["MaHangNoiBo"];
+                    rMoi["TenHang"] = r["TenHang"];
+                    rMoi["TenDVT"] = r["TenDVT"];
+                    decimal tonKho = Convert.ToDecimal(r["TonKho"]);
+                    rMoi["TonKho"] = tonKho;
+                    rMoi["SoLuongThucTe"] = tonKho; // Mặc định khớp tồn sổ sách
+                    rMoi["SlChenhLech"] = 0;
+                    decimal donGia = Convert.ToDecimal(r["DonGia"]);
+                    rMoi["DonGia"] = donGia;
+                    rMoi["GiaTriChenhLech"] = 0;
+                    dtHangKiem.Rows.Add(rMoi);
+                }
+
+                TinhToanTongKet();
+            }
+        }
+
+        private void dgvHangKiem_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0 && e.ColumnIndex == colXoaDong.Index)
+            {
+                dtHangKiem.Rows.RemoveAt(e.RowIndex);
+                DanhSoLaiStt();
+                TinhToanTongKet();
+            }
+        }
+
+        private void dgvHangKiem_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            if (isCalculating || e.RowIndex < 0) return;
+
+            try
+            {
+                isCalculating = true;
+                DataGridViewRow row = dgvHangKiem.Rows[e.RowIndex];
+                if (row.Cells["colSoLuongThucTe"].Value != null &&
+                    decimal.TryParse(row.Cells["colSoLuongThucTe"].Value.ToString(), out decimal slThucTe))
+                {
+                    if (slThucTe < 0) slThucTe = 0;
+                    row.Cells["colSoLuongThucTe"].Value = slThucTe;
+
+                    decimal tonKho = Convert.ToDecimal(row.Cells["colTonKho"].Value);
+                    decimal donGia = Convert.ToDecimal(row.Cells["colDonGia"].Value);
+                    decimal slLech = slThucTe - tonKho;
+
+                    row.Cells["colSlChenhLech"].Value = slLech;
+                    row.Cells["colGiaTriChenhLech"].Value = slLech * donGia;
+                }
+                TinhToanTongKet();
+            }
+            finally
+            {
+                isCalculating = false;
+            }
+        }
+
+        private void DanhSoLaiStt()
+        {
+            for (int i = 0; i < dtHangKiem.Rows.Count; i++)
+            {
+                dtHangKiem.Rows[i]["STT"] = i + 1;
+            }
+        }
+
+        private void TinhToanTongKet()
+        {
+            decimal tongThucTe = 0;
+            decimal tongGiaTriThucTe = 0;
+            decimal tongLechTang = 0;
+            decimal tongGiaTriLechTang = 0;
+            decimal tongLechGiam = 0;
+            decimal tongGiaTriLechGiam = 0;
+            decimal tongChenhLech = 0;
+            decimal tongGiaTriChenhLech = 0;
+
+            foreach (DataRow r in dtHangKiem.Rows)
+            {
+                decimal tt = Convert.ToDecimal(r["SoLuongThucTe"]);
+                decimal donGia = Convert.ToDecimal(r["DonGia"]);
+                decimal slLech = Convert.ToDecimal(r["SlChenhLech"]);
+                decimal giaTriLech = Convert.ToDecimal(r["GiaTriChenhLech"]);
+
+                tongThucTe += tt;
+                tongGiaTriThucTe += (tt * donGia);
+
+                if (slLech > 0)
+                {
+                    tongLechTang += slLech;
+                    tongGiaTriLechTang += giaTriLech;
+                }
+                else if (slLech < 0)
+                {
+                    tongLechGiam += Math.Abs(slLech);
+                    tongGiaTriLechGiam += Math.Abs(giaTriLech);
+                }
+
+                tongChenhLech += slLech;
+                tongGiaTriChenhLech += giaTriLech;
+            }
+
+            lblTongSoHangVal.Text = dtHangKiem.Rows.Count.ToString();
+            lblTongThucTeVal.Text = $"{tongThucTe:N0}  |  {tongGiaTriThucTe:N0} đ";
+            lblTongLechTangVal.Text = $"{tongLechTang:N0}  |  {tongGiaTriLechTang:N0} đ";
+            lblTongLechGiamVal.Text = $"{tongLechGiam:N0}  |  {tongGiaTriLechGiam:N0} đ";
+            lblTongChenhLechVal.Text = $"{tongChenhLech:N0}  |  {tongGiaTriChenhLech:N0} đ";
+        }
+
+        #endregion
+
+        #region Chức Năng Nhập File
+
+        private void btnNhapFile_Click(object sender, EventArgs e)
+        {
+            using (frmNhapKiemKhoFile frm = new frmNhapKiemKhoFile())
+            {
+                if (frm.ShowDialog() == DialogResult.OK && frm.DtKetQuaNhap != null && frm.DtKetQuaNhap.Rows.Count > 0)
+                {
+                    int demThemMoi = 0;
+                    int demCapNhat = 0;
+
+                    foreach (DataRow rFile in frm.DtKetQuaNhap.Rows)
+                    {
+                        int maHang = Convert.ToInt32(rFile["MaHang"]);
+                        decimal slThucTe = Convert.ToDecimal(rFile["SoLuongThucTe"]);
+
+                        // Tìm trong danh sách hàng hóa của kho
+                        DataRow[] hangTrongKho = dtDanhSachHang.Select($"MaHang = {maHang}");
+                        decimal tonKho = 0;
+                        decimal donGia = Convert.ToDecimal(rFile["DonGia"]);
+                        string maHangNoiBo = rFile["MaHangNoiBo"].ToString();
+                        string tenHang = rFile["TenHang"].ToString();
+                        string tenDvt = rFile["TenDVT"].ToString();
+
+                        if (hangTrongKho != null && hangTrongKho.Length > 0)
+                        {
+                            tonKho = Convert.ToDecimal(hangTrongKho[0]["TonKho"]);
+                            if (donGia == 0) donGia = Convert.ToDecimal(hangTrongKho[0]["DonGia"]);
+                        }
+
+                        // Tìm trong dtHangKiem
+                        DataRow[] daCo = dtHangKiem.Select($"MaHang = {maHang}");
+                        if (daCo.Length > 0)
+                        {
+                            daCo[0]["SoLuongThucTe"] = slThucTe;
+                            decimal slLech = slThucTe - tonKho;
+                            daCo[0]["SlChenhLech"] = slLech;
+                            daCo[0]["GiaTriChenhLech"] = slLech * donGia;
+                            demCapNhat++;
+                        }
+                        else
+                        {
+                            DataRow rMoi = dtHangKiem.NewRow();
+                            rMoi["STT"] = dtHangKiem.Rows.Count + 1;
+                            rMoi["MaHang"] = maHang;
+                            rMoi["MaHangNoiBo"] = maHangNoiBo;
+                            rMoi["TenHang"] = tenHang;
+                            rMoi["TenDVT"] = tenDvt;
+                            rMoi["TonKho"] = tonKho;
+                            rMoi["SoLuongThucTe"] = slThucTe;
+                            decimal slLech = slThucTe - tonKho;
+                            rMoi["SlChenhLech"] = slLech;
+                            rMoi["DonGia"] = donGia;
+                            rMoi["GiaTriChenhLech"] = slLech * donGia;
+                            dtHangKiem.Rows.Add(rMoi);
+                            demThemMoi++;
+                        }
+                    }
+
+                    DanhSoLaiStt();
+                    TinhToanTongKet();
+
+                    MessageBox.Show($"Nạp file thành công!\nThêm mới: {demThemMoi} dòng | Cập nhật: {demCapNhat} dòng.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+        }
+
+        #endregion
+
+        #region Lưu Tạm & Cân Bằng Kho
+
+        private void btnLuuTam_Click(object sender, EventArgs e)
+        {
+            LuuPhieuKiemKho(trangThaiMoi: "NHAP");
+        }
+
+        private void btnCanBangKho_Click(object sender, EventArgs e)
+        {
+            if (dtHangKiem.Rows.Count == 0)
+            {
+                MessageBox.Show("Vui lòng thêm ít nhất một mặt hàng để cân bằng kho!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            DialogResult dr = MessageBox.Show(
+                "Bạn có chắc chắn muốn cân bằng kho?\nHành động này sẽ cập nhật tồn kho thực tế vào sổ sách và khóa vĩnh viễn phiếu kiểm kê (không thể hủy/sửa)!",
+                "Xác nhận cân bằng kho",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (dr == DialogResult.Yes)
+            {
+                LuuPhieuKiemKho(trangThaiMoi: "DA_DIEU_CHINH");
+            }
+        }
+
+        private void LuuPhieuKiemKho(string trangThaiMoi)
+        {
+            if (dtHangKiem.Rows.Count == 0)
+            {
+                MessageBox.Show("Vui lòng thêm ít nhất một mặt hàng vào phiếu kiểm kê!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            int maKho = Convert.ToInt32(cboKho.SelectedValue);
+            int maNhanVien = 1;
+            if (cboNguoiKiem.SelectedValue != null && int.TryParse(cboNguoiKiem.SelectedValue.ToString(), out int nvId))
+            {
+                maNhanVien = nvId;
+            }
+
+            DateTime thoiDiemChot = dtpThoiDiemChot.Value;
+            string ghiChu = txtGhiChu.Text.Trim();
+            string maPhieu = lblMaPhieuVal.Text.Trim();
+
+            try
+            {
+                Cursor.Current = Cursors.WaitCursor;
+
+                DataProcessing.ChangeDataTransaction((conn, trans) =>
+                {
+                    // 1. Thêm PhieuKiemKe
+                    string sqlPkk = @"
+                        INSERT INTO PhieuKiemKe (MaKho, MaNVLap, ThoiDiemChot, TrangThai, GhiChu, MaPhieu, DaDanhDau)
+                        VALUES (@MaKho, @MaNVLap, @ThoiDiemChot, @TrangThai, @GhiChu, @MaPhieu, 0);
+                        SELECT SCOPE_IDENTITY();";
+
+                    int newMaPhieuKiemKe = 0;
+                    using (SqlCommand cmdPkk = new SqlCommand(sqlPkk, conn, trans))
+                    {
+                        cmdPkk.Parameters.AddWithValue("@MaKho", maKho);
+                        cmdPkk.Parameters.AddWithValue("@MaNVLap", maNhanVien);
+                        cmdPkk.Parameters.AddWithValue("@ThoiDiemChot", thoiDiemChot);
+                        cmdPkk.Parameters.AddWithValue("@TrangThai", trangThaiMoi);
+                        cmdPkk.Parameters.AddWithValue("@GhiChu", (object)ghiChu ?? DBNull.Value);
+                        cmdPkk.Parameters.AddWithValue("@MaPhieu", maPhieu);
+
+                        object result = cmdPkk.ExecuteScalar();
+                        newMaPhieuKiemKe = Convert.ToInt32(result);
+                    }
+
+                    // 2. Thêm từng dòng ChiTietPhieuKiemKe
+                    var listDongDieuChinh = new List<Tuple<int, decimal>>(); // MaCTKiemKe, SoLuongDieuChinh
+
+                    foreach (DataRow r in dtHangKiem.Rows)
+                    {
+                        int maHang = Convert.ToInt32(r["MaHang"]);
+                        decimal tonKho = Convert.ToDecimal(r["TonKho"]);
+                        decimal thucTe = Convert.ToDecimal(r["SoLuongThucTe"]);
+                        decimal donGia = Convert.ToDecimal(r["DonGia"]);
+                        decimal slChenhLech = thucTe - tonKho;
+
+                        string sqlCtpkk = @"
+                            INSERT INTO ChiTietPhieuKiemKe (MaPhieuKiemKe, MaHang, SoLuongTheoSo, SoLuongThucTe, DonGia)
+                            VALUES (@MaPhieuKiemKe, @MaHang, @SoLuongTheoSo, @SoLuongThucTe, @DonGia);
+                            SELECT SCOPE_IDENTITY();";
+
+                        int newMaCtKiemKe = 0;
+                        using (SqlCommand cmdCt = new SqlCommand(sqlCtpkk, conn, trans))
+                        {
+                            cmdCt.Parameters.AddWithValue("@MaPhieuKiemKe", newMaPhieuKiemKe);
+                            cmdCt.Parameters.AddWithValue("@MaHang", maHang);
+                            cmdCt.Parameters.AddWithValue("@SoLuongTheoSo", tonKho);
+                            cmdCt.Parameters.AddWithValue("@SoLuongThucTe", thucTe);
+                            cmdCt.Parameters.AddWithValue("@DonGia", donGia);
+
+                            object ctRes = cmdCt.ExecuteScalar();
+                            newMaCtKiemKe = Convert.ToInt32(ctRes);
+                        }
+
+                        // Nếu cân bằng kho và có chênh lệch thì đưa vào danh sách điều chỉnh
+                        if (trangThaiMoi == "DA_DIEU_CHINH" && slChenhLech != 0)
+                        {
+                            listDongDieuChinh.Add(new Tuple<int, decimal>(newMaCtKiemKe, slChenhLech));
+                        }
+                    }
+
+                    // 3. Nếu Cân bằng kho: Sinh PhieuDieuChinh và ChiTietPhieuDieuChinh
+                    if (trangThaiMoi == "DA_DIEU_CHINH")
+                    {
+                        string sqlPdc = @"
+                            INSERT INTO PhieuDieuChinh (MaPhieuKiemKe, MaNVLap, MaNVDuyet, NgayLap, NgayDuyet, TrangThai, GhiChu)
+                            VALUES (@MaPhieuKiemKe, @MaNVLap, @MaNVDuyet, sysdatetime(), sysdatetime(), 'DA_DUYET', @GhiChu);
+                            SELECT SCOPE_IDENTITY();";
+
+                        int newMaPhieuDieuChinh = 0;
+                        using (SqlCommand cmdPdc = new SqlCommand(sqlPdc, conn, trans))
+                        {
+                            cmdPdc.Parameters.AddWithValue("@MaPhieuKiemKe", newMaPhieuKiemKe);
+                            cmdPdc.Parameters.AddWithValue("@MaNVLap", maNhanVien);
+                            cmdPdc.Parameters.AddWithValue("@MaNVDuyet", maNhanVien);
+                            cmdPdc.Parameters.AddWithValue("@GhiChu", $"Cân bằng kiểm kê phiếu {maPhieu}");
+
+                            object pdcRes = cmdPdc.ExecuteScalar();
+                            newMaPhieuDieuChinh = Convert.ToInt32(pdcRes);
+                        }
+
+                        // Thêm các dòng ChiTietPhieuDieuChinh
+                        foreach (var item in listDongDieuChinh)
+                        {
+                            string sqlCtpdc = @"
+                                INSERT INTO ChiTietPhieuDieuChinh (MaPhieuDieuChinh, MaCTKiemKe, SoLuongDieuChinh)
+                                VALUES (@MaPhieuDieuChinh, @MaCTKiemKe, @SoLuongDieuChinh)";
+
+                            using (SqlCommand cmdCtpdc = new SqlCommand(sqlCtpdc, conn, trans))
+                            {
+                                cmdCtpdc.Parameters.AddWithValue("@MaPhieuDieuChinh", newMaPhieuDieuChinh);
+                                cmdCtpdc.Parameters.AddWithValue("@MaCTKiemKe", item.Item1);
+                                cmdCtpdc.Parameters.AddWithValue("@SoLuongDieuChinh", item.Item2);
+                                cmdCtpdc.ExecuteNonQuery();
+                            }
+                        }
+                    }
+
+                    // 4. Ghi nhật ký thao tác
+                    string sqlLog = @"
+                        INSERT INTO NhatKyThaoTac (MaTaiKhoan, ThoiDiem, ThaoTac, LoaiDoiTuong, MaDoiTuong, NoiDung)
+                        VALUES (@MaTaiKhoan, sysdatetime(), @ThaoTac, 'PhieuKiemKe', @MaDoiTuong, @NoiDung)";
+
+                    using (SqlCommand cmdLog = new SqlCommand(sqlLog, conn, trans))
+                    {
+                        cmdLog.Parameters.AddWithValue("@MaTaiKhoan", SessionContext.MaTaiKhoan > 0 ? SessionContext.MaTaiKhoan : 1);
+                        cmdLog.Parameters.AddWithValue("@ThaoTac", trangThaiMoi == "DA_DIEU_CHINH" ? "Cân bằng kho" : "Lưu tạm phiếu kiểm");
+                        cmdLog.Parameters.AddWithValue("@MaDoiTuong", newMaPhieuKiemKe.ToString());
+                        cmdLog.Parameters.AddWithValue("@NoiDung", trangThaiMoi == "DA_DIEU_CHINH" 
+                            ? $"Cân bằng kiểm kho {maPhieu}, {dtHangKiem.Rows.Count} dòng kiểm, {listDongDieuChinh.Count} dòng điều chỉnh"
+                            : $"Lưu tạm phiếu kiểm kho {maPhieu}, {dtHangKiem.Rows.Count} dòng kiểm");
+                        cmdLog.ExecuteNonQuery();
+                    }
+                });
+
+                string thongBao = (trangThaiMoi == "DA_DIEU_CHINH") 
+                    ? $"Cân bằng kho thành công cho phiếu {maPhieu}!\nSố liệu tồn kho sổ sách đã được cập nhật chính xác."
+                    : $"Lưu tạm phiếu kiểm kho {maPhieu} thành công!";
+
+                MessageBox.Show(thongBao, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                DaThayDoiDuLieu = true;
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi lưu phiếu kiểm kho: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                Cursor.Current = Cursors.Default;
+            }
+        }
+
+        #endregion
+
+        private void frmThemPhieuKiemKho_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.F9)
+            {
+                btnLuuTam_Click(null, null);
+                e.Handled = true;
+            }
+            else if (e.KeyCode == Keys.F10)
+            {
+                btnCanBangKho_Click(null, null);
+                e.Handled = true;
+            }
+            else if (e.KeyCode == Keys.Escape)
+            {
+                btnDong_Click(null, null);
+                e.Handled = true;
+            }
+        }
+
+        private void btnDong_Click(object sender, EventArgs e)
+        {
+            if (dtHangKiem.Rows.Count > 0)
+            {
+                DialogResult dr = MessageBox.Show(
+                    "Dữ liệu phiếu kiểm chưa được lưu. Bạn có chắc chắn muốn đóng?",
+                    "Xác nhận đóng",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (dr == DialogResult.No) return;
+            }
+
+            this.Close();
+        }
+    }
+}

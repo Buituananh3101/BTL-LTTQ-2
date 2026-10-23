@@ -45,7 +45,6 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
         {
             if (dgvNhaCungCap == null) return;
 
-            SetCheckedIfExists("colChon", chkChon);
             SetCheckedIfExists("colMaNCC", chkMaNcc);
             SetCheckedIfExists("colTenNCC", chkTenNcc);
             SetCheckedIfExists("colDienThoai", chkDienThoai);
@@ -68,7 +67,6 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
         /// </summary>
         private void DangKySuKienCot()
         {
-            chkChon.CheckedChanged += (s, e) => DoiTrangThaiCot("colChon", chkChon.Checked);
             chkMaNcc.CheckedChanged += (s, e) => DoiTrangThaiCot("colMaNCC", chkMaNcc.Checked);
             chkTenNcc.CheckedChanged += (s, e) => DoiTrangThaiCot("colTenNCC", chkTenNcc.Checked);
             chkDienThoai.CheckedChanged += (s, e) => DoiTrangThaiCot("colDienThoai", chkDienThoai.Checked);

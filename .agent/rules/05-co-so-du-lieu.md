@@ -1,4 +1,4 @@
-# 05. Cơ sở dữ liệu & Thao tác ADO.NET thuần
+﻿# 05. Cơ sở dữ liệu & Thao tác ADO.NET thuần
 
 ## 1. Môi trường CSDL & Cấu hình Kết nối
 
@@ -12,7 +12,7 @@
            providerName="System.Data.SqlClient" />
   </connectionStrings>
   ```
-- **Lớp truy xuất dữ liệu**: [`DAL/DataProcessing.cs`](../../BTL-LTTQ-2/DAL/DataProcessing.cs).
+- **Lớp truy xuất dữ liệu**: [`Classes/DataProcessing.cs`](../../BTL-LTTQ-2/Classes/DataProcessing.cs).
 
 ---
 
@@ -121,3 +121,15 @@ DataProcessing.ChangeDataTransaction((conn, trans) =>
 > 
 > **LUÔN LUÔN** dùng `SqlParameter`:
 > ✔️ `string sql = "SELECT * FROM TaiKhoan WHERE TenDangNhap = @User";` kèm `new SqlParameter("@User", txtUser.Text.Trim())` (BẮT BUỘC).
+
+---
+
+## 5. Cáº¥m Ä‘oÃ¡n bá»«a cáº¥u trÃºc CSDL - Báº¯t buá»™c xin quyá»n truy váº¥n SELECT kiá»ƒm tra
+
+> [!IMPORTANT]
+> **Quy táº¯c báº¥t biáº¿n khi viáº¿t cÃ¢u lá»‡nh SQL tá»›i CSDL**:
+> 1. Khi táº¡o má»›i hoáº·c chá»‰nh sá»­a truy váº¥n tá»›i CSDL trong code, náº¿u **chÆ°a rÃµ 100%** vá» tÃªn báº£ng, thuá»™c tÃ­nh/tÃªn cá»™t, kiá»ƒu dá»¯ liá»‡u, cÃ¡c giÃ¡ trá»‹ cho phÃ©p cá»§a cá»™t (vÃ­ dá»¥: TrangThai dáº¡ng archar hay int, chá»©a 'HOAT_DONG' hay 1, khÃ³a ngoáº¡i trá» sang TaiKhoan(MaTaiKhoan) hay NhanVien(MaNV)):
+>    - **Báº®T BUá»˜C** pháº£i xin phÃ©p ngÆ°á»i dÃ¹ng cáº¥p quyá»n cháº¡y truy váº¥n tá»›i CSDL Ä‘á»ƒ kiá»ƒm tra.
+>    - **CHá»ˆ ÄÆ¯á»¢C PHÃ‰P** sá»­ dá»¥ng cÃ¡c cÃ¢u lá»‡nh truy váº¥n SELECT (nhÆ° INFORMATION_SCHEMA.COLUMNS, sys.tables, SELECT DISTINCT TrangThai FROM ...).
+>    - **NGHIÃŠM Cáº¤M** chá»‰nh sá»­a cáº¥u trÃºc hay dá»¯ liá»‡u database (DROP, ALTER, UPDATE, DELETE) khi chÆ°a Ä‘Æ°á»£c phÃ©p.
+> 2. **TUYá»†T Äá»I KHÃ”NG ÄÆ¯á»¢C ÄOÃN Bá»ªA** tÃªn cá»™t hay giÃ¡ trá»‹ tráº¡ng thÃ¡i Ä‘á»ƒ trÃ¡nh phÃ¡t sinh lá»—i thá»i gian cháº¡y (Invalid column name, Conversion failed, v.v.).

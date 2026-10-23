@@ -1,6 +1,6 @@
 # Đặc tả Chức năng: Quản lý Nhà cung cấp (Supplier Management - Windows Forms)
 
-> **Mục tiêu**: Quản lý danh mục Nhà cung cấp chuẩn giao diện & nghiệp vụ hệ thống kho hàng nội bộ. Tìm kiếm tức thì, lọc đa tiêu chí bằng ComboBox, phân trang SQL Server, mở form MDI, form phụ thêm/sửa NCC bọc Transaction, tạo nhanh nhóm NCC và xuất dữ liệu ra file CSV/Excel UTF-8 BOM.
+> **Mục tiêu**: Quản lý danh mục Nhà cung cấp chuẩn giao diện & nghiệp vụ hệ thống kho hàng nội bộ. Tìm kiếm tức thì, lọc đa tiêu chí bằng ComboBox, phân trang SQL Server, mở form MDI, form phụ thêm/sửa NCC bọc Transaction, tạo nhanh nhóm NCC, nhập file danh sách NCC từ Excel/CSV và xuất dữ liệu ra file CSV/Excel UTF-8 BOM.
 
 ---
 
@@ -8,12 +8,14 @@
 
 ### 1.1. Bản đồ File liên quan (File Map)
 - **Thư mục chức năng**: `BTL-LTTQ-2/GUI/Forms/NhaCungCap/`
-  - `frmNhaCungCap.cs`, `frmNhaCungCap.Designer.cs`, `frmNhaCungCap.resx`: Form chính hiển thị danh sách nhà cung cấp, thanh tìm kiếm F3, các combobox bộ lọc bên trái, DataGridView định dạng chuẩn và thanh phân trang.
-  - `frmDonViCapHang.cs`, `frmDonViCapHang.Designer.cs`, `frmDonViCapHang.resx`: Form phụ Thêm mới / Chỉnh sửa hồ sơ nhà cung cấp (mã tự sinh `NCC00001`, validate chống trùng, nạp nhóm, bọc `ChangeDataTransaction`).
-  - `frmNhomNhaCungCap.cs`, `frmNhomNhaCungCap.Designer.cs`, `frmNhomNhaCungCap.resx`: Form phụ Tạo mới nhóm nhà cung cấp khi bấm "+ Tạo mới" trên bộ lọc hoặc form chi tiết.
-  - `frmHienCotNcc.cs`, `frmHienCotNcc.Designer.cs`, `frmHienCotNcc.resx`: Form phụ popup tùy chọn Ẩn / Hiện cột của DataGridView nhà cung cấp.
+  - `frmNhaCungCap.cs`, `frmNhaCungCap.Designer.cs`, `frmNhaCungCap.resx`: Form chính hiển thị danh sách nhà cung cấp (kích thước chuẩn 1782x853), thanh tìm kiếm F3, các combobox bộ lọc bên trái (chiều rộng 340px), DataGridView định dạng chuẩn đệm đôi `DoubleBuffered` và thanh phân trang (tùy chọn 10, 20, 50, 100 dòng, mặc định 20 dòng).
+  - `frmDonViCapHang.cs`, `frmDonViCapHang.Designer.cs`, `frmDonViCapHang.resx`: Form phụ Thêm mới / Chỉnh sửa hồ sơ nhà cung cấp (chuẩn hóa theo `frmHangHoa`: kích thước 960x720, nhãn trên ô nhập, trường địa chỉ Multiline, mã tự sinh `NCC00001`, validate chống trùng, nạp nhóm, bọc `ChangeDataTransaction`).
+  - `frmNhomNhaCungCap.cs`, `frmNhomNhaCungCap.Designer.cs`, `frmNhomNhaCungCap.resx`: Form phụ Tạo mới nhóm nhà cung cấp khi bấm nút "+" trên bộ lọc hoặc form chi tiết.
+  - `frmHienCotNcc.cs`, `frmHienCotNcc.Designer.cs`, `frmHienCotNcc.resx`: Form phụ popup tùy chọn Ẩn / Hiện cột của DataGridView nhà cung cấp (chỉ gồm 7 cột dữ liệu, không cho phép ẩn cột chọn dòng hệ thống).
+  - `frmNhapNhaCungCapFile.cs`, `frmNhapNhaCungCapFile.Designer.cs`, `frmNhapNhaCungCapFile.resx`: Form phụ nhập danh sách nhà cung cấp từ file Excel (.xlsx, .xls) hoặc CSV (tải file mẫu, tùy chọn cập nhật thông tin khi trùng mã hoặc bỏ qua, tự động sinh mã `NCC0000X`, tự động tạo nhóm mới nếu chưa có, bọc `ChangeDataTransaction`).
 - **Form cha MDI & Menu**: `BTL-LTTQ-2/GUI/Forms/frmMain.cs` (gắn sự kiện `mnuNhaCungCap_Click` mở và kích hoạt form MDI Child).
-- **Truy xuất dữ liệu (DAL)**: `BTL-LTTQ-2/DAL/DataProcessing.cs` (ADO.NET thuần: `ReadData`, `ReadValue`, `ChangeDataTransaction`).
+- **Truy xuất dữ liệu (DAL)**: `BTL-LTTQ-2/Classes/DataProcessing.cs` (ADO.NET thuần: `ReadData`, `ReadValue`, `ChangeDataTransaction`).
+- **Quản lý phiên đăng nhập**: `BTL-LTTQ-2/Classes/SessionContext.cs` (lấy `MaTaiKhoan`, `MaKhoHienTai`, vai trò).
 
 ### 1.2. Cơ sở dữ liệu (Tuân thủ 3 Nguyên tắc Vàng CSDL)
 - **Bảng `DonViCapHang`**:
@@ -44,12 +46,13 @@
 | **1. Mở danh sách** | Vào Menu "Mua hàng" ➜ "Nhà cung cấp" | `mnuNhaCungCap_Click` kiểm tra form con trong `MdiChildren`. Nếu có ➜ `Activate()`, nếu chưa ➜ `Show()` | Nạp nhóm NCC vào `cboNhomNCC`, nạp dữ liệu trang 1, tính `TongMua` và `NoCanTraHienTai` |
 | **2. Lọc đa tiêu chí** | Chọn Nhóm, Mức tổng mua, Nợ hiện tại, Trạng thái hoặc Khoảng thời gian tạo | Đặt lại `trangHienTai = 1`, gọi `HienThiDanhSach()` nạp lại dữ liệu | Mệnh đề `WHERE` lọc động theo các tham số `@MaNhom`, `@Search`, `@TuNgay`, `@DenNgay`, mức tiền |
 | **3. Tìm kiếm tức thời** | Gõ từ khóa vào ô Tìm kiếm | Sự kiện `txtTimKiem_TextChanged` kích hoạt tìm tức thời | Lọc `MaNcc LIKE @Search OR TenDonVi LIKE @Search OR DienThoai LIKE @Search` |
-| **4. Phân trang** | Bấm "◀ Trước", "Sau ▶" hoặc đổi "Hiển thị: 15 dòng" | `cboSoDongMoiTrang_SelectedIndexChanged`, `btnTrangTruoc_Click`, `btnTrangSau_Click` | SQL Server phân trang chuẩn `OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY` |
-| **5. Thêm mới NCC** | Bấm nút "+ Nhà cung cấp" | Mở `frmDonViCapHang` chế độ thêm mới (`maNCC = 0`), tự sinh mã `NCC0000X` | Validate bắt buộc `TenDonVi`, kiểm tra chống trùng `MaNcc`, bọc `ChangeDataTransaction` |
-| **6. Chỉnh sửa NCC** | Double-click vào một dòng trên DataGridView | Mở `frmDonViCapHang` chế độ sửa (`maNCC > 0`), nạp thông tin và thống kê công nợ | Cập nhật `DonViCapHang`, khi đóng trả `DialogResult.OK` tự làm mới danh sách |
+| **4. Phân trang** | Bấm "◀ Trước", "Sau ▶" hoặc đổi số dòng: 10, 20, 50, 100 | `cboSoDongMoiTrang_SelectedIndexChanged`, `btnTrangTruoc_Click`, `btnTrangSau_Click` | SQL Server phân trang chuẩn `OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY`. Nhãn hiển thị: `Hiển thị X - Y trên tổng số Z nhà cung cấp` |
+| **5. Thêm mới NCC** | Bấm nút "+ Nhà cung cấp" | Mở `frmDonViCapHang` dạng modal dialog `ShowDialog(this)` chế độ thêm mới (`maNCC = 0`), tự sinh mã `NCC0000X` | Validate bắt buộc `TenDonVi`, kiểm tra chống trùng `MaNcc`, bọc `ChangeDataTransaction` |
+| **6. Chỉnh sửa NCC** | Double-click vào một dòng trên DataGridView | Mở `frmDonViCapHang` dạng modal dialog `ShowDialog(this)` chế độ sửa (`maNCC > 0`), nạp thông tin và thống kê công nợ | Cập nhật `DonViCapHang`, khi đóng trả `DialogResult.OK` tự làm mới danh sách |
 | **7. Tạo nhanh Nhóm NCC** | Bấm nút "+" cạnh combobox Nhóm trên `frmNhaCungCap` | Mở modal dialog `frmNhomNhaCungCap` | Thêm vào `NhomNhaCungCap`, tự động nạp lại combobox và chọn ngay nhóm vừa tạo |
 | **8. Tùy chọn Ẩn/Hiện cột** | Bấm nút "Hiện cột" | Mở popup `frmHienCotNcc` ngay dưới nút | Bật/tắt `dgv.Columns[col].Visible` tức thì, nhấn ESC hoặc click ra ngoài để đóng |
-| **9. Xuất file CSV / Excel** | Bấm "Xuất file" | Hộp thoại `SaveFileDialog` lưu file `.csv` | Xuất đúng các cột đang hiển thị với định dạng UTF-8 BOM đọc tốt tiếng Việt trên Excel |
+| **9. Nhập file NCC** | Bấm nút "Nhập file" | Mở modal dialog `frmNhapNhaCungCapFile` | Đọc dữ liệu từ file Excel (.xlsx, .xls) hoặc CSV; tải file mẫu; tùy chọn cập nhật hoặc bỏ qua; bọc Transaction |
+| **10. Xuất file CSV / Excel** | Bấm nút "Xuất file" | Hộp thoại `SaveFileDialog` lưu file `.csv` | Xuất đúng các cột đang hiển thị với định dạng UTF-8 BOM đọc tốt tiếng Việt trên Excel |
 
 ---
 
@@ -72,6 +75,8 @@
 
 ### 3.2. Nút bấm thao tác trên cùng:
 - Nút `+ Nhà cung cấp` (`btnThemNhaCungCap`): Định dạng chuẩn nút hệ thống WinForms (`UseVisualStyleBackColor = true`), kích thước và vị trí đồng bộ với nút `+ Hàng hóa` trên `frmDanhSachHangHoa`.
+- Nút `Nhập file` (`btnNhapFile`): Hiển thị tiếng Việt có dấu rõ ràng (Luật 14), mở `frmNhapNhaCungCapFile`.
+- Nút `Xuất file` (`btnXuatFile`), `Hiện cột` (`btnHienCot`), `Hướng dẫn sử dụng` (`btnHuongDanSuDung`): Căn phải đồng bộ toàn hệ thống.
 
 ### 3.3. Chuẩn DataGridView:
 - Đệm đôi chống giật lag chuột: `DoubleBuffered = true`.
@@ -109,4 +114,4 @@
 3. **Bảo vệ toàn vẹn dữ liệu chứng từ**: Tuyệt đối không xóa cứng nhà cung cấp đã phát sinh phiếu nhập kho (`PhieuNhap`).
 4. **Tính toán Công nợ & Tổng mua**:
    - `TongMua`: Tổng giá trị các phiếu nhập kho trạng thái hoàn thành (`DA_XAC_NHAN` / `DA_NHAN`).
-   - `NoCanTraHienTai`: Tạm thời bằng `TongMua` khi chưa có phân hệ Sổ quỹ / Phiếu chi.
+   - `NoCanTraHienTai`: Tính toán động từ các phiếu nhập (`PhieuNhap.CanTraNcc`), bảng `DonViCapHang` không lưu trường nợ tĩnh.

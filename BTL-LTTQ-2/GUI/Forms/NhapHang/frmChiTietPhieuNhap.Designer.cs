@@ -1,4 +1,4 @@
-namespace BTL_LTTQ_2.GUI.Forms.NhapHang
+﻿namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 {
     partial class frmChiTietPhieuNhap
     {
@@ -550,6 +550,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1034, 680);
+            this.CancelButton = this.btnDong;
             this.Controls.Add(this.dgvChiTiet);
             this.Controls.Add(this.pnlTongKet);
             this.Controls.Add(this.pnlThongTin);

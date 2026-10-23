@@ -1,5 +1,5 @@
-using BTL_LTTQ_2.BLL;
-using BTL_LTTQ_2.DAL;
+﻿using BTL_LTTQ_2.Classes;
+
 using System;
 using System.Data;
 using System.Data.SqlClient;
@@ -21,6 +21,11 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 
         private void CauHinhGridChiTiet()
         {
+            // Báº­t Ä‘á»‡m Ä‘Ã´i chá»‘ng giáº­t lag
+            typeof(DataGridView).InvokeMember("DoubleBuffered",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.SetProperty,
+                null, dgvChiTietHang, new object[] { true });
+
             dgvChiTietHang.AutoGenerateColumns = false;
             dgvChiTietHang.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
             dgvChiTietHang.DefaultCellStyle.SelectionBackColor = Color.FromArgb(224, 231, 255);
@@ -39,6 +44,32 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             colDonGia.DefaultCellStyle.Format = "N0";
             colGiamGia.DefaultCellStyle.Format = "N0";
             colThanhTien.DefaultCellStyle.Format = "N0";
+
+            // Há»— trá»£ phÃ­m Enter khi chá»n hÃ ng vÃ  nháº­p sá»‘ lÆ°á»£ng, Ä‘Æ¡n giÃ¡
+            cboHangHoa.KeyDown += (s, ev) =>
+            {
+                if (ev.KeyCode == Keys.Enter)
+                {
+                    ev.SuppressKeyPress = true;
+                    txtSoLuongNhap.Focus();
+                }
+            };
+            txtSoLuongNhap.KeyDown += (s, ev) =>
+            {
+                if (ev.KeyCode == Keys.Enter)
+                {
+                    ev.SuppressKeyPress = true;
+                    txtDonGiaNhap.Focus();
+                }
+            };
+            txtDonGiaNhap.KeyDown += (s, ev) =>
+            {
+                if (ev.KeyCode == Keys.Enter)
+                {
+                    ev.SuppressKeyPress = true;
+                    btnThemHang.PerformClick();
+                }
+            };
         }
 
         private void frmThemPhieuNhap_Load(object sender, EventArgs e)

@@ -515,6 +515,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1034, 670);
+            this.CancelButton = this.btnBoQua;
             this.Controls.Add(this.pnlBottom);
             this.Controls.Add(this.grpTinhToan);
             this.Controls.Add(this.grpHangTra);
