@@ -126,7 +126,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // btnXuatFile
             // 
             this.btnXuatFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnXuatFile.Location = new System.Drawing.Point(960, 22);
+            this.btnXuatFile.Location = new System.Drawing.Point(953, 21);
             this.btnXuatFile.Name = "btnXuatFile";
             this.btnXuatFile.Size = new System.Drawing.Size(110, 29);
             this.btnXuatFile.TabIndex = 6;
@@ -139,14 +139,14 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.lblTieuDe.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblTieuDe.Location = new System.Drawing.Point(13, 22);
             this.lblTieuDe.Name = "lblTieuDe";
-            this.lblTieuDe.Size = new System.Drawing.Size(141, 22);
+            this.lblTieuDe.Size = new System.Drawing.Size(153, 28);
             this.lblTieuDe.TabIndex = 4;
             this.lblTieuDe.Text = "Vị trí hàng hóa";
             // 
             // btnNhapFile
             // 
             this.btnNhapFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnNhapFile.Location = new System.Drawing.Point(834, 22);
+            this.btnNhapFile.Location = new System.Drawing.Point(827, 21);
             this.btnNhapFile.Name = "btnNhapFile";
             this.btnNhapFile.Size = new System.Drawing.Size(110, 29);
             this.btnNhapFile.TabIndex = 7;
@@ -251,6 +251,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.Controls.Add(this.pnlLeft);
             this.Controls.Add(this.pnlHeader);
             this.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.MaximizeBox = false;
             this.Name = "frmViTri";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Quản lý vị trí";
