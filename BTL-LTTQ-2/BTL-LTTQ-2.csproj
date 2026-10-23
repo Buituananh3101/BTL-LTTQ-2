@@ -154,6 +154,51 @@
     <EmbeddedResource Include="GUI\Forms\NhaCungCap\frmNhaCungCap.resx">
       <DependentUpon>frmNhaCungCap.cs</DependentUpon>
     </EmbeddedResource>
+    <Compile Include="GUI\Forms\NhapHang\frmHienCotNhapHang.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\NhapHang\frmHienCotNhapHang.Designer.cs">
+      <DependentUpon>frmHienCotNhapHang.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="GUI\Forms\NhapHang\frmHienCotNhapHang.resx">
+      <DependentUpon>frmHienCotNhapHang.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="GUI\Forms\NhapHang\frmNhapHang.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\NhapHang\frmNhapHang.Designer.cs">
+      <DependentUpon>frmNhapHang.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="GUI\Forms\NhapHang\frmNhapHang.resx">
+      <DependentUpon>frmNhapHang.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="GUI\Forms\NhapHang\frmThemPhieuNhap.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\NhapHang\frmThemPhieuNhap.Designer.cs">
+      <DependentUpon>frmThemPhieuNhap.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="GUI\Forms\NhapHang\frmThemPhieuNhap.resx">
+      <DependentUpon>frmThemPhieuNhap.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="GUI\Forms\NhapHang\frmChiTietPhieuNhap.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\NhapHang\frmChiTietPhieuNhap.Designer.cs">
+      <DependentUpon>frmChiTietPhieuNhap.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="GUI\Forms\NhapHang\frmChiTietPhieuNhap.resx">
+      <DependentUpon>frmChiTietPhieuNhap.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="GUI\Forms\NhapHang\frmTraHangNhap.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\NhapHang\frmTraHangNhap.Designer.cs">
+      <DependentUpon>frmTraHangNhap.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="GUI\Forms\NhapHang\frmTraHangNhap.resx">
+      <DependentUpon>frmTraHangNhap.cs</DependentUpon>
+    </EmbeddedResource>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">

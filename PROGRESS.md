@@ -17,6 +17,15 @@
 - [x] Tinh chỉnh tỉ lệ nút "+" tạo nhanh nhóm trên `frmNhaCungCap` về hình vuông hoàn hảo `29x29px` căn thẳng hàng.
 - [x] Chuẩn hóa Header CheckBox bằng `CheckBoxRenderer`, giải quyết triệt để lỗi Chọn tất cả / Bỏ chọn tất cả và không bỏ sót dòng cuối.
 - [x] Tái thiết kế toàn diện Form Chi tiết Nhà cung cấp (`frmDonViCapHang`) theo form Tạo hàng hóa (`frmHangHoa`): nhãn đặt trên ô nhập, trường Địa chỉ chuyển thành ô nhiều dòng (Multiline), tối ưu hóa diện tích hiển thị (960x720).
+- [x] Thiết kế và hiện thực Form Danh sách Đơn nhập hàng (`frmNhapHang`) với nút `+ Nhập hàng`, bộ lọc 100% ComboBox bên trái, tìm kiếm F3, phân trang SQL Server và xuất file CSV UTF-8 BOM.
+- [x] Thiết kế Form Lập phiếu nhập hàng (`frmThemPhieuNhap`): gợi ý tự động mã phiếu, chọn NCC, kho, thêm danh sách hàng nhập, tính tổng tiền và công nợ, lưu tạm hoặc hoàn thành trong Transaction.
+- [x] Thiết kế Form Chi tiết đơn nhập (`frmChiTietPhieuNhap`): mở khi nhấp đúp vào 1 đơn nhập trên lưới, hiển thị chi tiết header, bảng hàng và khối thanh toán theo ảnh mẫu; **chỉ giữ lại 3 nút chức năng: `Xóa`, `Xuất file`, `Trả hàng nhập`**.
+- [x] Thiết kế Form Trả hàng nhập (`frmTraHangNhap`): mở từ nút `Trả hàng nhập` của form chi tiết; cho chọn số lượng trả kèm logic validation chặt chẽ (chặn âm, chặn vượt số lượng nhập, chặn vượt tồn kho hiện tại) và thuật toán tự động khấu trừ nợ đơn gốc hoặc xác định tiền NCC cần hoàn trả lại; lưu trong Transaction.
+- [x] Bổ sung nhánh `TRA_HANG_NHAP` vào View `vw_BienDongKho` và cập nhật script `docs/database_update.sql`.
+- [x] Sửa triệt để lỗi runtime `Invalid column name 'NoCanTraHienTai'` khi hoàn thành phiếu nhập hoặc thực hiện trả hàng: loại bỏ thao tác UPDATE cột tĩnh không tồn tại trong `DonViCapHang`, tuân thủ nguyên tắc công nợ NCC tính động từ chứng từ nhập.
+- [x] Chuẩn hóa số lượng trong tất cả hộp thoại cảnh báo và thông báo về định dạng số nguyên `N0` (chặn đuôi `.00`).
+- [x] Đồng bộ hàng tên cột (Column Header Row) của `dgvNhapHang` với `frmDanhSachHangHoa` và `frmNhaCungCap` (giữ VisualStyles chuẩn WinForms, không đổi màu nền phẳng hay đổi font in đậm; HeaderText `Mã nhà cung cấp`, `Tên nhà cung cấp`).
+- [x] Bỏ in đậm trạng thái "Đã nhập hàng" trên cả DataGridView và Form Chi tiết đơn nhập hàng (chuyển sang font Regular).
 - [ ] Xây dựng Lớp quản lý phiên toàn cục `BLL/SessionContext.cs` và Tiện ích băm mật khẩu `BLL/PasswordHelper.cs` (SHA-256).
 - [ ] Thiết kế và hoàn thiện Form Đăng nhập (`frmDangNhap`) hỗ trợ chọn chi nhánh kho làm việc.
 - [x] Hoàn thiện Form Danh sách Hàng hóa (`frmDanhSachHangHoa`): Kết nối dữ liệu thật từ SQL Server, phân trang, bộ lọc đa tiêu chí, tính tốc độ bán dự kiến hết hàng, tính động số lượng "Khách đặt" từ đơn đặt hàng bán, ẩn/hiện cột linh hoạt qua `frmHienCot`, nhập/xuất Excel.
@@ -39,10 +48,9 @@
    - Form Danh mục Chi nhánh Kho & phân quyền `TaiKhoanKho`.
    - Form Danh mục Nhà cung cấp (`frmNhaCungCap`).
 3. **Quản lý Kho & Chứng từ Biến động**:
-   - Form Nhập hàng từ Nhà cung cấp (`frmNhapHang`) - Tự tính giá vốn MAC, cộng tồn.
    - Form Kiểm kê & Cân bằng kho (`frmKiemKho`) - Khóa vĩnh viễn phiếu sau khi cân bằng.
    - Form Chuyển kho liên chi nhánh (`frmChuyenKho`) - Luồng 2 bước Xuất chuyển / Nhận hàng.
-   - Form Trả hàng nhập (`frmTraHangNhap`) & Xuất hủy (`frmXuatHuy`).
+   - Form Xuất hủy (`frmXuatHuy`).
 4. **Báo cáo & Thống kê**:
    - Báo cáo Tồn kho đa chi nhánh (`frmBaoCaoTonKho`).
    - Báo cáo Thẻ kho chi tiết theo mặt hàng (`frmTheKho`).
@@ -61,10 +69,10 @@
 | 5 | **Danh mục Hàng hóa** | `frmDanhSachHangHoa` (phân trang, lọc, tìm kiếm, xuất file), `frmHangHoa` (Thêm/Sửa) | Hoàn thành 100% |
 | 6 | **Danh mục Nhà cung cấp** | `frmNhaCungCap`, `frmDonViCapHang`, `frmNhomNhaCungCap`, `frmHienCotNcc` | Hoàn thành 100% |
 | 7 | **Danh mục Cơ bản khác** | CRUD Nhóm hàng, Đơn vị tính, Chi nhánh Kho, Khách hàng | Chưa bắt đầu |
-| 8 | **Phiếu Nhập hàng** | `frmNhapHang`, tính giá vốn bình quân (MAC), cộng tồn dynamic | Chưa bắt đầu |
+| 8 | **Phiếu Nhập hàng** | `frmNhapHang`, `frmThemPhieuNhap`, `frmChiTietPhieuNhap`, `frmHienCotNhapHang` | Hoàn thành 100% |
 | 9 | **Kiểm kê & Cân bằng kho** | `frmKiemKho`, nạp tồn sổ sách, sinh phiếu điều chỉnh, khóa vĩnh viễn | Chưa bắt đầu |
 | 10 | **Chuyển kho Liên chi nhánh** | `frmChuyenKho`, 2 bước Xuất kho ➜ Nhận kho, chặn tồn âm kho nguồn | Chưa bắt đầu |
-| 11 | **Trả hàng nhập & Xuất hủy** | `frmTraHangNhap`, `frmXuatHuy`, kiểm tra tồn kho trước khi xuất | Chưa bắt đầu |
+| 11 | **Trả hàng nhập & Xuất hủy** | `frmTraHangNhap` (hoàn tất 100%), `frmXuatHuy` (chưa bắt đầu) | Đang thực hiện |
 | 12 | **Báo cáo Tồn kho & Thẻ kho** | Báo cáo tồn đa kho, Thẻ kho từ `vw_BienDongKho`, xuất file Excel | Chưa bắt đầu |
 | 5 | **Danh mục Hàng hóa** | `frmDanhSachHangHoa` & `frmHangHoa` (**Đã chốt làm Khuôn mẫu Thiết kế chuẩn UI/UX toàn hệ thống**) | Hoàn thành 100% |
 | 6 | **Danh mục Cơ bản** | CRUD Nhóm hàng, Đơn vị tính, Chi nhánh Kho, Nhà cung cấp | Chưa bắt đầu |
@@ -77,6 +85,50 @@
 ---
 
 ## Nhật ký phiên (Session Logs)
+
+- **Phiên 12 (2026-10-22) – Khắc phục lỗi hoàn thành & trả hàng, chuẩn hóa số lượng số nguyên, đồng bộ hàng tiêu đề cột & bỏ in đậm trạng thái**:
+  - **Nhu cầu**: Người dùng phản hồi:
+    1. Số lượng ghi trong các thông báo vẫn là số thực (ví dụ `12.00` và `10.00`).
+    2. Lưu tạm đã thành công, nhưng vẫn gặp lỗi runtime khi Hoàn thành đơn nhập và Trả hàng (`Invalid column name 'NoCanTraHienTai'`).
+    3. Hàng tên cột cần đồng bộ với các form đã có, không được tự ý đổi.
+    4. Trạng thái "Đã nhập hàng" không cần in đậm.
+  - **Kết quả thực hiện**:
+    1. **Khắc phục lỗi CSDL `NoCanTraHienTai`**:
+       - Xóa bỏ hoàn toàn các câu lệnh UPDATE `DonViCapHang.NoCanTraHienTai` trong `frmThemPhieuNhap.cs`, `frmChiTietPhieuNhap.cs` và `frmTraHangNhap.cs`. Tuân thủ nguyên tắc cốt lõi: công nợ NCC được tính toán động từ chứng từ phiếu nhập (`PhieuNhap.CanTraNcc`), bảng `DonViCapHang` không lưu số nợ tĩnh.
+    2. **Đồng bộ hiển thị số lượng nguyên trong thông báo**:
+       - Cập nhật định dạng số lượng trong mọi `MessageBox.Show` (`frmTraHangNhap.cs`, `frmChiTietPhieuNhap.cs`) từ `:N2` sang `:N0` (ví dụ: cảnh báo vượt quá số lượng, xác nhận trả hàng, cảnh báo chặn âm tồn).
+    3. **Đồng bộ hàng tên cột (Column Header Row)**:
+       - Ở `frmNhapHang.cs` và `frmNhapHang.Designer.cs`: Bỏ cấu hình can thiệp style tiêu đề cột (`EnableHeadersVisualStyles = false`, bỏ màu nền phẳng `241, 245, 249`, bỏ font Bold, bỏ chiều cao custom), đưa về VisualStyles mặc định chuẩn Windows Forms 100% giống `frmDanhSachHangHoa` và `frmNhaCungCap`.
+       - Đồng bộ độ rộng cột: tăng `colMaNcc.Width` từ `130` lên `140` (khớp hoàn toàn với `frmNhaCungCap`), loại bỏ hoàn toàn tình trạng ngắt dòng "Mã nhà cung cấp" làm đội chiều cao hàng tiêu đề từ 22px lên 39px; cập nhật `colChon.Width = 45` và `dgvNhapHang.RowHeadersWidth = 51`, đồng bộ font form về `Segoe UI 9.5pt` và `SelectionForeColor` về `Color.FromArgb(30, 41, 59)`. Kết quả hàng tiêu đề cột có chiều cao 22px gọn gàng, đồng bộ tuyệt đối với `frmDanhSachHangHoa` và `frmNhaCungCap`.
+       - Chuẩn hóa tên cột tiêu đề: `Mã nhà cung cấp`, `Tên nhà cung cấp` (khớp hoàn toàn với `frmNhaCungCap`).
+    4. **Bỏ in đậm trạng thái "Đã nhập hàng"**:
+       - Trong `dgvNhapHang_CellFormatting`: Bỏ thiết lập `FontStyle.Bold` khi hiển thị trạng thái `Đã nhập hàng`, chỉ giữ màu xanh lá nhận diện chuẩn với font Regular như `frmDanhSachHangHoa`.
+       - Trong `frmChiTietPhieuNhap.Designer.cs`: Chuyển font của `lblTrangThai` từ Bold sang Regular.
+    5. **Kiểm tra biên dịch**: Roslyn compiler biên dịch mã nguồn C# thành công: **0 Warning(s), 0 Error(s)**.
+
+- **Phiên 11 (2026-10-22) – Thiết kế Phân hệ Nhập hàng (`frmNhapHang`, `frmThemPhieuNhap`, `frmChiTietPhieuNhap`) & Form Trả hàng nhập (`frmTraHangNhap`)**:
+  - **Nhu cầu**: Người dùng yêu cầu:
+    1. Thiết kế `frmNhapHang` và các form liên quan, đặt tên nút thêm phiếu nhập là `+ Nhập hàng`. Toàn bộ filter bên trái dạng ComboBox theo khuôn mẫu đang có.
+    2. Khi nhấn đúp vào 1 đơn nhập sẽ xuất hiện form chi tiết đơn nhập tham khảo ảnh 2 và 3.
+    3. Ở form chi tiết đơn nhập, **chỉ giữ lại 3 nút**: `Xóa` (thay cho Hủy), `Xuất file`, `Trả hàng nhập`.
+    4. Ở form trả hàng nhập cho chọn số lượng hàng cần trả (logic check không được âm hoặc vượt quá số lượng nhập, chặn vượt tồn hiện tại), tự động tính toán số tiền hàng dựa trên giá hàng để trừ vào số nợ cần trả hoặc số tiền nhà cung cấp cần trả lại.
+    5. Rule quan trọng: Tuân theo thiết kế chung của các form đang có sẵn (100% tiếng Việt có dấu, `UseVisualStyleBackColor = true`, không tô màu tùy tiện).
+  - **Kết quả thực hiện**:
+    1. **Tạo mới 5 Form trong `GUI/Forms/NhapHang/`**:
+       - `frmNhapHang.cs`, `.Designer.cs`, `.resx`: Form danh sách đơn nhập hàng, bộ lọc 100% ComboBox (`cboTrangThai`, `cboNhaCungCap`, `cboNguoiTao`, `cboNguoiNhap`, `grpThoiGianTao`), tìm kiếm tức thời, phân trang SQL Server, DataGridView đệm đôi chống giật lag, xuất file CSV UTF-8 BOM, sự kiện double-click mở chi tiết đơn.
+       - `frmThemPhieuNhap.cs`, `.Designer.cs`, `.resx`: Form tạo mới phiếu nhập (nút `+ Nhập hàng`), gợi ý tự động mã `PN00000X`, chọn NCC, kho, thêm/xóa hàng nhập, tính tổng tiền, nợ, lưu tạm (`NHAP`) hoặc hoàn thành (`DA_XAC_NHAN`) trong Transaction. Khắc phục triệt để lỗi truy vấn `GiaNhap` thành `ISNULL(h.GiaVon, 0) AS GiaNhap`, sửa giá trị `LoaiPhieuNhap = 'THONG_THUONG'` tuân thủ CHECK constraint `CK_PhieuNhap_Loai`, đồng bộ số lượng hàng nhập thành số nguyên (`N0`, `DecimalPlaces = 0`).
+       - `frmChiTietPhieuNhap.cs`, `.Designer.cs`, `.resx`: Form chi tiết đơn nhập hiển thị thông tin header, bảng hàng hóa, khối thanh toán chuẩn theo ảnh mẫu. Cung cấp đúng 3 nút: `Xóa` (xóa phiếu tạm hoặc chuyển trạng thái `HUY` cho phiếu đã xác nhận kèm kiểm tra chặn âm tồn), `Xuất file`, `Trả hàng nhập`. Đồng bộ số lượng hiển thị thành số nguyên (`N0`) và sửa các cột ghi nhật ký `NhatKyThaoTac`.
+       - `frmTraHangNhap.cs`, `.Designer.cs`, `.resx`: Form trả hàng nhập với logic validation kiểm tra số lượng trả (không âm, không vượt số lượng nhập, không vượt tồn kho hiện tại) và thuật toán tự động khấu trừ vào công nợ đơn gốc hoặc tính số tiền NCC cần hoàn trả lại; lưu `PhieuTraHangNhap` và `ChiTietPhieuTraHangNhap` trong Transaction. Thiết kế ô nhập số lượng trả rõ ràng bằng hộp TextBox có viền nổi bật (`CellPainting`), hỗ trợ tự động bôi đen khi click (`SelectAll`) và chặn ký tự phi số; chuyển đổi số lượng sang số nguyên (`N0`) đồng bộ toàn hệ thống; chuẩn hóa các cột ghi `NhatKyThaoTac`.
+       - `frmHienCotNhapHang.cs`, `.Designer.cs`, `.resx`: Form popup ẩn/hiện cột.
+    2. **Đồng bộ Menu và Form MDI**:
+       - Cập nhật `frmMain.Designer.cs` và `frmMain.cs` gắn sự kiện `mnuNhapHang_Click` kiểm tra kích hoạt hoặc mở form MDI `frmNhapHang`.
+    3. **Đồng bộ CSDL**:
+       - Cập nhật View `vw_BienDongKho` thêm nhánh `TRA_HANG_NHAP` giảm tồn kho tại `MaKho` khi `TrangThai = 'DA_TRA_HANG'`.
+       - Bổ sung cấu trúc bảng `PhieuTraHangNhap` và `ChiTietPhieuTraHangNhap` vào `docs/database_update.sql`.
+    4. **Đồng bộ tài liệu đặc tả**:
+       - Cập nhật `docs/specs/nhap-hang.md` và `docs/specs/tra-hang-nhap.md`.
+    5. **Kiểm tra biên dịch**:
+       - Biên dịch MSBuild thành công: **0 Warning(s), 0 Error(s)**.
 
 - **Phiên 10 (2026-10-22) – Tái thiết kế toàn diện Form Thêm/Sửa Nhà cung cấp (`frmDonViCapHang`) chuẩn hóa theo Form Tạo hàng hóa (`frmHangHoa`)**:
   - **Nhu cầu**: Người dùng phản hồi: "Phần frmDonViCapHang đang để trống khá nhiều không gian. Tôi muốn thiết kế giống với form Thêm hàng hóa này (trường địa chỉ nên để multiline)" kèm hình ảnh chụp form `frmHangHoa`.
@@ -98,35 +150,11 @@
 
 - **Phiên 9 (2026-10-22) – Chuẩn hóa Header CheckBox VisualStyles, Xóa nút thêm nhóm ở `frmDonViCapHang` & Cân đối tỉ lệ nút ở `frmNhaCungCap`**:
   - **Nhu cầu**: Người dùng yêu cầu: (1) Ô chọn tất cả ở tiêu đề cột CheckBox phải có giao diện giống 100% các ô bên dưới; (2) Sửa lỗi ô chọn tất cả không hoạt động khi chưa chọn gì, và khi có dòng chọn nhấn vào thì bỏ chọn tất cả nhưng bị giữ lại dòng cuối cùng; (3) Xóa nút thêm nhóm ở trong `frmDonViCapHang`; (4) Điều chỉnh lại tỷ lệ nút thêm nhóm ở `frmNhaCungCap`.
-  - **Nguyên nhân cốt lõi**:
-    1. Header CheckBox trước đó dùng `ControlPaint.DrawCheckBox` (phong cách Windows 3D Classic cũ kỹ) nên khác biệt với Windows Theme Engine của các ô DataGridView bên dưới.
-    2. Khi gán hàng loạt giá trị cho các cell, sự kiện `CellValueChanged` kích hoạt đệ quy gọi `CapNhatTrangThaiHeaderCheck()` khiến cờ `isHeaderChecked` bị ghi đè sai thành `false` giữa chừng; đồng thời ô `CurrentCell` (dòng vừa chọn) chưa được giải phóng (`EndEdit` + `CurrentCell = null`) khiến in-place edit buffer tự động commit đè lại giá trị chọn lên dòng đó.
-    3. Nút thêm nhanh nhóm ở form chi tiết không còn cần thiết khi đã đưa nút ra form danh sách chính.
-    4. Nút `btnThemNhomNCC` ở form danh sách trước đó có kích thước `32x29px` hình chữ nhật ngang hơi bè.
   - **Kết quả thực hiện**:
-    1. **Đồng bộ 100% giao diện CheckBox**: Sử dụng `CheckBoxRenderer.DrawCheckBox` chuẩn Windows VisualStyles để render Header CheckBox, kích thước glyph chuẩn DPI, giao diện phẳng, viền xám tinh tế hệt như các ô checkbox bên dưới; bổ sung hiệu ứng hover khi rê chuột (`CellMouseMove` / `CellMouseLeave`).
-    2. **Khắc phục triệt để lỗi Chọn tất cả**:
-       - Trước khi duyệt cập nhật, gọi `dgvNhaCungCap.EndEdit()` và gán `dgvNhaCungCap.CurrentCell = null` để giải phóng hoàn toàn buffer ô đang chọn, chấm dứt hoàn toàn hiện tượng giữ lại dòng cuối cùng.
-       - Thêm cờ `isUpdatingCheckAll` ngăn chặn sự kiện `CellValueChanged` can thiệp làm đảo lộn trạng thái khi đang duyệt hàng loạt.
-       - Đặt `colChon.SortMode = NotSortable` đảm bảo click header chỉ kích hoạt thao tác chọn.
-    3. **Xóa nút thêm nhóm ở `frmDonViCapHang`**:
-       - Xóa hoàn toàn `btnThemNhomNhanh` và sự kiện `btnThemNhomNhanh_Click`.
-       - Mở rộng `cboNhomNcc.Size = (225, 29)` tại `Location(504, 34)`, căn thẳng hàng tuyệt đối với `txtEmail`, `txtKhuVuc`, `cboTrangThai` (kết thúc tại X = 729).
-    4. **Cân chỉnh tỉ lệ nút thêm nhóm ở `frmNhaCungCap`**:
-       - Đưa `btnThemNhomNCC` về kích thước hình vuông hoàn hảo `29x29px` tại `Location(311, 66)`, căn giữa Y cùng ComboBox, mép phải thẳng tắp 340px với các ComboBox bên dưới.
-       - Điều chỉnh `cboNhomNCC.Size = (287, 29)`, font nút 10.5F Bold, padding/margin = 0.
-    5. **Kiểm tra biên dịch**: `CoreCompile` thành công **0 Warning(s), 0 Error(s)**.
-
-- **Phiên 8 (2026-10-22) – Thêm nút tạo nhanh nhóm NCC và Kích hoạt cột tích chọn trên `frmNhaCungCap`**:
-  - **Nhu cầu**: Người dùng yêu cầu: (1) Đưa nút "+" tạo mới nhóm nhà cung cấp ra ngoài, thu hẹp ComboBox Nhóm nhà cung cấp và để nút "+" bên cạnh; (2) Kích hoạt cột tích chọn trên DataGridView đang bị bất động.
-  - **Nguyên nhân cốt lõi**:
-    1. ComboBox `cboNhomNCC` chiếm trọn 322px trong bộ lọc, thiếu nút thao tác nhanh tạo nhóm nhà cung cấp.
-    2. Lưới `dgvNhaCungCap` bị đặt `ReadOnly = true;` khiến cột Checkbox bị khóa cứng hoàn toàn, không thể click tick/bỏ tick. Ngoài ra thiếu cơ chế `CommitEdit` tức thời khi click chuột và chưa có Header Checkbox chọn toàn bộ dòng.
-  - **Kết quả thực hiện**:
-    1. Thu hẹp `cboNhomNCC` về 284px (Location `18, 66`), bổ sung nút `btnThemNhomNCC` ("+") kích thước 32x29px tại Location `(308, 66)`, mép phải thẳng hàng hoàn hảo với các ComboBox khác (340px). Nút có phong cách WinForms chuẩn (`UseVisualStyleBackColor = true`), click mở `frmNhomNhaCungCap` và tự động nạp lại danh sách nhóm, chọn ngay nhóm vừa tạo.
-    2. Kích hoạt cột chọn: Đặt `dgvNhaCungCap.ReadOnly = false;`, `colChon.ReadOnly = false;`, các cột dữ liệu còn lại `ReadOnly = true;`, thiết lập `EditMode = EditOnEnter`.
-    3. Bắt sự kiện `CurrentCellDirtyStateChanged` và `CellContentClick` gọi `CommitEdit(Commit)` giúp click 1 lần ăn ngay.
-    4. Thêm Header CheckBox: Tự động vẽ hộp kiểm tại tiêu đề cột `colChon` (`CellPainting`), bắt sự kiện `ColumnHeaderMouseClick` để Chọn tất cả / Bỏ chọn tất cả các dòng trên trang, đồng bộ trạng thái khi click lẻ từng dòng. Bỏ qua mở form sửa khi nhấp đúp vào cột chọn.
+    1. Sử dụng `CheckBoxRenderer.DrawCheckBox` chuẩn Windows VisualStyles.
+    2. Khắc phục triệt để lỗi Chọn tất cả, giải phóng edit buffer.
+    3. Xóa nút thêm nhóm ở `frmDonViCapHang`, mở rộng ComboBox thẳng hàng.
+    4. Cân chỉnh `btnThemNhomNCC` về kích thước hình vuông hoàn hảo `29x29px`.
     5. Kiểm tra biên dịch: MSBuild thành công **0 Warning(s), 0 Error(s)**.
 
 - **Phiên 7 (2026-10-22) – Căn chỉnh hoàn hảo layout và tỉ lệ nút bấm trên Form Chi tiết Nhà cung cấp (`frmDonViCapHang`)**:
@@ -200,52 +228,10 @@
     8. Đồng bộ đặc tả chức năng: Cập nhật hoàn thiện [`docs/specs/nha-cung-cap.md`](file:///d:/Code/C%23/LapTrinhTrucQuan/BTL/BTA_BTL2/BTL-LTTQ-2/docs/specs/nha-cung-cap.md).
     9. Kiểm tra biên dịch Rebuild toàn bộ solution: **0 Warning(s), 0 Error(s)**.
 
-- **Phiên 7 (2026-10-23) – Rà Soát Code Sạch, Chuẩn Hóa Phông Chữ `Segoe UI`, Tái Cấu Trúc `Classes/` & Chốt Khuôn Mẫu Giao Diện**:
-  - **Nhu cầu**: Làm sạch mã nguồn, loại bỏ code thừa/chết; quy chuẩn hóa đồng bộ 100% phông chữ `Segoe UI` cho toàn bộ dự án; đơn giản hóa kiến trúc thư mục cho người mới học (`Classes/`); chốt phân hệ Danh mục Hàng hóa làm khuôn mẫu thiết kế UI/UX cho tất cả các phân hệ về sau.
-  - **Kết quả thực hiện**:
-    1. **Làm sạch code**: Xóa bỏ hàm sự kiện rỗng (`mnuTraHangNhap_Click`, `button2_Click`), loại bỏ khối code chú thích cũ; chuẩn hóa toàn bộ tên controls WinForms (`btnXoa`, `btnXoaAnhChinh`, `btnThemNhomNhanh`, `btnThemViTriNhanh`, `pnlBottom`, `grpThaoTac`...).
-    2. **Chuẩn hóa 100% phông chữ `Segoe UI`**: Loại bỏ hoàn toàn phông `Microsoft Sans Serif` còn sót lại ở `frmHangHoa`, `frmNhomHang`, `frmViTri`, `frmHienCot`; thiết lập bảng phân cấp phông chữ chuẩn: Form Base `Segoe UI 9.5pt`, Tiêu đề lớn `12pt Bold`, Tiêu đề nhóm `10pt Bold`, Nội dung & Dòng lưới `9.5pt Regular`.
-    3. **Tái cấu trúc thư mục `Classes/` tinh gọn**: Gom `DataProcessing.cs`, `SessionContext.cs`, `ComboboxHelper.cs` vào chung thư mục `Classes/` với `namespace BTL_LTTQ_2.Classes`; xóa bỏ 2 thư mục `BLL/` và `DAL/` chưa phù hợp với đồ án LTTQ, giúp người mới học dễ đọc, dễ tiếp cận và quản lý code một cách trực quan.
-    4. **Chốt Khuôn mẫu Giao diện Chuẩn (Design System)**: Cập nhật mục 6 trong `.agent/rules/03-giao-dien-layout.md` và `docs/quyet-dinh.md` xác lập Danh mục Hàng hóa làm tiêu chuẩn bất biến cho mọi màn hình tiếp theo (bảng màu, màu xen kẽ DataGridView `#FFFFFF` & `#F8FAFC`, dòng chọn `#E0E7FF`, đệm đôi DoubleBuffered, thanh phân trang, lọc bên trái).
-    5. **Biên dịch & Kiểm thử**: Rebuild toàn bộ Solution thành công, **0 Warning(s), 0 Error(s)**.
-
-- **Phiên 6 (2026-10-23) – Triển khai Nghiệp vụ Cột "Khách đặt" & Tối ưu Giao diện Thanh Công Cụ**:
-  - **Nhu cầu**: Hiện thực hóa logic tính toán và hiển thị cho cột "Khách đặt" trên `frmDanhSachHangHoa` và đấu nối form tùy chọn cột `frmHienCot`; khắc phục lỗi tràn ô tìm kiếm `txtTimKiem` che khuất các nút hành động trên màn hình có độ phân giải phổ thông.
-  - **Kết quả thực hiện**:
-    1. **Bổ sung cột `colKhachDat` vào DataGridView**: Thêm cột "Khách đặt" ngay sau cột Tồn kho (`colTonKho`), độ rộng 95px, căn phải, định dạng số nguyên `N0`, mặc định ẩn (`Visible = false`).
-    2. **Logic tính toán số lượng khách đặt động (Tuân thủ Luật 4)**: Tính tổng số lượng từ các đơn bán mở (`DonBan` & `ChiTietDonBan`) theo kho đang làm việc (`db.MaKho = @MaKho`) chưa xuất hàng xong và chưa hủy (`db.TrangThai NOT IN ('HOAN_TAT', 'HUY')`).
-    3. **Đấu nối `chkKhachDat` trên `frmHienCot`**: Đồng bộ trạng thái checkbox với trạng thái hiển thị của `colKhachDat`, cho phép người dùng bật/tắt cột linh hoạt tức thì.
-    4. **Tự động xuất dữ liệu Excel**: Xuất chuẩn định dạng số lượng khách đặt khi người dùng xuất danh sách ra `.xls` hoặc `.csv` lúc cột đang hiển thị.
-    5. **Tối ưu thanh công cụ `grpTop`**: Điều chỉnh kích thước `txtTimKiem` (từ 540 xuống 320px) giúp bố cục cân đối, loại bỏ triệt để hiện tượng che khuất nút `+ Hàng hóa` và `Nhập file`.
-    6. **Biên dịch & Kiểm thử UI**: Build thành công với **0 Warning(s), 0 Error(s)**, kiểm thử UI tự động xác nhận số liệu thực tế chính xác (sản phẩm `Bếp gas đơn Rinnai` hiển thị Tồn: 26, Khách đặt: 1).
-
-- **Phiên 5 (2026-10-23) – Triển khai Chức năng Nhập File Hàng Hóa Chuẩn KiotViet (`frmNhapHangHoaFile`)**:
-  - **Nhu cầu**: Thiết kế và hiện thực hóa trọn vẹn chức năng "Nhập file" (`btnNhapFile`) trên `frmDanhSachHangHoa`, bao gồm tải file mẫu, chọn file dữ liệu, tùy chọn xử lý trùng mã (Cập nhật / Bỏ qua), tự động tạo nhóm hàng/ĐVT/vị trí mới nếu chưa có, tự sinh mã hàng nếu để trống, bọc trong Transaction và kiểm soát an toàn tồn kho theo Luật 4.
-  - **Kết quả thực hiện**:
-    1. Cập nhật đặc tả chi tiết tại `docs/specs/danh-sach-hang-hoa.md` mục 5.
-    2. Thiết kế hộp thoại Modal [`frmNhapHangHoaFile`](file:///d:/CODE/BTL-LTTQ-2/BTL-LTTQ-2/GUI/Forms/DanhSachHangHoa/frmNhapHangHoaFile.cs) giao diện chuẩn WinForms (`664 x 475`, Segoe UI 9.5F, nút Primary Blue `#0078D7`).
-    3. Hỗ trợ tải file mẫu Excel (.xls) định dạng HTML Table UTF-8 sắc nét và CSV (.csv) UTF-8 có BOM.
-    4. Bộ đọc file đa định dạng: Hỗ trợ Excel OpenXML (.xlsx) qua `System.IO.Compression` chuẩn không cần thư viện ngoài, Excel HTML/OleDb (.xls), và CSV/TXT với cơ chế tách trường và bỏ dấu FormD thông minh.
-    5. Xử lý nghiệp vụ CSDL: Bọc trong `DataProcessing.ChangeDataTransaction` + `SqlParameter`; tự sinh mã tăng dần `HHxxxxxx`; tự động tạo Nhóm hàng / ĐVT / Vị trí nếu là tên mới; khi cập nhật nếu để trống thì giữ nguyên giá trị cũ; tuyệt đối không đụng đến tồn kho sổ sách.
-    6. Đấu nối sự kiện `btnNhapFile.Click` trên `frmDanhSachHangHoa.cs` mở modal và tự động tải lại bộ lọc + danh sách sau khi nhập.
-    7. Biên dịch dự án: **0 Warning(s), 0 Error(s)**.
-
-
-- **Phiên 4 (2026-10-22) – Hoàn thiện Form Ẩn Hiện Cột (`frmHienCot`), Dự Báo Hết Hàng, Xuất File Excel Chuẩn & Lưu Trọn Vẹn 5 Ảnh**:
-  - **Nhu cầu**: Thiết kế form tùy chọn ẩn/hiện cột theo mẫu ảnh người dùng; định vị ngay dưới nút; kích hoạt tính toán cột "Dự kiến hết hàng" và "Thời gian tạo"; sửa lỗi xuất file bị dồn 1 cột; lưu toàn bộ 5 ảnh hàng hóa vào CSDL.
-  - **Kết quả thực hiện**:
-    1. Hoàn thiện [`frmHienCot`](file:///d:/CODE/BTL-LTTQ-2/BTL-LTTQ-2/GUI/Forms/DanhSachHangHoa/frmHienCot.cs): Giao diện 13 CheckBox xếp 2 cột đúng 100% nhãn/text theo ảnh. Mở chuẩn vị trí ngay dưới nút `btnHienCot`, chống tràn màn hình.
-    2. Cấu hình mặc định khi load: 5 cột *Khách đặt, Vị trí, Thời gian tạo, Dự kiến hết, Trạng thái* mặc định ẩn (`Visible = false`) và bỏ chọn CheckBox.
-    3. Triển khai cột **"Dự kiến hết"** (Phương án 1): Tính động tốc độ bán 30 ngày từ `vw_BienDongKho`, chia cho tồn kho ra số ngày còn lại (`X ngày`, `Hết hàng`, `> 90 ngày`), hiển thị chữ thường đồng bộ.
-    4. Bổ sung cột **"Thời gian tạo"** (`colThoiGianTao`) chuẩn `dd/MM/yyyy HH:mm`.
-    5. Nâng cấp chức năng **"Xuất file"**: Hỗ trợ xuất File Excel (`.xls` HTML Table UTF-8) tự động chia từng cột, kẻ viền, căn lề và định dạng số, triệt tiêu hoàn toàn lỗi bị dồn vào cột A.
-    6. Nâng cấp xử lý **5 ảnh hàng hóa** trên [`frmHangHoa`](file:///d:/CODE/BTL-LTTQ-2/BTL-LTTQ-2/GUI/Forms/DanhSachHangHoa/frmHangHoa.cs): Đồng bộ lưu toàn bộ 5 slot ảnh vào bảng CSDL `HinhAnhHangHoa` (`MaHang, DuLieuAnh, ThuTu, LaAnhChinh`) bọc trong Transaction; tự động nạp đầy đủ cả 5 ảnh khi mở sửa.
-    7. Biên dịch dự án: **0 Warning(s), 0 Error(s)**.
-
 - **Phiên 3 (2026-10-22) – Hoàn thiện Toàn bộ Logic Danh mục Hàng hóa (`frmDanhSachHangHoa` & `frmHangHoa`)**:
   - **Nhu cầu**: Hiện thực hóa logic nghiệp vụ nạp dữ liệu, tìm kiếm tức thì, lọc đa chiều, phân trang SQL Server và thêm/sửa hàng hóa bám sát 100% giao diện đã thiết kế.
   - **Kết quả thực hiện**:
-    1. Tạo [`Classes/SessionContext.cs`](file:///d:/CODE/BTL-LTTQ-2/BTL-LTTQ-2/Classes/SessionContext.cs): Quản trị phiên kho hiện tại (`MaKhoHienTai = 1`), phục vụ tính tồn kho động chính xác qua `vw_TonKhoHienTai`.
+    1. Tạo [`BLL/SessionContext.cs`](file:///d:/CODE/BTL-LTTQ-2/BTL-LTTQ-2/BLL/SessionContext.cs): Quản trị phiên kho hiện tại (`MaKhoHienTai = 1`), phục vụ tính tồn kho động chính xác qua `vw_TonKhoHienTai`.
     2. Hoàn thiện [`frmDanhSachHangHoa`](file:///d:/CODE/BTL-LTTQ-2/BTL-LTTQ-2/GUI/Forms/DanhSachHangHoa/frmDanhSachHangHoa.cs):
        - Tích hợp thanh phân trang SQL `OFFSET ... ROWS FETCH NEXT ... ROWS ONLY` (tùy chọn 10, 20, 50, 100 dòng/trang).
        - Nạp dữ liệu vào 5 ComboBox bộ lọc: Nhóm hàng, Tiêu chí tồn kho, Nhà cung cấp, Vị trí, Trạng thái kinh doanh, Lọc theo khoảng ngày tạo.

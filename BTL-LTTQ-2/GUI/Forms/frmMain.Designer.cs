@@ -194,6 +194,7 @@
             this.mnuNhapHang.Name = "mnuNhapHang";
             this.mnuNhapHang.Size = new System.Drawing.Size(193, 26);
             this.mnuNhapHang.Text = "Nhập hàng";
+            this.mnuNhapHang.Click += new System.EventHandler(this.mnuNhapHang_Click);
             // 
             // mnuTraHangNhap
             // 
