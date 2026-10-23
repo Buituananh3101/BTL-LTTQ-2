@@ -200,7 +200,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(1086, 28);
+            this.button1.Location = new System.Drawing.Point(1036, 32);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(23, 23);
             this.button1.TabIndex = 4;
@@ -211,7 +211,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // picAnhPhu4
             // 
             this.picAnhPhu4.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.picAnhPhu4.Location = new System.Drawing.Point(1116, 187);
+            this.picAnhPhu4.Location = new System.Drawing.Point(1066, 191);
             this.picAnhPhu4.Name = "picAnhPhu4";
             this.picAnhPhu4.Size = new System.Drawing.Size(40, 40);
             this.picAnhPhu4.TabIndex = 2;
@@ -220,7 +220,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // picAnhPhu3
             // 
             this.picAnhPhu3.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.picAnhPhu3.Location = new System.Drawing.Point(1116, 134);
+            this.picAnhPhu3.Location = new System.Drawing.Point(1066, 138);
             this.picAnhPhu3.Name = "picAnhPhu3";
             this.picAnhPhu3.Size = new System.Drawing.Size(40, 40);
             this.picAnhPhu3.TabIndex = 2;
@@ -229,7 +229,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // picAnhPhu2
             // 
             this.picAnhPhu2.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.picAnhPhu2.Location = new System.Drawing.Point(1116, 81);
+            this.picAnhPhu2.Location = new System.Drawing.Point(1066, 85);
             this.picAnhPhu2.Name = "picAnhPhu2";
             this.picAnhPhu2.Size = new System.Drawing.Size(40, 40);
             this.picAnhPhu2.TabIndex = 2;
@@ -238,7 +238,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // picAnhPhu1
             // 
             this.picAnhPhu1.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.picAnhPhu1.Location = new System.Drawing.Point(1116, 28);
+            this.picAnhPhu1.Location = new System.Drawing.Point(1066, 32);
             this.picAnhPhu1.Name = "picAnhPhu1";
             this.picAnhPhu1.Size = new System.Drawing.Size(40, 40);
             this.picAnhPhu1.TabIndex = 2;
@@ -248,7 +248,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // 
             this.picAnhDaiDien.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.picAnhDaiDien.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.picAnhDaiDien.Location = new System.Drawing.Point(910, 27);
+            this.picAnhDaiDien.Location = new System.Drawing.Point(860, 31);
             this.picAnhDaiDien.Name = "picAnhDaiDien";
             this.picAnhDaiDien.Size = new System.Drawing.Size(200, 200);
             this.picAnhDaiDien.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -514,7 +514,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // 
             // btnLuu
             // 
-            this.btnLuu.Location = new System.Drawing.Point(1036, 21);
+            this.btnLuu.Location = new System.Drawing.Point(1036, 23);
             this.btnLuu.Name = "btnLuu";
             this.btnLuu.Size = new System.Drawing.Size(120, 29);
             this.btnLuu.TabIndex = 0;
@@ -524,7 +524,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(22, 22);
+            this.button2.Location = new System.Drawing.Point(22, 24);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(120, 29);
             this.button2.TabIndex = 0;
@@ -534,7 +534,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // 
             // btnBoQua
             // 
-            this.btnBoQua.Location = new System.Drawing.Point(896, 21);
+            this.btnBoQua.Location = new System.Drawing.Point(896, 23);
             this.btnBoQua.Name = "btnBoQua";
             this.btnBoQua.Size = new System.Drawing.Size(120, 29);
             this.btnBoQua.TabIndex = 0;

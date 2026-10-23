@@ -104,7 +104,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             // 
             this.lblTieuDe.AutoSize = true;
             this.lblTieuDe.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblTieuDe.Location = new System.Drawing.Point(24, 25);
+            this.lblTieuDe.Location = new System.Drawing.Point(24, 19);
             this.lblTieuDe.Name = "lblTieuDe";
             this.lblTieuDe.Size = new System.Drawing.Size(103, 28);
             this.lblTieuDe.TabIndex = 6;

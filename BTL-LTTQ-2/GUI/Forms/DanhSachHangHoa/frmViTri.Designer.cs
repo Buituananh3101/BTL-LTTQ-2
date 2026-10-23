@@ -97,7 +97,7 @@
             this.lblTongSoViTri.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblTongSoViTri.Location = new System.Drawing.Point(15, 8);
             this.lblTongSoViTri.Name = "lblTongSoViTri";
-            this.lblTongSoViTri.Size = new System.Drawing.Size(150, 20);
+            this.lblTongSoViTri.Size = new System.Drawing.Size(110, 20);
             this.lblTongSoViTri.TabIndex = 0;
             this.lblTongSoViTri.Text = "Tổng số: 0 vị trí";
             // 
@@ -139,7 +139,7 @@
             this.lblTieuDe.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblTieuDe.Location = new System.Drawing.Point(13, 22);
             this.lblTieuDe.Name = "lblTieuDe";
-            this.lblTieuDe.Size = new System.Drawing.Size(150, 22);
+            this.lblTieuDe.Size = new System.Drawing.Size(141, 22);
             this.lblTieuDe.TabIndex = 4;
             this.lblTieuDe.Text = "Vị trí hàng hóa";
             // 
@@ -190,7 +190,7 @@
             this.grpThongTin.Controls.Add(this.txtTenViTri);
             this.grpThongTin.Location = new System.Drawing.Point(12, 6);
             this.grpThongTin.Name = "grpThongTin";
-            this.grpThongTin.Size = new System.Drawing.Size(296, 457);
+            this.grpThongTin.Size = new System.Drawing.Size(296, 433);
             this.grpThongTin.TabIndex = 4;
             this.grpThongTin.TabStop = false;
             // 
@@ -237,7 +237,7 @@
             this.lblTenViTri.AutoSize = true;
             this.lblTenViTri.Location = new System.Drawing.Point(18, 46);
             this.lblTenViTri.Name = "lblTenViTri";
-            this.lblTenViTri.Size = new System.Drawing.Size(78, 21);
+            this.lblTenViTri.Size = new System.Drawing.Size(68, 21);
             this.lblTenViTri.TabIndex = 3;
             this.lblTenViTri.Text = "Tên vị trí";
             // 

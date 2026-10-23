@@ -31,6 +31,10 @@ namespace BTL_LTTQ_2.GUI.Forms
         public frmDanhSachHangHoa()
         {
             InitializeComponent();
+            if (btnNhapFile != null)
+            {
+                btnNhapFile.Click += btnNhapFile_Click;
+            }
         }
 
         private void frmDanhSachHangHoa_Load(object sender, EventArgs e)
@@ -863,7 +867,21 @@ namespace BTL_LTTQ_2.GUI.Forms
         }
 
         // Bấm nút + Hàng hóa mở form thêm mới
-        private void btnHangHoa_Click(object sender, EventArgs e)
+        
+        // Bấm nút Nhập file mở form nhập hàng hóa từ file
+        private void btnNhapFile_Click(object sender, EventArgs e)
+        {
+            using (frmNhapHangHoaFile frm = new frmNhapHangHoaFile())
+            {
+                frm.StartPosition = FormStartPosition.CenterParent;
+                if (frm.ShowDialog(this) == DialogResult.OK)
+                {
+                    NapDuLieuBoLoc();
+                    HienThiDanhSach();
+                }
+            }
+        }
+private void btnHangHoa_Click(object sender, EventArgs e)
         {
             MoFormHangHoa(0);
         }

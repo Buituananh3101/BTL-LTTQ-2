@@ -50,6 +50,18 @@
 
 ## Nhật ký phiên (Session Logs)
 
+- **Phiên 5 (2026-10-23) – Triển khai Chức năng Nhập File Hàng Hóa Chuẩn KiotViet (`frmNhapHangHoaFile`)**:
+  - **Nhu cầu**: Thiết kế và hiện thực hóa trọn vẹn chức năng "Nhập file" (`btnNhapFile`) trên `frmDanhSachHangHoa`, bao gồm tải file mẫu, chọn file dữ liệu, tùy chọn xử lý trùng mã (Cập nhật / Bỏ qua), tự động tạo nhóm hàng/ĐVT/vị trí mới nếu chưa có, tự sinh mã hàng nếu để trống, bọc trong Transaction và kiểm soát an toàn tồn kho theo Luật 4.
+  - **Kết quả thực hiện**:
+    1. Cập nhật đặc tả chi tiết tại `docs/specs/danh-sach-hang-hoa.md` mục 5.
+    2. Thiết kế hộp thoại Modal [`frmNhapHangHoaFile`](file:///d:/CODE/BTL-LTTQ-2/BTL-LTTQ-2/GUI/Forms/DanhSachHangHoa/frmNhapHangHoaFile.cs) giao diện chuẩn WinForms (`664 x 475`, Segoe UI 9.5F, nút Primary Blue `#0078D7`).
+    3. Hỗ trợ tải file mẫu Excel (.xls) định dạng HTML Table UTF-8 sắc nét và CSV (.csv) UTF-8 có BOM.
+    4. Bộ đọc file đa định dạng: Hỗ trợ Excel OpenXML (.xlsx) qua `System.IO.Compression` chuẩn không cần thư viện ngoài, Excel HTML/OleDb (.xls), và CSV/TXT với cơ chế tách trường và bỏ dấu FormD thông minh.
+    5. Xử lý nghiệp vụ CSDL: Bọc trong `DataProcessing.ChangeDataTransaction` + `SqlParameter`; tự sinh mã tăng dần `HHxxxxxx`; tự động tạo Nhóm hàng / ĐVT / Vị trí nếu là tên mới; khi cập nhật nếu để trống thì giữ nguyên giá trị cũ; tuyệt đối không đụng đến tồn kho sổ sách.
+    6. Đấu nối sự kiện `btnNhapFile.Click` trên `frmDanhSachHangHoa.cs` mở modal và tự động tải lại bộ lọc + danh sách sau khi nhập.
+    7. Biên dịch dự án: **0 Warning(s), 0 Error(s)**.
+
+
 - **Phiên 4 (2026-10-22) – Hoàn thiện Form Ẩn Hiện Cột (`frmHienCot`), Dự Báo Hết Hàng, Xuất File Excel Chuẩn & Lưu Trọn Vẹn 5 Ảnh**:
   - **Nhu cầu**: Thiết kế form tùy chọn ẩn/hiện cột theo mẫu ảnh người dùng; định vị ngay dưới nút; kích hoạt tính toán cột "Dự kiến hết hàng" và "Thời gian tạo"; sửa lỗi xuất file bị dồn 1 cột; lưu toàn bộ 5 ảnh hàng hóa vào CSDL.
   - **Kết quả thực hiện**:

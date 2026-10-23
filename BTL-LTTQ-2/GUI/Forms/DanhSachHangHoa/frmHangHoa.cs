@@ -104,6 +104,12 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                 txtDinhMucTonThapNhat.Text = "0";
                 txtDinhMucTonCaoNhat.Text = "0";
 
+                // Để trống các combobox khi tạo mới để người dùng chủ động chọn, tránh lưu nhầm mặc định
+                cboNhomHang.SelectedIndex = -1;
+                cboDonVi.SelectedIndex = -1;
+                cboViTri.SelectedIndex = -1;
+                cboViTri.Text = "";
+
                 SinhMaHangGoiY();
                 CapNhatGiaoDienNutXoa();
 
@@ -139,11 +145,11 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // 3. Vị trí
             try
             {
-                DataTable dtViTri = DataProcessing.ReadData("SELECT DISTINCT ViTri FROM HangHoa WHERE ViTri IS NOT NULL AND LTRIM(RTRIM(ViTri)) <> '' ORDER BY ViTri");
+                DataTable dtViTri = DataProcessing.ReadData("SELECT TenViTri FROM ViTri WHERE TrangThai = 'HOAT_DONG' ORDER BY TenViTri");
                 List<string> listViTri = new List<string>();
                 foreach (DataRow row in dtViTri.Rows)
                 {
-                    listViTri.Add(row["ViTri"].ToString());
+                    listViTri.Add(row["TenViTri"].ToString());
                 }
                 ComboboxHelper.CaiDatTimKiem(cboViTri, listViTri);
             }

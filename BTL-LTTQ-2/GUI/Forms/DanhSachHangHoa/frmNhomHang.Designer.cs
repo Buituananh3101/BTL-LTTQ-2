@@ -190,7 +190,7 @@
             this.grpThongTin.Controls.Add(this.txtTenNhom);
             this.grpThongTin.Location = new System.Drawing.Point(12, 6);
             this.grpThongTin.Name = "grpThongTin";
-            this.grpThongTin.Size = new System.Drawing.Size(296, 457);
+            this.grpThongTin.Size = new System.Drawing.Size(296, 433);
             this.grpThongTin.TabIndex = 4;
             this.grpThongTin.TabStop = false;
             // 
