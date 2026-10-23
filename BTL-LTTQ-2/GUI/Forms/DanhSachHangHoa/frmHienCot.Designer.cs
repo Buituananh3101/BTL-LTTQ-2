@@ -245,6 +245,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(356, 260);
+            this.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.Controls.Add(this.chkTrangThai);
             this.Controls.Add(this.chkDuKienHetHang);
             this.Controls.Add(this.chkThoiGianTao);

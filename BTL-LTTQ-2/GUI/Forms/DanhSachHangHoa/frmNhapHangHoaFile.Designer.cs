@@ -1,4 +1,4 @@
-﻿namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
+namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
 {
     partial class frmNhapHangHoaFile
     {
@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             this.pnlHeader = new System.Windows.Forms.Panel();
+            this.grpTieuDe = new System.Windows.Forms.GroupBox();
+            this.lblTieuDe = new System.Windows.Forms.Label();
             this.btnTaiFileMauExcel = new System.Windows.Forms.Button();
             this.grpChonFile = new System.Windows.Forms.GroupBox();
             this.btnChonFile = new System.Windows.Forms.Button();
@@ -41,14 +43,12 @@
             this.btnDong = new System.Windows.Forms.Button();
             this.pnlBottom = new System.Windows.Forms.Panel();
             this.grpThaoTac = new System.Windows.Forms.GroupBox();
-            this.grpTieuDe = new System.Windows.Forms.GroupBox();
-            this.lblTieuDe = new System.Windows.Forms.Label();
             this.pnlHeader.SuspendLayout();
+            this.grpTieuDe.SuspendLayout();
             this.grpChonFile.SuspendLayout();
             this.grpTuyChon.SuspendLayout();
             this.pnlBottom.SuspendLayout();
             this.grpThaoTac.SuspendLayout();
-            this.grpTieuDe.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlHeader
@@ -60,6 +60,25 @@
             this.pnlHeader.Name = "pnlHeader";
             this.pnlHeader.Size = new System.Drawing.Size(882, 80);
             this.pnlHeader.TabIndex = 0;
+            // 
+            // grpTieuDe
+            // 
+            this.grpTieuDe.Controls.Add(this.lblTieuDe);
+            this.grpTieuDe.Location = new System.Drawing.Point(0, 12);
+            this.grpTieuDe.Name = "grpTieuDe";
+            this.grpTieuDe.Size = new System.Drawing.Size(882, 50);
+            this.grpTieuDe.TabIndex = 0;
+            this.grpTieuDe.TabStop = false;
+            // 
+            // lblTieuDe
+            // 
+            this.lblTieuDe.AutoSize = true;
+            this.lblTieuDe.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.lblTieuDe.Location = new System.Drawing.Point(10, 16);
+            this.lblTieuDe.Name = "lblTieuDe";
+            this.lblTieuDe.Size = new System.Drawing.Size(377, 28);
+            this.lblTieuDe.TabIndex = 0;
+            this.lblTieuDe.Text = "Nhập danh sách hàng hóa từ file excel";
             // 
             // btnTaiFileMauExcel
             // 
@@ -182,25 +201,6 @@
             this.grpThaoTac.TabIndex = 0;
             this.grpThaoTac.TabStop = false;
             // 
-            // grpTieuDe
-            // 
-            this.grpTieuDe.Controls.Add(this.lblTieuDe);
-            this.grpTieuDe.Location = new System.Drawing.Point(0, 12);
-            this.grpTieuDe.Name = "grpTieuDe";
-            this.grpTieuDe.Size = new System.Drawing.Size(882, 50);
-            this.grpTieuDe.TabIndex = 0;
-            this.grpTieuDe.TabStop = false;
-            // 
-            // lblTieuDe
-            // 
-            this.lblTieuDe.AutoSize = true;
-            this.lblTieuDe.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblTieuDe.Location = new System.Drawing.Point(10, 19);
-            this.lblTieuDe.Name = "lblTieuDe";
-            this.lblTieuDe.Size = new System.Drawing.Size(315, 23);
-            this.lblTieuDe.TabIndex = 0;
-            this.lblTieuDe.Text = "Nhập danh sách hàng hóa từ file excel";
-            // 
             // frmNhapHangHoaFile
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
@@ -223,14 +223,14 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Nhập danh sách hàng hóa từ file";
             this.pnlHeader.ResumeLayout(false);
+            this.grpTieuDe.ResumeLayout(false);
+            this.grpTieuDe.PerformLayout();
             this.grpChonFile.ResumeLayout(false);
             this.grpChonFile.PerformLayout();
             this.grpTuyChon.ResumeLayout(false);
             this.grpTuyChon.PerformLayout();
             this.pnlBottom.ResumeLayout(false);
             this.grpThaoTac.ResumeLayout(false);
-            this.grpTieuDe.ResumeLayout(false);
-            this.grpTieuDe.PerformLayout();
             this.ResumeLayout(false);
 
         }

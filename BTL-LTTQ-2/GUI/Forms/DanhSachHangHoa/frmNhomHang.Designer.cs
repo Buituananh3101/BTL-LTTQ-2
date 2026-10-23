@@ -1,4 +1,4 @@
-﻿namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
+namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
 {
     partial class frmNhomHang
     {
@@ -136,7 +136,7 @@
             // lblTieuDe
             // 
             this.lblTieuDe.AutoSize = true;
-            this.lblTieuDe.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.lblTieuDe.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblTieuDe.Location = new System.Drawing.Point(13, 22);
             this.lblTieuDe.Name = "lblTieuDe";
             this.lblTieuDe.Size = new System.Drawing.Size(111, 22);

@@ -167,7 +167,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             // lblTimKiem
             // 
             this.lblTimKiem.AutoSize = true;
-            this.lblTimKiem.Location = new System.Drawing.Point(385, 26);
+            this.lblTimKiem.Location = new System.Drawing.Point(385, 25);
             this.lblTimKiem.Name = "lblTimKiem";
             this.lblTimKiem.Size = new System.Drawing.Size(74, 21);
             this.lblTimKiem.TabIndex = 1;
@@ -175,7 +175,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             // 
             // txtTimKiem
             // 
-            this.txtTimKiem.Location = new System.Drawing.Point(465, 22);
+            this.txtTimKiem.Location = new System.Drawing.Point(465, 21);
             this.txtTimKiem.Name = "txtTimKiem";
             this.txtTimKiem.Size = new System.Drawing.Size(540, 29);
             this.txtTimKiem.TabIndex = 0;
