@@ -870,44 +870,12 @@ namespace BTL_LTTQ_2.GUI.Forms
 
         private void MoFormHangHoa(int maHang)
         {
-            if (this.MdiParent != null)
+            using (frmHangHoa frm = maHang > 0 ? new frmHangHoa(maHang) : new frmHangHoa())
             {
-                // Kiểm tra nếu đã mở form frmHangHoa thì kích hoạt
-                foreach (Form child in this.MdiParent.MdiChildren)
+                frm.StartPosition = FormStartPosition.CenterParent;
+                if (frm.ShowDialog(this) == DialogResult.OK)
                 {
-                    if (child is frmHangHoa)
-                    {
-                        child.Activate();
-                        return;
-                    }
-                }
-
-                frmHangHoa frm = maHang > 0 ? new frmHangHoa(maHang) : new frmHangHoa();
-                frm.MdiParent = this.MdiParent;
-                frm.StartPosition = FormStartPosition.Manual;
-                int posX = Math.Max(0, (this.MdiParent.ClientSize.Width - frm.Width) / 2);
-                int posY = Math.Max(0, (this.MdiParent.ClientSize.Height - frm.Height) / 2);
-                frm.Location = new Point(posX, posY);
-
-                frm.FormClosed += (s, ev) =>
-                {
-                    if (frm.DialogResult == DialogResult.OK)
-                    {
-                        HienThiDanhSach();
-                    }
-                };
-                frm.Show();
-                frm.BringToFront();
-            }
-            else
-            {
-                using (frmHangHoa frm = maHang > 0 ? new frmHangHoa(maHang) : new frmHangHoa())
-                {
-                    frm.StartPosition = FormStartPosition.CenterParent;
-                    if (frm.ShowDialog(this) == DialogResult.OK)
-                    {
-                        HienThiDanhSach();
-                    }
+                    HienThiDanhSach();
                 }
             }
         }
