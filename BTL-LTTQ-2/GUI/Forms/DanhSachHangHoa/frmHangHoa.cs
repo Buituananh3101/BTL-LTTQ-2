@@ -46,35 +46,12 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
 
         private void frmHangHoa_Load(object sender, EventArgs e)
         {
-            //// Căn giữa vùng làm việc MDI (khắc phục việc Windows MDI bỏ qua thuộc tính CenterScreen)
-            //if (this.MdiParent != null)
-            //{
-            //    MdiClient mdiClient = null;
-            //    foreach (Control c in this.MdiParent.Controls)
-            //    {
-            //        if (c is MdiClient mc) { mdiClient = mc; break; }
-            //    }
-
-            //    int clientW = mdiClient != null ? mdiClient.ClientSize.Width : this.MdiParent.ClientSize.Width;
-            //    int clientH = mdiClient != null ? mdiClient.ClientSize.Height : this.MdiParent.ClientSize.Height;
-
-            //    this.Location = new Point(
-            //        Math.Max(0, (clientW - this.Width) / 2),
-            //        Math.Max(0, (clientH - this.Height) / 2)
-            //    );
-            //}
-            //else
-            //{
-            //    this.CenterToScreen();
-            //}
-
-            //
             KhoiTao5KhungAnh();
 
-            if (button2 != null)
+            if (btnXoa != null)
             {
-                button2.Cursor = Cursors.Hand;
-                toolTipAnh.SetToolTip(button2, "Xóa hàng hóa này khỏi hệ thống");
+                btnXoa.Cursor = Cursors.Hand;
+                toolTipAnh.SetToolTip(btnXoa, "Xóa hàng hóa này khỏi hệ thống");
             }
             NapCombobox();
 
@@ -343,11 +320,11 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
         {
             danhSachPic = new PictureBox[] { picAnhDaiDien, picAnhPhu1, picAnhPhu2, picAnhPhu3, picAnhPhu4 };
 
-            if (button1 != null)
+            if (btnXoaAnhChinh != null)
             {
-                button1.Cursor = Cursors.Hand;
-                toolTipAnh.SetToolTip(button1, "Bỏ chọn / Xóa ảnh trong khung to");
-                button1.BringToFront();
+                btnXoaAnhChinh.Cursor = Cursors.Hand;
+                toolTipAnh.SetToolTip(btnXoaAnhChinh, "Bỏ chọn / Xóa ảnh trong khung to");
+                btnXoaAnhChinh.BringToFront();
             }
 
             for (int i = 0; i < danhSachPic.Length; i++)
@@ -410,7 +387,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             CapNhatHienThi5Anh();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void btnXoaAnhChinh_Click(object sender, EventArgs e)
         {
             XoaAnhSlot(0);
         }
@@ -517,9 +494,9 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                 danhSachPic[i].BackColor = Color.White;
             }
 
-            if (button1 != null)
+            if (btnXoaAnhChinh != null)
             {
-                button1.BringToFront();
+                btnXoaAnhChinh.BringToFront();
             }
         }
 
@@ -557,28 +534,28 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
 
         private void CapNhatGiaoDienNutXoa()
         {
-            if (button2 == null) return;
+            if (btnXoa == null) return;
 
             if (maHangHienTai <= 0)
             {
-                button2.Visible = false;
+                btnXoa.Visible = false;
                 return;
             }
 
-            button2.Visible = true;
-            button2.UseVisualStyleBackColor = true;
-            button2.ForeColor = SystemColors.ControlText;
-            if (btnLuu != null) button2.Font = btnLuu.Font;
+            btnXoa.Visible = true;
+            btnXoa.UseVisualStyleBackColor = true;
+            btnXoa.ForeColor = SystemColors.ControlText;
+            if (btnLuu != null) btnXoa.Font = btnLuu.Font;
 
             if (trangThaiHienTai == "NGUNG_BAN")
             {
-                button2.Text = "Bán lại";
-                toolTipAnh.SetToolTip(button2, "Kích hoạt kinh doanh trở lại cho mặt hàng này");
+                btnXoa.Text = "Bán lại";
+                toolTipAnh.SetToolTip(btnXoa, "Kích hoạt kinh doanh trở lại cho mặt hàng này");
             }
             else
             {
-                button2.Text = "Xóa";
-                toolTipAnh.SetToolTip(button2, "Xóa hàng hóa này khỏi hệ thống");
+                btnXoa.Text = "Xóa";
+                toolTipAnh.SetToolTip(btnXoa, "Xóa hàng hóa này khỏi hệ thống");
             }
         }
 
@@ -623,10 +600,6 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             ThucHienThaoTacXoaHoacBanLai();
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            ThucHienThaoTacXoaHoacBanLai();
-        }
 
         private void ThucHienThaoTacXoaHoacBanLai()
         {

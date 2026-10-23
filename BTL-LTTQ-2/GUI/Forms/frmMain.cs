@@ -71,10 +71,5 @@ namespace BTL_LTTQ_2.GUI.Forms
         {
             MessageBox.Show("Hệ thống Quản lý Kho - BTL Lập trình trực quan\nPhiên bản: 1.0\nNền tảng: Windows Forms .NET Framework", "Thông tin phần mềm", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
-
-        private void mnuTraHangNhap_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

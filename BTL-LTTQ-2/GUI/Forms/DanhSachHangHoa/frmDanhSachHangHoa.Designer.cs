@@ -38,8 +38,8 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.dgvHangHoa = new System.Windows.Forms.DataGridView();
             this.pnlBoLoc = new System.Windows.Forms.Panel();
             this.grpBoLoc = new System.Windows.Forms.GroupBox();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnThemViTriNhanh = new System.Windows.Forms.Button();
+            this.btnThemNhomNhanh = new System.Windows.Forms.Button();
             this.grpThoiGianTao = new System.Windows.Forms.GroupBox();
             this.dtpTuNgay = new System.Windows.Forms.DateTimePicker();
             this.dtpDenNgay = new System.Windows.Forms.DateTimePicker();
@@ -207,8 +207,8 @@ namespace BTL_LTTQ_2.GUI.Forms
             // 
             // grpBoLoc
             // 
-            this.grpBoLoc.Controls.Add(this.button2);
-            this.grpBoLoc.Controls.Add(this.button1);
+            this.grpBoLoc.Controls.Add(this.btnThemViTriNhanh);
+            this.grpBoLoc.Controls.Add(this.btnThemNhomNhanh);
             this.grpBoLoc.Controls.Add(this.grpThoiGianTao);
             this.grpBoLoc.Controls.Add(this.lblTrangThai);
             this.grpBoLoc.Controls.Add(this.lblViTri);
@@ -227,29 +227,29 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.grpBoLoc.TabIndex = 1;
             this.grpBoLoc.TabStop = false;
             // 
-            // button2
+            // btnThemViTriNhanh
             // 
-            this.button2.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
-            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button2.Location = new System.Drawing.Point(308, 335);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(29, 29);
-            this.button2.TabIndex = 12;
-            this.button2.Text = "+";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.btnThemViTri_Click);
+            this.btnThemViTriNhanh.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.btnThemViTriNhanh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnThemViTriNhanh.Location = new System.Drawing.Point(308, 335);
+            this.btnThemViTriNhanh.Name = "btnThemViTriNhanh";
+            this.btnThemViTriNhanh.Size = new System.Drawing.Size(29, 29);
+            this.btnThemViTriNhanh.TabIndex = 12;
+            this.btnThemViTriNhanh.Text = "+";
+            this.btnThemViTriNhanh.UseVisualStyleBackColor = true;
+            this.btnThemViTriNhanh.Click += new System.EventHandler(this.btnThemViTri_Click);
             // 
-            // button1
+            // btnThemNhomNhanh
             // 
-            this.button1.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Location = new System.Drawing.Point(308, 76);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(29, 29);
-            this.button1.TabIndex = 12;
-            this.button1.Text = "+";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.btnThemNhomHang_Click);
+            this.btnThemNhomNhanh.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.btnThemNhomNhanh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnThemNhomNhanh.Location = new System.Drawing.Point(308, 76);
+            this.btnThemNhomNhanh.Name = "btnThemNhomNhanh";
+            this.btnThemNhomNhanh.Size = new System.Drawing.Size(29, 29);
+            this.btnThemNhomNhanh.TabIndex = 12;
+            this.btnThemNhomNhanh.Text = "+";
+            this.btnThemNhomNhanh.UseVisualStyleBackColor = true;
+            this.btnThemNhomNhanh.Click += new System.EventHandler(this.btnThemNhomHang_Click);
             // 
             // grpThoiGianTao
             // 
@@ -553,7 +553,7 @@ namespace BTL_LTTQ_2.GUI.Forms
         private System.Windows.Forms.Label lblTrangHienTai;
         private System.Windows.Forms.Button btnTrangSau;
         private System.Windows.Forms.Splitter splitterBoLoc;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button btnThemNhomNhanh;
+        private System.Windows.Forms.Button btnThemViTriNhanh;
     }
 }

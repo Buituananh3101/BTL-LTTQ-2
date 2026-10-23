@@ -199,7 +199,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.mnuTraHangNhap.Name = "mnuTraHangNhap";
             this.mnuTraHangNhap.Size = new System.Drawing.Size(193, 26);
             this.mnuTraHangNhap.Text = "Trả hàng nhập";
-            this.mnuTraHangNhap.Click += new System.EventHandler(this.mnuTraHangNhap_Click);
+
             // 
             // mnuBaoCao
             // 

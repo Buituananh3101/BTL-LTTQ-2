@@ -38,7 +38,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.txtGiaBan = new System.Windows.Forms.TextBox();
             this.txtGiaVon = new System.Windows.Forms.TextBox();
             this.pnlThongTinCoBan = new System.Windows.Forms.Panel();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnXoaAnhChinh = new System.Windows.Forms.Button();
             this.picAnhPhu4 = new System.Windows.Forms.PictureBox();
             this.picAnhPhu3 = new System.Windows.Forms.PictureBox();
             this.picAnhPhu2 = new System.Windows.Forms.PictureBox();
@@ -73,7 +73,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.pnlBottom = new System.Windows.Forms.Panel();
             this.grpThaoTac = new System.Windows.Forms.GroupBox();
             this.btnLuu = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.btnXoa = new System.Windows.Forms.Button();
             this.btnBoQua = new System.Windows.Forms.Button();
             this.pnlTop.SuspendLayout();
             this.grpTieuDe.SuspendLayout();
@@ -176,7 +176,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // 
             // pnlThongTinCoBan
             // 
-            this.pnlThongTinCoBan.Controls.Add(this.button1);
+            this.pnlThongTinCoBan.Controls.Add(this.btnXoaAnhChinh);
             this.pnlThongTinCoBan.Controls.Add(this.picAnhPhu4);
             this.pnlThongTinCoBan.Controls.Add(this.picAnhPhu3);
             this.pnlThongTinCoBan.Controls.Add(this.picAnhPhu2);
@@ -198,15 +198,15 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.pnlThongTinCoBan.Size = new System.Drawing.Size(1182, 253);
             this.pnlThongTinCoBan.TabIndex = 2;
             // 
-            // button1
+            // btnXoaAnhChinh
             // 
-            this.button1.Location = new System.Drawing.Point(1036, 32);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(23, 23);
-            this.button1.TabIndex = 4;
-            this.button1.Text = "x";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.btnXoaAnhChinh.Location = new System.Drawing.Point(1036, 32);
+            this.btnXoaAnhChinh.Name = "btnXoaAnhChinh";
+            this.btnXoaAnhChinh.Size = new System.Drawing.Size(23, 23);
+            this.btnXoaAnhChinh.TabIndex = 4;
+            this.btnXoaAnhChinh.Text = "x";
+            this.btnXoaAnhChinh.UseVisualStyleBackColor = true;
+            this.btnXoaAnhChinh.Click += new System.EventHandler(this.btnXoaAnhChinh_Click);
             // 
             // picAnhPhu4
             // 
@@ -504,7 +504,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // grpThaoTac
             // 
             this.grpThaoTac.Controls.Add(this.btnLuu);
-            this.grpThaoTac.Controls.Add(this.button2);
+            this.grpThaoTac.Controls.Add(this.btnXoa);
             this.grpThaoTac.Controls.Add(this.btnBoQua);
             this.grpThaoTac.Location = new System.Drawing.Point(0, 3);
             this.grpThaoTac.Name = "grpThaoTac";
@@ -522,15 +522,15 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             this.btnLuu.UseVisualStyleBackColor = true;
             this.btnLuu.Click += new System.EventHandler(this.btnLuu_Click);
             // 
-            // button2
+            // btnXoa
             // 
-            this.button2.Location = new System.Drawing.Point(22, 24);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(120, 29);
-            this.button2.TabIndex = 0;
-            this.button2.Text = "Xóa";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.btnXoa_Click);
+            this.btnXoa.Location = new System.Drawing.Point(22, 24);
+            this.btnXoa.Name = "btnXoa";
+            this.btnXoa.Size = new System.Drawing.Size(120, 29);
+            this.btnXoa.TabIndex = 0;
+            this.btnXoa.Text = "Xóa";
+            this.btnXoa.UseVisualStyleBackColor = true;
+            this.btnXoa.Click += new System.EventHandler(this.btnXoa_Click);
             // 
             // btnBoQua
             // 
@@ -628,7 +628,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
         private System.Windows.Forms.PictureBox picAnhPhu3;
         private System.Windows.Forms.PictureBox picAnhPhu2;
         private System.Windows.Forms.PictureBox picAnhPhu1;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button btnXoaAnhChinh;
+        private System.Windows.Forms.Button btnXoa;
     }
 }

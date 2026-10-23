@@ -39,22 +39,22 @@
             this.prgTienTrinh = new System.Windows.Forms.ProgressBar();
             this.btnThucHien = new System.Windows.Forms.Button();
             this.btnDong = new System.Windows.Forms.Button();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.pnlBottom = new System.Windows.Forms.Panel();
+            this.grpThaoTac = new System.Windows.Forms.GroupBox();
+            this.grpTieuDe = new System.Windows.Forms.GroupBox();
+            this.lblTieuDe = new System.Windows.Forms.Label();
             this.pnlHeader.SuspendLayout();
             this.grpChonFile.SuspendLayout();
             this.grpTuyChon.SuspendLayout();
-            this.panel1.SuspendLayout();
-            this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
+            this.pnlBottom.SuspendLayout();
+            this.grpThaoTac.SuspendLayout();
+            this.grpTieuDe.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlHeader
             // 
             this.pnlHeader.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
-            this.pnlHeader.Controls.Add(this.groupBox2);
+            this.pnlHeader.Controls.Add(this.grpTieuDe);
             this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlHeader.Location = new System.Drawing.Point(0, 0);
             this.pnlHeader.Name = "pnlHeader";
@@ -162,44 +162,44 @@
             this.btnDong.UseVisualStyleBackColor = true;
             this.btnDong.Click += new System.EventHandler(this.btnDong_Click);
             // 
-            // panel1
+            // pnlBottom
             // 
-            this.panel1.Controls.Add(this.groupBox1);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 379);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(882, 74);
-            this.panel1.TabIndex = 8;
+            this.pnlBottom.Controls.Add(this.grpThaoTac);
+            this.pnlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pnlBottom.Location = new System.Drawing.Point(0, 379);
+            this.pnlBottom.Name = "pnlBottom";
+            this.pnlBottom.Size = new System.Drawing.Size(882, 74);
+            this.pnlBottom.TabIndex = 8;
             // 
-            // groupBox1
+            // grpThaoTac
             // 
-            this.groupBox1.Controls.Add(this.btnTaiFileMauExcel);
-            this.groupBox1.Controls.Add(this.btnDong);
-            this.groupBox1.Controls.Add(this.btnThucHien);
-            this.groupBox1.Location = new System.Drawing.Point(0, 3);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(882, 59);
-            this.groupBox1.TabIndex = 0;
-            this.groupBox1.TabStop = false;
+            this.grpThaoTac.Controls.Add(this.btnTaiFileMauExcel);
+            this.grpThaoTac.Controls.Add(this.btnDong);
+            this.grpThaoTac.Controls.Add(this.btnThucHien);
+            this.grpThaoTac.Location = new System.Drawing.Point(0, 3);
+            this.grpThaoTac.Name = "grpThaoTac";
+            this.grpThaoTac.Size = new System.Drawing.Size(882, 59);
+            this.grpThaoTac.TabIndex = 0;
+            this.grpThaoTac.TabStop = false;
             // 
-            // groupBox2
+            // grpTieuDe
             // 
-            this.groupBox2.Controls.Add(this.label1);
-            this.groupBox2.Location = new System.Drawing.Point(0, 12);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(882, 50);
-            this.groupBox2.TabIndex = 0;
-            this.groupBox2.TabStop = false;
+            this.grpTieuDe.Controls.Add(this.lblTieuDe);
+            this.grpTieuDe.Location = new System.Drawing.Point(0, 12);
+            this.grpTieuDe.Name = "grpTieuDe";
+            this.grpTieuDe.Size = new System.Drawing.Size(882, 50);
+            this.grpTieuDe.TabIndex = 0;
+            this.grpTieuDe.TabStop = false;
             // 
-            // label1
+            // lblTieuDe
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.label1.Location = new System.Drawing.Point(10, 19);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(315, 23);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Nhập danh sách hàng hóa từ file excel";
+            this.lblTieuDe.AutoSize = true;
+            this.lblTieuDe.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.lblTieuDe.Location = new System.Drawing.Point(10, 19);
+            this.lblTieuDe.Name = "lblTieuDe";
+            this.lblTieuDe.Size = new System.Drawing.Size(315, 23);
+            this.lblTieuDe.TabIndex = 0;
+            this.lblTieuDe.Text = "Nhập danh sách hàng hóa từ file excel";
             // 
             // frmNhapHangHoaFile
             // 
@@ -207,7 +207,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(882, 453);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.pnlBottom);
             this.Controls.Add(this.prgTienTrinh);
             this.Controls.Add(this.grpTuyChon);
             this.Controls.Add(this.grpChonFile);
@@ -227,10 +227,10 @@
             this.grpChonFile.PerformLayout();
             this.grpTuyChon.ResumeLayout(false);
             this.grpTuyChon.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
+            this.pnlBottom.ResumeLayout(false);
+            this.grpThaoTac.ResumeLayout(false);
+            this.grpTieuDe.ResumeLayout(false);
+            this.grpTieuDe.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -248,9 +248,9 @@
         private System.Windows.Forms.ProgressBar prgTienTrinh;
         private System.Windows.Forms.Button btnThucHien;
         private System.Windows.Forms.Button btnDong;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Panel pnlBottom;
+        private System.Windows.Forms.GroupBox grpThaoTac;
+        private System.Windows.Forms.GroupBox grpTieuDe;
+        private System.Windows.Forms.Label lblTieuDe;
     }
 }
