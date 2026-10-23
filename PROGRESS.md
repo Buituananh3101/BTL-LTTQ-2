@@ -1,23 +1,24 @@
 # Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-23 – Hoàn thiện Cột Khách đặt, Nhập file Excel, Đấu nối form Hiện cột & Tối ưu giao diện Danh sách Hàng hóa (Phiên 6)
+**Cập nhật lần cuối**: 2026-10-23 – Dọn dẹp Code sạch, Chuẩn hóa 100% Font Segoe UI, Tái cấu trúc thư mục `Classes/` & Chốt Khuôn mẫu Thiết kế UI/UX toàn hệ thống (Phiên 7)
 
 ---
 
 ## Đang làm
 - [x] Hoàn thiện Form Danh sách Hàng hóa (`frmDanhSachHangHoa`): Kết nối dữ liệu thật từ SQL Server, phân trang, bộ lọc đa tiêu chí, tính tốc độ bán dự kiến hết hàng, tính động số lượng "Khách đặt" từ đơn đặt hàng bán, ẩn/hiện cột linh hoạt qua `frmHienCot`, nhập/xuất Excel.
 - [x] Hoàn thiện Form Thêm/Sửa Hàng hóa (`frmHangHoa`): Quản lý đầy đủ thông tin sản phẩm, định mức tồn, vị trí và lưu trữ 5 ảnh đại diện.
-- [ ] Tiếp tục phân hệ Danh mục Cơ bản (Nhóm hàng, Đơn vị tính, Vị trí kho, Nhà cung cấp) hoặc Xác thực & Phân quyền (`frmDangNhap`).
+- [x] Chốt phân hệ Danh mục Hàng hóa làm Khuôn mẫu Thiết kế Chuẩn (Design System) cho toàn bộ hệ thống.
+- [ ] Chuyển sang phân hệ Xác thực & Phân quyền (`frmDangNhap`, tiện ích mã hóa mật khẩu `PasswordHelper.cs` SHA-256, liên kết phân quyền trên `frmMain`).
 
 ---
 
 ## Việc kế tiếp
-1. **Quản lý Danh mục (CRUD Master Data)**:
+1. **Xác thực & Phân quyền**: Hoàn tất `frmDangNhap` hỗ trợ chọn chi nhánh kho, tiện ích SHA-256 `PasswordHelper`, tích hợp phân quyền MenuStrip và StatusStrip trên `frmMain`.
+2. **Quản lý Danh mục Cơ bản (Kế thừa khuôn mẫu Danh sách Hàng hóa)**:
    - Form Danh mục Nhóm hàng (`frmNhomHang`) & Đơn vị tính (`frmDonViTinh`).
    - Form Danh mục Vị trí (`frmViTri`).
    - Form Danh mục Chi nhánh Kho & phân quyền `TaiKhoanKho`.
    - Form Danh mục Nhà cung cấp (`frmNhaCungCap`).
-2. **Xác thực & Phân quyền**: Hoàn tất `frmDangNhap`, SHA-256 `PasswordHelper`, tích hợp phân quyền MenuStrip và StatusStrip trên `frmMain`.
 3. **Quản lý Kho & Chứng từ Biến động**:
    - Form Nhập hàng từ Nhà cung cấp (`frmNhapHang`) - Tự tính giá vốn MAC, cộng tồn.
    - Form Kiểm kê & Cân bằng kho (`frmKiemKho`) - Khóa vĩnh viễn phiếu sau khi cân bằng.
@@ -38,7 +39,7 @@
 | 2 | **Quy chuẩn Vận hành AI** | Thư mục `.agent/rules/`, `AGENTS.md`, `PROGRESS.md`, `docs/` | Hoàn thành 100% |
 | 3 | **Giao diện Khung MDI** | `frmMain` MDI Container, MenuStrip 5 phân hệ, StatusStrip trạng thái | Hoàn thành 100% |
 | 4 | **Xác thực & Phân quyền** | `SessionContext`, SHA-256 `PasswordHelper`, `frmDangNhap`, phân quyền menu | Đang thực hiện |
-| 5 | **Danh mục Hàng hóa** | `frmDanhSachHangHoa` (phân trang, lọc, tìm kiếm, xuất file), `frmHangHoa` (Thêm/Sửa) | Hoàn thành 100% |
+| 5 | **Danh mục Hàng hóa** | `frmDanhSachHangHoa` & `frmHangHoa` (**Đã chốt làm Khuôn mẫu Thiết kế chuẩn UI/UX toàn hệ thống**) | Hoàn thành 100% |
 | 6 | **Danh mục Cơ bản** | CRUD Nhóm hàng, Đơn vị tính, Chi nhánh Kho, Nhà cung cấp | Chưa bắt đầu |
 | 7 | **Phiếu Nhập hàng** | `frmNhapHang`, tính giá vốn bình quân (MAC), cộng tồn dynamic | Chưa bắt đầu |
 | 8 | **Kiểm kê & Cân bằng kho** | `frmKiemKho`, nạp tồn sổ sách, sinh phiếu điều chỉnh, khóa vĩnh viễn | Chưa bắt đầu |
@@ -49,6 +50,15 @@
 ---
 
 ## Nhật ký phiên (Session Logs)
+
+- **Phiên 7 (2026-10-23) – Rà Soát Code Sạch, Chuẩn Hóa Phông Chữ `Segoe UI`, Tái Cấu Trúc `Classes/` & Chốt Khuôn Mẫu Giao Diện**:
+  - **Nhu cầu**: Làm sạch mã nguồn, loại bỏ code thừa/chết; quy chuẩn hóa đồng bộ 100% phông chữ `Segoe UI` cho toàn bộ dự án; đơn giản hóa kiến trúc thư mục cho người mới học (`Classes/`); chốt phân hệ Danh mục Hàng hóa làm khuôn mẫu thiết kế UI/UX cho tất cả các phân hệ về sau.
+  - **Kết quả thực hiện**:
+    1. **Làm sạch code**: Xóa bỏ hàm sự kiện rỗng (`mnuTraHangNhap_Click`, `button2_Click`), loại bỏ khối code chú thích cũ; chuẩn hóa toàn bộ tên controls WinForms (`btnXoa`, `btnXoaAnhChinh`, `btnThemNhomNhanh`, `btnThemViTriNhanh`, `pnlBottom`, `grpThaoTac`...).
+    2. **Chuẩn hóa 100% phông chữ `Segoe UI`**: Loại bỏ hoàn toàn phông `Microsoft Sans Serif` còn sót lại ở `frmHangHoa`, `frmNhomHang`, `frmViTri`, `frmHienCot`; thiết lập bảng phân cấp phông chữ chuẩn: Form Base `Segoe UI 9.5pt`, Tiêu đề lớn `12pt Bold`, Tiêu đề nhóm `10pt Bold`, Nội dung & Dòng lưới `9.5pt Regular`.
+    3. **Tái cấu trúc thư mục `Classes/` tinh gọn**: Gom `DataProcessing.cs`, `SessionContext.cs`, `ComboboxHelper.cs` vào chung thư mục `Classes/` với `namespace BTL_LTTQ_2.Classes`; xóa bỏ 2 thư mục `BLL/` và `DAL/` chưa phù hợp với đồ án LTTQ, giúp người mới học dễ đọc, dễ tiếp cận và quản lý code một cách trực quan.
+    4. **Chốt Khuôn mẫu Giao diện Chuẩn (Design System)**: Cập nhật mục 6 trong `.agent/rules/03-giao-dien-layout.md` và `docs/quyet-dinh.md` xác lập Danh mục Hàng hóa làm tiêu chuẩn bất biến cho mọi màn hình tiếp theo (bảng màu, màu xen kẽ DataGridView `#FFFFFF` & `#F8FAFC`, dòng chọn `#E0E7FF`, đệm đôi DoubleBuffered, thanh phân trang, lọc bên trái).
+    5. **Biên dịch & Kiểm thử**: Rebuild toàn bộ Solution thành công, **0 Warning(s), 0 Error(s)**.
 
 - **Phiên 6 (2026-10-23) – Triển khai Nghiệp vụ Cột "Khách đặt" & Tối ưu Giao diện Thanh Công Cụ**:
   - **Nhu cầu**: Hiện thực hóa logic tính toán và hiển thị cho cột "Khách đặt" trên `frmDanhSachHangHoa` và đấu nối form tùy chọn cột `frmHienCot`; khắc phục lỗi tràn ô tìm kiếm `txtTimKiem` che khuất các nút hành động trên màn hình có độ phân giải phổ thông.

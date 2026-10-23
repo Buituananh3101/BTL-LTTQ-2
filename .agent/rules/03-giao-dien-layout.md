@@ -116,3 +116,34 @@ Mọi thông báo giao tiếp với người dùng phải tuân theo 4 cấp đ�
    ```csharp
    MessageBox.Show("Đã xảy ra lỗi khi kết nối CSDL: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
    ```
+
+---
+
+## 6. Bộ Quy Chuẩn Thiết Kế Giao Diện Mẫu (Khuôn mẫu Chốt từ Danh mục Hàng hóa)
+
+Phân hệ **Danh mục Hàng hóa** (`frmDanhSachHangHoa` & `frmHangHoa`) đã được chốt làm **Khuôn mẫu chuẩn (Design System)** cho toàn bộ các màn hình phát triển tiếp theo (Nhập kho, Kiểm kê, Chuyển kho, Danh mục Nhà cung cấp, Khách hàng, Báo cáo):
+
+### 6.1. Quy chuẩn Phông chữ (Typography) – 100% Segoe UI
+- **Phông nền tảng cấp Form (`this.Font`)**: `Segoe UI, 9.5pt, Regular`.
+- **Tiêu đề lớn của Form (`lblTieuDe`, `lblTaoHangHoa`)**: `Segoe UI, 12pt, Bold`.
+- **Tiêu đề phân nhóm / GroupBox / Header popup (`lblTieuDeGia`, `lblHienThiCot`)**: `Segoe UI, 9.5pt` hoặc `10pt, Bold`.
+- **Nội dung / Textbox / ComboBox / Dòng DataGridView**: `Segoe UI, 9.5pt, Regular`.
+- **Thanh trạng thái góc dưới (StatusStrip)**: `Segoe UI, 9pt, Regular`.
+
+### 6.2. Bảng Màu Nhận Diện Thống Nhất (Color Palette)
+- **Màu nền vùng MDI Client**: `Color.FromArgb(240, 242, 245)` (`#F0F2F5`).
+- **Màu nền Form / Panel chính**: `Color.White` (`#FFFFFF`).
+- **Màu nền dòng xen kẽ DataGridView**:
+  - Dòng chẵn: `Color.White` (`#FFFFFF`).
+  - Dòng lẻ: `Color.FromArgb(248, 250, 252)`.
+  - Dòng đang chọn (Selected Row): Nền `Color.FromArgb(224, 231, 255)`, Chữ `Color.FromArgb(30, 41, 59)`.
+- **Màu cảnh báo / Nguy hiểm (Hết hàng, Âm tồn, Nút xóa)**: `Color.Red` hoặc `#EF4444` / `#DC2626`.
+- **Màu nút hành động chính (Primary Button)**: `btnHangHoa`, `btnLuu` (Màu xanh lá thương hiệu KiotViet `#10B981` / `#059669` hoặc phím nổi bật).
+- **Màu nút phụ (Secondary Buttons)**: Xuất file, Nhập file, Hiện cột (Nền trắng, viền `#CBD5E1`, chữ tối màu).
+
+### 6.3. Tiêu Chuẩn Trải Nghiệm & Tương Tác (UX / Behavior)
+- **Đệm đôi chống nhấp nháy**: Mọi DataGridView bắt buộc kích hoạt `DoubleBuffered = true` bằng Reflection tại sự kiện `Load`.
+- **Khóa chỉnh sửa trên lưới**: `ReadOnly = true`, `AllowUserToAddRows = false`, `SelectionMode = FullRowSelect`.
+- **Bộ lọc bên trái (Left Filter Panel)**: Chiều rộng cố định ~360px kèm `Splitter` co giãn, ComboBox tích hợp `ComboboxHelper.CaiDatTimKiem` (gõ phím lọc tức thời, hỗ trợ không dấu, giới hạn 8 dòng scrollbar Win32).
+- **Thanh phân trang đáy (Pagination)**: Dock dưới cùng, hỗ trợ tùy chọn số dòng/trang (10, 20, 50, 100), nút trước/sau và nhãn trang hiện tại.
+- **Form Chi tiết Thêm/Sửa**: Khi tạo mới để trống các ComboBox chọn danh mục (`SelectedIndex = -1`, `Text = ""`) để người dùng chủ động chọn, tránh lưu nhầm mặc định; bọc toàn bộ thao tác ghi nhiều bảng trong `DataProcessing.ChangeDataTransaction`.
