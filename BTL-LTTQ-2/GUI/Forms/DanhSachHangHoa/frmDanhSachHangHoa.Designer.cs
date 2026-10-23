@@ -237,6 +237,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.button2.TabIndex = 12;
             this.button2.Text = "+";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.btnThemViTri_Click);
             // 
             // button1
             // 

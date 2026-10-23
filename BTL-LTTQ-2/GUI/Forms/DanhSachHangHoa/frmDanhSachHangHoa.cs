@@ -269,20 +269,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             }
 
             // 4. Vị trí
-            try
-            {
-                DataTable dtViTri = DataProcessing.ReadData("SELECT DISTINCT ViTri FROM HangHoa WHERE ViTri IS NOT NULL AND LTRIM(RTRIM(ViTri)) <> '' ORDER BY ViTri");
-                List<string> listViTri = new List<string> { "-- Tất cả vị trí --" };
-                foreach (DataRow row in dtViTri.Rows)
-                {
-                    listViTri.Add(row["ViTri"].ToString());
-                }
-                ComboboxHelper.CaiDatTimKiem(cboViTri, listViTri, locDuLieu);
-            }
-            catch
-            {
-                ComboboxHelper.CaiDatTimKiem(cboViTri, new List<string> { "-- Tất cả vị trí --" }, locDuLieu);
-            }
+            NapDanhSachViTri(locDuLieu);
 
             // 5. Trạng thái
             List<string> listTrangThai = new List<string> {
@@ -823,6 +810,55 @@ namespace BTL_LTTQ_2.GUI.Forms
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi tải danh mục nhóm hàng: " + ex.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        // Bấm nút dấu cộng bên cạnh vị trí để mở frmViTri
+        private void btnThemViTri_Click(object sender, EventArgs e)
+        {
+            using (frmViTri frm = new frmViTri())
+            {
+                frm.StartPosition = FormStartPosition.CenterParent;
+                frm.ShowDialog(this);
+                NapDanhSachViTri();
+            }
+        }
+
+        public void NapDanhSachViTri(Action locDuLieu = null)
+        {
+            try
+            {
+                string selectedVal = cboViTri.SelectedItem != null ? cboViTri.SelectedItem.ToString() : null;
+                DataTable dtViTri = DataProcessing.ReadData("SELECT TenViTri FROM ViTri WHERE TrangThai = 'HOAT_DONG' ORDER BY TenViTri");
+                List<string> listViTri = new List<string> { "-- Tất cả vị trí --" };
+                foreach (DataRow row in dtViTri.Rows)
+                {
+                    listViTri.Add(row["TenViTri"].ToString());
+                }
+
+                Action action = locDuLieu ?? (() =>
+                {
+                    if (isLoaded)
+                    {
+                        trangHienTai = 1;
+                        HienThiDanhSach();
+                    }
+                });
+
+                ComboboxHelper.CaiDatTimKiem(cboViTri, listViTri, action);
+
+                if (!string.IsNullOrEmpty(selectedVal) && listViTri.Contains(selectedVal))
+                {
+                    cboViTri.SelectedItem = selectedVal;
+                }
+                else
+                {
+                    cboViTri.SelectedIndex = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi tải danh mục vị trí: " + ex.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 

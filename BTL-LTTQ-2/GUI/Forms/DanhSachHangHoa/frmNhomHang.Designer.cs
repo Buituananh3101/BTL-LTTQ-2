@@ -19,6 +19,7 @@
             }
             base.Dispose(disposing);
         }
+
         #region Windows Form Designer generated code
 
         /// <summary>
@@ -27,68 +28,68 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.txtTenNhom = new System.Windows.Forms.TextBox();
+            this.lblTimKiem = new System.Windows.Forms.Label();
+            this.dgvNhomHang = new System.Windows.Forms.DataGridView();
+            this.pnlFooter = new System.Windows.Forms.Panel();
             this.lblTongSoNhom = new System.Windows.Forms.Label();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.pnlHeader = new System.Windows.Forms.Panel();
+            this.grpTimKiem = new System.Windows.Forms.GroupBox();
             this.btnXuatFile = new System.Windows.Forms.Button();
-            this.label3 = new System.Windows.Forms.Label();
+            this.lblTieuDe = new System.Windows.Forms.Label();
             this.btnNhapFile = new System.Windows.Forms.Button();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.splitter2 = new System.Windows.Forms.Splitter();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.splitter1 = new System.Windows.Forms.Splitter();
+            this.txtTimKiem = new System.Windows.Forms.TextBox();
+            this.pnlLeft = new System.Windows.Forms.Panel();
+            this.splitterTop = new System.Windows.Forms.Splitter();
+            this.grpThongTin = new System.Windows.Forms.GroupBox();
+            this.splitterThongTin = new System.Windows.Forms.Splitter();
             this.btnHuy = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            this.panel1.SuspendLayout();
-            this.panel2.SuspendLayout();
-            this.groupBox1.SuspendLayout();
-            this.panel3.SuspendLayout();
-            this.groupBox2.SuspendLayout();
+            this.btnSua = new System.Windows.Forms.Button();
+            this.btnThem = new System.Windows.Forms.Button();
+            this.lblTenNhom = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvNhomHang)).BeginInit();
+            this.pnlFooter.SuspendLayout();
+            this.pnlHeader.SuspendLayout();
+            this.grpTimKiem.SuspendLayout();
+            this.pnlLeft.SuspendLayout();
+            this.grpThongTin.SuspendLayout();
             this.SuspendLayout();
             // 
-            // textBox1
+            // txtTenNhom
             // 
-            this.textBox1.Location = new System.Drawing.Point(21, 74);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(251, 29);
-            this.textBox1.TabIndex = 2;
+            this.txtTenNhom.Location = new System.Drawing.Point(21, 74);
+            this.txtTenNhom.Name = "txtTenNhom";
+            this.txtTenNhom.Size = new System.Drawing.Size(251, 29);
+            this.txtTenNhom.TabIndex = 2;
             // 
-            // label1
+            // lblTimKiem
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(324, 25);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(74, 21);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "Tìm kiếm";
+            this.lblTimKiem.AutoSize = true;
+            this.lblTimKiem.Location = new System.Drawing.Point(324, 25);
+            this.lblTimKiem.Name = "lblTimKiem";
+            this.lblTimKiem.Size = new System.Drawing.Size(74, 21);
+            this.lblTimKiem.TabIndex = 3;
+            this.lblTimKiem.Text = "Tìm kiếm";
             // 
-            // dataGridView1
+            // dgvNhomHang
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView1.Location = new System.Drawing.Point(326, 78);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowHeadersWidth = 51;
-            this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(756, 439);
-            this.dataGridView1.TabIndex = 4;
+            this.dgvNhomHang.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvNhomHang.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvNhomHang.Location = new System.Drawing.Point(326, 78);
+            this.dgvNhomHang.Name = "dgvNhomHang";
+            this.dgvNhomHang.RowHeadersWidth = 51;
+            this.dgvNhomHang.RowTemplate.Height = 24;
+            this.dgvNhomHang.Size = new System.Drawing.Size(756, 439);
+            this.dgvNhomHang.TabIndex = 4;
             // 
-            // panel1
+            // pnlFooter
             // 
-            this.panel1.Controls.Add(this.lblTongSoNhom);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(326, 517);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(756, 36);
-            this.panel1.TabIndex = 5;
+            this.pnlFooter.Controls.Add(this.lblTongSoNhom);
+            this.pnlFooter.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pnlFooter.Location = new System.Drawing.Point(326, 517);
+            this.pnlFooter.Name = "pnlFooter";
+            this.pnlFooter.Size = new System.Drawing.Size(756, 36);
+            this.pnlFooter.TabIndex = 5;
             // 
             // lblTongSoNhom
             // 
@@ -100,27 +101,27 @@
             this.lblTongSoNhom.TabIndex = 0;
             this.lblTongSoNhom.Text = "Tổng số: 0 nhóm hàng";
             // 
-            // panel2
+            // pnlHeader
             // 
-            this.panel2.Controls.Add(this.groupBox1);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel2.Location = new System.Drawing.Point(0, 0);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1082, 78);
-            this.panel2.TabIndex = 5;
+            this.pnlHeader.Controls.Add(this.grpTimKiem);
+            this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlHeader.Location = new System.Drawing.Point(0, 0);
+            this.pnlHeader.Name = "pnlHeader";
+            this.pnlHeader.Size = new System.Drawing.Size(1082, 78);
+            this.pnlHeader.TabIndex = 5;
             // 
-            // groupBox1
+            // grpTimKiem
             // 
-            this.groupBox1.Controls.Add(this.btnXuatFile);
-            this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Controls.Add(this.btnNhapFile);
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.textBox2);
-            this.groupBox1.Location = new System.Drawing.Point(0, 3);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1082, 60);
-            this.groupBox1.TabIndex = 4;
-            this.groupBox1.TabStop = false;
+            this.grpTimKiem.Controls.Add(this.btnXuatFile);
+            this.grpTimKiem.Controls.Add(this.lblTieuDe);
+            this.grpTimKiem.Controls.Add(this.btnNhapFile);
+            this.grpTimKiem.Controls.Add(this.lblTimKiem);
+            this.grpTimKiem.Controls.Add(this.txtTimKiem);
+            this.grpTimKiem.Location = new System.Drawing.Point(0, 3);
+            this.grpTimKiem.Name = "grpTimKiem";
+            this.grpTimKiem.Size = new System.Drawing.Size(1082, 60);
+            this.grpTimKiem.TabIndex = 4;
+            this.grpTimKiem.TabStop = false;
             // 
             // btnXuatFile
             // 
@@ -132,15 +133,15 @@
             this.btnXuatFile.Text = "Xuất file";
             this.btnXuatFile.UseVisualStyleBackColor = true;
             // 
-            // label3
+            // lblTieuDe
             // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.label3.Location = new System.Drawing.Point(13, 22);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(111, 22);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "Nhóm hàng";
+            this.lblTieuDe.AutoSize = true;
+            this.lblTieuDe.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.lblTieuDe.Location = new System.Drawing.Point(13, 22);
+            this.lblTieuDe.Name = "lblTieuDe";
+            this.lblTieuDe.Size = new System.Drawing.Size(111, 22);
+            this.lblTieuDe.TabIndex = 4;
+            this.lblTieuDe.Text = "Nhóm hàng";
             // 
             // btnNhapFile
             // 
@@ -152,56 +153,56 @@
             this.btnNhapFile.Text = "Nhập file";
             this.btnNhapFile.UseVisualStyleBackColor = true;
             // 
-            // textBox2
+            // txtTimKiem
             // 
-            this.textBox2.Location = new System.Drawing.Point(413, 22);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(351, 29);
-            this.textBox2.TabIndex = 2;
+            this.txtTimKiem.Location = new System.Drawing.Point(413, 22);
+            this.txtTimKiem.Name = "txtTimKiem";
+            this.txtTimKiem.Size = new System.Drawing.Size(351, 29);
+            this.txtTimKiem.TabIndex = 2;
             // 
-            // panel3
+            // pnlLeft
             // 
-            this.panel3.Controls.Add(this.splitter2);
-            this.panel3.Controls.Add(this.groupBox2);
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panel3.Location = new System.Drawing.Point(0, 78);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(326, 475);
-            this.panel3.TabIndex = 6;
+            this.pnlLeft.Controls.Add(this.splitterTop);
+            this.pnlLeft.Controls.Add(this.grpThongTin);
+            this.pnlLeft.Dock = System.Windows.Forms.DockStyle.Left;
+            this.pnlLeft.Location = new System.Drawing.Point(0, 78);
+            this.pnlLeft.Name = "pnlLeft";
+            this.pnlLeft.Size = new System.Drawing.Size(326, 475);
+            this.pnlLeft.TabIndex = 6;
             // 
-            // splitter2
+            // splitterTop
             // 
-            this.splitter2.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.splitter2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.splitter2.Location = new System.Drawing.Point(0, 0);
-            this.splitter2.Name = "splitter2";
-            this.splitter2.Size = new System.Drawing.Size(326, 1);
-            this.splitter2.TabIndex = 5;
-            this.splitter2.TabStop = false;
+            this.splitterTop.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.splitterTop.Dock = System.Windows.Forms.DockStyle.Top;
+            this.splitterTop.Location = new System.Drawing.Point(0, 0);
+            this.splitterTop.Name = "splitterTop";
+            this.splitterTop.Size = new System.Drawing.Size(326, 1);
+            this.splitterTop.TabIndex = 5;
+            this.splitterTop.TabStop = false;
             // 
-            // groupBox2
+            // grpThongTin
             // 
-            this.groupBox2.Controls.Add(this.splitter1);
-            this.groupBox2.Controls.Add(this.btnHuy);
-            this.groupBox2.Controls.Add(this.button2);
-            this.groupBox2.Controls.Add(this.button1);
-            this.groupBox2.Controls.Add(this.label2);
-            this.groupBox2.Controls.Add(this.textBox1);
-            this.groupBox2.Location = new System.Drawing.Point(12, 6);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(296, 457);
-            this.groupBox2.TabIndex = 4;
-            this.groupBox2.TabStop = false;
+            this.grpThongTin.Controls.Add(this.splitterThongTin);
+            this.grpThongTin.Controls.Add(this.btnHuy);
+            this.grpThongTin.Controls.Add(this.btnSua);
+            this.grpThongTin.Controls.Add(this.btnThem);
+            this.grpThongTin.Controls.Add(this.lblTenNhom);
+            this.grpThongTin.Controls.Add(this.txtTenNhom);
+            this.grpThongTin.Location = new System.Drawing.Point(12, 6);
+            this.grpThongTin.Name = "grpThongTin";
+            this.grpThongTin.Size = new System.Drawing.Size(296, 457);
+            this.grpThongTin.TabIndex = 4;
+            this.grpThongTin.TabStop = false;
             // 
-            // splitter1
+            // splitterThongTin
             // 
-            this.splitter1.BackColor = System.Drawing.SystemColors.Control;
-            this.splitter1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.splitter1.Location = new System.Drawing.Point(3, 25);
-            this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(290, 1);
-            this.splitter1.TabIndex = 6;
-            this.splitter1.TabStop = false;
+            this.splitterThongTin.BackColor = System.Drawing.SystemColors.Control;
+            this.splitterThongTin.Dock = System.Windows.Forms.DockStyle.Top;
+            this.splitterThongTin.Location = new System.Drawing.Point(3, 25);
+            this.splitterThongTin.Name = "splitterThongTin";
+            this.splitterThongTin.Size = new System.Drawing.Size(290, 1);
+            this.splitterThongTin.TabIndex = 6;
+            this.splitterThongTin.TabStop = false;
             // 
             // btnHuy
             // 
@@ -213,77 +214,79 @@
             this.btnHuy.UseVisualStyleBackColor = true;
             this.btnHuy.Visible = false;
             // 
-            // button2
+            // btnSua
             // 
-            this.button2.Location = new System.Drawing.Point(117, 125);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 29);
-            this.button2.TabIndex = 4;
-            this.button2.Text = "Sửa";
-            this.button2.UseVisualStyleBackColor = true;
+            this.btnSua.Location = new System.Drawing.Point(117, 125);
+            this.btnSua.Name = "btnSua";
+            this.btnSua.Size = new System.Drawing.Size(75, 29);
+            this.btnSua.TabIndex = 4;
+            this.btnSua.Text = "Sửa";
+            this.btnSua.UseVisualStyleBackColor = true;
             // 
-            // button1
+            // btnThem
             // 
-            this.button1.Location = new System.Drawing.Point(198, 125);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 29);
-            this.button1.TabIndex = 4;
-            this.button1.Text = "Thêm";
-            this.button1.UseVisualStyleBackColor = true;
+            this.btnThem.Location = new System.Drawing.Point(198, 125);
+            this.btnThem.Name = "btnThem";
+            this.btnThem.Size = new System.Drawing.Size(75, 29);
+            this.btnThem.TabIndex = 4;
+            this.btnThem.Text = "Thêm";
+            this.btnThem.UseVisualStyleBackColor = true;
             // 
-            // label2
+            // lblTenNhom
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(18, 46);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(78, 21);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "Tên nhóm";
+            this.lblTenNhom.AutoSize = true;
+            this.lblTenNhom.Location = new System.Drawing.Point(18, 46);
+            this.lblTenNhom.Name = "lblTenNhom";
+            this.lblTenNhom.Size = new System.Drawing.Size(78, 21);
+            this.lblTenNhom.TabIndex = 3;
+            this.lblTenNhom.Text = "Tên nhóm";
             // 
             // frmNhomHang
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1082, 553);
-            this.Controls.Add(this.dataGridView1);
-            this.Controls.Add(this.panel1);
-            this.Controls.Add(this.panel3);
-            this.Controls.Add(this.panel2);
+            this.Controls.Add(this.dgvNhomHang);
+            this.Controls.Add(this.pnlFooter);
+            this.Controls.Add(this.pnlLeft);
+            this.Controls.Add(this.pnlHeader);
             this.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "frmNhomHang";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Quản lý nhóm hàng";
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
-            this.panel2.ResumeLayout(false);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.panel3.ResumeLayout(false);
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvNhomHang)).EndInit();
+            this.pnlFooter.ResumeLayout(false);
+            this.pnlFooter.PerformLayout();
+            this.pnlHeader.ResumeLayout(false);
+            this.grpTimKiem.ResumeLayout(false);
+            this.grpTimKiem.PerformLayout();
+            this.pnlLeft.ResumeLayout(false);
+            this.grpThongTin.ResumeLayout(false);
+            this.grpThongTin.PerformLayout();
             this.ResumeLayout(false);
 
         }
+
         #endregion
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button1;
+
+        private System.Windows.Forms.TextBox txtTenNhom;
+        private System.Windows.Forms.Label lblTimKiem;
+        private System.Windows.Forms.DataGridView dgvNhomHang;
+        private System.Windows.Forms.Panel pnlHeader;
+        private System.Windows.Forms.Panel pnlLeft;
+        private System.Windows.Forms.GroupBox grpTimKiem;
+        private System.Windows.Forms.TextBox txtTimKiem;
+        private System.Windows.Forms.GroupBox grpThongTin;
+        private System.Windows.Forms.Label lblTenNhom;
+        private System.Windows.Forms.Label lblTieuDe;
+        private System.Windows.Forms.Button btnSua;
+        private System.Windows.Forms.Button btnThem;
         private System.Windows.Forms.Button btnHuy;
-        private System.Windows.Forms.Splitter splitter1;
-        private System.Windows.Forms.Splitter splitter2;
+        private System.Windows.Forms.Splitter splitterThongTin;
+        private System.Windows.Forms.Splitter splitterTop;
         private System.Windows.Forms.Button btnXuatFile;
         private System.Windows.Forms.Button btnNhapFile;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel pnlFooter;
         private System.Windows.Forms.Label lblTongSoNhom;
     }
 }

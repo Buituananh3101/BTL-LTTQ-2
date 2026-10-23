@@ -38,38 +38,38 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // Bật đệm đôi chống giật lag
             typeof(DataGridView).InvokeMember("DoubleBuffered",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.SetProperty,
-                null, dataGridView1, new object[] { true });
+                null, dgvNhomHang, new object[] { true });
 
             // Đưa DataGridView lên trên để tự động Fill chính xác phần diện tích còn lại giữa các panel Top và Left
-            dataGridView1.BringToFront();
+            dgvNhomHang.BringToFront();
 
             // Cấu hình font chữ và kiểu dáng tiêu đề cột giống hệt dgvHangHoa trên frmDanhSachHangHoa
-            dataGridView1.Font = new Font("Segoe UI", 9.5F, FontStyle.Regular);
-            dataGridView1.EnableHeadersVisualStyles = true;
-            dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9.5F, FontStyle.Regular);
-            dataGridView1.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.False;
-            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dataGridView1.ColumnHeadersHeight = 32;
-            dataGridView1.AutoGenerateColumns = false;
-            dataGridView1.Columns.Clear();
-            dataGridView1.ReadOnly = true;
-            dataGridView1.AllowUserToAddRows = false;
-            dataGridView1.AllowUserToDeleteRows = false;
-            dataGridView1.AllowUserToResizeRows = false;
-            dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dataGridView1.MultiSelect = false;
-            dataGridView1.RowHeadersVisible = false;
-            dataGridView1.RowTemplate.Height = 36;
-            dataGridView1.BackgroundColor = Color.White;
-            dataGridView1.BorderStyle = BorderStyle.None;
+            dgvNhomHang.Font = new Font("Segoe UI", 9.5F, FontStyle.Regular);
+            dgvNhomHang.EnableHeadersVisualStyles = true;
+            dgvNhomHang.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9.5F, FontStyle.Regular);
+            dgvNhomHang.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.False;
+            dgvNhomHang.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dgvNhomHang.ColumnHeadersHeight = 32;
+            dgvNhomHang.AutoGenerateColumns = false;
+            dgvNhomHang.Columns.Clear();
+            dgvNhomHang.ReadOnly = true;
+            dgvNhomHang.AllowUserToAddRows = false;
+            dgvNhomHang.AllowUserToDeleteRows = false;
+            dgvNhomHang.AllowUserToResizeRows = false;
+            dgvNhomHang.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvNhomHang.MultiSelect = false;
+            dgvNhomHang.RowHeadersVisible = false;
+            dgvNhomHang.RowTemplate.Height = 36;
+            dgvNhomHang.BackgroundColor = Color.White;
+            dgvNhomHang.BorderStyle = BorderStyle.None;
 
             // Màu dòng xen kẽ và lựa chọn hiện đại
-            dataGridView1.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
-            dataGridView1.DefaultCellStyle.SelectionBackColor = Color.FromArgb(224, 231, 255);
-            dataGridView1.DefaultCellStyle.SelectionForeColor = Color.FromArgb(30, 41, 59);
+            dgvNhomHang.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
+            dgvNhomHang.DefaultCellStyle.SelectionBackColor = Color.FromArgb(224, 231, 255);
+            dgvNhomHang.DefaultCellStyle.SelectionForeColor = Color.FromArgb(30, 41, 59);
 
             // Cột 1: Mã nhóm (Ẩn ngầm phục vụ sửa/xóa)
-            dataGridView1.Columns.Add(new DataGridViewTextBoxColumn
+            dgvNhomHang.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "colMaNhom",
                 DataPropertyName = "MaNhom",
@@ -78,7 +78,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             });
 
             // Cột 2: Tên nhóm hàng
-            dataGridView1.Columns.Add(new DataGridViewTextBoxColumn
+            dgvNhomHang.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "colTenNhom",
                 DataPropertyName = "TenNhom",
@@ -88,7 +88,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             });
 
             // Cột 3: Số mặt hàng đang dùng nhóm này
-            dataGridView1.Columns.Add(new DataGridViewTextBoxColumn
+            dgvNhomHang.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "colSoLuongHang",
                 DataPropertyName = "SoLuongHang",
@@ -98,11 +98,11 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             });
 
             // Đăng ký sự kiện
-            dataGridView1.CellClick += dgvNhomHang_CellClick;
-            dataGridView1.CellDoubleClick += dgvNhomHang_CellDoubleClick;
-            textBox2.TextChanged += txtTimKiem_TextChanged;
-            button1.Click += btnThem_Click;
-            button2.Click += btnSua_Click;
+            dgvNhomHang.CellClick += dgvNhomHang_CellClick;
+            dgvNhomHang.CellDoubleClick += dgvNhomHang_CellDoubleClick;
+            txtTimKiem.TextChanged += txtTimKiem_TextChanged;
+            btnThem.Click += btnThem_Click;
+            btnSua.Click += btnSua_Click;
             if (btnHuy != null) btnHuy.Click += btnHuy_Click;
             if (btnXuatFile != null) btnXuatFile.Click += btnXuatFile_Click;
             if (btnNhapFile != null) btnNhapFile.Click += btnNhapFile_Click;
@@ -137,11 +137,11 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                     GROUP BY nh.MaNhom, nh.TenNhom
                     ORDER BY nh.TenNhom;";
                 dtNhomHang = DataProcessing.ReadData(sql);
-                dataGridView1.DataSource = dtNhomHang;
+                dgvNhomHang.DataSource = dtNhomHang;
                 CapNhatTongSo();
 
                 // Cập nhật lại bộ lọc tìm kiếm nếu đang gõ
-                if (!string.IsNullOrWhiteSpace(textBox2.Text))
+                if (!string.IsNullOrWhiteSpace(txtTimKiem.Text))
                 {
                     txtTimKiem_TextChanged(this, EventArgs.Empty);
                 }
@@ -155,33 +155,33 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
         private void DatLaiTrangThaiBanDau()
         {
             maNhomDangChon = 0;
-            textBox1.Clear();
-            button1.Visible = true;
-            button1.Enabled = true;
-            button2.Visible = false;
+            txtTenNhom.Clear();
+            btnThem.Visible = true;
+            btnThem.Enabled = true;
+            btnSua.Visible = false;
             if (btnHuy != null) btnHuy.Visible = false;
-            if (dataGridView1.CurrentRow != null)
+            if (dgvNhomHang.CurrentRow != null)
             {
-                dataGridView1.ClearSelection();
+                dgvNhomHang.ClearSelection();
             }
-            textBox1.Focus();
+            txtTenNhom.Focus();
         }
 
         // Click vào dòng: hiển thị tên nhóm ra textbox, giữ nút Thêm nhưng disable, hiện nút Sửa và nút Hủy
         private void dgvNhomHang_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex < 0 || e.RowIndex >= dataGridView1.Rows.Count) return;
-            var cellMaNhom = dataGridView1.Rows[e.RowIndex].Cells["colMaNhom"].Value;
-            var cellTenNhom = dataGridView1.Rows[e.RowIndex].Cells["colTenNhom"].Value;
+            if (e.RowIndex < 0 || e.RowIndex >= dgvNhomHang.Rows.Count) return;
+            var cellMaNhom = dgvNhomHang.Rows[e.RowIndex].Cells["colMaNhom"].Value;
+            var cellTenNhom = dgvNhomHang.Rows[e.RowIndex].Cells["colTenNhom"].Value;
             if (cellMaNhom == null || !int.TryParse(cellMaNhom.ToString(), out int maNhom)) return;
             maNhomDangChon = maNhom;
-            textBox1.Text = cellTenNhom?.ToString() ?? "";
+            txtTenNhom.Text = cellTenNhom?.ToString() ?? "";
 
             // Nút Thêm không ẩn mà chỉ enable = false để không ấn được
-            button1.Visible = true;
-            button1.Enabled = false;
-            button2.Visible = true;
-            button2.Enabled = true;
+            btnThem.Visible = true;
+            btnThem.Enabled = false;
+            btnSua.Visible = true;
+            btnSua.Enabled = true;
             if (btnHuy != null)
             {
                 btnHuy.Visible = true;
@@ -192,17 +192,17 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
         // Bấm nút Thêm: thêm nhóm hàng mới
         private void btnThem_Click(object sender, EventArgs e)
         {
-            string tenNhom = textBox1.Text.Trim();
+            string tenNhom = txtTenNhom.Text.Trim();
             if (string.IsNullOrWhiteSpace(tenNhom))
             {
                 MessageBox.Show("Vui lòng nhập tên nhóm hàng!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                textBox1.Focus();
+                txtTenNhom.Focus();
                 return;
             }
             if (tenNhom.Length > 100)
             {
                 MessageBox.Show("Tên nhóm hàng không được vượt quá 100 ký tự!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                textBox1.Focus();
+                txtTenNhom.Focus();
                 return;
             }
 
@@ -214,8 +214,8 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                 if (res != null && int.TryParse(res.ToString(), out int count) && count > 0)
                 {
                     MessageBox.Show($"Tên nhóm hàng '{tenNhom}' đã tồn tại trong hệ thống!", "Cảnh báo trùng", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    textBox1.SelectAll();
-                    textBox1.Focus();
+                    txtTenNhom.SelectAll();
+                    txtTenNhom.Focus();
                     return;
                 }
 
@@ -241,17 +241,17 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                 MessageBox.Show("Vui lòng chọn nhóm hàng cần sửa từ danh sách!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            string tenMoi = textBox1.Text.Trim();
+            string tenMoi = txtTenNhom.Text.Trim();
             if (string.IsNullOrWhiteSpace(tenMoi))
             {
                 MessageBox.Show("Vui lòng nhập tên nhóm hàng!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                textBox1.Focus();
+                txtTenNhom.Focus();
                 return;
             }
             if (tenMoi.Length > 100)
             {
                 MessageBox.Show("Tên nhóm hàng không được vượt quá 100 ký tự!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                textBox1.Focus();
+                txtTenNhom.Focus();
                 return;
             }
 
@@ -266,8 +266,8 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                 if (res != null && int.TryParse(res.ToString(), out int count) && count > 0)
                 {
                     MessageBox.Show($"Tên nhóm hàng '{tenMoi}' đã trùng với một nhóm hàng khác!", "Cảnh báo trùng", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    textBox1.SelectAll();
-                    textBox1.Focus();
+                    txtTenNhom.SelectAll();
+                    txtTenNhom.Focus();
                     return;
                 }
 
@@ -290,9 +290,9 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
         // Double click vào dòng để xóa và hỏi xác nhận
         private void dgvNhomHang_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex < 0 || e.RowIndex >= dataGridView1.Rows.Count) return;
-            var cellMaNhom = dataGridView1.Rows[e.RowIndex].Cells["colMaNhom"].Value;
-            var cellTenNhom = dataGridView1.Rows[e.RowIndex].Cells["colTenNhom"].Value;
+            if (e.RowIndex < 0 || e.RowIndex >= dgvNhomHang.Rows.Count) return;
+            var cellMaNhom = dgvNhomHang.Rows[e.RowIndex].Cells["colMaNhom"].Value;
+            var cellTenNhom = dgvNhomHang.Rows[e.RowIndex].Cells["colTenNhom"].Value;
             if (cellMaNhom == null || !int.TryParse(cellMaNhom.ToString(), out int maNhom)) return;
             string tenNhom = cellTenNhom?.ToString() ?? "";
 
@@ -333,14 +333,14 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
         private void CapNhatTongSo()
         {
             if (lblTongSoNhom == null) return;
-            int count = dataGridView1.Rows.Count;
+            int count = dgvNhomHang.Rows.Count;
             lblTongSoNhom.Text = $"Tổng số: {count:N0} nhóm hàng";
         }
 
         private void txtTimKiem_TextChanged(object sender, EventArgs e)
         {
             if (dtNhomHang == null) return;
-            string kw = textBox2.Text.Trim().Replace("'", "''").Replace("[", "[[]").Replace("%", "[%]");
+            string kw = txtTimKiem.Text.Trim().Replace("'", "''").Replace("[", "[[]").Replace("%", "[%]");
             if (string.IsNullOrEmpty(kw))
             {
                 dtNhomHang.DefaultView.RowFilter = "";
@@ -360,7 +360,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
         // Bấm nút Xuất file: Xuất danh sách nhóm hàng đang hiển thị ra file Excel (.xls) hoặc CSV (.csv)
         private void btnXuatFile_Click(object sender, EventArgs e)
         {
-            if (dataGridView1.Rows.Count == 0)
+            if (dgvNhomHang.Rows.Count == 0)
             {
                 MessageBox.Show("Không có dữ liệu nhóm hàng để xuất file!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -397,7 +397,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                             sb.AppendLine("</tr>");
 
                             // Dữ liệu từng dòng
-                            foreach (DataGridViewRow row in dataGridView1.Rows)
+                            foreach (DataGridViewRow row in dgvNhomHang.Rows)
                             {
                                 string tenNhom = row.Cells["colTenNhom"].Value?.ToString() ?? "";
                                 string soLuong = row.Cells["colSoLuongHang"].FormattedValue?.ToString() ?? "0";
@@ -415,7 +415,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                             sb.AppendLine("sep=,");
                             sb.AppendLine("\"Tên nhóm hàng\",\"Số mặt hàng\"");
 
-                            foreach (DataGridViewRow row in dataGridView1.Rows)
+                            foreach (DataGridViewRow row in dgvNhomHang.Rows)
                             {
                                 string tenNhom = row.Cells["colTenNhom"].Value?.ToString() ?? "";
                                 string soLuong = row.Cells["colSoLuongHang"].FormattedValue?.ToString() ?? "0";
@@ -424,7 +424,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                             File.WriteAllText(sfd.FileName, sb.ToString(), new UTF8Encoding(true));
                         }
                         DialogResult dr = MessageBox.Show(
-                            $"Xuất file thành công {dataGridView1.Rows.Count:N0} nhóm hàng!\n\nĐường dẫn:\n{sfd.FileName}\n\nBạn có muốn mở file vừa xuất không?",
+                            $"Xuất file thành công {dgvNhomHang.Rows.Count:N0} nhóm hàng!\n\nĐường dẫn:\n{sfd.FileName}\n\nBạn có muốn mở file vừa xuất không?",
                             "Xuất file thành công",
                             MessageBoxButtons.YesNo,
                             MessageBoxIcon.Question);
