@@ -65,6 +65,12 @@
     <Compile Include="GUI\Forms\DanhSachHangHoa\frmNhomHang.Designer.cs">
       <DependentUpon>frmNhomHang.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\Forms\DanhSachHangHoa\frmViTri.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\DanhSachHangHoa\frmViTri.Designer.cs">
+      <DependentUpon>frmViTri.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\Forms\frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
