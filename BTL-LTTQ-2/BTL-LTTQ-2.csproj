@@ -118,6 +118,42 @@
     <EmbeddedResource Include="GUI\Forms\DanhSachHangHoa\frmHangHoa.resx">
       <DependentUpon>frmHangHoa.cs</DependentUpon>
     </EmbeddedResource>
+    <Compile Include="GUI\Forms\NhaCungCap\frmHienCotNcc.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\NhaCungCap\frmHienCotNcc.Designer.cs">
+      <DependentUpon>frmHienCotNcc.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="GUI\Forms\NhaCungCap\frmHienCotNcc.resx">
+      <DependentUpon>frmHienCotNcc.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="GUI\Forms\NhaCungCap\frmNhomNhaCungCap.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\NhaCungCap\frmNhomNhaCungCap.Designer.cs">
+      <DependentUpon>frmNhomNhaCungCap.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="GUI\Forms\NhaCungCap\frmNhomNhaCungCap.resx">
+      <DependentUpon>frmNhomNhaCungCap.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="GUI\Forms\NhaCungCap\frmDonViCapHang.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\NhaCungCap\frmDonViCapHang.Designer.cs">
+      <DependentUpon>frmDonViCapHang.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="GUI\Forms\NhaCungCap\frmDonViCapHang.resx">
+      <DependentUpon>frmDonViCapHang.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="GUI\Forms\NhaCungCap\frmNhaCungCap.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\NhaCungCap\frmNhaCungCap.Designer.cs">
+      <DependentUpon>frmNhaCungCap.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="GUI\Forms\NhaCungCap\frmNhaCungCap.resx">
+      <DependentUpon>frmNhaCungCap.cs</DependentUpon>
+    </EmbeddedResource>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">

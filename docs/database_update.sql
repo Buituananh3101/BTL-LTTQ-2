@@ -304,3 +304,104 @@ GO
 
 PRINT N'=== HOÀN TẤT NÂNG CẤP CƠ SỞ DỮ LIỆU THÀNH CÔNG ===';
 GO
+
+-- -----------------------------------------------------------------------------------------
+-- 7. BẢNG NHOMNHACUNGCAP & BỔ SUNG CỘT BẢNG DONVICAPHANG
+-- Lý do: Quản lý phân nhóm nhà cung cấp, hồ sơ chi tiết (Mã NCC, Email, MST, Ghi chú) theo chuẩn KiotViet
+-- Tuân thủ: "Chỉ cộng, không phá" (Rule 8)
+-- -----------------------------------------------------------------------------------------
+-- 7.1. Tạo bảng NhomNhaCungCap nếu chưa có
+IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = N'NhomNhaCungCap')
+BEGIN
+    CREATE TABLE NhomNhaCungCap (
+        MaNhomNcc INT IDENTITY(1,1) PRIMARY KEY,
+        TenNhom NVARCHAR(150) NOT NULL,
+        GhiChu NVARCHAR(255) NULL
+    );
+    PRINT N'[OK] Đã tạo mới bảng NhomNhaCungCap.';
+
+    -- Thêm một số nhóm mẫu cơ bản
+    INSERT INTO NhomNhaCungCap (TenNhom, GhiChu)
+    VALUES 
+        (N'Nhà cung cấp Gas & Nhiên liệu', N'Các đơn vị cung ứng khí hóa lỏng, vỏ bình gas'),
+        (N'Nhà cung cấp Thiết bị & Phụ kiện', N'Cung cấp van, dây dẫn gas, bếp gas công nghiệp'),
+        (N'Nhà cung cấp Khí công nghiệp', N'Cung ứng oxy y tế, nito, argon');
+    PRINT N'[OK] Đã thêm nhóm nhà cung cấp mẫu mặc định.';
+END
+ELSE
+BEGIN
+    PRINT N'[SKIP] Bảng NhomNhaCungCap đã tồn tại.';
+END
+GO
+
+-- 7.2. Bổ sung các cột hồ sơ cho bảng DonViCapHang
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'DonViCapHang') AND name = N'MaNcc')
+BEGIN
+    ALTER TABLE DonViCapHang ADD MaNcc NVARCHAR(50) NULL;
+    PRINT N'[OK] Đã thêm cột MaNcc vào bảng DonViCapHang.';
+END
+GO
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'DonViCapHang') AND name = N'Email')
+BEGIN
+    ALTER TABLE DonViCapHang ADD Email NVARCHAR(150) NULL;
+    PRINT N'[OK] Đã thêm cột Email vào bảng DonViCapHang.';
+END
+GO
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'DonViCapHang') AND name = N'MaNhomNcc')
+BEGIN
+    ALTER TABLE DonViCapHang ADD MaNhomNcc INT NULL;
+    PRINT N'[OK] Đã thêm cột MaNhomNcc vào bảng DonViCapHang.';
+END
+GO
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'DonViCapHang') AND name = N'MaSoThue')
+BEGIN
+    ALTER TABLE DonViCapHang ADD MaSoThue NVARCHAR(50) NULL;
+    PRINT N'[OK] Đã thêm cột MaSoThue vào bảng DonViCapHang.';
+END
+GO
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'DonViCapHang') AND name = N'KhuVuc')
+BEGIN
+    ALTER TABLE DonViCapHang ADD KhuVuc NVARCHAR(150) NULL;
+    PRINT N'[OK] Đã thêm cột KhuVuc vào bảng DonViCapHang.';
+END
+GO
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'DonViCapHang') AND name = N'GhiChu')
+BEGIN
+    ALTER TABLE DonViCapHang ADD GhiChu NVARCHAR(500) NULL;
+    PRINT N'[OK] Đã thêm cột GhiChu vào bảng DonViCapHang.';
+END
+GO
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'DonViCapHang') AND name = N'DaDanhDau')
+BEGIN
+    ALTER TABLE DonViCapHang ADD DaDanhDau BIT NOT NULL CONSTRAINT DF_DonViCapHang_DaDanhDau DEFAULT (0);
+    PRINT N'[OK] Đã thêm cột DaDanhDau vào bảng DonViCapHang (DEFAULT 0).';
+END
+GO
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'DonViCapHang') AND name = N'NgayTao')
+BEGIN
+    ALTER TABLE DonViCapHang ADD NgayTao DATETIME NOT NULL CONSTRAINT DF_DonViCapHang_NgayTao DEFAULT (GETDATE());
+    PRINT N'[OK] Đã thêm cột NgayTao vào bảng DonViCapHang (DEFAULT GETDATE()).';
+END
+GO
+
+-- 7.3. Tạo khóa ngoại FK_DonViCapHang_NhomNcc nếu chưa có
+IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name = N'FK_DonViCapHang_NhomNcc')
+BEGIN
+    ALTER TABLE DonViCapHang ADD CONSTRAINT FK_DonViCapHang_NhomNcc FOREIGN KEY (MaNhomNcc) REFERENCES NhomNhaCungCap(MaNhomNcc);
+    PRINT N'[OK] Đã tạo khóa ngoại FK_DonViCapHang_NhomNcc.';
+END
+GO
+
+-- 7.4. Đồng bộ MaNcc tự động chuẩn định dạng NCC00001 cho các NCC đã có
+UPDATE DonViCapHang
+SET MaNcc = 'NCC' + RIGHT('00000' + CAST(MaDonViCapHang AS VARCHAR(10)), 5)
+WHERE MaNcc IS NULL OR LTRIM(RTRIM(MaNcc)) = '';
+PRINT N'[OK] Đã chuẩn hóa mã định danh NCC (NCC0000X) cho dữ liệu DonViCapHang hiện có.';
+GO

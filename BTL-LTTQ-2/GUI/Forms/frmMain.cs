@@ -1,3 +1,4 @@
+using BTL_LTTQ_2.GUI.Forms.NhaCungCap;
 using System;
 using System.Windows.Forms;
 
@@ -70,6 +71,28 @@ namespace BTL_LTTQ_2.GUI.Forms
         private void menuThongTin_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Hệ thống Quản lý Kho - BTL Lập trình trực quan\nPhiên bản: 1.0\nNền tảng: Windows Forms .NET Framework", "Thông tin phần mềm", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void mnuNhaCungCap_Click(object sender, EventArgs e)
+        {
+            // Kiểm tra xem form danh sách nhà cung cấp đã mở chưa, nếu đã mở thì kích hoạt (Active) lên trước
+            foreach (Form form in this.MdiChildren)
+            {
+                if (form is frmNhaCungCap)
+                {
+                    form.Activate();
+                    return;
+                }
+            }
+
+            frmNhaCungCap frm = new frmNhaCungCap();
+            frm.MdiParent = this;
+            frm.Show();
+        }
+
+        private void mnuTraHangNhap_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

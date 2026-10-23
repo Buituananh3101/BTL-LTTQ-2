@@ -46,9 +46,11 @@ Mọi control kéo thả trên Form phải được đổi tên bám sát nội 
 > [!IMPORTANT]
 > **Bảo toàn thiết kế của người dùng**: Khi người dùng tự tay dựng giao diện trên Designer, AI tuyệt đối **GIỮ NGUYÊN 100% GIAO DIỆN** (vị trí `Location`, kích thước `Size`, màu sắc, font, anchor, dock), chỉ hỗ trợ đổi tên biến chuẩn chỉ theo đúng quy tắc trên.
 
-### 1.3. Comment & Giao diện
+### 1.3. Tiêu chuẩn Ngôn ngữ & Màu sắc Nút bấm / Chức năng
+- **100% Tiếng Việt có dấu trên giao diện**: Tất cả các nút (`Button`), Menu, ToolStrip, GroupBox, Label và thông báo bắt buộc phải đặt hiển thị bằng tiếng Việt có dấu. Tuyệt đối không để sót các từ tiếng Anh (ví dụ: nút chức năng nhập file bắt buộc là `Nhập file` thay vì `Import file`; nút xuất file là `Xuất file` thay vì `Export file`).
+- **Không tự ý thêm màu sắc cho nút và chức năng**: Mọi nút bấm và chức năng thao tác mặc định phải sử dụng giao diện WinForms chuẩn (`UseVisualStyleBackColor = true`), không tự ý gán màu nền (`BackColor`), màu viền (`FlatAppearance`), hay màu chữ (`ForeColor`) khi người dùng chưa yêu cầu hoặc chỉ định rõ.
 - **Comment trong code**: Tiếng Việt ngắn gọn, giải thích từng bước logic xử lý (ví dụ: `// 1. Kiểm tra dữ liệu đầu vào`, `// 2. Mở giao dịch lưu phiếu và chi tiết`).
-- **Giao diện & Thông báo người dùng**: 100% **tiếng Việt có dấu**, văn phong lịch sự, rõ ràng (ví dụ: `Vui lòng nhập tên hàng hóa.`, `Lưu chứng từ thành công!`, `Hàng hóa đã phát sinh giao dịch, không thể xóa.`).
+- **Thông báo người dùng**: 100% tiếng Việt có dấu, văn phong lịch sự, rõ ràng (ví dụ: `Vui lòng nhập tên hàng hóa.`, `Lưu chứng từ thành công!`, `Hàng hóa đã phát sinh giao dịch, không thể xóa.`).
 
 ---
 
