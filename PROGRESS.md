@@ -79,6 +79,16 @@
        - Lưu dữ liệu an toàn bọc trong `DataProcessing.ChangeDataTransaction`.
     4. Kiểm tra biên dịch Rebuild toàn bộ solution: **0 Warning(s), 0 Error(s)**.
 
+- **Phiên 3 (2026-10-23) – Xây dựng frmNhomHang và frmViTri, tích hợp nút (+) trên frmDanhSachHangHoa**:
+  - **Nhu cầu**: Tạo form quản lý Nhóm hàng (rmNhomHang) và Quản lý vị trí (rmViTri), gắn nút (+) kế bên ComboBox trên rmDanhSachHangHoa để người dùng thêm/quản lý nhanh danh mục.
+  - **Nghiệp vụ & Giao diện**:
+    1. Thiết kế giao diện Master-Detail: Bên trái nhập liệu (Thêm, Sửa, Hủy), bên phải DataGridView danh sách + thanh công cụ tìm kiếm và nút Nhập/Xuất file, thanh dưới hiển thị tổng số bản ghi dynamic.
+    2. DataGridView hiển thị số mặt hàng đang liên kết (colSoLuongHang) được tính động từ bảng HangHoa.
+    3. Bảo vệ dữ liệu (Delete guard): Ngăn chặn xóa nhóm hàng / vị trí nếu đang có mặt hàng (SoLuongHang > 0). Khi SoLuongHang == 0, hiển thị hộp thoại xác nhận xóa.
+    4. Cập nhật đồng bộ (Transaction): Khi sửa tên vị trí, dùng SqlTransaction để cập nhật đồng thời bảng ViTri và các mặt hàng trong bảng HangHoa.
+    5. Nhập/Xuất file: Hỗ trợ xuất và nhập file Excel (.xls HTML table) và file CSV (UTF-8 có BOM), tự động loại trừ dòng trùng và bỏ qua vị trí rỗng.
+    6. Trải nghiệm người dùng: Không hiển thị popup khi thêm/xóa thành công; hiển thị popup khi sửa hoặc thông báo kết quả nhập file; tự động nạp lại danh sách combobox trên rmDanhSachHangHoa sau khi đóng form.
+  - **Biên dịch**: Solution Rebuild đạt **0 Warning(s), 0 Error(s)**.
 - **Phiên 2 (2026-10-21) – Khắc phục Hiện tượng Giao diện Vỡ nét (High DPI Scaling & Crisp UI)**:
   - **Nhu cầu**: Người dùng phản hồi: "hiện tại khi chạy nhìn nó cứ vỡ vỡ, bạn hãy khác phục điều này giúp tôi".
   - **Nguyên nhân cốt lõi**:

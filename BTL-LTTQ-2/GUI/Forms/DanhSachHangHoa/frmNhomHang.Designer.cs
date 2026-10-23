@@ -64,7 +64,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(324, 25);
+            this.label1.Location = new System.Drawing.Point(323, 25);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(74, 21);
             this.label1.TabIndex = 3;
@@ -154,7 +154,7 @@
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(413, 22);
+            this.textBox2.Location = new System.Drawing.Point(412, 22);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(351, 29);
             this.textBox2.TabIndex = 2;
@@ -189,7 +189,7 @@
             this.groupBox2.Controls.Add(this.textBox1);
             this.groupBox2.Location = new System.Drawing.Point(12, 6);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(296, 457);
+            this.groupBox2.Size = new System.Drawing.Size(296, 433);
             this.groupBox2.TabIndex = 4;
             this.groupBox2.TabStop = false;
             // 

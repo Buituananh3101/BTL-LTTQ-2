@@ -283,5 +283,31 @@ JOIN HangHoa h ON h.MaHang = ctpkk.MaHang
 WHERE ctpkk.DonGia = 0;
 GO
 
+-- -----------------------------------------------------------------------------------------
+-- 7. BẢNG VITRI: Quản lý danh mục vị trí hàng hóa trong kho
+-- Lý do: Quản lý danh mục vị trí tập trung, hỗ trợ CRUD, kiểm tra số lượng mặt hàng đang đặt tại vị trí và nhập/xuất file
+-- -----------------------------------------------------------------------------------------
+IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = N'ViTri')
+BEGIN
+    CREATE TABLE ViTri (
+        MaViTri INT IDENTITY(1, 1) PRIMARY KEY,
+        TenViTri NVARCHAR(100) NOT NULL,
+        TrangThai VARCHAR(20) NOT NULL CONSTRAINT DF_ViTri_TrangThai DEFAULT ('HOAT_DONG')
+    );
+    PRINT N'[OK] Đã tạo bảng ViTri thành công.';
+
+    -- Nạp dữ liệu vị trí ban đầu từ các mặt hàng hiện có trong HangHoa
+    INSERT INTO ViTri (TenViTri, TrangThai)
+    SELECT DISTINCT LTRIM(RTRIM(ViTri)), 'HOAT_DONG'
+    FROM HangHoa
+    WHERE ViTri IS NOT NULL AND LTRIM(RTRIM(ViTri)) <> '';
+    PRINT N'[OK] Đã khởi tạo dữ liệu danh mục vị trí ban đầu từ HangHoa.';
+END
+ELSE
+BEGIN
+    PRINT N'[SKIP] Bảng ViTri đã tồn tại.';
+END
+GO
+
 PRINT N'=== HOÀN TẤT NÂNG CẤP CƠ SỞ DỮ LIỆU THÀNH CÔNG ===';
 GO
