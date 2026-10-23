@@ -1,6 +1,6 @@
 using System;
 
-namespace BTL_LTTQ_2.BLL
+namespace BTL_LTTQ_2.Classes
 {
     /// <summary>
     /// Lưu trữ thông tin phiên làm việc hiện tại của người dùng và kho đang chọn

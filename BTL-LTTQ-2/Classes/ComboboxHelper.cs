@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 
-namespace BTL_LTTQ_2.BLL
+namespace BTL_LTTQ_2.Classes
 {
     /// <summary>
     /// Tiện ích hỗ trợ tìm kiếm trực tiếp trong danh sách ComboBox WinForms.

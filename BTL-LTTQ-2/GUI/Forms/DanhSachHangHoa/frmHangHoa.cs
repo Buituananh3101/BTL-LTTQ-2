@@ -6,8 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using BTL_LTTQ_2.BLL;
-using BTL_LTTQ_2.DAL;
+using BTL_LTTQ_2.Classes;
 
 namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
 {

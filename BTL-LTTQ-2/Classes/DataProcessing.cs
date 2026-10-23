@@ -3,7 +3,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace BTL_LTTQ_2.DAL
+namespace BTL_LTTQ_2.Classes
 {
     /// <summary>
     /// Lớp tiện ích ADO.NET thuần quản lý kết nối và thực thi truy vấn tới CSDL SQL Server.

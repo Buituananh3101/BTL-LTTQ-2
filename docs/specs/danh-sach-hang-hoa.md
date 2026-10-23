@@ -111,3 +111,14 @@
   - Khi thêm mới: Để trống hoặc sai số mặc định về `0`.
   - Khi cập nhật ghi đè: Để trống giữ nguyên giá trị cũ.
 - **An toàn giao dịch**: 100% bọc trong `SqlTransaction` và tham số hóa câu lệnh (`SqlParameter`).
+
+---
+
+## 6. Nghiệp vụ Cột "Khách đặt" (Reserved / On-order)
+- **Định nghĩa nghiệp vụ**: Cột "Khách đặt" phản ánh tổng số lượng hàng hóa nằm trong các đơn đặt hàng bán của khách (`DonBan` & `ChiTietDonBan`) tại kho đang làm việc (`MaKho = @MaKho`) chưa được giao/xuất kho hoàn tất và chưa bị hủy (`TrangThai NOT IN ('HOAN_TAT', 'HUY')`).
+- **Ý nghĩa quản trị**: Giúp nhân viên kho và bộ phận bán hàng biết được lượng hàng đã được giữ chỗ/đặt trước cho khách, từ đó xác định lượng tồn khả dụng thực tế (`Tồn khả dụng = Tồn kho - Khách đặt`).
+- **Quy chuẩn hiển thị & Tương tác**:
+  - Cột: `colKhachDat`, HeaderText: `Khách đặt`, DataPropertyName: `KhachDat`.
+  - Vị trí: Đứng ngay sau cột Tồn kho (`colTonKho`), độ rộng 95px, căn phải (`MiddleRight`), định dạng số `N0`.
+  - Mặc định ẩn (`Visible = false`) khi tải danh sách; người dùng bật/tắt hiển thị linh hoạt thông qua form "Hiện cột" (`frmHienCot`, checkbox `chkKhachDat`).
+  - Khi xuất file Excel (`.xls`) hoặc `.csv`: Nếu cột đang hiển thị, hệ thống tự động xuất kèm dữ liệu số lượng khách đặt với định dạng số chuẩn.

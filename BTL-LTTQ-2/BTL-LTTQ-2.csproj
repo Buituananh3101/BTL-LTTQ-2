@@ -52,9 +52,9 @@
     <Reference Include="System.IO.Compression.FileSystem" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BLL\SessionContext.cs" />
-    <Compile Include="BLL\ComboboxHelper.cs" />
-    <Compile Include="DAL\DataProcessing.cs" />
+    <Compile Include="Classes\SessionContext.cs" />
+    <Compile Include="Classes\ComboboxHelper.cs" />
+    <Compile Include="Classes\DataProcessing.cs" />
     <Compile Include="GUI\Forms\DanhSachHangHoa\frmHienCot.cs">
       <SubType>Form</SubType>
     </Compile>

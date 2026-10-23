@@ -1,23 +1,23 @@
 # Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-21 – Thiết lập Khung Quy chuẩn Vận hành AI (.agent, docs, PROGRESS.md) & Kết nối CSDL WinForms (Phiên 1)
+**Cập nhật lần cuối**: 2026-10-23 – Hoàn thiện Cột Khách đặt, Nhập file Excel, Đấu nối form Hiện cột & Tối ưu giao diện Danh sách Hàng hóa (Phiên 6)
 
 ---
 
 ## Đang làm
-- [ ] Xây dựng Lớp quản lý phiên toàn cục `BLL/SessionContext.cs` và Tiện ích băm mật khẩu `BLL/PasswordHelper.cs` (SHA-256).
-- [ ] Thiết kế và hoàn thiện Form Đăng nhập (`frmDangNhap`) hỗ trợ chọn chi nhánh kho làm việc.
-- [ ] Hoàn thiện Form Danh sách Hàng hóa (`frmDanhSachHangHoa`) kết nối dữ liệu thật từ SQL Server qua `DataProcessing.cs` và View `vw_TonKhoHienTai`.
+- [x] Hoàn thiện Form Danh sách Hàng hóa (`frmDanhSachHangHoa`): Kết nối dữ liệu thật từ SQL Server, phân trang, bộ lọc đa tiêu chí, tính tốc độ bán dự kiến hết hàng, tính động số lượng "Khách đặt" từ đơn đặt hàng bán, ẩn/hiện cột linh hoạt qua `frmHienCot`, nhập/xuất Excel.
+- [x] Hoàn thiện Form Thêm/Sửa Hàng hóa (`frmHangHoa`): Quản lý đầy đủ thông tin sản phẩm, định mức tồn, vị trí và lưu trữ 5 ảnh đại diện.
+- [ ] Tiếp tục phân hệ Danh mục Cơ bản (Nhóm hàng, Đơn vị tính, Vị trí kho, Nhà cung cấp) hoặc Xác thực & Phân quyền (`frmDangNhap`).
 
 ---
 
 ## Việc kế tiếp
-1. **Xác thực & Phân quyền**: Hoàn tất `frmDangNhap`, tích hợp phân quyền MenuStrip và StatusStrip trên `frmMain`.
-2. **Quản lý Danh mục (CRUD Master Data)**:
-   - Form Thêm/Sửa Hàng hóa (`frmHangHoaChiTiet`) có hỗ trợ ảnh và định mức tồn kho.
-   - Form Danh mục Nhóm hàng & Đơn vị tính.
+1. **Quản lý Danh mục (CRUD Master Data)**:
+   - Form Danh mục Nhóm hàng (`frmNhomHang`) & Đơn vị tính (`frmDonViTinh`).
+   - Form Danh mục Vị trí (`frmViTri`).
    - Form Danh mục Chi nhánh Kho & phân quyền `TaiKhoanKho`.
-   - Form Danh mục Nhà cung cấp.
+   - Form Danh mục Nhà cung cấp (`frmNhaCungCap`).
+2. **Xác thực & Phân quyền**: Hoàn tất `frmDangNhap`, SHA-256 `PasswordHelper`, tích hợp phân quyền MenuStrip và StatusStrip trên `frmMain`.
 3. **Quản lý Kho & Chứng từ Biến động**:
    - Form Nhập hàng từ Nhà cung cấp (`frmNhapHang`) - Tự tính giá vốn MAC, cộng tồn.
    - Form Kiểm kê & Cân bằng kho (`frmKiemKho`) - Khóa vĩnh viễn phiếu sau khi cân bằng.
@@ -50,6 +50,16 @@
 
 ## Nhật ký phiên (Session Logs)
 
+- **Phiên 6 (2026-10-23) – Triển khai Nghiệp vụ Cột "Khách đặt" & Tối ưu Giao diện Thanh Công Cụ**:
+  - **Nhu cầu**: Hiện thực hóa logic tính toán và hiển thị cho cột "Khách đặt" trên `frmDanhSachHangHoa` và đấu nối form tùy chọn cột `frmHienCot`; khắc phục lỗi tràn ô tìm kiếm `txtTimKiem` che khuất các nút hành động trên màn hình có độ phân giải phổ thông.
+  - **Kết quả thực hiện**:
+    1. **Bổ sung cột `colKhachDat` vào DataGridView**: Thêm cột "Khách đặt" ngay sau cột Tồn kho (`colTonKho`), độ rộng 95px, căn phải, định dạng số nguyên `N0`, mặc định ẩn (`Visible = false`).
+    2. **Logic tính toán số lượng khách đặt động (Tuân thủ Luật 4)**: Tính tổng số lượng từ các đơn bán mở (`DonBan` & `ChiTietDonBan`) theo kho đang làm việc (`db.MaKho = @MaKho`) chưa xuất hàng xong và chưa hủy (`db.TrangThai NOT IN ('HOAN_TAT', 'HUY')`).
+    3. **Đấu nối `chkKhachDat` trên `frmHienCot`**: Đồng bộ trạng thái checkbox với trạng thái hiển thị của `colKhachDat`, cho phép người dùng bật/tắt cột linh hoạt tức thì.
+    4. **Tự động xuất dữ liệu Excel**: Xuất chuẩn định dạng số lượng khách đặt khi người dùng xuất danh sách ra `.xls` hoặc `.csv` lúc cột đang hiển thị.
+    5. **Tối ưu thanh công cụ `grpTop`**: Điều chỉnh kích thước `txtTimKiem` (từ 540 xuống 320px) giúp bố cục cân đối, loại bỏ triệt để hiện tượng che khuất nút `+ Hàng hóa` và `Nhập file`.
+    6. **Biên dịch & Kiểm thử UI**: Build thành công với **0 Warning(s), 0 Error(s)**, kiểm thử UI tự động xác nhận số liệu thực tế chính xác (sản phẩm `Bếp gas đơn Rinnai` hiển thị Tồn: 26, Khách đặt: 1).
+
 - **Phiên 5 (2026-10-23) – Triển khai Chức năng Nhập File Hàng Hóa Chuẩn KiotViet (`frmNhapHangHoaFile`)**:
   - **Nhu cầu**: Thiết kế và hiện thực hóa trọn vẹn chức năng "Nhập file" (`btnNhapFile`) trên `frmDanhSachHangHoa`, bao gồm tải file mẫu, chọn file dữ liệu, tùy chọn xử lý trùng mã (Cập nhật / Bỏ qua), tự động tạo nhóm hàng/ĐVT/vị trí mới nếu chưa có, tự sinh mã hàng nếu để trống, bọc trong Transaction và kiểm soát an toàn tồn kho theo Luật 4.
   - **Kết quả thực hiện**:
@@ -76,7 +86,7 @@
 - **Phiên 3 (2026-10-22) – Hoàn thiện Toàn bộ Logic Danh mục Hàng hóa (`frmDanhSachHangHoa` & `frmHangHoa`)**:
   - **Nhu cầu**: Hiện thực hóa logic nghiệp vụ nạp dữ liệu, tìm kiếm tức thì, lọc đa chiều, phân trang SQL Server và thêm/sửa hàng hóa bám sát 100% giao diện đã thiết kế.
   - **Kết quả thực hiện**:
-    1. Tạo [`BLL/SessionContext.cs`](file:///d:/CODE/BTL-LTTQ-2/BTL-LTTQ-2/BLL/SessionContext.cs): Quản trị phiên kho hiện tại (`MaKhoHienTai = 1`), phục vụ tính tồn kho động chính xác qua `vw_TonKhoHienTai`.
+    1. Tạo [`Classes/SessionContext.cs`](file:///d:/CODE/BTL-LTTQ-2/BTL-LTTQ-2/Classes/SessionContext.cs): Quản trị phiên kho hiện tại (`MaKhoHienTai = 1`), phục vụ tính tồn kho động chính xác qua `vw_TonKhoHienTai`.
     2. Hoàn thiện [`frmDanhSachHangHoa`](file:///d:/CODE/BTL-LTTQ-2/BTL-LTTQ-2/GUI/Forms/DanhSachHangHoa/frmDanhSachHangHoa.cs):
        - Tích hợp thanh phân trang SQL `OFFSET ... ROWS FETCH NEXT ... ROWS ONLY` (tùy chọn 10, 20, 50, 100 dòng/trang).
        - Nạp dữ liệu vào 5 ComboBox bộ lọc: Nhóm hàng, Tiêu chí tồn kho, Nhà cung cấp, Vị trí, Trạng thái kinh doanh, Lọc theo khoảng ngày tạo.

@@ -52,15 +52,14 @@ Mọi control kéo thả trên Form phải được đổi tên bám sát nội 
 
 ---
 
-## 2. Kiến trúc Phân tầng trong Dự án
+## 2. Cấu trúc Dự án
 
-Hệ thống tuân thủ kiến trúc phân tầng rõ ràng:
-1. **`DAL` (Data Access Layer)**:
-   - Quản lý truy xuất CSDL SQL Server thông qua lớp tiện ích ADO.NET thuần [`DAL/DataProcessing.cs`](../../BTL-LTTQ-2/DAL/DataProcessing.cs).
-   - Thực thi các câu lệnh `SELECT`, `INSERT`, `UPDATE`, `DELETE` bằng `SqlCommand`, `SqlDataAdapter`, `SqlParameter`.
-2. **`BLL` (Business Logic Layer) / Dịch vụ**:
-   - Chứa logic kiểm tra hợp lệ, tính toán tồn kho, kiểm tra chặn tồn âm, băm mật khẩu SHA-256 (`PasswordHelper`), quản lý phiên (`SessionContext`).
-3. **`GUI` (Graphical User Interface)**:
+Hệ thống được tổ chức tinh gọn, trực quan và dễ quản lý:
+1. **`Classes` (Thư mục Lớp đối tượng & Tiện ích dùng chung)**:
+   - [`DataProcessing.cs`](../../BTL-LTTQ-2/Classes/DataProcessing.cs): Lớp tiện ích ADO.NET thuần quản lý kết nối và thực thi truy vấn tới CSDL SQL Server bằng `SqlCommand`, `SqlDataAdapter`, `SqlParameter`, `SqlTransaction`.
+   - [`SessionContext.cs`](../../BTL-LTTQ-2/Classes/SessionContext.cs): Quản lý thông tin phiên đăng nhập và chi nhánh kho đang làm việc hiện tại.
+   - [`ComboboxHelper.cs`](../../BTL-LTTQ-2/Classes/ComboboxHelper.cs): Tiện ích tìm kiếm trực tiếp trong ComboBox (hỗ trợ tiếng Việt không dấu, giới hạn độ cao scrollbar).
+2. **`GUI` (Graphical User Interface - Tầng Giao diện người dùng)**:
    - Các Form giao diện đặt trong thư mục `GUI/Forms/`.
    - Form cha MDI [`frmMain.cs`](../../BTL-LTTQ-2/GUI/Forms/frmMain.cs) điều hướng và hiển thị các Form con.
 

@@ -177,7 +177,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             // 
             this.txtTimKiem.Location = new System.Drawing.Point(465, 21);
             this.txtTimKiem.Name = "txtTimKiem";
-            this.txtTimKiem.Size = new System.Drawing.Size(540, 29);
+            this.txtTimKiem.Size = new System.Drawing.Size(602, 29);
             this.txtTimKiem.TabIndex = 0;
             this.txtTimKiem.TextChanged += new System.EventHandler(this.txtTimKiem_TextChanged);
             // 

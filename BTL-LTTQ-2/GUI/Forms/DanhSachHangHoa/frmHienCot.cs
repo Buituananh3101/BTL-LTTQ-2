@@ -47,6 +47,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             SetCheckedIfExists("colGiaBan", chkGiaBan);
             SetCheckedIfExists("colGiaVon", chkGiaVon);
             SetCheckedIfExists("colTonKho", chkTonKho);
+            SetCheckedIfExists("colKhachDat", chkKhachDat);
             SetCheckedIfExists("colDuKienHetHang", chkDuKienHetHang);
             SetCheckedIfExists("colViTri", chkViTri);
             SetCheckedIfExists("colThoiGianTao", chkThoiGianTao);
@@ -74,6 +75,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             chkGiaBan.CheckedChanged += (s, e) => DoiTrangThaiCot("colGiaBan", chkGiaBan.Checked);
             chkGiaVon.CheckedChanged += (s, e) => DoiTrangThaiCot("colGiaVon", chkGiaVon.Checked);
             chkTonKho.CheckedChanged += (s, e) => DoiTrangThaiCot("colTonKho", chkTonKho.Checked);
+            chkKhachDat.CheckedChanged += (s, e) => DoiTrangThaiCot("colKhachDat", chkKhachDat.Checked);
             chkDuKienHetHang.CheckedChanged += (s, e) => DoiTrangThaiCot("colDuKienHetHang", chkDuKienHetHang.Checked);
             chkViTri.CheckedChanged += (s, e) => DoiTrangThaiCot("colViTri", chkViTri.Checked);
             chkThoiGianTao.CheckedChanged += (s, e) => DoiTrangThaiCot("colThoiGianTao", chkThoiGianTao.Checked);

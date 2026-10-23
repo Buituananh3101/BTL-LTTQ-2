@@ -5,7 +5,7 @@
 - **Dự án**: Ứng dụng Desktop Quản lý kho hàng nội bộ đa chi nhánh (Bài tập lớn Lập trình trực quan - LTTQ).
 - **Giao diện & Nghiệp vụ**: Mô phỏng hệ thống quản trị kho chuyên nghiệp (Hàng hóa, Kho, Nhập hàng, Chuyển kho, Kiểm kê, Trả hàng, Xuất hủy, Báo cáo).
 - **Nền tảng**: Windows Forms trên .NET Framework 4.7.2, ngôn ngữ C#.
-- **Truy xuất dữ liệu**: ADO.NET thuần qua lớp tiện ích [`DAL/DataProcessing.cs`](BTL-LTTQ-2/DAL/DataProcessing.cs) (SqlConnection, SqlCommand, SqlDataAdapter, DataTable, SqlTransaction, SqlParameter). Không dùng Entity Framework.
+- **Truy xuất dữ liệu**: ADO.NET thuần qua lớp tiện ích [`Classes/DataProcessing.cs`](BTL-LTTQ-2/Classes/DataProcessing.cs) (SqlConnection, SqlCommand, SqlDataAdapter, DataTable, SqlTransaction, SqlParameter). Không dùng Entity Framework.
 - **Cơ sở dữ liệu**: SQL Server (`QuanLyKhoPhuQuocLTW`), kết nối Windows Authentication / SQL Express.
 - **Quy ước code**: Tên Form, Model/DTO, Bảng CSDL và Cột đều dùng **TIẾNG VIỆT KHÔNG DẤU** PascalCase (`HangHoa`, `Kho`, `PhieuKiemKe`, `ChiTietPhieuNhap`...). Tên controls WinForms dùng tiền tố chuẩn (`btn`, `txt`, `cbo`, `dgv`, `lbl`, `dtp`, `mnu`, `tss`).
 

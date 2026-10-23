@@ -7,8 +7,8 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
-using BTL_LTTQ_2.BLL;
-using BTL_LTTQ_2.DAL;
+using BTL_LTTQ_2.Classes;
+
 using BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa;
 
 namespace BTL_LTTQ_2.GUI.Forms
@@ -182,7 +182,18 @@ namespace BTL_LTTQ_2.GUI.Forms
                 DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleRight, Format = "N0" }
             });
 
-            // Cột 8: Dự kiến hết hàng (Mặc định ẩn khi mới load)
+            // Cột 8: Khách đặt (Mặc định ẩn khi mới load, bật tắt qua form Hiện cột)
+            dgvHangHoa.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colKhachDat",
+                DataPropertyName = "KhachDat",
+                HeaderText = "Khách đặt",
+                Width = 95,
+                Visible = false,
+                DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleRight, Format = "N0" }
+            });
+
+            // Cột 9: Dự kiến hết hàng (Mặc định ẩn khi mới load)
             dgvHangHoa.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "colDuKienHetHang",
@@ -402,6 +413,7 @@ namespace BTL_LTTQ_2.GUI.Forms
                 string sqlData = $@"
                     SELECT h.MaHang, h.HinhAnh, h.MaHangNoiBo, h.TenHang, nh.TenNhom, dvt.TenDVT,
                            h.GiaBanThamKhao, h.GiaVon, ISNULL(tk.SoLuongTon, 0) AS SoLuongTon,
+                           ISNULL(kd.SoLuongKhachDat, 0) AS KhachDat,
                            CASE 
                                WHEN ISNULL(tk.SoLuongTon, 0) <= 0 THEN N'Hết hàng'
                                WHEN ISNULL(x30.XuatBan30Ngay, 0) <= 0 THEN N'> 90 ngày'
@@ -414,6 +426,14 @@ namespace BTL_LTTQ_2.GUI.Forms
                     LEFT JOIN DonViTinh dvt ON h.MaDVT = dvt.MaDVT
                     LEFT JOIN vw_TonKhoHienTai tk ON h.MaHang = tk.MaHang AND tk.MaKho = @MaKho
                     LEFT JOIN NguongTonKho ntk ON h.MaHang = ntk.MaHang AND ntk.MaKho = @MaKho
+                    LEFT JOIN (
+                        SELECT ctdb.MaHang, SUM(ctdb.SoLuong) AS SoLuongKhachDat
+                        FROM DonBan db
+                        JOIN ChiTietDonBan ctdb ON db.MaDonBan = ctdb.MaDonBan
+                        WHERE db.MaKho = @MaKho
+                          AND db.TrangThai NOT IN ('HOAN_TAT', 'HUY')
+                        GROUP BY ctdb.MaHang
+                    ) kd ON h.MaHang = kd.MaHang
                     LEFT JOIN (
                         SELECT MaHang, SUM(SoLuongGiam) AS XuatBan30Ngay
                         FROM vw_BienDongKho
