@@ -56,6 +56,12 @@
     <Compile Include="Classes\SessionContext.cs" />
     <Compile Include="Classes\ComboboxHelper.cs" />
     <Compile Include="Classes\DataProcessing.cs" />
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\Forms\DanhSachHangHoa\frmHienCot.cs">
       <SubType>Form</SubType>
     </Compile>

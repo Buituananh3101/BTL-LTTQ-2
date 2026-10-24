@@ -252,9 +252,8 @@ namespace BTL_LTTQ_2.GUI.Forms.DonViTinh
                 string val = e.Value.ToString();
                 if (val == "Đang sử dụng")
                 {
-                    // Màu xanh lá chuẩn Nhóm Hoàn thành / Hoạt động (Luật 15b)
+                    // Màu xanh lá chuẩn Nhóm Hoàn thành / Hoạt động (Luật 15b, font chữ thường đồng bộ theo mẫu Trả hàng nhập)
                     e.CellStyle.ForeColor = Color.FromArgb(22, 163, 74);
-                    e.CellStyle.Font = new Font(dgvDonViTinh.Font, FontStyle.Bold);
                 }
                 else
                 {

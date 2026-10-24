@@ -1,6 +1,6 @@
 ﻿# Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-24 – Bỏ tính năng in/xem thẻ kho trên 2 chức năng Báo cáo (Phiên 31)
+**Cập nhật lần cuối**: 2026-10-24 – Bổ sung nút Hoàn thành cho các phiếu tạm trên 4 phân hệ chứng từ (Phiên 33)
 
 ---
 
@@ -49,6 +49,26 @@
 ---
 
 ## Nhật ký phiên (Session Logs)
+
+- **Phiên 32 (2026-10-24) – Chuẩn hóa toàn bộ trạng thái Chuyển kho và các thuộc tính Báo cáo về font chữ thường theo mẫu Trả hàng nhập**:
+  - **Nhu cầu**: Người dùng phản hồi thanh/cột trạng thái của chức năng Chuyển kho và nhiều thuộc tính ở 2 chức năng Báo cáo (Báo cáo tồn kho, Báo cáo thẻ kho) bị in đậm không theo yêu cầu. Yêu cầu chuẩn hóa tất cả về font chữ thường (FontStyle.Regular) và kiểu chữ tiêu chuẩn như thuộc tính trạng thái trong form Trả hàng nhập (rmTraHangNhap).
+  - **Kết quả thực hiện**:
+    1. **rmChuyenKho & rmChiTietChuyenKho (Chuyển kho)**:
+       - Bỏ FontStyle.Bold tại colTrangThai trong sự kiện dgvChuyenKho_CellFormatting cho tất cả các trạng thái "Đã nhận", "Đang chuyển", "Phiếu tạm"; chỉ áp dụng màu sắc 3 nhóm chuẩn (Xanh lá, Vàng amber, Xám nhạt).
+       - Chuyển lblTrangThai.Font trên rmChiTietChuyenKho sang 10pt Regular đồng bộ rmChiTietTraHangNhap.
+    2. **rmBaoCaoTonKho (Báo cáo tồn kho)**:
+       - Bỏ FontStyle.Bold tại colTrangThai cho "Đang kinh doanh", chỉ giữ màu xanh lá và font chữ thường theo chuẩn Điều luật 15b.
+       - Cảnh báo tồn kho $\le$ 0 vẫn duy trì chữ đỏ in đậm chuẩn xác theo Điều luật 15a.
+    3. **rmBaoCaoTheKho (Báo cáo thẻ kho)**:
+       - Bỏ FontStyle.Bold tại colLoaiGiaoDich cho các giao dịch "Nhập mua NCC", "Chuyển kho đến".
+       - Đổi text hiển thị dòng đầu và dòng cuối từ viết hoa toàn bộ TỒN ĐẦU KỲ / TỒN CUỐI KỲ thành kiểu chữ tiêu chuẩn Tồn đầu kỳ / Tồn cuối kỳ.
+       - Bỏ việc ép FontStyle.Bold lên toàn bộ các cột của dòng Tồn đầu kỳ và Tồn cuối kỳ, chỉ duy trì màu nền phân biệt nhẹ Color.FromArgb(241, 245, 249).
+    4. **rmDonViTinh (Danh mục ĐVT)**:
+       - Đồng bộ loại bỏ FontStyle.Bold trên colTrangThai khi "Đang sử dụng".
+    5. **Kiểm tra biên dịch & Chuẩn định dạng**:
+       - 100% file mã nguồn lưu định dạng **UTF-8 with BOM** (Điều luật 18).
+       - Biên dịch MSBuild thành công: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+       - Đồng bộ đầy đủ docs/specs/the-kho.md, docs/specs/bao-cao-ton-kho.md, docs/specs/chuyen-kho.md, docs/quyet-dinh.md và PROGRESS.md.
 
 - **Phiên 31 (2026-10-24) – Bỏ nút in/xem thẻ kho trên 2 chức năng báo cáo, giữ nguyên thao tác nhấn đúp mở Thẻ kho**:
   - **Nhu cầu**: Người dùng yêu cầu bỏ tính năng in thẻ kho trong 2 chức năng báo cáo. Sau khi xác nhận cụ thể với người dùng qua câu hỏi làm rõ, hệ thống thực hiện: bỏ nút `In thẻ kho` trên form Báo cáo thẻ kho và bỏ nút `Xem thẻ kho` trên form Báo cáo tồn kho.

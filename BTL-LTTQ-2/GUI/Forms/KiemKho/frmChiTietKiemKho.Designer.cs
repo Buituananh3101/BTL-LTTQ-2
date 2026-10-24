@@ -53,6 +53,7 @@
             this.btnXoa = new System.Windows.Forms.Button();
             this.btnXuatFile = new System.Windows.Forms.Button();
             this.btnDong = new System.Windows.Forms.Button();
+            this.btnHoanThanh = new System.Windows.Forms.Button();
             this.pnlHeader.SuspendLayout();
             this.pnlCenter.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvChiTiet)).BeginInit();
@@ -418,6 +419,7 @@
             // 
             this.pnlActions.Controls.Add(this.btnXoa);
             this.pnlActions.Controls.Add(this.btnXuatFile);
+            this.pnlActions.Controls.Add(this.btnHoanThanh);
             this.pnlActions.Controls.Add(this.btnDong);
             this.pnlActions.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pnlActions.Location = new System.Drawing.Point(15, 153);
@@ -444,6 +446,18 @@
             this.btnXuatFile.Text = "Xuất file";
             this.btnXuatFile.UseVisualStyleBackColor = true;
             this.btnXuatFile.Click += new System.EventHandler(this.btnXuatFile_Click);
+            // 
+            // 
+            // btnHoanThanh
+            // 
+            this.btnHoanThanh.Location = new System.Drawing.Point(260, 4);
+            this.btnHoanThanh.Name = "btnHoanThanh";
+            this.btnHoanThanh.Size = new System.Drawing.Size(120, 32);
+            this.btnHoanThanh.TabIndex = 3;
+            this.btnHoanThanh.Text = "Hoàn thành";
+            this.btnHoanThanh.UseVisualStyleBackColor = true;
+            this.btnHoanThanh.Visible = false;
+            this.btnHoanThanh.Click += new System.EventHandler(this.btnHoanThanh_Click);
             // 
             // btnDong
             // 
@@ -514,6 +528,7 @@
         private System.Windows.Forms.Panel pnlActions;
         private System.Windows.Forms.Button btnXoa;
         private System.Windows.Forms.Button btnXuatFile;
+        private System.Windows.Forms.Button btnHoanThanh;
         private System.Windows.Forms.Button btnDong;
         private System.Windows.Forms.DataGridViewTextBoxColumn colStt;
         private System.Windows.Forms.DataGridViewTextBoxColumn colMaHangNoiBo;

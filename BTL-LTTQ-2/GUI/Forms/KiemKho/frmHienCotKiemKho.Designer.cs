@@ -37,7 +37,7 @@
             this.lblTieuDe.Font = new System.Drawing.Font("Segoe UI", 10.5F, System.Drawing.FontStyle.Bold);
             this.lblTieuDe.Location = new System.Drawing.Point(12, 9);
             this.lblTieuDe.Name = "lblTieuDe";
-            this.lblTieuDe.Size = new System.Drawing.Size(126, 25);
+            this.lblTieuDe.Size = new System.Drawing.Size(93, 19);
             this.lblTieuDe.TabIndex = 0;
             this.lblTieuDe.Text = "Tùy chọn cột";
             // 
@@ -48,7 +48,7 @@
             this.chkMaPhieu.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkMaPhieu.Location = new System.Drawing.Point(16, 42);
             this.chkMaPhieu.Name = "chkMaPhieu";
-            this.chkMaPhieu.Size = new System.Drawing.Size(126, 25);
+            this.chkMaPhieu.Size = new System.Drawing.Size(102, 21);
             this.chkMaPhieu.TabIndex = 1;
             this.chkMaPhieu.Text = "Mã kiểm kho";
             this.chkMaPhieu.UseVisualStyleBackColor = true;
@@ -60,7 +60,7 @@
             this.chkThoiGian.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkThoiGian.Location = new System.Drawing.Point(16, 73);
             this.chkThoiGian.Name = "chkThoiGian";
-            this.chkThoiGian.Size = new System.Drawing.Size(95, 25);
+            this.chkThoiGian.Size = new System.Drawing.Size(81, 21);
             this.chkThoiGian.TabIndex = 2;
             this.chkThoiGian.Text = "Thời gian";
             this.chkThoiGian.UseVisualStyleBackColor = true;
@@ -72,7 +72,7 @@
             this.chkTongThucTe.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkTongThucTe.Location = new System.Drawing.Point(16, 104);
             this.chkTongThucTe.Name = "chkTongThucTe";
-            this.chkTongThucTe.Size = new System.Drawing.Size(123, 25);
+            this.chkTongThucTe.Size = new System.Drawing.Size(101, 21);
             this.chkTongThucTe.TabIndex = 3;
             this.chkTongThucTe.Text = "Tổng thực tế";
             this.chkTongThucTe.UseVisualStyleBackColor = true;
@@ -84,7 +84,7 @@
             this.chkTongChenhLech.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkTongChenhLech.Location = new System.Drawing.Point(16, 135);
             this.chkTongChenhLech.Name = "chkTongChenhLech";
-            this.chkTongChenhLech.Size = new System.Drawing.Size(144, 25);
+            this.chkTongChenhLech.Size = new System.Drawing.Size(122, 21);
             this.chkTongChenhLech.TabIndex = 4;
             this.chkTongChenhLech.Text = "Tổng chênh lệch";
             this.chkTongChenhLech.UseVisualStyleBackColor = true;
@@ -96,7 +96,7 @@
             this.chkSlLechTang.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkSlLechTang.Location = new System.Drawing.Point(16, 166);
             this.chkSlLechTang.Name = "chkSlLechTang";
-            this.chkSlLechTang.Size = new System.Drawing.Size(117, 25);
+            this.chkSlLechTang.Size = new System.Drawing.Size(97, 21);
             this.chkSlLechTang.TabIndex = 5;
             this.chkSlLechTang.Text = "SL lệch tăng";
             this.chkSlLechTang.UseVisualStyleBackColor = true;
@@ -108,7 +108,7 @@
             this.chkSlLechGiam.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkSlLechGiam.Location = new System.Drawing.Point(16, 197);
             this.chkSlLechGiam.Name = "chkSlLechGiam";
-            this.chkSlLechGiam.Size = new System.Drawing.Size(121, 25);
+            this.chkSlLechGiam.Size = new System.Drawing.Size(100, 21);
             this.chkSlLechGiam.TabIndex = 6;
             this.chkSlLechGiam.Text = "SL lệch giảm";
             this.chkSlLechGiam.UseVisualStyleBackColor = true;
@@ -120,7 +120,7 @@
             this.chkNgayCanBang.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkNgayCanBang.Location = new System.Drawing.Point(16, 228);
             this.chkNgayCanBang.Name = "chkNgayCanBang";
-            this.chkNgayCanBang.Size = new System.Drawing.Size(135, 25);
+            this.chkNgayCanBang.Size = new System.Drawing.Size(116, 21);
             this.chkNgayCanBang.TabIndex = 7;
             this.chkNgayCanBang.Text = "Ngày cân bằng";
             this.chkNgayCanBang.UseVisualStyleBackColor = true;
@@ -132,7 +132,7 @@
             this.chkSlThucTe.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkSlThucTe.Location = new System.Drawing.Point(16, 259);
             this.chkSlThucTe.Name = "chkSlThucTe";
-            this.chkSlThucTe.Size = new System.Drawing.Size(107, 25);
+            this.chkSlThucTe.Size = new System.Drawing.Size(84, 21);
             this.chkSlThucTe.TabIndex = 8;
             this.chkSlThucTe.Text = "SL thực tế";
             this.chkSlThucTe.UseVisualStyleBackColor = true;
@@ -144,7 +144,7 @@
             this.chkGhiChu.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkGhiChu.Location = new System.Drawing.Point(16, 290);
             this.chkGhiChu.Name = "chkGhiChu";
-            this.chkGhiChu.Size = new System.Drawing.Size(85, 25);
+            this.chkGhiChu.Size = new System.Drawing.Size(70, 21);
             this.chkGhiChu.TabIndex = 9;
             this.chkGhiChu.Text = "Ghi chú";
             this.chkGhiChu.UseVisualStyleBackColor = true;
@@ -156,7 +156,7 @@
             this.chkTrangThai.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkTrangThai.Location = new System.Drawing.Point(16, 321);
             this.chkTrangThai.Name = "chkTrangThai";
-            this.chkTrangThai.Size = new System.Drawing.Size(101, 25);
+            this.chkTrangThai.Size = new System.Drawing.Size(85, 21);
             this.chkTrangThai.TabIndex = 10;
             this.chkTrangThai.Text = "Trạng thái";
             this.chkTrangThai.UseVisualStyleBackColor = true;
@@ -174,7 +174,7 @@
             // 
             // frmHienCotKiemKho
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(200, 400);
@@ -191,7 +191,7 @@
             this.Controls.Add(this.chkMaPhieu);
             this.Controls.Add(this.lblTieuDe);
             this.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;

@@ -115,16 +115,23 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                 {
                     lblTrangThai.Text = "Đã trả hàng";
                     lblTrangThai.ForeColor = Color.FromArgb(22, 163, 74); // Green
+                    btnXoa.Enabled = true;
+                    btnHoanThanh.Visible = false;
                 }
                 else if (currentTrangThai == "NHAP")
                 {
                     lblTrangThai.Text = "Phiếu tạm";
                     lblTrangThai.ForeColor = Color.FromArgb(217, 119, 6); // Amber
+                    btnXoa.Enabled = true;
+                    btnHoanThanh.Visible = true;
+                    btnHoanThanh.Enabled = true;
                 }
                 else
                 {
                     lblTrangThai.Text = "Đã hủy";
                     lblTrangThai.ForeColor = Color.FromArgb(100, 116, 139); // Gray/Slate nhạt
+                    btnXoa.Enabled = false;
+                    btnHoanThanh.Visible = false;
                 }
 
                 lblNguoiTaoVal.Text = row["TenNvLap"].ToString();
@@ -342,6 +349,88 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                 return "\"" + text.Replace("\"", "\"\"") + "\"";
             }
             return text;
+        }
+
+        private void btnHoanThanh_Click(object sender, EventArgs e)
+        {
+            if (currentTrangThai != "NHAP") return;
+
+            // 1. Kiểm tra tồn kho trước khi hoàn thành xuất trả
+            if (dtChiTietData != null && dtChiTietData.Rows.Count > 0)
+            {
+                foreach (DataRow row in dtChiTietData.Rows)
+                {
+                    int maHang = Convert.ToInt32(row["MaHang"]);
+                    decimal slTra = Convert.ToDecimal(row["SoLuong"]);
+                    string sku = row["MaHangNoiBo"].ToString();
+                    string ten = row["TenHang"].ToString();
+
+                    string sqlCheckTon = "SELECT SoLuongTon FROM vw_TonKhoHienTai WHERE MaHang = @MaHang AND MaKho = @MaKho";
+                    object tonObj = DataProcessing.ReadValue(sqlCheckTon, new SqlParameter[] {
+                        new SqlParameter("@MaHang", maHang),
+                        new SqlParameter("@MaKho", maKho)
+                    });
+                    decimal tonHienTai = (tonObj != null && tonObj != DBNull.Value) ? Convert.ToDecimal(tonObj) : 0m;
+
+                    if (tonHienTai < slTra)
+                    {
+                        MessageBox.Show(
+                            $"Không thể hoàn thành phiếu trả hàng vì mặt hàng '{sku} - {ten}' không đủ số lượng tồn trong kho (Tồn hiện tại: {tonHienTai:N0}, Cần trả: {slTra:N0})!\nNếu hoàn thành sẽ dẫn đến âm kho.",
+                            "Chặn âm tồn kho",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning);
+                        return;
+                    }
+                }
+            }
+
+            DialogResult dr = MessageBox.Show(
+                $"Bạn có chắc chắn muốn HOÀN THÀNH phiếu trả hàng '{maPhieu}' không?\n\nSau khi hoàn thành:\n- Tồn kho các mặt hàng sẽ bị trừ khỏi kho '{lblKhoChiNhanh.Text}'.\n- Công nợ nhà cung cấp sẽ được cập nhật.\n- Trạng thái phiếu sẽ chuyển sang 'Đã trả hàng'.",
+                "Xác nhận hoàn thành trả hàng",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (dr != DialogResult.Yes) return;
+
+            try
+            {
+                DataProcessing.ChangeDataTransaction((conn, trans) =>
+                {
+                    string sqlUpdate = @"
+                        UPDATE PhieuTraHangNhap 
+                        SET TrangThai = 'DA_TRA_HANG', 
+                            NgayTra = GETDATE(), 
+                            MaNvtra = @MaNvtra 
+                        WHERE MaPhieuTraHang = @MaPhieuTraHang";
+
+                    using (SqlCommand cmd = new SqlCommand(sqlUpdate, conn, trans))
+                    {
+                        cmd.Parameters.AddWithValue("@MaPhieuTraHang", maPhieuTraHang);
+                        cmd.Parameters.AddWithValue("@MaNvtra", SessionContext.MaTaiKhoan > 0 ? (object)SessionContext.MaTaiKhoan : 1);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    string sqlLog = @"
+                        INSERT INTO NhatKyThaoTac (MaTaiKhoan, ThoiDiem, ThaoTac, LoaiDoiTuong, MaDoiTuong, NoiDung)
+                        VALUES (@MaTaiKhoan, GETDATE(), 'HOAN_THANH_TRA_HANG', 'PhieuTraHangNhap', @MaDoiTuong, @NoiDung)";
+
+                    using (SqlCommand cmdLog = new SqlCommand(sqlLog, conn, trans))
+                    {
+                        cmdLog.Parameters.AddWithValue("@MaTaiKhoan", SessionContext.MaTaiKhoan > 0 ? SessionContext.MaTaiKhoan : 1);
+                        cmdLog.Parameters.AddWithValue("@MaDoiTuong", maPhieu);
+                        cmdLog.Parameters.AddWithValue("@NoiDung", $"Hoàn thành phiếu trả hàng {maPhieu} (ID: {maPhieuTraHang})");
+                        cmdLog.ExecuteNonQuery();
+                    }
+                });
+
+                MessageBox.Show($"Hoàn thành phiếu trả hàng '{maPhieu}' thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.DialogResult = DialogResult.OK;
+                NapThongTinPhieu();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi hoàn thành phiếu trả hàng: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void btnDong_Click(object sender, EventArgs e)

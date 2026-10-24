@@ -126,21 +126,26 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                     lblTrangThai.Text = "Đã nhập hàng";
                     lblTrangThai.ForeColor = Color.FromArgb(22, 163, 74);
                     btnXoa.Enabled = true;
+                    btnTraHangNhap.Visible = true;
                     btnTraHangNhap.Enabled = true;
+                    btnHoanThanh.Visible = false;
                 }
                 else if (currentTrangThai == "NHAP")
                 {
                     lblTrangThai.Text = "Phiếu tạm";
                     lblTrangThai.ForeColor = Color.FromArgb(217, 119, 6);
                     btnXoa.Enabled = true;
-                    btnTraHangNhap.Enabled = false; // Chưa nhập kho nên không thể trả hàng
+                    btnTraHangNhap.Visible = false;
+                    btnHoanThanh.Visible = true;
+                    btnHoanThanh.Enabled = true;
                 }
                 else if (currentTrangThai == "HUY")
                 {
                     lblTrangThai.Text = "Đã hủy";
                     lblTrangThai.ForeColor = Color.FromArgb(100, 116, 139);
                     btnXoa.Enabled = false; // Đã hủy rồi
-                    btnTraHangNhap.Enabled = false;
+                    btnTraHangNhap.Visible = false;
+                    btnHoanThanh.Visible = false;
                 }
 
                 // 2. Nạp danh sách chi tiết hàng hóa
@@ -400,6 +405,59 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                     // Trả hàng xong -> Nạp lại chi tiết để thấy công nợ đã giảm
                     NapThongTinPhieu();
                 }
+            }
+        }
+
+        private void btnHoanThanh_Click(object sender, EventArgs e)
+        {
+            if (currentTrangThai != "NHAP") return;
+
+            DialogResult dr = MessageBox.Show(
+                $"Bạn có chắc chắn muốn HOÀN THÀNH phiếu nhập hàng '{maPhieu}' không?\n\nSau khi hoàn thành:\n- Tồn kho các mặt hàng sẽ được cộng ngay lập tức vào kho '{lblKhoChiNhanh.Text}'.\n- Công nợ nhà cung cấp sẽ được ghi nhận chính thức.\n- Trạng thái phiếu sẽ chuyển sang 'Đã nhập hàng'.",
+                "Xác nhận hoàn thành phiếu nhập",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (dr != DialogResult.Yes) return;
+
+            try
+            {
+                DataProcessing.ChangeDataTransaction((conn, trans) =>
+                {
+                    string sqlUpdate = @"
+                        UPDATE PhieuNhap 
+                        SET TrangThai = 'DA_XAC_NHAN', 
+                            NgayXacNhan = GETDATE(), 
+                            MaNVXacNhan = @MaNVXacNhan 
+                        WHERE MaPhieuNhap = @MaPhieuNhap";
+
+                    using (SqlCommand cmd = new SqlCommand(sqlUpdate, conn, trans))
+                    {
+                        cmd.Parameters.AddWithValue("@MaPhieuNhap", maPhieuNhap);
+                        cmd.Parameters.AddWithValue("@MaNVXacNhan", SessionContext.MaNV > 0 ? (object)SessionContext.MaNV : 1);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    string sqlLog = @"
+                        INSERT INTO NhatKyThaoTac (MaTaiKhoan, ThoiDiem, ThaoTac, LoaiDoiTuong, MaDoiTuong, NoiDung)
+                        VALUES (@MaTaiKhoan, GETDATE(), 'HOAN_THANH_NHAP_HANG', 'PhieuNhap', @MaDoiTuong, @NoiDung)";
+
+                    using (SqlCommand cmdLog = new SqlCommand(sqlLog, conn, trans))
+                    {
+                        cmdLog.Parameters.AddWithValue("@MaTaiKhoan", SessionContext.MaTaiKhoan > 0 ? SessionContext.MaTaiKhoan : 1);
+                        cmdLog.Parameters.AddWithValue("@MaDoiTuong", maPhieu);
+                        cmdLog.Parameters.AddWithValue("@NoiDung", $"Hoàn thành phiếu nhập hàng {maPhieu} (ID: {maPhieuNhap})");
+                        cmdLog.ExecuteNonQuery();
+                    }
+                });
+
+                MessageBox.Show($"Hoàn thành phiếu nhập hàng '{maPhieu}' thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.DialogResult = DialogResult.OK;
+                NapThongTinPhieu();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi hoàn thành phiếu nhập hàng: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

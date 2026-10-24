@@ -68,6 +68,7 @@
             this.btnNhanHang = new System.Windows.Forms.Button();
             this.btnDong = new System.Windows.Forms.Button();
             this.btnXuatFile = new System.Windows.Forms.Button();
+            this.btnHoanThanh = new System.Windows.Forms.Button();
             this.btnXoa = new System.Windows.Forms.Button();
             this.pnlTop.SuspendLayout();
             this.pnlThongTin.SuspendLayout();
@@ -103,7 +104,7 @@
             // lblTrangThai
             // 
             this.lblTrangThai.AutoSize = true;
-            this.lblTrangThai.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.lblTrangThai.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblTrangThai.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(163)))), ((int)(((byte)(74)))));
             this.lblTrangThai.Location = new System.Drawing.Point(180, 20);
             this.lblTrangThai.Name = "lblTrangThai";
@@ -578,6 +579,7 @@
             this.pnlBottom.Controls.Add(this.btnNhanHang);
             this.pnlBottom.Controls.Add(this.btnDong);
             this.pnlBottom.Controls.Add(this.btnXuatFile);
+            this.pnlBottom.Controls.Add(this.btnHoanThanh);
             this.pnlBottom.Controls.Add(this.btnXoa);
             this.pnlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pnlBottom.Location = new System.Drawing.Point(0, 625);
@@ -629,6 +631,17 @@
             this.btnXoa.Text = "Xóa";
             this.btnXoa.UseVisualStyleBackColor = true;
             this.btnXoa.Click += new System.EventHandler(this.btnXoa_Click);
+            // 
+            // btnHoanThanh
+            // 
+            this.btnHoanThanh.Location = new System.Drawing.Point(120, 12);
+            this.btnHoanThanh.Name = "btnHoanThanh";
+            this.btnHoanThanh.Size = new System.Drawing.Size(110, 32);
+            this.btnHoanThanh.TabIndex = 4;
+            this.btnHoanThanh.Text = "Hoàn thành";
+            this.btnHoanThanh.UseVisualStyleBackColor = true;
+            this.btnHoanThanh.Visible = false;
+            this.btnHoanThanh.Click += new System.EventHandler(this.btnHoanThanh_Click);
             // 
             // frmChiTietChuyenKho
             // 
@@ -703,6 +716,7 @@
         private System.Windows.Forms.Button btnNhanHang;
         private System.Windows.Forms.Button btnDong;
         private System.Windows.Forms.Button btnXuatFile;
+        private System.Windows.Forms.Button btnHoanThanh;
         private System.Windows.Forms.Button btnXoa;
         private System.Windows.Forms.DataGridViewTextBoxColumn colStt;
         private System.Windows.Forms.DataGridViewTextBoxColumn colMaHang;

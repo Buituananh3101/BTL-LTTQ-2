@@ -1,4 +1,4 @@
-# Đặc tả Chức năng: Nhập hàng (Purchase Orders - Windows Forms)
+﻿# Đặc tả Chức năng: Nhập hàng (Purchase Orders - Windows Forms)
 
 > **Mục tiêu**: Quản lý chứng từ Nhập hàng từ Nhà cung cấp chuẩn giao diện & nghiệp vụ hệ thống kho hàng nội bộ đa chi nhánh. Đồng bộ 100% với khuôn mẫu `frmDanhSachHangHoa` và `frmNhaCungCap` (kích thước form chuẩn 1782x853, bộ lọc bên trái 100% ComboBox chiều rộng 340px, tìm kiếm tức thời, phân trang SQL Server, DataGridView đệm đôi chống giật lag, xuất file CSV UTF-8 BOM, nút bấm chuẩn WinForms không màu mè).
 
@@ -10,7 +10,7 @@
 - **Thư mục chức năng**: `BTL-LTTQ-2/GUI/Forms/NhapHang/`
   - `frmNhapHang.cs`, `.Designer.cs`, `.resx`: Form chính hiển thị danh sách đơn nhập hàng (kích thước chuẩn 1782x853), panel lọc bên trái rộng 387px, ComboBox lọc rộng 340px, tìm kiếm tức thời F3, nút `+ Nhập hàng`, `Xuất file`, `Hiện cột`, `Hướng dẫn sử dụng`. Phân trang 10, 20, 50, 100 dòng (mặc định 20). Hỗ trợ nhấn đúp chuột vào đơn nhập để mở form xem chi tiết đơn.
   - `frmThemPhieuNhap.cs`, `.Designer.cs`, `.resx`: Form lập phiếu nhập hàng mới (nút `+ Nhập hàng`). Cho phép chọn NCC, kho, ngày nhập, tìm kiếm chọn hàng hóa, nhập số lượng, đơn giá, chiết khấu, tính toán tự động tổng tiền hàng, tiền đã trả, tiền nợ cần trả NCC; phím tắt Enter hỗ trợ nạp hàng nhanh; đệm đôi DataGridView; bọc Transaction khi lưu phiếu tạm (`NHAP`) hoặc hoàn thành (`DA_XAC_NHAN`).
-  - `frmChiTietPhieuNhap.cs`, `.Designer.cs`, `.resx`: Form xem chi tiết đơn nhập hàng (mở khi double-click từ danh sách). Hiển thị đầy đủ thông tin header (Mã phiếu, NCC, Kho, Ngày nhập, Trạng thái, Người nhập, Ghi chú), bảng lưới hàng hóa đã nhập đệm đôi `DoubleBuffered`, tổng kết thanh toán. **Chỉ giữ lại 3 nút chức năng duy nhất: `Xóa` (thay thế nút Hủy), `Xuất file`, `Trả hàng nhập`** cùng nút `Đóng`.
+  - `frmChiTietPhieuNhap.cs`, `.Designer.cs`, `.resx`: Form xem chi tiết đơn nhập hàng (mở khi double-click từ danh sách). Hiển thị đầy đủ thông tin header (Mã phiếu, NCC, Kho, Ngày nhập, Trạng thái, Người nhập, Ghi chú), bảng lưới hàng hóa đã nhập đệm đôi `DoubleBuffered`, tổng kết thanh toán. **Cung cấp các nút chức năng ở thanh đáy: `Xóa`, `Xuất file`, `Hoàn thành` (chỉ hiển thị khi là Phiếu tạm `NHAP` để chuyển sang `DA_XAC_NHAN`), `Trả hàng nhập` (chỉ hiển thị khi đã hoàn thành `DA_XAC_NHAN`)** cùng nút `Đóng`.
   - `frmHienCotNhapHang.cs`, `.Designer.cs`, `.resx`: Form popup ẩn/hiện cột cho DataGridView phiếu nhập hàng (chỉ quản lý 7 cột dữ liệu, không cho phép ẩn cột chọn dòng hệ thống).
   - `frmTraHangNhap.cs`, `.Designer.cs`, `.resx`: Form trả hàng nhập được kích hoạt từ nút `Trả hàng nhập` trên form chi tiết đơn (kiểm tra chặn âm, chặn vượt số lượng nhập, chặn vượt tồn kho hiện tại, tự động khấu trừ nợ hoặc xác định tiền hoàn lại, bọc Transaction).
 - **Form cha MDI & Menu**: `BTL-LTTQ-2/GUI/Forms/frmMain.cs` (gắn sự kiện `mnuNhapHang_Click` kiểm tra kích hoạt hoặc tạo mới form `frmNhapHang`).
@@ -72,4 +72,5 @@
 - **Ràng buộc quan trọng**: Giữ lại duy nhất 3 nút bấm chức năng ở góc dưới:
   1. `Xóa` (`btnXoaPhieu`): Thực hiện xóa phiếu tạm hoặc chuyển trạng thái sang `HUY` đối với phiếu đã xác nhận (kèm kiểm tra chặn âm tồn kho).
   2. `Xuất file` (`btnXuatFile`): Xuất thông tin phiếu và bảng hàng hóa ra file CSV/Excel UTF-8 BOM.
-  3. `Trả hàng nhập` (`btnTraHangNhap`): Kích hoạt `frmTraHangNhap` để hoàn trả một phần hoặc toàn bộ lô hàng cho NCC.
+  3. `Hoàn thành` (`btnHoanThanh`): Chỉ hiển thị khi phiếu ở trạng thái `NHAP` (Phiếu tạm). Bấm Hoàn thành sẽ hỏi xác nhận, bọc trong Transaction cập nhật `TrangThai = 'DA_XAC_NHAN'`, `NgayXacNhan = GETDATE()`, `MaNVXacNhan`, tự động cộng tồn kho và ghi nhận công nợ NCC.
+  4. `Trả hàng nhập` (`btnTraHangNhap`): Chỉ hiển thị khi phiếu ở trạng thái `DA_XAC_NHAN`. Kích hoạt `frmTraHangNhap` để hoàn trả một phần hoặc toàn bộ lô hàng cho NCC.

@@ -58,6 +58,7 @@
             this.pnlBottom = new System.Windows.Forms.Panel();
             this.btnDong = new System.Windows.Forms.Button();
             this.btnTraHangNhap = new System.Windows.Forms.Button();
+            this.btnHoanThanh = new System.Windows.Forms.Button();
             this.btnXuatFile = new System.Windows.Forms.Button();
             this.btnXoa = new System.Windows.Forms.Button();
             this.pnlTop.SuspendLayout();
@@ -495,6 +496,7 @@
             this.pnlBottom.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
             this.pnlBottom.Controls.Add(this.btnDong);
             this.pnlBottom.Controls.Add(this.btnTraHangNhap);
+            this.pnlBottom.Controls.Add(this.btnHoanThanh);
             this.pnlBottom.Controls.Add(this.btnXuatFile);
             this.pnlBottom.Controls.Add(this.btnXoa);
             this.pnlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -516,7 +518,18 @@
             // 
             // btnTraHangNhap
             // 
-            this.btnTraHangNhap.Location = new System.Drawing.Point(232, 12);
+            this.btnHoanThanh.Location = new System.Drawing.Point(232, 12);
+            this.btnHoanThanh.Name = "btnHoanThanh";
+            this.btnHoanThanh.Size = new System.Drawing.Size(110, 32);
+            this.btnHoanThanh.TabIndex = 2;
+            this.btnHoanThanh.Text = "Hoàn thành";
+            this.btnHoanThanh.UseVisualStyleBackColor = true;
+            this.btnHoanThanh.Visible = false;
+            this.btnHoanThanh.Click += new System.EventHandler(this.btnHoanThanh_Click);
+            // 
+            // btnTraHangNhap
+            // 
+            this.btnTraHangNhap.Location = new System.Drawing.Point(348, 12);
             this.btnTraHangNhap.Name = "btnTraHangNhap";
             this.btnTraHangNhap.Size = new System.Drawing.Size(130, 32);
             this.btnTraHangNhap.TabIndex = 2;
@@ -610,6 +623,7 @@
         private System.Windows.Forms.Panel pnlBottom;
         private System.Windows.Forms.Button btnXoa;
         private System.Windows.Forms.Button btnXuatFile;
+        private System.Windows.Forms.Button btnHoanThanh;
         private System.Windows.Forms.Button btnTraHangNhap;
         private System.Windows.Forms.Button btnDong;
         private System.Windows.Forms.DataGridViewTextBoxColumn colStt;

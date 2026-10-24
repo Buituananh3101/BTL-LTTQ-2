@@ -47,9 +47,9 @@ Số liệu Thẻ kho được truy vấn từ View CSDL **`vw_BienDongKho`** (h
     - `cboLoaiChungTu`: ComboBox lọc loại chứng từ phát sinh.
     - `grpThoiGianTao`: Cụm 2 DateTimePicker Short đặt ở vị trí đáy theo Điều luật 16.
   - `dgvTheKho` (Dock = Fill):
-    - Bảng hiển thị danh sách dòng thẻ kho: Dòng TỒN ĐẦU KỲ (highlight), các dòng phát sinh chứng từ (STT, Thời gian, Mã chứng từ, Loại giao dịch, Đối tác / Diễn giải, Chi nhánh kho, SL Nhập, SL Xuất, Tồn lũy kế, Ghi chú), dòng TỒN CUỐI KỲ (highlight).
+    - Bảng hiển thị danh sách dòng thẻ kho: Dòng Tồn đầu kỳ (highlight màu nền nhẹ, font chữ thường), các dòng phát sinh chứng từ (STT, Thời gian, Mã chứng từ, Loại giao dịch, Đối tác / Diễn giải, Chi nhánh kho, SL Nhập, SL Xuất, Tồn lũy kế, Ghi chú), dòng Tồn cuối kỳ (highlight màu nền nhẹ, font chữ thường). Toàn bộ thuộc tính hiển thị font chữ thường đồng bộ theo mẫu Trả hàng nhập (không in đậm tùy tiện).
     - Tồn lũy kế âm được tô đỏ đậm (Điều luật 15a).
-    - Loại giao dịch nhập/tăng tô xanh lá, xuất/giảm màu slate.
+    - Loại giao dịch nhập/tăng tô xanh lá (font chữ thường), xuất/giảm màu slate (font chữ thường).
   - `pnlPhanTrang`: Thống kê tổng số giao dịch phát sinh trong kỳ.
 
 ---

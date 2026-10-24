@@ -1,4 +1,4 @@
-# Đặc tả Chức năng: Quản lý Kiểm kho & Cân bằng kho (Stock Take)
+﻿# Đặc tả Chức năng: Quản lý Kiểm kho & Cân bằng kho (Stock Take)
 
 > **Mục tiêu**: Chuẩn hóa toàn diện phân hệ Kiểm kho trên nền tảng Windows Forms theo Design System mẫu `frmDanhSachHangHoa`, tài liệu `docs/quyet-dinh.md` (Phiên 5 & 18), tuân thủ 17 điều luật cốt lõi trong `AGENTS.md`.
 
@@ -38,7 +38,7 @@
 |---|---|---|
 | [`frmKiemKho`](../../BTL-LTTQ-2/GUI/Forms/KiemKho/frmKiemKho.cs) | MDI Child | Màn hình danh sách phiếu kiểm kho, bộ lọc bên trái 100% ComboBox, tìm kiếm, phân trang và xuất file. |
 | [`frmThemPhieuKiemKho`](../../BTL-LTTQ-2/GUI/Forms/KiemKho/frmThemPhieuKiemKho.cs) | Modal Dialog | Màn hình lập phiếu kiểm kho mới (nút `+ Kiểm kho`), hỗ trợ chọn hàng từ danh mục, sửa trực tiếp trên lưới, nhập file dữ liệu và thực hiện Lưu tạm / Cân bằng kho. |
-| [`frmChiTietKiemKho`](../../BTL-LTTQ-2/GUI/Forms/KiemKho/frmChiTietKiemKho.cs) | Modal Dialog | Màn hình chi tiết khi nhấn đúp vào 1 phiếu kiểm (theo ảnh mẫu 3), chỉ giữ lại 2 nút: **Xóa** (khóa vĩnh viễn phiếu đã cân bằng theo Luật 6) và **Xuất file**. |
+| [`frmChiTietKiemKho`](../../BTL-LTTQ-2/GUI/Forms/KiemKho/frmChiTietKiemKho.cs) | Modal Dialog | Màn hình chi tiết khi nhấn đúp vào 1 phiếu kiểm (theo ảnh mẫu 3), cung cấp các nút: **Xóa** (khóa vĩnh viễn phiếu đã cân bằng theo Luật 6), **Xuất file** và **Hoàn thành** (khi là phiếu tạm để cân bằng kho). |
 | [`frmNhapKiemKhoFile`](../../BTL-LTTQ-2/GUI/Forms/KiemKho/frmNhapKiemKhoFile.cs) | Modal Dialog | Màn hình nhập dữ liệu kiểm kho từ file (Excel/CSV), cung cấp tải file mẫu Excel/CSV chuẩn theo khuôn mẫu `frmNhapHangHoaFile`. |
 | [`frmHienCotKiemKho`](../../BTL-LTTQ-2/GUI/Forms/KiemKho/frmHienCotKiemKho.cs) | Tool Window | Popup tùy chọn ẩn/hiện các cột của bảng kiểm kho. |
 
@@ -74,11 +74,12 @@
 - **Vùng Tổng kết**:
   - Bên trái: Ghi chú phiếu.
   - Bên phải: Tổng thực tế, Tổng lệch tăng, Tổng lệch giảm, Tổng chênh lệch (hiển thị cả số lượng và giá trị tiền).
-- **Thanh nút đáy (Chỉ giữ lại 2 nút nghiệp vụ + nút Đóng)**:
+- **Thanh nút đáy**:
   - Nút **Xóa** (`btnXoa`):
     + Nếu phiếu ở trạng thái `'DA_DIEU_CHINH'`: Khóa vĩnh viễn theo Luật 6, không cho xóa.
     + Nếu phiếu ở trạng thái `'NHAP'`: Xác nhận Yes/No, xóa phiếu và chi tiết, ghi log nhật ký.
   - Nút **Xuất file** (`btnXuatFile`): Xuất chi tiết phiếu kiểm ra file Excel hoặc CSV (UTF-8 BOM).
+  - Nút **Hoàn thành** (`btnHoanThanh`): Chỉ hiển thị khi phiếu ở trạng thái Phiếu tạm (`NHAP`, `DANG_KIEM`, `DA_KIEM`). Bấm Hoàn thành sẽ hỏi xác nhận, bọc trong Transaction cập nhật `PhieuKiemKe` sang `DA_DIEU_CHINH`, sinh `PhieuDieuChinh` và `ChiTietPhieuDieuChinh` trạng thái `DA_DUYET`, cập nhật tồn kho sổ sách qua `vw_TonKhoHienTai` và khóa vĩnh viễn phiếu.
   - Nút **Đóng** (`btnDong`).
 
 ### 3.3. Màn hình Thêm mới `frmThemPhieuKiemKho`

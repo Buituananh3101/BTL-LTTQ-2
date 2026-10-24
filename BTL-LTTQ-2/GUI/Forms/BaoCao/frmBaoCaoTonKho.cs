@@ -570,14 +570,13 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                     }
                 }
             }
-            // Màu sắc trạng thái theo 3 nhóm chuẩn (Điều luật 15b)
+            // Màu sắc trạng thái theo 3 nhóm chuẩn (Điều luật 15b, font chữ thường đồng bộ theo mẫu Trả hàng nhập)
             else if (colName == "colTrangThai" && e.Value != null)
             {
                 string val = e.Value.ToString();
                 if (val == "Đang kinh doanh")
                 {
                     e.CellStyle.ForeColor = Color.FromArgb(22, 163, 74); // Xanh lá
-                    e.CellStyle.Font = new Font(dgvBaoCaoTonKho.Font, FontStyle.Bold);
                 }
                 else
                 {

@@ -51,7 +51,7 @@
             this.lblHienThiCot.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(41)))), ((int)(((byte)(59)))));
             this.lblHienThiCot.Location = new System.Drawing.Point(20, 16);
             this.lblHienThiCot.Name = "lblHienThiCot";
-            this.lblHienThiCot.Size = new System.Drawing.Size(104, 23);
+            this.lblHienThiCot.Size = new System.Drawing.Size(86, 19);
             this.lblHienThiCot.TabIndex = 0;
             this.lblHienThiCot.Text = "Hiển thị cột";
             // 
@@ -65,7 +65,7 @@
             this.chkHinhAnh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
             this.chkHinhAnh.Location = new System.Drawing.Point(24, 48);
             this.chkHinhAnh.Name = "chkHinhAnh";
-            this.chkHinhAnh.Size = new System.Drawing.Size(95, 25);
+            this.chkHinhAnh.Size = new System.Drawing.Size(78, 21);
             this.chkHinhAnh.TabIndex = 1;
             this.chkHinhAnh.Text = "Hình ảnh";
             this.chkHinhAnh.UseVisualStyleBackColor = true;
@@ -80,7 +80,7 @@
             this.chkMaHang.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
             this.chkMaHang.Location = new System.Drawing.Point(24, 76);
             this.chkMaHang.Name = "chkMaHang";
-            this.chkMaHang.Size = new System.Drawing.Size(93, 25);
+            this.chkMaHang.Size = new System.Drawing.Size(79, 21);
             this.chkMaHang.TabIndex = 2;
             this.chkMaHang.Text = "Mã hàng";
             this.chkMaHang.UseVisualStyleBackColor = true;
@@ -95,7 +95,7 @@
             this.chkTenHang.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
             this.chkTenHang.Location = new System.Drawing.Point(24, 104);
             this.chkTenHang.Name = "chkTenHang";
-            this.chkTenHang.Size = new System.Drawing.Size(95, 25);
+            this.chkTenHang.Size = new System.Drawing.Size(80, 21);
             this.chkTenHang.TabIndex = 3;
             this.chkTenHang.Text = "Tên hàng";
             this.chkTenHang.UseVisualStyleBackColor = true;
@@ -110,7 +110,7 @@
             this.chkNhomHang.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
             this.chkNhomHang.Location = new System.Drawing.Point(24, 132);
             this.chkNhomHang.Name = "chkNhomHang";
-            this.chkNhomHang.Size = new System.Drawing.Size(114, 25);
+            this.chkNhomHang.Size = new System.Drawing.Size(96, 21);
             this.chkNhomHang.TabIndex = 4;
             this.chkNhomHang.Text = "Nhóm hàng";
             this.chkNhomHang.UseVisualStyleBackColor = true;
@@ -125,7 +125,7 @@
             this.chkDonViTinh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
             this.chkDonViTinh.Location = new System.Drawing.Point(24, 160);
             this.chkDonViTinh.Name = "chkDonViTinh";
-            this.chkDonViTinh.Size = new System.Drawing.Size(108, 25);
+            this.chkDonViTinh.Size = new System.Drawing.Size(89, 21);
             this.chkDonViTinh.TabIndex = 5;
             this.chkDonViTinh.Text = "Đơn vị tính";
             this.chkDonViTinh.UseVisualStyleBackColor = true;
@@ -140,7 +140,7 @@
             this.chkGiaBan.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
             this.chkGiaBan.Location = new System.Drawing.Point(24, 188);
             this.chkGiaBan.Name = "chkGiaBan";
-            this.chkGiaBan.Size = new System.Drawing.Size(85, 25);
+            this.chkGiaBan.Size = new System.Drawing.Size(72, 21);
             this.chkGiaBan.TabIndex = 6;
             this.chkGiaBan.Text = "Giá bán";
             this.chkGiaBan.UseVisualStyleBackColor = true;
@@ -155,7 +155,7 @@
             this.chkGiaVon.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
             this.chkGiaVon.Location = new System.Drawing.Point(24, 216);
             this.chkGiaVon.Name = "chkGiaVon";
-            this.chkGiaVon.Size = new System.Drawing.Size(84, 25);
+            this.chkGiaVon.Size = new System.Drawing.Size(71, 21);
             this.chkGiaVon.TabIndex = 7;
             this.chkGiaVon.Text = "Giá vốn";
             this.chkGiaVon.UseVisualStyleBackColor = true;
@@ -170,7 +170,7 @@
             this.chkTonKho.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
             this.chkTonKho.Location = new System.Drawing.Point(185, 48);
             this.chkTonKho.Name = "chkTonKho";
-            this.chkTonKho.Size = new System.Drawing.Size(89, 25);
+            this.chkTonKho.Size = new System.Drawing.Size(74, 21);
             this.chkTonKho.TabIndex = 8;
             this.chkTonKho.Text = "Tồn kho";
             this.chkTonKho.UseVisualStyleBackColor = true;
@@ -183,7 +183,7 @@
             this.chkKhachDat.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
             this.chkKhachDat.Location = new System.Drawing.Point(185, 76);
             this.chkKhachDat.Name = "chkKhachDat";
-            this.chkKhachDat.Size = new System.Drawing.Size(101, 25);
+            this.chkKhachDat.Size = new System.Drawing.Size(85, 21);
             this.chkKhachDat.TabIndex = 9;
             this.chkKhachDat.Text = "Khách đặt";
             this.chkKhachDat.UseVisualStyleBackColor = true;
@@ -196,7 +196,7 @@
             this.chkViTri.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
             this.chkViTri.Location = new System.Drawing.Point(185, 104);
             this.chkViTri.Name = "chkViTri";
-            this.chkViTri.Size = new System.Drawing.Size(65, 25);
+            this.chkViTri.Size = new System.Drawing.Size(54, 21);
             this.chkViTri.TabIndex = 10;
             this.chkViTri.Text = "Vị trí";
             this.chkViTri.UseVisualStyleBackColor = true;
@@ -209,7 +209,7 @@
             this.chkThoiGianTao.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
             this.chkThoiGianTao.Location = new System.Drawing.Point(185, 132);
             this.chkThoiGianTao.Name = "chkThoiGianTao";
-            this.chkThoiGianTao.Size = new System.Drawing.Size(126, 25);
+            this.chkThoiGianTao.Size = new System.Drawing.Size(104, 21);
             this.chkThoiGianTao.TabIndex = 11;
             this.chkThoiGianTao.Text = "Thời gian tạo";
             this.chkThoiGianTao.UseVisualStyleBackColor = true;
@@ -222,7 +222,7 @@
             this.chkDuKienHetHang.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
             this.chkDuKienHetHang.Location = new System.Drawing.Point(185, 160);
             this.chkDuKienHetHang.Name = "chkDuKienHetHang";
-            this.chkDuKienHetHang.Size = new System.Drawing.Size(150, 25);
+            this.chkDuKienHetHang.Size = new System.Drawing.Size(126, 21);
             this.chkDuKienHetHang.TabIndex = 12;
             this.chkDuKienHetHang.Text = "Dự kiến hết hàng";
             this.chkDuKienHetHang.UseVisualStyleBackColor = true;
@@ -235,7 +235,7 @@
             this.chkTrangThai.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
             this.chkTrangThai.Location = new System.Drawing.Point(185, 188);
             this.chkTrangThai.Name = "chkTrangThai";
-            this.chkTrangThai.Size = new System.Drawing.Size(102, 25);
+            this.chkTrangThai.Size = new System.Drawing.Size(85, 21);
             this.chkTrangThai.TabIndex = 13;
             this.chkTrangThai.Text = "Trạng thái";
             this.chkTrangThai.UseVisualStyleBackColor = true;
@@ -245,7 +245,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(356, 260);
-            this.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.Controls.Add(this.chkTrangThai);
             this.Controls.Add(this.chkDuKienHetHang);
             this.Controls.Add(this.chkThoiGianTao);
@@ -260,13 +259,13 @@
             this.Controls.Add(this.chkMaHang);
             this.Controls.Add(this.chkHinhAnh);
             this.Controls.Add(this.lblHienThiCot);
+            this.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.KeyPreview = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmHienCot";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Hiển thị cột";
             this.ResumeLayout(false);
             this.PerformLayout();
 

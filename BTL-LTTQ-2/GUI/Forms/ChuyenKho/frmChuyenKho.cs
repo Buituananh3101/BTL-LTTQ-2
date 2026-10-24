@@ -299,21 +299,18 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                 if (e.Value != null)
                 {
                     string tt = e.Value.ToString();
-                    // 3 nhóm màu trạng thái chuẩn (Điều luật 15b)
+                    // 3 nhóm màu trạng thái chuẩn (Điều luật 15b, font chữ thường đồng bộ theo mẫu Trả hàng nhập)
                     if (tt == "Đã nhận")
                     {
                         e.CellStyle.ForeColor = Color.FromArgb(22, 163, 74); // Xanh lá
-                        e.CellStyle.Font = new Font(dgvChuyenKho.Font, FontStyle.Bold);
                     }
                     else if (tt == "Đang chuyển" || tt == "Phiếu tạm")
                     {
                         e.CellStyle.ForeColor = Color.FromArgb(217, 119, 6); // Vàng amber
-                        e.CellStyle.Font = new Font(dgvChuyenKho.Font, FontStyle.Bold);
                     }
                     else if (tt == "Đã hủy")
                     {
                         e.CellStyle.ForeColor = Color.FromArgb(100, 116, 139); // Xám nhạt
-                        e.CellStyle.Font = new Font(dgvChuyenKho.Font, FontStyle.Regular);
                     }
                 }
             }

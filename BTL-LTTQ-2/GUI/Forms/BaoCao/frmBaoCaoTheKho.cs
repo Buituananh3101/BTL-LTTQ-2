@@ -475,13 +475,13 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                 dtTheKhoHienThi.Columns.Add("TonLuyKeNum", typeof(decimal));
                 dtTheKhoHienThi.Columns.Add("GhiChu", typeof(string));
 
-                // Dòng TỒN ĐẦU KỲ
+                // Dòng Tồn đầu kỳ (font chữ thường chuẩn hóa theo mẫu Trả hàng nhập)
                 string tenKhoHienThi = (maKho > 0) ? (cboKho.Text) : "Toàn hệ thống";
                 dtTheKhoHienThi.Rows.Add(
                     "",
                     tuNgay.ToString("dd/MM/yyyy"),
                     "",
-                    "TỒN ĐẦU KỲ",
+                    "Tồn đầu kỳ",
                     "Số dư tồn kho đầu kỳ chuyển sang",
                     tenKhoHienThi,
                     "-",
@@ -594,13 +594,13 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                     }
                 }
 
-                // Dòng TỒN CUỐI KỲ
+                // Dòng Tồn cuối kỳ (font chữ thường chuẩn hóa theo mẫu Trả hàng nhập)
                 decimal tonCuoiKy = tonLuyKe;
                 dtTheKhoHienThi.Rows.Add(
                     "",
                     denNgay.ToString("dd/MM/yyyy"),
                     "",
-                    "TỒN CUỐI KỲ",
+                    "Tồn cuối kỳ",
                     "Số dư tồn kho cuối kỳ",
                     tenKhoHienThi,
                     tongNhapKy.ToString("N0"),
@@ -641,11 +641,10 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
 
             string colName = dgvTheKho.Columns[e.ColumnIndex].Name;
 
-            // Highlight dòng Tồn đầu kỳ và Tồn cuối kỳ
+            // Highlight dòng Tồn đầu kỳ và Tồn cuối kỳ bằng màu nền nhẹ, font chữ thường chuẩn hóa
             if (e.RowIndex == 0 || (dtTheKhoHienThi != null && e.RowIndex == dtTheKhoHienThi.Rows.Count - 1))
             {
                 e.CellStyle.BackColor = Color.FromArgb(241, 245, 249);
-                e.CellStyle.Font = new Font(dgvTheKho.Font, FontStyle.Bold);
             }
 
             // Tô đỏ số lượng tồn lũy kế nếu < 0 theo Điều luật 15a
@@ -660,22 +659,17 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                     }
                 }
             }
-            // Màu sắc Loại giao dịch theo chuẩn
+            // Màu sắc Loại giao dịch theo chuẩn (font chữ thường đồng bộ theo mẫu Trả hàng nhập)
             else if (colName == "colLoaiGiaoDich" && e.Value != null)
             {
                 string loai = e.Value.ToString();
                 if (loai == "Nhập mua NCC" || loai == "Chuyển kho đến")
                 {
                     e.CellStyle.ForeColor = Color.FromArgb(22, 163, 74); // Xanh lá
-                    e.CellStyle.Font = new Font(dgvTheKho.Font, FontStyle.Bold);
                 }
                 else if (loai == "Xuất bán hàng" || loai == "Chuyển kho đi" || loai == "Trả hàng nhập" || loai == "Xuất hủy")
                 {
                     e.CellStyle.ForeColor = Color.FromArgb(71, 85, 105); // Slate
-                }
-                else if (loai == "TỒN ĐẦU KỲ" || loai == "TỒN CUỐI KỲ")
-                {
-                    e.CellStyle.Font = new Font(dgvTheKho.Font, FontStyle.Bold);
                 }
             }
         }

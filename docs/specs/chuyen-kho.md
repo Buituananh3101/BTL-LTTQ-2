@@ -1,4 +1,4 @@
-# Đặc tả Chức năng: Quản lý Chuyển kho & Đổi kho làm việc
+﻿# Đặc tả Chức năng: Quản lý Chuyển kho & Đổi kho làm việc
 
 > **Mô tả**: Quản lý toàn diện luồng điều chuyển hàng hóa liên chi nhánh kho (Kho gửi -> Kho nhận), cơ chế tồn kho động thời gian thực qua `vw_TonKhoHienTai`, xử lý nhận hàng và hao hụt thất thoát trên đường chuyển; đồng thời cung cấp form Đổi kho làm việc nhanh cho người dùng trên nền tảng Windows Forms .NET Framework 4.7.2.
 
@@ -53,9 +53,9 @@
 | Tên Form | Loại | Đường dẫn | Vai trò & Nghiệp vụ |
 |---|---|---|---|
 | `frmDoiKho` | Modal Dialog | `GUI/Forms/DoiKho/frmDoiKho.cs` | Form chọn kho làm việc nhanh theo ảnh mẫu: ComboBox chọn chi nhánh kho hoạt động được phân quyền, 2 nút "Xác nhận", "Hủy"; cập nhật `SessionContext` và toàn bộ giao diện cha. |
-| `frmChuyenKho` | MDI Child | `GUI/Forms/ChuyenKho/frmChuyenKho.cs` | Form danh sách phiếu chuyển kho, chuẩn kích thước `1782x853`, bộ lọc 100% ComboBox, cụm thời gian ở đáy, hiển thị màu 3 nhóm trạng thái, phân trang. |
+| `frmChuyenKho` | MDI Child | `GUI/Forms/ChuyenKho/frmChuyenKho.cs` | Form danh sách phiếu chuyển kho, chuẩn kích thước `1782x853`, bộ lọc 100% ComboBox, cụm thời gian ở đáy, hiển thị màu 3 nhóm trạng thái bằng font chữ thường theo chuẩn Trả hàng nhập, phân trang. |
 | `frmThemPhieuChuyenKho` | Modal Dialog | `GUI/Forms/ChuyenKho/frmThemPhieuChuyenKho.cs` | Form lập phiếu chuyển mới: chọn kho gửi, kho nhận, chọn hàng hóa từ kho gửi, chặn tồn âm, thứ tự nút đáy chuẩn `Bỏ qua` ➜ `Lưu tạm` ➜ `Lưu`. |
-| `frmChiTietChuyenKho` | Modal Dialog | `GUI/Forms/ChuyenKho/frmChiTietChuyenKho.cs` | Form chi tiết phiếu chuyển kho khi double-click: Master-Detail, nhãn trạng thái dòng chữ màu, nút Nhận hàng (cho kho đích), Xóa (theo Luật 5 & 15d), Xuất file. |
+| `frmChiTietChuyenKho` | Modal Dialog | `GUI/Forms/ChuyenKho/frmChiTietChuyenKho.cs` | Form chi tiết phiếu chuyển kho khi double-click: Master-Detail, nhãn trạng thái dòng chữ màu font chữ thường theo chuẩn Trả hàng nhập, nút Hoàn thành (xuất chuyển cho phiếu tạm `NHAP`), Nhận hàng (cho kho đích khi `DA_XUAT`), Xóa (theo Luật 5 & 15d), Xuất file. |
 | `frmNhanChuyenKho` | Modal Dialog | `GUI/Forms/ChuyenKho/frmNhanChuyenKho.cs` | Form xác nhận nhận hàng tại kho đích: kiểm đếm số lượng thực nhận, phát hiện hao hụt, bắt buộc nhập lý do thất thoát, cập nhật `DA_NHAN`. |
 | `frmHienCotChuyenKho` | Tool Window | `GUI/Forms/ChuyenKho/frmHienCotChuyenKho.cs` | Popup tùy chọn ẩn/hiện cột bảng chuyển kho. |
 | `frmNhapChuyenKhoFile` | Modal Dialog | `GUI/Forms/ChuyenKho/frmNhapChuyenKhoFile.cs` | Form nạp danh sách hàng hóa chuyển từ file CSV (hỗ trợ tải file mẫu chuẩn). |
@@ -81,3 +81,6 @@
    - Nhóm Tạm thời ("Đang chuyển", "Phiếu tạm"): Màu vàng amber `Color.FromArgb(217, 119, 6)`.
    - Nhóm Đã hủy ("Đã hủy"): Màu xám nhạt `Color.FromArgb(100, 116, 139)`.
    - Nhãn trạng thái hiển thị bằng dòng chữ tự nhiên có màu, không viền khung badge.
+7. **Nút Hoàn thành cho Phiếu tạm (`NHAP`)**:
+   - Khi phiếu chuyển ở trạng thái `NHAP` (Phiếu tạm), form chi tiết `frmChiTietChuyenKho` hiển thị nút `Hoàn thành` (`btnHoanThanh`).
+   - Khi bấm Hoàn thành, hệ thống kiểm tra tồn kho tại kho gửi (chặn âm tồn kho theo Luật 6), hỏi xác nhận, bọc trong Transaction cập nhật `TrangThai = 'DA_XUAT'`, `ThoiDiemXuat = GETDATE()`, `MaNVXuat`, hàng hóa xuất kho gửi và chuyển sang trạng thái "Đang chuyển" để kho đích thực hiện nhận hàng.

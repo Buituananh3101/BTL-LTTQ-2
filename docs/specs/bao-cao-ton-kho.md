@@ -1,4 +1,4 @@
-﻿# Đặc tả Chức năng: Báo cáo Tồn kho (`frmBaoCaoTonKho`)
+# Đặc tả Chức năng: Báo cáo Tồn kho (`frmBaoCaoTonKho`)
 
 > **Mã chức năng**: `BaoCao_TonKho`  
 > **Form C#**: `GUI/Forms/BaoCao/frmBaoCaoTonKho.cs`  
@@ -52,7 +52,7 @@ $15. **Xuất file**:
 - **Phân vùng giao diện**:
   - `pnlTop` (Cao 125px): Gồm `grpTop` (Tiêu đề, ô tìm kiếm nhanh, nút `Xuất file`, `Hiện cột`, `?`) và `pnlKpi` (4 thẻ chỉ số tổng quan).
   - `pnlBoLoc` (Rộng 360px bên trái): Gồm các ComboBox tiêu chí và cụm thời gian ở đáy.
-  - `dgvBaoCaoTonKho` (Dock = Fill): DataGridView đệm đôi, xen kẽ màu, căn lề chuẩn số lượng/tiền tệ `N0`.
+  - `dgvBaoCaoTonKho` (Dock = Fill): DataGridView đệm đôi, xen kẽ màu, căn lề chuẩn số lượng/tiền tệ `N0`. Cột trạng thái kinh doanh dùng font chữ thường theo chuẩn Trả hàng nhập (Xanh lá: Đang kinh doanh, Xám: Ngừng kinh doanh). Cảnh báo tồn kho <= 0 tô đỏ in đậm theo Điều luật 15a.
   - `pnlPhanTrang` (Đáy 42px): Thống kê tổng số hàng, chọn số dòng mỗi trang (10, 20, 50, 100), điều hướng trang trước/sau.
 
 ---
