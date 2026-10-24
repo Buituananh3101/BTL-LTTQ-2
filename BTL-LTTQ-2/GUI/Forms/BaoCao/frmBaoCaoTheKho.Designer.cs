@@ -49,6 +49,7 @@
             this.lblTieuDe = new System.Windows.Forms.Label();
             this.lblTimKiem = new System.Windows.Forms.Label();
             this.txtTimKiem = new System.Windows.Forms.TextBox();
+            this.btnQuayLai = new System.Windows.Forms.Button();
             this.btnInTheKho = new System.Windows.Forms.Button();
             this.btnXuatFile = new System.Windows.Forms.Button();
             this.btnHienCot = new System.Windows.Forms.Button();
@@ -276,6 +277,7 @@
             this.grpTop.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.grpTop.Controls.Add(this.lblTieuDe);
+            this.grpTop.Controls.Add(this.btnQuayLai);
             this.grpTop.Controls.Add(this.lblTimKiem);
             this.grpTop.Controls.Add(this.txtTimKiem);
             this.grpTop.Controls.Add(this.btnInTheKho);
@@ -298,6 +300,17 @@
             this.lblTieuDe.TabIndex = 0;
             this.lblTieuDe.Text = "Báo cáo thẻ kho";
             // 
+            // btnQuayLai
+            // 
+            this.btnQuayLai.Location = new System.Drawing.Point(180, 15);
+            this.btnQuayLai.Name = "btnQuayLai";
+            this.btnQuayLai.Size = new System.Drawing.Size(95, 29);
+            this.btnQuayLai.TabIndex = 7;
+            this.btnQuayLai.Text = "Quay lại";
+            this.btnQuayLai.UseVisualStyleBackColor = true;
+            this.btnQuayLai.Visible = false;
+            this.btnQuayLai.Click += new System.EventHandler(this.btnQuayLai_Click);
+            // 
             // lblTimKiem
             // 
             this.lblTimKiem.AutoSize = true;
@@ -318,7 +331,7 @@
             // btnInTheKho
             // 
             this.btnInTheKho.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnInTheKho.Location = new System.Drawing.Point(1440, 18);
+            this.btnInTheKho.Location = new System.Drawing.Point(1370, 18);
             this.btnInTheKho.Name = "btnInTheKho";
             this.btnInTheKho.Size = new System.Drawing.Size(100, 29);
             this.btnInTheKho.TabIndex = 3;
@@ -329,7 +342,7 @@
             // btnXuatFile
             // 
             this.btnXuatFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnXuatFile.Location = new System.Drawing.Point(1550, 18);
+            this.btnXuatFile.Location = new System.Drawing.Point(1480, 18);
             this.btnXuatFile.Name = "btnXuatFile";
             this.btnXuatFile.Size = new System.Drawing.Size(100, 29);
             this.btnXuatFile.TabIndex = 4;
@@ -340,7 +353,7 @@
             // btnHienCot
             // 
             this.btnHienCot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnHienCot.Location = new System.Drawing.Point(1660, 18);
+            this.btnHienCot.Location = new System.Drawing.Point(1590, 18);
             this.btnHienCot.Name = "btnHienCot";
             this.btnHienCot.Size = new System.Drawing.Size(95, 29);
             this.btnHienCot.TabIndex = 5;
@@ -351,7 +364,7 @@
             // btnHuongDanSuDung
             // 
             this.btnHuongDanSuDung.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnHuongDanSuDung.Location = new System.Drawing.Point(1765, 18);
+            this.btnHuongDanSuDung.Location = new System.Drawing.Point(1705, 18);
             this.btnHuongDanSuDung.Name = "btnHuongDanSuDung";
             this.btnHuongDanSuDung.Size = new System.Drawing.Size(43, 29);
             this.btnHuongDanSuDung.TabIndex = 6;
@@ -549,6 +562,7 @@
             this.Name = "frmBaoCaoTheKho";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Báo Cáo Thẻ Kho";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmBaoCaoTheKho_FormClosed);
             this.Load += new System.EventHandler(this.frmBaoCaoTheKho_Load);
             this.pnlTop.ResumeLayout(false);
             this.pnlBannerHangHoa.ResumeLayout(false);
@@ -583,6 +597,7 @@
         private System.Windows.Forms.Label lblTieuDe;
         private System.Windows.Forms.Label lblTimKiem;
         private System.Windows.Forms.TextBox txtTimKiem;
+        private System.Windows.Forms.Button btnQuayLai;
         private System.Windows.Forms.Button btnInTheKho;
         private System.Windows.Forms.Button btnXuatFile;
         private System.Windows.Forms.Button btnHienCot;

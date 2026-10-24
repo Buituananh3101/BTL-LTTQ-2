@@ -1,14 +1,12 @@
 # Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-24 – Khắc phục triệt để 4 lỗi phát sinh tại Phân hệ Chuyển kho và Phân hệ Báo cáo (Phiên 28)
+**Cập nhật lần cuối**: 2026-10-24 – Khắc phục vị trí nút `?` hướng dẫn bị tràn viền / che khuất trên Báo cáo thẻ kho (Phiên 30)
 
 ---
 
 ## Đang làm
-- [x] Khắc phục lỗi ép kiểu ComboBox DataRowView tại form Thêm phiếu chuyển kho `frmThemPhieuChuyenKho` (`Cannot find column [System.Data.DataRowView]`).
-- [x] Khắc phục lỗi cột `TonToiDa` trong câu truy vấn Báo cáo tồn kho `frmBaoCaoTonKho` (`Invalid column name 'TonToiDa'`).
-- [x] Khắc phục lỗi thao tác Items khi ComboBox đã gán DataSource tại Báo cáo thẻ kho `frmBaoCaoTheKho` (`Items collection cannot be modified when the DataSource property is set`).
-- [x] Khắc phục lỗi tên cột `MaNCC`, `TenNCC`, `MaKH` trong truy vấn Thẻ kho `frmBaoCaoTheKho` (tuân thủ Điều luật 17 truy vấn SELECT kiểm tra CSDL).
+- [x] Sửa vị trí nhóm nút thao tác trên `grpTop` của `frmBaoCaoTheKho`: căn chỉnh `btnInTheKho` (1370), `btnXuatFile` (1480), `btnHienCot` (1590) và đưa nút `?` (`btnHuongDanSuDung`) về vị trí chuẩn `(1705, 18)` góc trên cùng bên phải.
+- [x] Khắc phục triệt để hiện tượng tràn viền vượt quá chiều rộng Form (1782) và hiện tượng nút `?` bị đè dưới nhãn "Báo cáo thẻ kho".
 - [x] Kiểm tra biên dịch mã nguồn C# bằng MSBuild: **0 Warning(s), 0 Error(s)**.
 - [ ] Tiện ích băm mật khẩu `Classes/PasswordHelper.cs` (SHA-256).
 - [ ] Thiết kế và hoàn thiện Form Đăng nhập (`frmDangNhap`) hỗ trợ chọn chi nhánh kho làm việc.
@@ -50,6 +48,37 @@
 ---
 
 ## Nhật ký phiên (Session Logs)
+
+- **Phiên 30 (2026-10-24) – Khắc phục vị trí nút `?` hướng dẫn bị tràn viền / che khuất trên `frmBaoCaoTheKho`**:
+  - **Nhu cầu**: Người dùng phản hồi nút `?` hướng dẫn trên `frmBaoCaoTheKho` bị đè dưới tên chức năng "Báo cáo thẻ kho" và mất khỏi góc phải phía trên thanh công cụ.
+  - **Nguyên nhân**: Trong `frmBaoCaoTheKho.Designer.cs`, cụm nút góc phải bị định vị quá xa về phía bên phải (`btnInTheKho: 1440`, `btnXuatFile: 1550`, `btnHienCot: 1660`, `btnHuongDanSuDung: 1765`), khiến nút `?` (`X=1765 + 43 = 1808 > 1782`) bị tràn ra ngoài biên phải của form (1782) và biến mất khỏi góc phải, đồng thời gây xung đột layout.
+  - **Kết quả thực hiện**:
+    1. **`frmBaoCaoTheKho.Designer.cs`**:
+       - Căn chỉnh lại toàn bộ tọa độ nhóm nút bên phải của `grpTop` đồng bộ 100% với khuôn mẫu `frmBaoCaoTonKho`:
+         + `btnInTheKho`: Location `(1370, 18)`, Size `(100, 29)`, Anchor `Top, Right`.
+         + `btnXuatFile`: Location `(1480, 18)`, Size `(100, 29)`, Anchor `Top, Right`.
+         + `btnHienCot`: Location `(1590, 18)`, Size `(95, 29)`, Anchor `Top, Right`.
+         + `btnHuongDanSuDung`: Location `(1705, 18)`, Size `(43, 29)`, Anchor `Top, Right`.
+       - Bảo đảm khoảng cách an toàn: Nút `?` nằm gọn ở góc trên cùng bên phải, cách lề phải 34px, không còn bất kỳ hiện tượng bị tràn viền hay đè lên tiêu đề `lblTieuDe` ("Báo cáo thẻ kho") ở bên trái (`X=24`).
+    2. **Kiểm tra biên dịch & Chuẩn định dạng**:
+       - Lưu file định dạng **UTF-8 with BOM** (Điều luật 18).
+       - Biên dịch MSBuild thành công: **0 Warning(s), 0 Error(s)**.
+       - Đồng bộ `PROGRESS.md` và `docs/specs/the-kho.md`.
+
+- **Phiên 29 (2026-10-24) – Hoàn thiện nút "Quay lại" điều hướng 2 chiều giữa Báo cáo tồn kho và Báo cáo thẻ kho**:
+  - **Nhu cầu**: Khắc phục trải nghiệm bất tiện khi người dùng nhấn đúp xem thẻ kho của mặt hàng từ Báo cáo tồn kho (`frmBaoCaoTonKho`), form Thẻ kho (`frmBaoCaoTheKho`) che kín màn hình nhưng không có nút quay lại, buộc phải chọn lại menu.
+  - **Kết quả thực hiện (Phương án 1)**:
+    1. **`frmBaoCaoTheKho`**:
+       - Thêm nút `btnQuayLai` ("Quay lại") cạnh tiêu đề form "Báo cáo thẻ kho", tuân thủ Điều luật 14 và 15a (`UseVisualStyleBackColor = true`).
+       - Nút này chỉ xuất hiện (`Visible = true`) khi mở từ Báo cáo tồn kho (`moTuTonKho = true`); khi mở độc lập từ MenuStrip thì nút này ẩn (`Visible = false`).
+       - Hỗ trợ đa kênh quay về: Bấm nút `Quay lại`, nhấn phím `Escape`, hoặc bấm dấu `[X]` đóng cửa sổ con đều tự động kích hoạt `Activate()` đưa `frmBaoCaoTonKho` lên trên cùng và đóng cửa sổ thẻ kho.
+    2. **`frmBaoCaoTonKho`**:
+       - Truyền tham số `moTuTonKho: true` khi người dùng nhấn đúp vào dòng hàng hoặc nhấn nút `Xem thẻ kho`.
+       - Bảo toàn 100% dữ liệu phân trang, dòng hàng đang chọn và bộ lọc, đồng thời tự động focus vào lưới DataGridView (`OnActivated`) khi quay lại để người dùng tiếp tục thao tác bằng bàn phím.
+    3. **Kiểm tra biên dịch & Chuẩn định dạng**:
+       - 100% file mã nguồn lưu định dạng **UTF-8 with BOM** (Điều luật 18).
+       - Biên dịch MSBuild thành công **0 Warning(s), 0 Error(s)**.
+       - Đồng bộ tài liệu đặc tả `docs/specs/the-kho.md`, `docs/specs/bao-cao-ton-kho.md`, sổ quyết định `docs/quyet-dinh.md` và `PROGRESS.md`.
 
 - **Phiên 28 (2026-10-24) – Quét và khắc phục triệt để 4 lỗi phát sinh tại Phân hệ Chuyển kho và Phân hệ Báo cáo**:
   - **Nhu cầu**: Khắc phục 4 lỗi người dùng phản hồi qua ảnh:

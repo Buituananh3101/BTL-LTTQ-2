@@ -99,3 +99,12 @@
   5. **Bảo đảm chuẩn mã nguồn & biên dịch**:
      - 100% file mã nguồn lưu định dạng **UTF-8 with BOM** (Điều luật 18).
      - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+
+- **2026-10-24 (Phiên 29)** – Tối ưu trải nghiệm điều hướng 2 chiều giữa Báo cáo tồn kho và Báo cáo thẻ kho:
+  1. **Bối cảnh & Vấn đề**: Khi người dùng nhấn đúp vào mặt hàng trên Báo cáo tồn kho (`frmBaoCaoTonKho`), hệ thống mở Báo cáo thẻ kho (`frmBaoCaoTheKho`) của mặt hàng đó. Tuy nhiên, trên giao diện Thẻ kho không có cơ chế quay lại, khiến người dùng muốn trở lại danh sách tồn kho phải vào lại MenuStrip để kích hoạt lại rất bất tiện.
+  2. **Giải pháp kiến trúc & UX đã chọn (Phương án 1 theo yêu cầu người dùng)**:
+     - Nút `btnQuayLai` ("Quay lại") được bổ sung vào thanh tiêu đề của `frmBaoCaoTheKho` cạnh tiêu đề "Báo cáo thẻ kho", tuân thủ Điều luật 14 và 15a (nút WinForms chuẩn, `UseVisualStyleBackColor = true`).
+     - **Ngữ cảnh hiển thị**: Nút `btnQuayLai` chỉ xuất hiện (`Visible = true`) khi được mở từ Báo cáo tồn kho (`moTuTonKho = true`); khi mở độc lập từ MenuStrip thì nút này ẩn (`Visible = false`).
+     - **Cơ chế quay lại đa kênh**: Khi nhấn nút `btnQuayLai`, nhấn phím `Escape`, hoặc bấm dấu `[X]` đóng cửa sổ con, hệ thống tự động `Activate()` lại `frmBaoCaoTonKho` và đóng cửa sổ thẻ kho.
+     - **Bảo toàn trạng thái**: Dòng hàng đang chọn, trang hiện tại, bộ lọc của `frmBaoCaoTonKho` được bảo toàn 100%, đồng thời tự động focus lại DataGridView khi kích hoạt (`OnActivated`).
+  3. **Biên dịch & Định dạng**: 100% file mã nguồn lưu định dạng **UTF-8 with BOM** (Điều luật 18). Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.

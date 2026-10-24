@@ -15,18 +15,22 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
     {
         private int maHangKhoiTao = 0;
         private int maKhoKhoiTao = 0;
+        private bool moTuTonKho = false;
         private bool dangNapDuLieu = false;
         private DataTable dtTheKhoHienThi;
 
         public frmBaoCaoTheKho()
         {
             InitializeComponent();
+            btnQuayLai.Visible = false;
         }
 
-        public frmBaoCaoTheKho(int maHang, int maKho = 0) : this()
+        public frmBaoCaoTheKho(int maHang, int maKho = 0, bool moTuTonKho = false) : this()
         {
             this.maHangKhoiTao = maHang;
             this.maKhoKhoiTao = maKho;
+            this.moTuTonKho = moTuTonKho;
+            btnQuayLai.Visible = moTuTonKho;
         }
 
         private void frmBaoCaoTheKho_Load(object sender, EventArgs e)
@@ -45,7 +49,7 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
             // Nếu được truyền mã hàng từ form khác
             if (maHangKhoiTao > 0)
             {
-                ChonMatHangVaKho(maHangKhoiTao, maKhoKhoiTao);
+                ChonMatHangVaKho(maHangKhoiTao, maKhoKhoiTao, moTuTonKho);
             }
             else
             {
@@ -53,8 +57,11 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
             }
         }
 
-        public void ChonMatHangVaKho(int maHang, int maKho = 0)
+        public void ChonMatHangVaKho(int maHang, int maKho = 0, bool moTuTonKho = false)
         {
+            this.moTuTonKho = moTuTonKho;
+            btnQuayLai.Visible = moTuTonKho;
+
             dangNapDuLieu = true;
 
             if (maKho > 0)
@@ -782,6 +789,52 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                 "5. Xuất file: Nhấn 'Xuất file' để xuất toàn bộ biến động thẻ kho ra file CSV chuẩn tiếng Việt có dấu.";
 
             MessageBox.Show(huongDan, "Hướng dẫn sử dụng", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void btnQuayLai_Click(object sender, EventArgs e)
+        {
+            QuayLaiBaoCaoTonKho();
+        }
+
+        private void QuayLaiBaoCaoTonKho()
+        {
+            if (this.MdiParent != null)
+            {
+                foreach (Form form in this.MdiParent.MdiChildren)
+                {
+                    if (form is frmBaoCaoTonKho frmTonKho)
+                    {
+                        frmTonKho.Activate();
+                        break;
+                    }
+                }
+            }
+            this.Close();
+        }
+
+        private void frmBaoCaoTheKho_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (moTuTonKho && this.MdiParent != null)
+            {
+                foreach (Form form in this.MdiParent.MdiChildren)
+                {
+                    if (form is frmBaoCaoTonKho frmTonKho)
+                    {
+                        frmTonKho.Activate();
+                        break;
+                    }
+                }
+            }
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Escape && moTuTonKho)
+            {
+                QuayLaiBaoCaoTonKho();
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
         }
     }
 }

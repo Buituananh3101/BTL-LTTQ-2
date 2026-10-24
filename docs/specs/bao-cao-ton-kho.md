@@ -26,8 +26,9 @@
      - Tiêu chí mức tồn (`cboTieuChiTon`): Tất cả, Còn tồn (>0), Hết hàng (=0), Tồn âm (<0), Dưới định mức tối thiểu, Vượt định mức tối đa.
      - Trạng thái kinh doanh (`cboTrangThai`): Tất cả, Đang kinh doanh, Ngừng kinh doanh.
      - Cụm thời gian tạo (`grpThoiGianTao`): 2 `DateTimePicker` (`dtpTuNgay`, `dtpDenNgay` Short) đặt ở vị trí đáy của bộ lọc.
-  4. **Liên kết nghiệp vụ nhanh**:
-     - Chọn 1 mặt hàng và nhấn nút `Xem thẻ kho` (hoặc nhấp đúp vào dòng hàng) sẽ kích hoạt form **Báo cáo thẻ kho** (`frmBaoCaoTheKho`) được chọn sẵn mặt hàng và chi nhánh kho đó.
+  4. **Liên kết nghiệp vụ nhanh & Điều hướng 2 chiều**:
+     - Chọn 1 mặt hàng và nhấn nút `Xem thẻ kho` (hoặc nhấp đúp vào dòng hàng) sẽ kích hoạt form **Báo cáo thẻ kho** (`frmBaoCaoTheKho`) được chọn sẵn mặt hàng và chi nhánh kho đó với cờ `moTuTonKho = true`.
+     - Báo cáo thẻ kho hiển thị nút `Quay lại`. Khi xem xong, người dùng bấm `Quay lại` (hoặc `Escape` / đóng form), hệ thống kích hoạt lại ngay `frmBaoCaoTonKho`, giữ nguyên 100% dòng hàng đang chọn, trang hiện tại và bộ lọc, đồng thời tự động focus vào lưới dữ liệu.
   5. **Xuất file**:
      - Xuất dữ liệu danh sách tồn kho ra file CSV chuẩn UTF-8 with BOM mở trực tiếp bằng Excel không lỗi font tiếng Việt.
   6. **Tùy chọn hiển thị cột**:

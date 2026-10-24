@@ -40,6 +40,15 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
             TaiDuLieu();
         }
 
+        protected override void OnActivated(EventArgs e)
+        {
+            base.OnActivated(e);
+            if (dgvBaoCaoTonKho != null && dgvBaoCaoTonKho.CurrentRow != null && !dgvBaoCaoTonKho.Focused)
+            {
+                dgvBaoCaoTonKho.Focus();
+            }
+        }
+
         private void KhoiTaoCacCotLuoi()
         {
             dgvBaoCaoTonKho.AutoGenerateColumns = false;
@@ -658,13 +667,13 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                     if (form is frmBaoCaoTheKho existingForm)
                     {
                         existingForm.Activate();
-                        existingForm.ChonMatHangVaKho(maHang, maKho);
+                        existingForm.ChonMatHangVaKho(maHang, maKho, moTuTonKho: true);
                         return;
                     }
                 }
             }
 
-            frmBaoCaoTheKho frmTheKho = new frmBaoCaoTheKho(maHang, maKho);
+            frmBaoCaoTheKho frmTheKho = new frmBaoCaoTheKho(maHang, maKho, moTuTonKho: true);
             if (this.MdiParent != null)
             {
                 frmTheKho.MdiParent = this.MdiParent;

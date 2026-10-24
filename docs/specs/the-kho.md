@@ -33,12 +33,13 @@ Số liệu Thẻ kho được truy vấn từ View CSDL **`vw_BienDongKho`** (h
 ## 2. Kiến trúc Form & Giao diện WinForms
 
 - **Tỉ lệ & Kích thước form**: Kế thừa chuẩn `frmDanhSachHangHoa` (`ClientSize = (1782, 853)`, `FixedSingle`, `MaximizeBox = false`, `CenterScreen`).
-- **Khởi tạo linh hoạt**:
-  - Hỗ trợ constructor rỗng `frmBaoCaoTheKho()` mở từ MenuStrip.
-  - Hỗ trợ constructor có tham số `frmBaoCaoTheKho(int maHang, int maKho = 0)` và phương thức `ChonMatHangVaKho(maHang, maKho)` mở trực tiếp từ Báo cáo tồn kho hoặc Danh mục hàng hóa.
+- **Khởi tạo linh hoạt & Điều hướng 2 chiều**:
+  - Hỗ trợ constructor rỗng `frmBaoCaoTheKho()` mở từ MenuStrip (nút `Quay lại` ẩn).
+  - Hỗ trợ constructor có tham số `frmBaoCaoTheKho(int maHang, int maKho = 0, bool moTuTonKho = false)` và phương thức `ChonMatHangVaKho(maHang, maKho, moTuTonKho = false)` mở trực tiếp từ Báo cáo tồn kho.
+  - Khi `moTuTonKho = true`: Nút `Quay lại` (`btnQuayLai`) hiển thị ở thanh tiêu đề bên cạnh "Báo cáo thẻ kho". Khi bấm `Quay lại`, nhấn phím `Escape` hoặc đóng form (dấu [X]), hệ thống tự động đóng Thẻ kho và kích hoạt lại `frmBaoCaoTonKho` (`Activate()`) đưa người dùng về ngay dòng hàng và trang đang xem dở.
 - **Phân vùng giao diện**:
   - `pnlTop` (Cao 135px):
-    - `grpTop`: Tiêu đề "Báo cáo thẻ kho", ô tìm kiếm nhanh chứng từ/đối tác, nút `In thẻ kho`, `Xuất file`, `Hiện cột`, `?`.
+    - `grpTop`: Tiêu đề "Báo cáo thẻ kho", nút `Quay lại` (`btnQuayLai` - chỉ hiển thị theo ngữ cảnh), ô tìm kiếm nhanh chứng từ/đối tác, nút `In thẻ kho`, `Xuất file`, `Hiện cột`, `?`.
     - `pnlBannerHangHoa`: Banner hiển thị tên sản phẩm, mã SKU, ĐVT, nhóm hàng, vị trí, giá vốn cùng 4 thẻ KPI Thẻ kho (Tồn đầu kỳ, Tổng nhập trong kỳ, Tổng xuất trong kỳ, Tồn cuối kỳ).
   - `pnlBoLoc` (Rộng 360px bên trái):
     - `cboHangHoa`: ComboBox chọn mặt hàng (tích hợp `ComboboxHelper.CaiDatTimKiem`).
