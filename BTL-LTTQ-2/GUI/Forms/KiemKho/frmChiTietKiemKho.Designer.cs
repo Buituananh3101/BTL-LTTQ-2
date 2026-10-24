@@ -164,6 +164,7 @@
             this.dgvChiTiet.AllowUserToAddRows = false;
             this.dgvChiTiet.AllowUserToDeleteRows = false;
             this.dgvChiTiet.BackgroundColor = System.Drawing.Color.White;
+            this.dgvChiTiet.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvChiTiet.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvChiTiet.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colStt,
@@ -459,7 +460,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.White;
+
             this.ClientSize = new System.Drawing.Size(1080, 680);
             this.Controls.Add(this.pnlCenter);
             this.Controls.Add(this.pnlBottom);

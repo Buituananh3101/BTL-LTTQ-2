@@ -38,7 +38,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             dgvChiTiet.AutoGenerateColumns = false;
             dgvChiTiet.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
             dgvChiTiet.DefaultCellStyle.SelectionBackColor = Color.FromArgb(224, 231, 255);
-            dgvChiTiet.DefaultCellStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
+            dgvChiTiet.DefaultCellStyle.SelectionForeColor = Color.FromArgb(30, 41, 59);
 
             colStt.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colMaHangNoiBo.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;

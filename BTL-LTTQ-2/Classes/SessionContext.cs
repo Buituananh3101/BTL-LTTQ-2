@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace BTL_LTTQ_2.Classes
 {
@@ -9,7 +9,8 @@ namespace BTL_LTTQ_2.Classes
     {
         public static int MaTaiKhoan { get; set; } = 1;
         public static string TenDangNhap { get; set; } = "quanly";
-        public static string HoTen { get; set; } = "Quản trị viên";
+        public static int? MaNV { get; set; } = 1;
+        public static string HoTen { get; set; } = "Nguyễn Minh Quản";
         public static int MaVaiTro { get; set; } = 1; // 1: Admin
         public static string TenVaiTro { get; set; } = "Quản trị hệ thống";
         public static int MaKhoHienTai { get; set; } = 1;

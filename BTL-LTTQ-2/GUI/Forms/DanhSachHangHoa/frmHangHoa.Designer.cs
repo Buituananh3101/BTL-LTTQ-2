@@ -46,6 +46,7 @@
             this.picAnhDaiDien = new System.Windows.Forms.PictureBox();
             this.cboNhomHang = new System.Windows.Forms.ComboBox();
             this.cboDonVi = new System.Windows.Forms.ComboBox();
+            this.btnThemDonViNhanh = new System.Windows.Forms.Button();
             this.lblDonVi = new System.Windows.Forms.Label();
             this.txtMoTa = new System.Windows.Forms.TextBox();
             this.txtTenHang = new System.Windows.Forms.TextBox();
@@ -188,6 +189,7 @@
             this.pnlThongTinCoBan.Controls.Add(this.picAnhDaiDien);
             this.pnlThongTinCoBan.Controls.Add(this.cboNhomHang);
             this.pnlThongTinCoBan.Controls.Add(this.cboDonVi);
+            this.pnlThongTinCoBan.Controls.Add(this.btnThemDonViNhanh);
             this.pnlThongTinCoBan.Controls.Add(this.lblDonVi);
             this.pnlThongTinCoBan.Controls.Add(this.txtMoTa);
             this.pnlThongTinCoBan.Controls.Add(this.txtTenHang);
@@ -276,7 +278,19 @@
             this.cboDonVi.FormattingEnabled = true;
             this.cboDonVi.Location = new System.Drawing.Point(462, 47);
             this.cboDonVi.Name = "cboDonVi";
-            this.cboDonVi.Size = new System.Drawing.Size(325, 29);
+            this.cboDonVi.Size = new System.Drawing.Size(288, 29);
+            this.cboDonVi.TabIndex = 2;
+            // 
+            // btnThemDonViNhanh
+            // 
+            this.btnThemDonViNhanh.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.btnThemDonViNhanh.Location = new System.Drawing.Point(756, 47);
+            this.btnThemDonViNhanh.Name = "btnThemDonViNhanh";
+            this.btnThemDonViNhanh.Size = new System.Drawing.Size(31, 29);
+            this.btnThemDonViNhanh.TabIndex = 3;
+            this.btnThemDonViNhanh.Text = "+";
+            this.btnThemDonViNhanh.UseVisualStyleBackColor = true;
+            this.btnThemDonViNhanh.Click += new System.EventHandler(this.btnThemDonViNhanh_Click);
             this.cboDonVi.TabIndex = 2;
             // 
             // lblDonVi
@@ -659,5 +673,6 @@
         private System.Windows.Forms.PictureBox picAnhPhu1;
         private System.Windows.Forms.Button btnXoaAnhChinh;
         private System.Windows.Forms.Button btnXoa;
+        private System.Windows.Forms.Button btnThemDonViNhanh;
     }
 }

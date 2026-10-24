@@ -403,6 +403,7 @@
             this.dgvKiemKho.AllowUserToAddRows = false;
             this.dgvKiemKho.AllowUserToDeleteRows = false;
             this.dgvKiemKho.BackgroundColor = System.Drawing.Color.White;
+            this.dgvKiemKho.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvKiemKho.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvKiemKho.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colChon,
@@ -543,7 +544,6 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1782, 853);
             this.Controls.Add(this.dgvKiemKho);
             this.Controls.Add(this.pnlPhanTrang);

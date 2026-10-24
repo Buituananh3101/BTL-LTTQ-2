@@ -35,7 +35,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             dgvHangTra.AutoGenerateColumns = false;
             dgvHangTra.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
             dgvHangTra.DefaultCellStyle.SelectionBackColor = Color.FromArgb(224, 231, 255);
-            dgvHangTra.DefaultCellStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
+            dgvHangTra.DefaultCellStyle.SelectionForeColor = Color.FromArgb(30, 41, 59);
 
             colStt.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colMaHangNoiBo.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -545,7 +545,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                 // 5. Vẽ giá trị số lượng căn phải bên trong hộp
                 string valStr = e.FormattedValue != null ? Convert.ToDecimal(e.Value ?? 0).ToString("N0") : "0";
                 Rectangle textRect = new Rectangle(boxRect.X, boxRect.Y, boxRect.Width - 8, boxRect.Height);
-                TextRenderer.DrawText(e.Graphics, valStr, e.CellStyle.Font, textRect, Color.FromArgb(15, 23, 42),
+                TextRenderer.DrawText(e.Graphics, valStr, e.CellStyle.Font, textRect, Color.FromArgb(30, 41, 59),
                     TextFormatFlags.Right | TextFormatFlags.VerticalCenter);
 
                 e.Handled = true;

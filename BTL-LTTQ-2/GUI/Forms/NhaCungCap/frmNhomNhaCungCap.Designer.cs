@@ -32,7 +32,7 @@
             // 
             // pnlTop
             // 
-            this.pnlTop.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
+
             this.pnlTop.Controls.Add(this.lblTieuDe);
             this.pnlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlTop.Location = new System.Drawing.Point(0, 0);
@@ -88,7 +88,7 @@
             // 
             // pnlBottom
             // 
-            this.pnlBottom.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
+
             this.pnlBottom.Controls.Add(this.btnBoQua);
             this.pnlBottom.Controls.Add(this.btnLuu);
             this.pnlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -125,7 +125,7 @@
             this.AcceptButton = this.btnLuu;
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.White;
+
             this.CancelButton = this.btnBoQua;
             this.ClientSize = new System.Drawing.Size(464, 326);
             this.Controls.Add(this.pnlBottom);

@@ -1010,6 +1010,30 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             }
         }
 
+        private void btnThemDonViNhanh_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                using (var frm = new BTL_LTTQ_2.GUI.Forms.DonViTinh.frmChiTietDonViTinh())
+                {
+                    if (frm.ShowDialog(this) == DialogResult.OK)
+                    {
+                        // Nạp lại danh sách ĐVT
+                        DataTable dtDVT = DataProcessing.ReadData("SELECT MaDVT, TenDVT FROM DonViTinh ORDER BY TenDVT");
+                        ComboboxHelper.CaiDatTimKiem(cboDonVi, dtDVT, "TenDVT", "MaDVT");
+                        if (frm.MaDvtMoi > 0)
+                        {
+                            cboDonVi.SelectedValue = frm.MaDvtMoi;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi mở form thêm đơn vị tính: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         #endregion
     }
 }

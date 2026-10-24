@@ -290,6 +290,93 @@
     <EmbeddedResource Include="GUI\Forms\KiemKho\frmKiemKho.resx">
       <DependentUpon>frmKiemKho.cs</DependentUpon>
     </EmbeddedResource>
+    <Compile Include="GUI\Forms\DonViTinh\frmHienCotDvt.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\DonViTinh\frmHienCotDvt.Designer.cs">
+      <DependentUpon>frmHienCotDvt.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="GUI\Forms\DonViTinh\frmHienCotDvt.resx">
+      <DependentUpon>frmHienCotDvt.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="GUI\Forms\DonViTinh\frmChiTietDonViTinh.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\DonViTinh\frmChiTietDonViTinh.Designer.cs">
+      <DependentUpon>frmChiTietDonViTinh.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="GUI\Forms\DonViTinh\frmChiTietDonViTinh.resx">
+      <DependentUpon>frmChiTietDonViTinh.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="GUI\Forms\DonViTinh\frmDonViTinh.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\DonViTinh\frmDonViTinh.Designer.cs">
+      <DependentUpon>frmDonViTinh.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="GUI\Forms\DonViTinh\frmDonViTinh.resx">
+      <DependentUpon>frmDonViTinh.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="GUI\Forms\DoiKho\frmDoiKho.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\DoiKho\frmDoiKho.Designer.cs">
+      <DependentUpon>frmDoiKho.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\ChuyenKho\frmHienCotChuyenKho.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\ChuyenKho\frmHienCotChuyenKho.Designer.cs">
+      <DependentUpon>frmHienCotChuyenKho.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\ChuyenKho\frmNhapChuyenKhoFile.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\ChuyenKho\frmNhapChuyenKhoFile.Designer.cs">
+      <DependentUpon>frmNhapChuyenKhoFile.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\ChuyenKho\frmNhanChuyenKho.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\ChuyenKho\frmNhanChuyenKho.Designer.cs">
+      <DependentUpon>frmNhanChuyenKho.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\ChuyenKho\frmChiTietChuyenKho.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\ChuyenKho\frmChiTietChuyenKho.Designer.cs">
+      <DependentUpon>frmChiTietChuyenKho.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\ChuyenKho\frmThemPhieuChuyenKho.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\ChuyenKho\frmThemPhieuChuyenKho.Designer.cs">
+      <DependentUpon>frmThemPhieuChuyenKho.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\ChuyenKho\frmChuyenKho.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\ChuyenKho\frmChuyenKho.Designer.cs">
+      <DependentUpon>frmChuyenKho.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\BaoCao\frmBaoCaoTonKho.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\BaoCao\frmBaoCaoTonKho.Designer.cs">
+      <DependentUpon>frmBaoCaoTonKho.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\BaoCao\frmBaoCaoTheKho.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\BaoCao\frmBaoCaoTheKho.Designer.cs">
+      <DependentUpon>frmBaoCaoTheKho.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\BaoCao\frmHienCotBaoCao.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\BaoCao\frmHienCotBaoCao.Designer.cs">
+      <DependentUpon>frmHienCotBaoCao.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">

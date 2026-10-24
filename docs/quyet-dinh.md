@@ -57,3 +57,45 @@
        + `frmThemPhieuTraHang`: Đổi thứ tự nút đáy từ `Lưu tạm`, `Trả hàng`, `Bỏ qua` sang đúng thứ tự `Bỏ qua` ➜ `Lưu tạm` ➜ `Lưu`.
        + `frmThemPhieuNhap`: Đổi text nút hoàn thành sang `Lưu` đồng bộ thứ tự `Bỏ qua` ➜ `Lưu tạm` ➜ `Lưu`.
        + `frmNhomNhaCungCap`: Đổi thứ tự nút đáy sang đúng `Bỏ qua` ➜ `Lưu`.
+
+- **2026-10-24 (Phiên 23)** – Thiết lập trọn vẹn Phân hệ Đơn vị tính (`GUI/Forms/DonViTinh/`) gồm cụm 3 Form chuẩn mực (`frmDonViTinh`, `frmChiTietDonViTinh`, `frmHienCotDvt`) và tích hợp tạo nhanh trên `frmHangHoa`:
+  1. `frmDonViTinh`: MDI Child danh sách ĐVT kế thừa 100% tỉ lệ chuẩn `frmDanhSachHangHoa` (`1782x853`, `FixedSingle`, `MaximizeBox = false`, `StartPosition = CenterScreen`), thanh tìm kiếm F3/tức thời, bộ lọc ComboBox bên trái (Trạng thái sử dụng, Sắp xếp theo số lượng mặt hàng / tên, cụm `grpThoiGianTao` ở đáy), DataGridView chuẩn đệm đôi, Header CheckBox chọn tất cả, màu trạng thái 3 nhóm (Đang sử dụng xanh lá, Chưa sử dụng xám nhạt), phân trang đáy, nút `Xóa` bảo vệ ràng buộc toàn vẹn dữ liệu (chặn xóa nếu đang có hàng hóa liên kết), nút `Xuất file` CSV UTF-8 BOM.
+  2. `frmChiTietDonViTinh`: Modal Dialog thêm mới/chỉnh sửa ĐVT (kích thước `684x520`), tự động sinh mã, validate chống trùng tên, hiển thị trực quan danh sách các mặt hàng đang áp dụng ĐVT này, thứ tự nút đáy chuẩn Điều luật 19b (`Bỏ qua` ➜ `Lưu`), bọc `ChangeDataTransaction`.
+  3. `frmHienCotDvt`: Form popup tùy chọn ẩn/hiện cột DataGridView Đơn vị tính.
+  4. Tích hợp nút `+` tạo nhanh ĐVT cạnh `cboDonVi` trên `frmHangHoa` và gắn sự kiện `mnuDonViTinh_Click` trên thanh Menu `frmMain`.
+- **2026-10-24 (Phiên 24)** – Nâng cấp trải nghiệm & Đồng bộ chuẩn Quản lý Đơn vị tính (`frmDonViTinh` & `frmChiTietDonViTinh`):
+  1. Loại bỏ cột STT (`colSTT`) không cần thiết khỏi DataGridView danh sách `frmDonViTinh`.
+  2. Chuyển nút `Xóa` từ ngoài danh sách vào trong form chi tiết `frmChiTietDonViTinh`: Bố trí ở góc trái thanh đáy (`pnlBottom`), `btnBoQua` và `btnLuu` ở bên phải theo chuẩn khuôn mẫu `frmHangHoa`. Khi thêm mới ẩn nút xóa (`Visible = false`), khi xem/sửa hiện nút xóa; kiểm tra ràng buộc hàng hóa liên kết trong `HangHoa`: nếu đang có hàng hóa thì chặn xóa kèm thông báo chi tiết, nếu 0 hàng hóa thì cho phép xóa trong Transaction và ghi nhật ký thao tác.
+- **2026-10-24 (Phiên 25)** – Khắc phục triệt để lỗi `Invalid column name 'MaDvtNoiBo'` và chuẩn hóa sử dụng trực tiếp thuộc tính `MaDVT` trong bảng `DonViTinh`:
+  1. Giữ nguyên schema CSDL không thêm cột mới: Bảng `DonViTinh` sử dụng nguyên vẹn các cột hiện hữu (`MaDVT INT IDENTITY(1,1)`, `TenDVT NVARCHAR(50)`, `MoTa NVARCHAR(255)`), xóa bỏ đoạn code DDL `BaoDamCotMaDvtNoiBo()` và loại bỏ Mục 9 khỏi `docs/database_update.sql`.
+  2. Chuẩn hóa truy vấn SQL: Thay thế toàn bộ tham chiếu `MaDvtNoiBo` trong `frmDonViTinh.cs` và `frmChiTietDonViTinh.cs` bằng `MaDVT` và định dạng mã hiển thị thống nhất `('DVT' + RIGHT('000' + CAST(dvt.MaDVT AS VARCHAR(10)), 3)) AS MaHienThi`.
+  3. Nghiệp vụ xem & nhập mã ĐVT: Tại `frmChiTietDonViTinh`, mã `DVT00X` hiển thị rõ ràng cho người dùng xem; khi thêm mới cho phép người dùng tùy ý nhập mã (kiểm tra chống trùng mã qua `MaDVT`, hỗ trợ `SET IDENTITY_INSERT DonViTinh ON` khi chỉ định ID tùy biến); khi xem/chỉnh sửa khóa ô mã (`ReadOnly = true`, nền xám nhạt) để bảo toàn tính toàn vẹn khóa chính và liên kết khóa ngoại với `HangHoa`.
+
+- **2026-10-24 (Phiên 26)** – Thiết kế và hiện thực trọn vẹn Chức năng Đổi kho làm việc (`frmDoiKho`) và Phân hệ Quản lý Chuyển kho (`GUI/Forms/ChuyenKho/`):
+  1. **Chức năng Đổi kho (`frmDoiKho`)**:
+     - Form Modal Dialog (`356x136`, `CenterParent`, `FixedDialog`) đúng chuẩn ảnh mẫu: ComboBox chọn kho làm việc từ các kho đang hoạt động (lọc theo quyền `TaiKhoanKho` nếu không phải Admin), 2 nút "Xác nhận" và "Hủy".
+     - Khi xác nhận: Cập nhật `SessionContext.MaKhoHienTai`, `SessionContext.TenKhoHienTai`, cập nhật tiêu đề `frmMain` (`Quản Lý Kho Phú Quốc - [Tên kho]`), StatusStrip (`Kho: Tên kho`) và tự động làm mới các form con MDI đang mở.
+  2. **Phân hệ Quản lý Chuyển kho (`GUI/Forms/ChuyenKho/`)**:
+     - `frmChuyenKho`: MDI Child danh sách chuyển kho tỉ lệ chuẩn `1782x853` (`FixedSingle`, không phóng to/maximize theo Điều 15e). Bộ lọc bên trái 100% ComboBox (Trạng thái, Hướng chuyển, Kho đối ứng, Người tạo) với `ComboboxHelper.CaiDatTimKiem`, cụm thời gian tạo `grpThoiGianTao` ở ĐÁY (Điều luật 16). DataGridView đệm đôi, màu 3 nhóm trạng thái chuẩn (Đã nhận xanh lá, Đang chuyển / Phiếu tạm vàng amber, Đã hủy xám nhạt theo Điều 15b), phân trang đáy, nút `+ Chuyển kho`, `Xuất file` CSV UTF-8 BOM, `Hiện cột`, `?`.
+     - `frmThemPhieuChuyenKho`: Modal Dialog lập phiếu chuyển kho mới. Chọn kho gửi (mặc định kho hiện tại), kho nhận (khác kho gửi), chọn hàng hóa kèm kiểm tra tồn hiện tại theo kho gửi qua `vw_TonKhoHienTai` (chặn tồn âm theo Luật 6), hỗ trợ nhập file `frmNhapChuyenKhoFile`. Thanh nút đáy chuẩn Điều luật 19b: `Bỏ qua` ➜ `Lưu tạm` (`NHAP`) ➜ `Lưu` (`DA_XUAT`). Bọc lưu trong `ChangeDataTransaction`, ghi nhật ký `NhatKyThaoTac`.
+     - `frmChiTietChuyenKho`: Modal Dialog xem chi tiết khi double-click phiếu. Hiển thị Master-Detail đầy đủ, nhãn trạng thái dòng chữ màu không khung viền theo Điều luật 19a, nút "Nhận hàng" khả dụng khi đang chuyển và người dùng ở kho đích, nút "Xóa" tuân thủ Điều luật 15d & Luật 5 (xóa phiếu tạm, hủy phiếu đang chuyển, khóa phiếu đã nhận), nút "Xuất file".
+     - `frmNhanChuyenKho`: Modal Dialog xác nhận nhận hàng tại kho đích. Kiểm đếm số lượng thực nhận, phát hiện hao hụt/thiếu trên đường chuyển, bắt buộc nhập lý do thất thoát vào ghi chú nhận hàng, cập nhật sang `DA_NHAN` và tự động cộng tồn kho đích qua View động.
+     - `frmHienCotChuyenKho` & `frmNhapChuyenKhoFile`: Form tùy chọn ẩn hiện cột và nhập file dữ liệu mẫu CSV UTF-8 BOM.
+  3. **Biên dịch & Chuẩn định dạng**: 100% file mã nguồn lưu định dạng **UTF-8 with BOM** (Điều luật 18). Biên dịch MSBuild thành công **0 Warning(s), 0 Error(s)**.
+
+- **2026-10-24 (Phiên 28)** – Quét và khắc phục triệt để 4 lỗi phát sinh tại Phân hệ Chuyển kho và Phân hệ Báo cáo:
+  1. **Khắc phục lỗi nạp hàng hóa tại `frmThemPhieuChuyenKho` (`Cannot find column [System.Data.DataRowView]`)**:
+     - Bổ sung kiểm tra an toàn `int.TryParse(cboHangHoa.SelectedValue?.ToString(), out int maHang)` trước khi lọc `dtHangHoaAll.Select("MaHang = " + maHang)` trong `CapNhatTonHienTai()` và `btnThemHang_Click()`, loại bỏ ngoại lệ do ComboBox trả về đối tượng `DataRowView` trong quá trình binding.
+     - Bổ sung kiểm tra an toàn cho `cboKhoNguon` và `cboKhoDich`.
+  2. **Khắc phục lỗi truy vấn Báo cáo tồn kho tại `frmBaoCaoTonKho` (`Invalid column name 'TonToiDa'`)**:
+     - Bảng `HangHoa` trong CSDL không có cột `TonToiDa`. Hệ thống quản lý định mức tồn tối đa và tối thiểu độc lập qua bảng `NguongTonKho` (cột `TonCaoNhat` và `TonToiThieu`).
+     - Chuẩn hóa biểu thức SQL trong `frmBaoCaoTonKho.cs`: Thay thế `ISNULL(ntk.TonCaoNhat, ISNULL(h.TonToiDa, 0))` bằng `ISNULL(ntk.TonCaoNhat, 0)` trong cả mệnh đề WHERE lọc định mức và danh sách cột SELECT.
+  3. **Khắc phục lỗi ComboBox Báo cáo thẻ kho tại `frmBaoCaoTheKho` (`Items collection cannot be modified when the DataSource property is set`)**:
+     - `cboHangHoa` dùng `DataTable` làm dữ liệu nhưng lại gọi overload `ComboboxHelper.CaiDatTimKiem(cbo, List<string>)` vốn thao tác xóa `cbo.Items`.
+     - Chuyển sang gọi đúng overload `ComboboxHelper.CaiDatTimKiem(cboHangHoa, dtComboHang, "TenHienThi", "MaHang", ...)` hỗ trợ DataSource thông qua `DataView`, hoàn toàn không chạm vào `cbo.Items`.
+  4. **Khắc phục lỗi tên cột truy vấn Thẻ kho tại `frmBaoCaoTheKho` (`Invalid column name 'MaNCC'`, `'TenNCC'`, `'MaKH'`)**:
+     - Tuân thủ Điều luật 17: Chạy truy vấn `SELECT` thực tế từ `INFORMATION_SCHEMA.COLUMNS` để xác định chính xác 100% thuộc tính của các bảng liên quan.
+     - Sửa đúng khóa ngoại và thuộc tính thực tế: `pn.MaDonViCapHang`, `nccPn.TenDonVi` (thay vì `pn.MaNCC`, `nccPn.TenNCC`); `pth.MaDonViCapHang`, `nccPth.TenDonVi` (thay vì `pth.MaNCC`, `nccPth.TenNCC`); `px.MaDonBan -> DonBan.MaKh -> KhachHang.TenKH` (thay vì `px.MaKH`).
+  5. **Bảo đảm chuẩn mã nguồn & biên dịch**:
+     - 100% file mã nguồn lưu định dạng **UTF-8 with BOM** (Điều luật 18).
+     - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.

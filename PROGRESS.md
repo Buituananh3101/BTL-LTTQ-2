@@ -1,14 +1,14 @@
 # Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-24 – Chuẩn hóa hiển thị nhãn trạng thái chữ màu (bỏ khung badge) và thống nhất vị trí & thứ tự nút chức năng nhỏ (Bỏ qua ➜ Lưu tạm ➜ Lưu) ở cuối form (Phiên 22)
+**Cập nhật lần cuối**: 2026-10-24 – Khắc phục triệt để 4 lỗi phát sinh tại Phân hệ Chuyển kho và Phân hệ Báo cáo (Phiên 28)
 
 ---
 
 ## Đang làm
-- [x] Chuẩn hóa hiển thị nhãn trạng thái chứng từ: dạng dòng chữ có màu của trạng thái (Xanh lá / Vàng amber / Xám nhạt), không làm khung/badge có viền, nền màu hay padding theo mẫu `frmChiTietPhieuNhap` (sửa `frmChiTietKiemKho`).
-- [x] Thống nhất toàn bộ các nút chức năng nhỏ đưa về cuối form (không để lên đầu như ảnh 2), lấy khuôn mẫu từ `frmThemPhieuNhap`.
-- [x] Chốt thứ tự các nút chức năng nhỏ toàn hệ thống: `Bỏ qua` ➜ `Lưu tạm` ➜ `Lưu` (Ban hành Điều luật 19).
-- [x] Áp dụng đồng bộ thứ tự và vị trí nút bấm cho `frmThemPhieuKiemKho`, `frmThemPhieuTraHang`, `frmThemPhieuNhap`, `frmNhomNhaCungCap`.
+- [x] Khắc phục lỗi ép kiểu ComboBox DataRowView tại form Thêm phiếu chuyển kho `frmThemPhieuChuyenKho` (`Cannot find column [System.Data.DataRowView]`).
+- [x] Khắc phục lỗi cột `TonToiDa` trong câu truy vấn Báo cáo tồn kho `frmBaoCaoTonKho` (`Invalid column name 'TonToiDa'`).
+- [x] Khắc phục lỗi thao tác Items khi ComboBox đã gán DataSource tại Báo cáo thẻ kho `frmBaoCaoTheKho` (`Items collection cannot be modified when the DataSource property is set`).
+- [x] Khắc phục lỗi tên cột `MaNCC`, `TenNCC`, `MaKH` trong truy vấn Thẻ kho `frmBaoCaoTheKho` (tuân thủ Điều luật 17 truy vấn SELECT kiểm tra CSDL).
 - [x] Kiểm tra biên dịch mã nguồn C# bằng MSBuild: **0 Warning(s), 0 Error(s)**.
 - [ ] Tiện ích băm mật khẩu `Classes/PasswordHelper.cs` (SHA-256).
 - [ ] Thiết kế và hoàn thiện Form Đăng nhập (`frmDangNhap`) hỗ trợ chọn chi nhánh kho làm việc.
@@ -19,17 +19,12 @@
 ## Việc kế tiếp
 1. **Xác thực & Phân quyền**: Hoàn tất `frmDangNhap` hỗ trợ chọn chi nhánh kho, tiện ích SHA-256 `PasswordHelper`, tích hợp phân quyền MenuStrip và StatusStrip trên `frmMain`.
 2. **Quản lý Danh mục Cơ bản (Kế thừa khuôn mẫu Danh sách Hàng hóa)**:
-   - Form Danh mục Nhóm hàng (`frmNhomHang`) & Đơn vị tính (`frmDonViTinh`).
+   - Form Danh mục Nhóm hàng (`frmNhomHang`).
    - Form Danh mục Vị trí (`frmViTri`).
    - Form Danh mục Chi nhánh Kho & phân quyền `TaiKhoanKho` (`frmKho`).
    - Form Danh mục Khách hàng (`frmKhachHang`).
 3. **Quản lý Kho & Chứng từ Biến động**:
-   - Form Chuyển kho liên chi nhánh (`frmChuyenKho`) - Luồng 2 bước Xuất chuyển / Nhận hàng.
    - Form Xuất hủy (`frmXuatHuy`).
-4. **Báo cáo & Thống kê**:
-   - Báo cáo Tồn kho đa chi nhánh (`frmBaoCaoTonKho`).
-   - Báo cáo Thẻ kho chi tiết theo mặt hàng (`frmTheKho`).
-   - Tiện ích xuất dữ liệu ra file Excel.
 
 ---
 
@@ -45,16 +40,141 @@
 | 6 | **Danh mục Nhà cung cấp** | `frmNhaCungCap`, `frmDonViCapHang`, `frmNhomNhaCungCap`, `frmHienCotNcc`, `frmNhapNhaCungCapFile` | Hoàn thành 100% |
 | 7 | **Phiếu Nhập hàng** | `frmNhapHang`, `frmThemPhieuNhap`, `frmChiTietPhieuNhap`, `frmHienCotNhapHang` | Hoàn thành 100% |
 | 8 | **Trả hàng nhập** | `frmTraHangNhap`, `frmThemPhieuTraHang`, `frmChiTietTraHangNhap`, `frmHienCotTraHang` | Hoàn thành 100% |
-| 9 | **Danh mục Cơ bản khác** | CRUD Nhóm hàng, Đơn vị tính, Chi nhánh Kho, Khách hàng | Chưa bắt đầu |
-| 10 | **Kiểm kê & Cân bằng kho** | `frmKiemKho`, nạp tồn sổ sách, sinh phiếu điều chỉnh, khóa vĩnh viễn | Hoàn thành 100% |
-| 11 | **Chuyển kho Liên chi nhánh** | `frmChuyenKho`, 2 bước Xuất kho ➜ Nhận kho, chặn tồn âm kho nguồn | Chưa bắt đầu |
-| 12 | **Xuất hủy** | `frmXuatHuy` | Chưa bắt đầu |
-| 13 | **Báo cáo Tồn kho & Thẻ kho** | Báo cáo tồn đa kho, Thẻ kho từ `vw_BienDongKho`, xuất file Excel | Chưa bắt đầu |
+| 9 | **Danh mục Đơn vị tính** | `frmDonViTinh`, `frmChiTietDonViTinh`, `frmHienCotDvt`, tạo nhanh từ `frmHangHoa` | Hoàn thành 100% |
+| 10 | **Danh mục Cơ bản khác** | CRUD Nhóm hàng, Vị trí, Chi nhánh Kho, Khách hàng | Chưa bắt đầu |
+| 11 | **Kiểm kê & Cân bằng kho** | `frmKiemKho`, nạp tồn sổ sách, sinh phiếu điều chỉnh, khóa vĩnh viễn | Hoàn thành 100% |
+| 12 | **Chuyển kho Liên chi nhánh & Đổi kho** | `frmChuyenKho`, 2 bước Xuất kho ➜ Nhận kho, chặn tồn âm kho nguồn, modal `frmDoiKho` | Hoàn thành 100% |
+| 13 | **Xuất hủy** | `frmXuatHuy` | Chưa bắt đầu |
+| 14 | **Báo cáo Tồn kho & Thẻ kho** | Báo cáo tồn đa kho (`frmBaoCaoTonKho`), Thẻ kho (`frmBaoCaoTheKho`) từ `vw_BienDongKho`, xuất CSV UTF-8 BOM | Hoàn thành 100% |
 
 ---
 
 ## Nhật ký phiên (Session Logs)
 
+- **Phiên 28 (2026-10-24) – Quét và khắc phục triệt để 4 lỗi phát sinh tại Phân hệ Chuyển kho và Phân hệ Báo cáo**:
+  - **Nhu cầu**: Khắc phục 4 lỗi người dùng phản hồi qua ảnh:
+    1. Ảnh 1: Lỗi khi chọn chức năng thêm phiếu chuyển kho: `Cannot find column [System.Data.DataRowView]`.
+    2. Ảnh 2: Lỗi khi mở chức năng báo cáo tồn kho: `Invalid column name 'TonToiDa'`.
+    3. Ảnh 3: Lỗi khi mở chức năng báo cáo thẻ kho: `Items collection cannot be modified when the DataSource property is set`.
+    4. Ảnh 4: Lỗi khi tải báo cáo thẻ kho: `Invalid column name 'MaNCC'`, `'TenNCC'`, `'MaKH'`.
+  - **Kết quả thực hiện**:
+    1. **`frmThemPhieuChuyenKho.cs`**:
+       - Thêm kiểm tra `int.TryParse(cboHangHoa.SelectedValue?.ToString(), out int maHang)` trước khi lọc `dtHangHoaAll.Select("MaHang = " + maHang)` trong `CapNhatTonHienTai()` và `btnThemHang_Click()`, loại bỏ dứt điểm ngoại lệ do `DataRowView`.
+       - Bổ sung kiểm tra an toàn cho `cboKhoNguon` và `cboKhoDich`.
+    2. **`frmBaoCaoTonKho.cs`**:
+       - Sửa biểu thức truy vấn định mức tồn: Thay `ISNULL(ntk.TonCaoNhat, ISNULL(h.TonToiDa, 0))` bằng `ISNULL(ntk.TonCaoNhat, 0)` trong cả WHERE clause và SELECT list theo đúng cấu trúc bảng `NguongTonKho`.
+    3. **`frmBaoCaoTheKho.cs`**:
+       - Chuyển `ComboboxHelper.CaiDatTimKiem` cho `cboHangHoa` sang overload DataTable: `ComboboxHelper.CaiDatTimKiem(cboHangHoa, dtComboHang, "TenHienThi", "MaHang", ...)`, khắc phục triệt để lỗi thao tác `Items` khi ComboBox có `DataSource`.
+       - Tuân thủ nghiêm ngặt Điều luật 17: Chạy câu lệnh `SELECT` kiểm tra trực tiếp từ `INFORMATION_SCHEMA.COLUMNS` trong SQL Server để xác thực 100% tên cột thực tế.
+       - Chuẩn hóa các phép JOIN trong câu query thẻ kho: `pn.MaDonViCapHang`, `nccPn.TenDonVi`; `pth.MaDonViCapHang`, `nccPth.TenDonVi`; `px.MaDonBan -> DonBan.MaKh -> KhachHang.TenKH`.
+    4. **Kiểm tra biên dịch & Chuẩn định dạng**:
+       - 100% file mã nguồn lưu định dạng **UTF-8 with BOM** (Điều luật 18).
+       - Biên dịch MSBuild thành công **0 Warning(s), 0 Error(s)**.
+       - Đồng bộ đầy đủ `docs/specs/bao-cao-ton-kho.md`, `docs/quyet-dinh.md` và `PROGRESS.md`.
+  - **Nhu cầu**: Thiết kế form cho 2 chức năng Báo cáo tồn kho và Báo cáo thẻ kho theo đúng nghiệp vụ của hệ thống dựa trên thiết kế giao diện của các form đã hoàn thiện.
+  - **Kết quả thực hiện**:
+    1. **Báo cáo Tồn kho (`frmBaoCaoTonKho`)**:
+       - MDI child tỉ lệ chuẩn `1782x853` FixedSingle (`MaximizeBox = false`, `CenterScreen`).
+       - Thanh công cụ trên: Ô tìm kiếm nhanh SKU/tên hàng/mã vạch, nút `Xem thẻ kho` (kích hoạt mở ngay thẻ kho của hàng đang chọn), nút `Xuất file` CSV UTF-8 with BOM, `Hiện cột`, `?`.
+       - 4 Thẻ KPI tổng kết trên đầu bảng: Tổng số mặt hàng (SKU), Tổng số lượng tồn, Tổng giá trị tồn (Giá vốn × Tồn kho), Cần lưu ý (Hết hàng <= 0 hoặc dưới định mức).
+       - Bộ lọc GroupBox bên trái: Chi nhánh kho (Tất cả / Kho cụ thể), Nhóm hàng (`ComboboxHelper.CaiDatTimKiem`), Tiêu chí mức tồn, Trạng thái kinh doanh; Cụm thời gian tạo `grpThoiGianTao` (2 DateTimePicker Short) **ở vị trí đáy** tuân thủ tuyệt đối Điều luật 16.
+       - DataGridView chuẩn đệm đôi, tự động tô đỏ số lượng tồn khi <= 0 (Điều luật 15a), trạng thái kinh doanh màu xanh lá/xám nhạt (Điều luật 15b), phân trang đáy chuẩn.
+    2. **Báo cáo Thẻ kho (`frmBaoCaoTheKho`)**:
+       - MDI child tỉ lệ chuẩn `1782x853`, hỗ trợ mở độc lập hoặc khởi tạo nhận tham số `(int maHang, int maKho)` khi bấm "Xem thẻ kho" từ Báo cáo tồn kho hoặc Danh mục hàng hóa.
+       - Banner hàng hóa chi tiết (SKU, Tên hàng, ĐVT, Nhóm, Vị trí, Giá vốn) kèm 4 thẻ KPI Thẻ kho: Tồn đầu kỳ ($T_{đầu}$), Tổng nhập (+), Tổng xuất (-), Tồn cuối kỳ ($T_{cuối}$).
+       - Bộ lọc bên trái: ComboBox chọn mặt hàng (`ComboboxHelper.CaiDatTimKiem`), ComboBox kho, ComboBox loại chứng từ phát sinh, cụm thời gian phát sinh ở đáy theo Điều luật 16.
+       - Bảng biến động thẻ kho: Dòng TỒN ĐẦU KỲ (highlight), các dòng phát sinh chứng từ (Phiếu nhập, Chuyển đến, Chuyển đi, Kiểm kê, Trả hàng, Xuất bán, Xuất hủy) kèm đối tác/diễn giải và tính tồn lũy kế theo thời gian, dòng TỒN CUỐI KỲ (highlight). Tô đỏ tồn lũy kế khi âm (< 0), phân biệt màu sắc chứng từ nhập (xanh lá) và xuất (slate).
+       - Hỗ trợ nút `In thẻ kho` xem trước thông tin và `Xuất file` CSV UTF-8 with BOM.
+    3. **Form tùy chọn hiển thị cột (`frmHienCotBaoCao`)**:
+       - Popup linh hoạt cho phép bật/tắt hiển thị từng cột dữ liệu trên DataGridView, tự đóng khi click ra ngoài hoặc bấm Escape.
+    4. **Tích hợp hệ thống & Kiểm tra biên dịch**:
+       - Đăng ký sự kiện mở form trên `frmMain`: `mnuBaoCaoTonKho_Click` và `mnuBaoCaoTheKho_Click`.
+       - Đăng ký đầy đủ các file form mới vào `BTL-LTTQ-2.csproj`.
+       - Chuyển đổi 100% file mã nguồn sang **UTF-8 with BOM** (Điều luật 18).
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+       - Đồng bộ đầy đủ tài liệu đặc tả `docs/specs/bao-cao-ton-kho.md`, `docs/specs/the-kho.md` và sổ quyết định `docs/quyet-dinh.md`.
+
+
+- **Phiên 26 (2026-10-24) – Thiết kế và hiện thực trọn vẹn 2 phân hệ Chuyển kho liên chi nhánh và Đổi kho làm việc**:
+  - **Nhu cầu**: Thiết kế form cho 2 chức năng: Chuyển kho (ghi nhận các phiếu chuyển hàng giữa các kho với nhau, kèm các form phụ trợ liên quan) và Đổi kho (modal nhỏ chọn kho làm việc theo ảnh mẫu), tuân thủ nghiêm ngặt nghiệp vụ kho, phân quyền và design system chuẩn WinForms.
+  - **Kết quả thực hiện**:
+    1. **Form modal Đổi kho làm việc (`GUI/Forms/DoiKho/frmDoiKho`)**:
+       - Khớp 100% giao diện ảnh mẫu (`media_1792806433137_dfddc08d.png`): Kích thước nhỏ gọn `430x170`, `FixedDialog`, tiêu đề "Chọn kho làm việc".
+       - Nạp ComboBox kho từ CSDL: Nếu là Admin nạp toàn bộ kho đang hoạt động; nếu là Thủ kho/Nhân viên chỉ nạp các kho được gán quyền qua bảng `TaiKhoanKho`.
+       - Khi người dùng bấm "Xác nhận", cập nhật `SessionContext.MaKhoHienTai`, `TenKhoHienTai`, tự động đổi tiêu đề `frmMain` kèm tên kho và làm mới toàn bộ Form con đang mở trong MDI.
+    2. **Phân hệ Chuyển kho liên chi nhánh (`GUI/Forms/ChuyenKho/`)**:
+       - `frmChuyenKho`: Màn hình danh sách chuẩn tỉ lệ `1782x853` FixedSingle, bộ lọc bên trái 100% ComboBox, cụm thời gian ở đáy theo Điều luật 16, DataGridView phân trang, lọc theo trạng thái (`DA_XUAT`, `DA_NHAN`, `NHAP`, `HUY`), hỗ trợ tìm kiếm tiếng Việt không dấu.
+       - `frmThemPhieuChuyenKho`: Lập phiếu chuyển kho mới; chọn kho nguồn và kho đích (chặn chọn trùng kho); chọn hàng hóa nạp tồn sổ sách tức thời từ `vw_TonKhoHienTai`; chặn xuất chuyển vượt quá tồn thực tế (Luật 6); hỗ trợ phím tắt và thao tác mượt mà; các nút đáy sắp xếp chuẩn `Bỏ qua` ➜ `Lưu tạm` (`NHAP`) ➜ `Lưu` (`DA_XUAT`).
+       - `frmChiTietChuyenKho`: Màn hình Master-Detail xem và cập nhật phiếu chuyển; hiển thị nhãn trạng thái dòng chữ màu (Điều luật 15b, 19a); nút "Nhận hàng" cho kho đích; nút "Xóa" tuân thủ Điều luật 15d & Luật 5 (chỉ xóa phiếu nháp, vô hiệu hóa khi phiếu đã hoàn tất/đã xuất); nút "Xuất file" CSV định dạng UTF-8 BOM.
+       - `frmNhanChuyenKho`: Modal xác nhận nhận hàng tại chi nhánh đích; cho phép kiểm đếm và ghi nhận số lượng nhận thực tế `SoLuongNhan <= SoLuongChuyen`; phát hiện hao hụt (tô đỏ) và bắt buộc nhập lý do vào `GhiChuNhan`; khi xác nhận cập nhật trạng thái `DA_NHAN` và tự động cộng tồn kho đích qua View `vw_TonKhoHienTai`.
+       - `frmHienCotChuyenKho`: Popup không viền tùy biến ẩn/hiện 10 cột dữ liệu bảng chuyển kho.
+       - `frmNhapChuyenKhoFile`: Nạp danh sách hàng hóa chuyển từ file CSV, tải file mẫu CSV có dữ liệu thực tế, kiểm tra mã hàng và tồn kho gửi.
+    3. **Tích hợp hệ thống & Kiểm tra biên dịch**:
+       - Bổ sung `SessionContext.MaNV` (mặc định lấy NV đầu tiên trong CSDL nếu chưa đăng nhập).
+       - Đăng ký sự kiện mở form trên `frmMain`: `mnuChuyenKho_Click` và `mnuDoiKho_Click`.
+       - Đăng ký đầy đủ 14 file code vào `BTL-LTTQ-2.csproj`.
+       - Chuyển đổi 100% file mã nguồn sang **UTF-8 with BOM** (Điều luật 18).
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+       - Đồng bộ đầy đủ tài liệu đặc tả `docs/specs/chuyen-kho.md` và sổ quyết định `docs/quyet-dinh.md`.
+
+
+- **Phiên 25 (2026-10-24) – Khắc phục triệt để lỗi phát sinh Invalid column name 'MaDvtNoiBo' tại frmDonViTinh**:
+  - **Nhu cầu**: Người dùng phản hồi lỗi phát sinh khi mở `frmDonViTinh`: `Invalid column name 'MaDvtNoiBo'`. Sau khi phân tích, người dùng yêu cầu: sử dụng trực tiếp cột `MaDVT` đã có sẵn trong bảng `DonViTinh` thay vì thêm cột mới, chỉ sửa lại query trong code.
+  - **Kết quả thực hiện**:
+    1. **Bảo toàn schema CSDL**: Giữ nguyên cấu trúc bảng `DonViTinh` (`MaDVT INT IDENTITY`, `TenDVT NVARCHAR(50)`, `MoTa NVARCHAR(255)`), loại bỏ đoạn code DDL tự động và script thêm cột `MaDvtNoiBo` trong `docs/database_update.sql`.
+    2. **Chuẩn hóa câu lệnh SQL trong `frmDonViTinh.cs`**:
+       - Thay thế `dvt.MaDvtNoiBo` bằng biểu thức định dạng hiển thị `('DVT' + RIGHT('000' + CAST(dvt.MaDVT AS VARCHAR(10)), 3)) AS MaHienThi`.
+       - Lược bỏ `dvt.MaDvtNoiBo` khỏi các mệnh đề `GROUP BY` trong `sqlCount` và `sqlData`.
+       - Cập nhật tìm kiếm: Hỗ trợ tìm kiếm theo tên ĐVT, mã số `MaDVT` hoặc mã định dạng `DVT00X`.
+       - Sắp xếp mã ĐVT: Sắp xếp theo `dvt.MaDVT ASC`.
+    3. **Chuẩn hóa xử lý trong form chi tiết `frmChiTietDonViTinh.cs`**:
+       - Bỏ tham chiếu `MaDvtNoiBo`, nạp mã hiển thị dạng `DVT00X` từ `MaDVT`.
+       - Khi thêm mới: Tự sinh mã gợi ý `DVT00X` (dựa trên `MAX(MaDVT) + 1`); cho phép người dùng xem và tùy chỉnh; kiểm tra chống trùng lặp mã; hỗ trợ lưu tự tăng chuẩn hoặc `SET IDENTITY_INSERT DonViTinh ON` khi chỉ định ID tùy biến; bọc lưu trong Transaction.
+       - Khi xem/sửa: Hiển thị mã `DVT00X` và khóa ô mã (`ReadOnly = true`, nền xám nhạt) nhằm bảo vệ tính toàn vẹn khóa chính và liên kết khóa ngoại với `HangHoa`.
+    4. **Kiểm tra biên dịch & Chuẩn định dạng**:
+       - 100% file mã nguồn lưu định dạng **UTF-8 with BOM** (Điều luật 18).
+       - Biên dịch MSBuild thành công **0 Warning(s), 0 Error(s)**.
+       - Đồng bộ tài liệu `docs/specs/don-vi-tinh.md`, `docs/quyet-dinh.md` và `PROGRESS.md`.
+
+- **Phiên 24 (2026-10-24) – Nâng cấp trải nghiệm & Tối ưu Phân hệ Đơn vị tính theo phản hồi người dùng**:
+  - **Nhu cầu**:
+    1. Bỏ cột số thứ tự (`colSTT`) không cần thiết trong `frmDonViTinh`.
+    2. Chuyển nút Xóa của đơn vị tính từ ngoài `frmDonViTinh` vào form chi tiết `frmChiTietDonViTinh`, vị trí đặt các nút và mẫu các nút như trong form Cập nhật thông tin hàng hóa (`frmHangHoa`).
+    3. Mã đơn vị tính tự động sinh nhưng vẫn hiện ra cho người dùng xem và có thể sửa như form Cập nhật thông tin hàng hóa (có check trùng mã, nếu trùng yêu cầu nhập lại).
+  - **Kết quả thực hiện**:
+    1. **Loại bỏ cột STT trên `frmDonViTinh`**: Xóa `colSTT` khỏi DataGridView `dgvDonViTinh` (cả Designer và xử lý `RowPostPaint`), danh sách gọn gàng hơn, không thừa cột.
+    2. **Chuyển nút Xóa vào form chi tiết `frmChiTietDonViTinh`**:
+       - Xóa nút `btnXoa` khỏi thanh công cụ trên cùng của `frmDonViTinh`, căn chỉnh lại nút `btnThemDonViTinh`.
+       - Trong `frmChiTietDonViTinh`: Bố trí nút `btnXoa` ở góc trái thanh đáy `pnlBottom` (`Location = (20, 11)`), các nút `btnBoQua` (`Location = (464, 11)`) và `btnLuu` (`Location = (572, 11)`) ở góc phải theo đúng khuôn mẫu `frmHangHoa`.
+       - Trạng thái nút Xóa: Khi thêm mới (`maDvt == 0`), ẩn nút xóa (`Visible = false`); khi xem/sửa (`maDvt > 0`), hiện nút xóa (`Visible = true`).
+       - Ràng buộc toàn vẹn dữ liệu: Khi bấm Xóa, kiểm tra số lượng mặt hàng liên kết trong `HangHoa`. Nếu có hàng hóa liên kết (`count > 0`), CHẶN XÓA kèm thông báo cảnh báo chi tiết. Nếu 0 mặt hàng liên kết, hiển thị hộp thoại xác nhận và thực hiện xóa bọc trong Transaction kèm ghi nhật ký thao tác `NhatKyThaoTac`.
+    3. **Cho phép xem & sửa mã đơn vị tính**:
+       - Bổ sung cột `MaDvtNoiBo NVARCHAR(50) NULL` vào bảng `DonViTinh` (tuân thủ 3 Nguyên tắc vàng CSDL trong `docs/database_update.sql` và phương thức bảo đảm tự động `BaoDamCotMaDvtNoiBo()`).
+       - Chuyển `txtMaDvt` sang chế độ cho phép nhập (`ReadOnly = false`, nền trắng `BackColor = White`, `MaxLength = 50`).
+       - Khi thêm mới: Tự sinh mã gợi ý `DVT00X` (kiểm tra không trùng với các mã đang có) và nạp vào `txtMaDvt`.
+       - Khi lưu (`btnLuu_Click`): Kiểm tra bắt buộc nhập cả mã và tên ĐVT; kiểm tra trùng mã `MaDvtNoiBo` với các đơn vị tính khác (nếu trùng hiển thị cảnh báo và yêu cầu nhập lại); kiểm tra trùng tên `TenDVT`; thực hiện lưu cả mã và tên bọc trong Transaction.
+    4. **Kiểm tra biên dịch & Chuẩn định dạng**:
+       - 100% file mã nguồn lưu định dạng **UTF-8 with BOM** (Điều luật 18).
+       - Biên dịch MSBuild thành công **0 Warning(s), 0 Error(s)**.
+       - Cập nhật đầy đủ `docs/specs/don-vi-tinh.md`, `docs/quyet-dinh.md` và `PROGRESS.md`.
+
+
+- **Phiên 23 (2026-10-24) – Thiết kế và hiện thực trọn vẹn Phân hệ Đơn vị tính (GUI/Forms/DonViTinh/) theo chuẩn nghiệp vụ và Design System hệ thống**:
+  - **Nhu cầu**: Thiết kế frm Đơn vị tính và các form liên quan theo đúng nghiệp vụ của hệ thống dựa trên mẫu giao diện đã thống nhất từ các frm đã hoàn thành trước đó.
+  - **Kết quả thực hiện**:
+    1. **Tạo mới 3 Form trong thư mục `GUI/Forms/DonViTinh/`**:
+       - `frmDonViTinh`: Form danh sách MDI child kế thừa chuẩn tỉ lệ `frmDanhSachHangHoa` (1782x853, FixedSingle, MaximizeBox = false, StartPosition = CenterScreen). Thanh công cụ trên cùng gồm: ô tìm kiếm tức thời (theo mã hoặc tên), nút `+ Đơn vị tính`, nút `Xóa`, `Xuất file` CSV UTF-8 BOM, `Hiện cột`, `Hướng dẫn sử dụng`. Bộ lọc ComboBox bên trái gồm: Trạng thái sử dụng (Tất cả / Đang có hàng hóa / Chưa có hàng hóa), Sắp xếp, cụm thời gian `grpThoiGianTao` ở đáy (Điều luật 16). DataGridView chuẩn đệm đôi, Header CheckBox chọn tất cả, màu trạng thái 3 nhóm (Đang sử dụng xanh lá, Chưa sử dụng xám nhạt theo Điều luật 15b), phân trang đáy chuẩn.
+       - `frmChiTietDonViTinh`: Form Modal Dialog Thêm mới / Chỉnh sửa đơn vị tính (684x520). Tự sinh mã định dạng `DVT00X`, kiểm tra bắt buộc tên ĐVT, chống trùng lặp tên; hiển thị danh sách các mặt hàng đang áp dụng ĐVT này (kèm phân loại nhóm và giá bán) để quản lý/thủ kho dễ dàng nắm bắt trước khi sửa/đổi; thứ tự nút ở đáy chuẩn Điều luật 19b (`Bỏ qua` ➜ `Lưu`), bọc lưu dữ liệu và nhật ký trong `DataProcessing.ChangeDataTransaction`.
+       - `frmHienCotDvt`: Form popup không viền tùy chọn ẩn/hiện các cột của bảng Đơn vị tính, tự đóng khi click ra ngoài hoặc bấm Escape.
+    2. **Ràng buộc nghiệp vụ bảo vệ toàn vẹn dữ liệu**:
+       - Khi xóa đơn vị tính: Kiểm tra tự động số lượng mặt hàng đang liên kết trong bảng `HangHoa`. Nếu có hàng hóa đang áp dụng, hệ thống lập tức CHẶN XÓA và đưa ra thông báo cảnh báo chi tiết từng mặt hàng để bảo vệ toàn vẹn dữ liệu. Chỉ cho phép xóa các ĐVT chưa có hàng hóa nào liên kết.
+    3. **Tích hợp liên kết phân hệ**:
+       - Bổ sung nút tạo nhanh ĐVT `btnThemDonViNhanh` ("+") ngay cạnh `cboDonVi` trên `frmHangHoa`: Bấm nút mở ngay `frmChiTietDonViTinh`, sau khi lưu tự động nạp lại danh sách ĐVT và chọn ngay ĐVT mới tạo.
+       - Gắn sự kiện `mnuDonViTinh_Click` trên thanh MenuStrip của `frmMain`: Mở form con MDI hoặc kích hoạt nếu form đã mở.
+    4. **Bảo đảm chuẩn mã nguồn & biên dịch**:
+       - Đăng ký đầy đủ các file form mới trong `BTL-LTTQ-2.csproj`.
+       - 100% file mã nguồn C# lưu dưới định dạng **UTF-8 with BOM** (Điều luật 18).
+       - Kiểm tra biên dịch bằng MSBuild thành công **0 Warning(s), 0 Error(s)**.
 - **Phiên 22 (2026-10-24) – Chuẩn hóa hiển thị nhãn trạng thái dòng chữ màu (bỏ khung badge) và thống nhất thứ tự nút Bỏ qua - Lưu tạm - Lưu (Ban hành Điều luật 19)**:
   - **Nhu cầu**:
     1. Phần ghi đánh dấu các trạng thái phiếu không làm thành 1 phần có khung như ảnh 1 mà chỉ là dòng chữ có màu của trạng thái như trong mẫu `frmChiTietPhieuNhap` (không sửa vào `frmDanhSachHangHoa`).

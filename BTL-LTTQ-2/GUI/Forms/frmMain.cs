@@ -1,5 +1,9 @@
-﻿using BTL_LTTQ_2.GUI.Forms.NhapHang;
+﻿using BTL_LTTQ_2.Classes;
+using BTL_LTTQ_2.GUI.Forms.BaoCao;
+using BTL_LTTQ_2.GUI.Forms.ChuyenKho;
+using BTL_LTTQ_2.GUI.Forms.DoiKho;
 using BTL_LTTQ_2.GUI.Forms.NhaCungCap;
+using BTL_LTTQ_2.GUI.Forms.NhapHang;
 using System;
 using System.Windows.Forms;
 
@@ -28,9 +32,12 @@ namespace BTL_LTTQ_2.GUI.Forms
                 }
             }
 
+            // Thiết lập tiêu đề kèm kho làm việc hiện tại
+            this.Text = "Quản Lý Kho Phú Quốc - [" + SessionContext.TenKhoHienTai + "]";
+
             // Thiết lập thông tin trạng thái ở góc trái dưới
-            tssNguoiDung.Text = "Người dùng: Quản trị viên (quanly)";
-            tssKho.Text = "Kho: Kho trung tâm";
+            tssNguoiDung.Text = "Người dùng: " + SessionContext.HoTen + " (" + SessionContext.TenDangNhap + ")";
+            tssKho.Text = "Kho: " + SessionContext.TenKhoHienTai;
             tssThoiGian.Text = "Thời gian: " + DateTime.Now.ToString("dd/MM/yyyy HH:mm");
         }
 
@@ -138,6 +145,112 @@ namespace BTL_LTTQ_2.GUI.Forms
             }
 
             BTL_LTTQ_2.GUI.Forms.KiemKho.frmKiemKho frm = new BTL_LTTQ_2.GUI.Forms.KiemKho.frmKiemKho();
+            frm.MdiParent = this;
+            frm.Show();
+        }
+
+        private void mnuChuyenKho_Click(object sender, EventArgs e)
+        {
+            // Kiểm tra xem form danh sách chuyển kho đã mở chưa, nếu đã mở thì kích hoạt (Active) lên trước
+            foreach (Form form in this.MdiChildren)
+            {
+                if (form is frmChuyenKho)
+                {
+                    form.Activate();
+                    return;
+                }
+            }
+
+            frmChuyenKho frm = new frmChuyenKho();
+            frm.MdiParent = this;
+            frm.Show();
+        }
+
+        private void mnuDoiKho_Click(object sender, EventArgs e)
+        {
+            using (frmDoiKho frm = new frmDoiKho())
+            {
+                if (frm.ShowDialog(this) == DialogResult.OK)
+                {
+                    // Cập nhật tiêu đề Form cha và StatusStrip
+                    this.Text = "Quản Lý Kho Phú Quốc - [" + SessionContext.TenKhoHienTai + "]";
+                    tssKho.Text = "Kho: " + SessionContext.TenKhoHienTai;
+
+                    // Làm mới các form con MDI đang mở
+                    foreach (Form form in this.MdiChildren)
+                    {
+                        if (form is frmChuyenKho ck)
+                        {
+                            ck.TaiDuLieu();
+                        }
+                        else if (form is BTL_LTTQ_2.GUI.Forms.KiemKho.frmKiemKho kk)
+                        {
+                            kk.TaiDuLieu();
+                        }
+                        else if (form is frmNhapHang nh)
+                        {
+                            nh.LoadData();
+                        }
+                        else if (form is frmBaoCaoTonKho bctk)
+                        {
+                            bctk.TaiDuLieu();
+                        }
+                        else if (form is frmBaoCaoTheKho bcthk)
+                        {
+                            bcthk.TaiDuLieuTheKho();
+                        }
+                    }
+                }
+            }
+        }
+
+        private void mnuDonViTinh_Click(object sender, EventArgs e)
+        {
+            // Kiểm tra xem form danh sách đơn vị tính đã mở chưa, nếu đã mở thì kích hoạt (Active) lên trước
+            foreach (Form form in this.MdiChildren)
+            {
+                if (form is BTL_LTTQ_2.GUI.Forms.DonViTinh.frmDonViTinh)
+                {
+                    form.Activate();
+                    return;
+                }
+            }
+
+            BTL_LTTQ_2.GUI.Forms.DonViTinh.frmDonViTinh frm = new BTL_LTTQ_2.GUI.Forms.DonViTinh.frmDonViTinh();
+            frm.MdiParent = this;
+            frm.Show();
+        }
+
+        private void mnuBaoCaoTonKho_Click(object sender, EventArgs e)
+        {
+            // Kiểm tra xem form báo cáo tồn kho đã mở chưa, nếu đã mở thì kích hoạt (Active) lên trước
+            foreach (Form form in this.MdiChildren)
+            {
+                if (form is frmBaoCaoTonKho)
+                {
+                    form.Activate();
+                    return;
+                }
+            }
+
+            frmBaoCaoTonKho frm = new frmBaoCaoTonKho();
+            frm.MdiParent = this;
+            frm.Show();
+        }
+
+        private void mnuBaoCaoTheKho_Click(object sender, EventArgs e)
+        {
+            // Kiểm tra xem form báo cáo thẻ kho đã mở chưa, nếu đã mở thì kích hoạt (Active) lên trước
+            foreach (Form form in this.MdiChildren)
+            {
+                if (form is frmBaoCaoTheKho)
+                {
+                    form.Activate();
+                    return;
+                }
+            }
+
+            frmBaoCaoTheKho frm = new frmBaoCaoTheKho();
             frm.MdiParent = this;
             frm.Show();
         }

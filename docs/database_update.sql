@@ -485,3 +485,4 @@ BEGIN
     PRINT N'[OK] Đã thêm cột MaPhieuNhap vào bảng PhieuTraHangNhap.';
 END
 GO
+

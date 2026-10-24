@@ -127,6 +127,7 @@
             this.mnuChuyenKho.Name = "mnuChuyenKho";
             this.mnuChuyenKho.Size = new System.Drawing.Size(224, 26);
             this.mnuChuyenKho.Text = "Chuyển kho";
+            this.mnuChuyenKho.Click += new System.EventHandler(this.mnuChuyenKho_Click);
             // 
             // toolStripSeparator2
             // 
@@ -138,6 +139,7 @@
             this.mnuDoiKho.Name = "mnuDoiKho";
             this.mnuDoiKho.Size = new System.Drawing.Size(224, 26);
             this.mnuDoiKho.Text = "Đổi kho";
+            this.mnuDoiKho.Click += new System.EventHandler(this.mnuDoiKho_Click);
             // 
             // mnuDanhMuc
             // 
@@ -166,6 +168,7 @@
             this.mnuDonViTinh.Name = "mnuDonViTinh";
             this.mnuDonViTinh.Size = new System.Drawing.Size(235, 26);
             this.mnuDonViTinh.Text = "Đơn vị tính";
+            this.mnuDonViTinh.Click += new System.EventHandler(this.mnuDonViTinh_Click);
             // 
             // mnuMuaHang
             // 
@@ -218,12 +221,14 @@
             this.mnuBaoCaoTonKho.Name = "mnuBaoCaoTonKho";
             this.mnuBaoCaoTonKho.Size = new System.Drawing.Size(205, 26);
             this.mnuBaoCaoTonKho.Text = "Báo cáo tồn kho";
+            this.mnuBaoCaoTonKho.Click += new System.EventHandler(this.mnuBaoCaoTonKho_Click);
             // 
             // mnuBaoCaoTheKho
             // 
             this.mnuBaoCaoTheKho.Name = "mnuBaoCaoTheKho";
             this.mnuBaoCaoTheKho.Size = new System.Drawing.Size(205, 26);
             this.mnuBaoCaoTheKho.Text = "Báo cáo thẻ kho";
+            this.mnuBaoCaoTheKho.Click += new System.EventHandler(this.mnuBaoCaoTheKho_Click);
             // 
             // mnuTroGiup
             // 

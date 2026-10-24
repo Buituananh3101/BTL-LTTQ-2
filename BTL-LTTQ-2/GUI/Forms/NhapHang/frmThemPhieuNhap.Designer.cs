@@ -358,7 +358,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvChiTietHang.BackgroundColor = System.Drawing.Color.White;
-            this.dgvChiTietHang.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.dgvChiTietHang.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvChiTietHang.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvChiTietHang.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colStt,
@@ -640,7 +640,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.White;
+
             this.ClientSize = new System.Drawing.Size(1104, 690);
             this.CancelButton = this.btnBoQua;
             this.Controls.Add(this.pnlBottom);

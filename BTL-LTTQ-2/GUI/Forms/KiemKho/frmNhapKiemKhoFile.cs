@@ -32,7 +32,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             dgvXemTruoc.AutoGenerateColumns = false;
             dgvXemTruoc.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
             dgvXemTruoc.DefaultCellStyle.SelectionBackColor = Color.FromArgb(224, 231, 255);
-            dgvXemTruoc.DefaultCellStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
+            dgvXemTruoc.DefaultCellStyle.SelectionForeColor = Color.FromArgb(30, 41, 59);
 
             colStt.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colMaHang.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;

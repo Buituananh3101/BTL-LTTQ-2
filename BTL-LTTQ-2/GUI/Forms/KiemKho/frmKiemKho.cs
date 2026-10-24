@@ -33,9 +33,10 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                 null, dgvKiemKho, new object[] { true });
 
             dgvKiemKho.AutoGenerateColumns = false;
+            dgvKiemKho.BorderStyle = BorderStyle.None;
             dgvKiemKho.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
             dgvKiemKho.DefaultCellStyle.SelectionBackColor = Color.FromArgb(224, 231, 255);
-            dgvKiemKho.DefaultCellStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
+            dgvKiemKho.DefaultCellStyle.SelectionForeColor = Color.FromArgb(30, 41, 59);
 
             colChon.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colMaPhieu.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;

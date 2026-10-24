@@ -44,7 +44,7 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
             dgvHangTra.AutoGenerateColumns = false;
             dgvHangTra.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
             dgvHangTra.DefaultCellStyle.SelectionBackColor = Color.FromArgb(224, 231, 255);
-            dgvHangTra.DefaultCellStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
+            dgvHangTra.DefaultCellStyle.SelectionForeColor = Color.FromArgb(30, 41, 59);
 
             colStt.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colMaHangNoiBo.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
