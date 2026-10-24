@@ -734,11 +734,42 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
 
         private void btnHienCot_Click(object sender, EventArgs e)
         {
+            foreach (Form openForm in Application.OpenForms)
+            {
+                if (openForm is frmHienCotBaoCao)
+                {
+                    openForm.Activate();
+                    openForm.BringToFront();
+                    return;
+                }
+            }
+
             frmHienCotBaoCao frm = new frmHienCotBaoCao(dgvBaoCaoTonKho);
-            Point pt = btnHienCot.PointToScreen(new Point(0, btnHienCot.Height));
             frm.StartPosition = FormStartPosition.Manual;
-            frm.Location = pt;
+
+            // TÃ­nh toáº¡ Ä‘á»™ hiá»ƒn thá»‹ ngay phÃ­a dÆ°á»›i nÃºt btnHienCot (cÄƒn tháº³ng mÃ©p pháº£i nÃºt)
+            Point btnPos = btnHienCot.PointToScreen(Point.Empty);
+            int posX = btnPos.X + btnHienCot.Width - frm.Width;
+            int posY = btnPos.Y + btnHienCot.Height + 2;
+
+            // Báº£o Ä‘áº£m form khÃ´ng bá»‹ trÃ n ra ngoÃ i mÃ n hÃ¬nh lÃ m viá»‡c
+            Rectangle workingArea = Screen.FromControl(btnHienCot).WorkingArea;
+            if (posX + frm.Width > workingArea.Right)
+            {
+                posX = workingArea.Right - frm.Width;
+            }
+            if (posX < workingArea.Left)
+            {
+                posX = workingArea.Left;
+            }
+            if (posY + frm.Height > workingArea.Bottom)
+            {
+                posY = btnPos.Y - frm.Height - 2;
+            }
+
+            frm.Location = new Point(posX, posY);
             frm.Show(this);
+            frm.BringToFront();
         }
 
         private void btnHuongDanSuDung_Click(object sender, EventArgs e)

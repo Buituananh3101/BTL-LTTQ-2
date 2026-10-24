@@ -5,7 +5,7 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
 {
     public partial class frmHienCotTraHang : Form
     {
-        private DataGridView dgvTraHang;
+        private DataGridView dgvTraHangNhap;
 
         public frmHienCotTraHang()
         {
@@ -15,7 +15,7 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
 
         public frmHienCotTraHang(DataGridView dgv) : this()
         {
-            this.dgvTraHang = dgv;
+            this.dgvTraHangNhap = dgv;
             DongBoTrangThaiCot();
             DangKySuKienCot();
         }
@@ -31,14 +31,9 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
             };
         }
 
-        private void frmHienCotTraHang_Deactivate(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
         private void DongBoTrangThaiCot()
         {
-            if (dgvTraHang == null) return;
+            if (dgvTraHangNhap == null) return;
 
             SetCheckedIfExists("colMaPhieu", chkMaPhieu);
             SetCheckedIfExists("colThoiGian", chkThoiGian);
@@ -52,9 +47,9 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
 
         private void SetCheckedIfExists(string colName, CheckBox chk)
         {
-            if (dgvTraHang.Columns.Contains(colName))
+            if (dgvTraHangNhap.Columns.Contains(colName))
             {
-                chk.Checked = dgvTraHang.Columns[colName].Visible;
+                chk.Checked = dgvTraHangNhap.Columns[colName].Visible;
             }
         }
 
@@ -72,9 +67,9 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
 
         private void DoiTrangThaiCot(string colName, bool visible)
         {
-            if (dgvTraHang != null && dgvTraHang.Columns.Contains(colName))
+            if (dgvTraHangNhap != null && dgvTraHangNhap.Columns.Contains(colName))
             {
-                dgvTraHang.Columns[colName].Visible = visible;
+                dgvTraHangNhap.Columns[colName].Visible = visible;
             }
         }
     }

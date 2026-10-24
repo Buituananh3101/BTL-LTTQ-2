@@ -1,6 +1,6 @@
 ﻿# Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-24 – Chuẩn hóa toàn bộ Font chữ, Màu chữ theo frmDanhSachHangHoa và Ban hành Quy chuẩn Kích thước Form (Phiên 34)
+**Cập nhật lần cuối**: 2026-10-25 – Chuẩn hóa toàn bộ Form Hiện cột theo mẫu frmDanhSachHangHoa và Cơ chế Co giãn Cột DataGridView Lấp đầy Bảng (Phiên 35)
 
 ---
 
@@ -48,6 +48,27 @@
 ---
 
 ## Nhật ký phiên (Session Logs)
+
+- **Phiên 35 (2026-10-25) – Chuẩn hóa toàn bộ Form  Hiển thị cột theo mẫu rmHienCot của Danh mục hàng hóa và Cơ chế Co giãn Cột DataGridView Lấp đầy Bảng**:
+  - **Nhu cầu**: Người dùng phản hồi:
+    1. Chuẩn hóa lại tất cả các form Hiển thị cột trong tất cả các chức năng (trừ Danh sách hàng hóa) thành form giống 100% form rmHienCot của Danh mục hàng hóa (style, color, border style, start position...).
+    2. Ở tất cả các form danh sách, khi chọn hiển thị thêm các cột hoặc bỏ bớt các cột cần hiển thị thì các cột còn đang hiển thị tự động mở rộng hoặc thu hẹp lại sao cho vừa với DataGridView hoặc form hiện tại (giải quyết triệt để lỗi khoảng trống thừa lớn bên phải như ảnh Kiểm kho người dùng gửi). Chỉ xuất hiện thanh cuộn ngang khi hiển thị quá nhiều thông tin chạm ngưỡng MinimumWidth.
+  - **Kết quả thực hiện**:
+    1. **Chuẩn hóa 100% Form Hiện cột**:
+       - rmHienCotKiemKho: Chuyển sang FixedDialog, nền trắng, tiêu đề lblHienThiCot Hiển thị cột 10F Bold, 10 CheckBox chia 2 cột đều đặn (ClientSize = 340 x 205), bỏ nút tnDong và sự kiện Deactivate.
+       - rmHienCotChuyenKho: Chuyển sang FixedDialog, nền trắng, tiêu đề Hiển thị cột, 10 CheckBox chia 2 cột đều đặn (ClientSize = 340 x 205), bỏ nút tnDong.
+       - rmHienCotNhapHang: Loại bỏ hoàn toàn pnlMain viền đen và borderless, đưa về FixedDialog nền trắng, 7 CheckBox 1 cột gọn gàng (ClientSize = 220 x 255).
+       - rmHienCotTraHang: Loại bỏ pnlMain, đưa về FixedDialog nền trắng, 8 CheckBox chia 2 cột 4-4 (ClientSize = 340 x 175).
+       - rmHienCotNcc: Loại bỏ pnlMain, đưa về FixedDialog nền trắng, 7 CheckBox 1 cột gọn gàng (ClientSize = 220 x 255).
+       - rmHienCotDvt: Loại bỏ pnlMain, đưa về FixedDialog nền trắng, 5 CheckBox 1 cột gọn gàng (ClientSize = 220 x 200).
+       - rmHienCotBaoCao: Loại bỏ pnlTop, pnlBottom, nút Đóng, nút Chọn tất cả; tự động sinh CheckBox chia làm 2 cột cân đối và tự động co giãn chiều cao form vừa vặn theo số hàng, phục vụ cho cả Báo cáo tồn kho và Báo cáo thẻ kho.
+    2. **Chuẩn hóa Cơ chế Tự động Co giãn DataGridView Lấp đầy Bảng**:
+       - Áp dụng AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill kết hợp FillWeight theo tỷ lệ chuẩn cho toàn bộ các cột dữ liệu trên DataGridView danh sách ở tất cả 8 phân hệ (rmKiemKho, rmChuyenKho, rmNhapHang, rmTraHangNhap, rmNhaCungCap, rmDonViTinh, rmBaoCaoTonKho, rmBaoCaoTheKho).
+       - Cài đặt MinimumWidth chuẩn mực cho từng cột để tránh co bẹp chữ khi hiển thị nhiều cột; tự động xuất hiện thanh cuộn ngang khi vượt quá chiều rộng DataGridView.
+       - Chuẩn hóa sự kiện tnHienCot_Click: chống mở trùng (Application.OpenForms), mở form ngay dưới mép phải nút tnHienCot và bảo đảm trong workingArea.
+    3. **Kiểm tra biên dịch & Chuẩn định dạng**:
+       - 100% file mã nguồn lưu định dạng **UTF-8 with BOM** (Điều luật 18).
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
 
 - **Phiên 34 (2026-10-24) – Chuẩn hóa toàn bộ Font chữ & Màu chữ theo `frmDanhSachHangHoa` và Ban hành Quy chuẩn Kích thước Form**:
   - **Nhu cầu**: Người dùng phản hồi trên các form (chi tiết chứng từ, thêm mới, báo cáo...), các nhãn và trường dữ liệu (Tổng tiền hàng, NCC cần trả, Mã phiếu...) bị tự ý in đậm (`FontStyle.Bold`) và chọn màu chữ (`ForeColor`) mỗi trường một kiểu cọc cạch như ảnh 2. Yêu cầu:

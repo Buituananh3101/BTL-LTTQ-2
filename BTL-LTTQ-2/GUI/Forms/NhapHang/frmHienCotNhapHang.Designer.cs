@@ -17,8 +17,7 @@
 
         private void InitializeComponent()
         {
-            this.pnlMain = new System.Windows.Forms.Panel();
-            this.lblTieuDe = new System.Windows.Forms.Label();
+            this.lblHienThiCot = new System.Windows.Forms.Label();
             this.chkMaPhieu = new System.Windows.Forms.CheckBox();
             this.chkThoiGian = new System.Windows.Forms.CheckBox();
             this.chkMaNcc = new System.Windows.Forms.CheckBox();
@@ -26,42 +25,28 @@
             this.chkCanTraNcc = new System.Windows.Forms.CheckBox();
             this.chkTongTien = new System.Windows.Forms.CheckBox();
             this.chkTrangThai = new System.Windows.Forms.CheckBox();
-            this.pnlMain.SuspendLayout();
             this.SuspendLayout();
             // 
-            // pnlMain
+            // lblHienThiCot
             // 
-            this.pnlMain.BackColor = System.Drawing.Color.White;
-            this.pnlMain.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pnlMain.Controls.Add(this.chkTrangThai);
-            this.pnlMain.Controls.Add(this.chkTongTien);
-            this.pnlMain.Controls.Add(this.chkCanTraNcc);
-            this.pnlMain.Controls.Add(this.chkTenNcc);
-            this.pnlMain.Controls.Add(this.chkMaNcc);
-            this.pnlMain.Controls.Add(this.chkThoiGian);
-            this.pnlMain.Controls.Add(this.chkMaPhieu);
-            this.pnlMain.Controls.Add(this.lblTieuDe);
-            this.pnlMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlMain.Location = new System.Drawing.Point(0, 0);
-            this.pnlMain.Name = "pnlMain";
-            this.pnlMain.Padding = new System.Windows.Forms.Padding(12);
-            this.pnlMain.Size = new System.Drawing.Size(230, 260);
-            this.pnlMain.TabIndex = 0;
-            // 
-            // lblTieuDe
-            // 
-            this.lblTieuDe.AutoSize = true;
-            this.lblTieuDe.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.lblTieuDe.Location = new System.Drawing.Point(12, 10);
-            this.lblTieuDe.Name = "lblTieuDe";
-            this.lblTieuDe.Size = new System.Drawing.Size(142, 17);
-            this.lblTieuDe.TabIndex = 0;
-            this.lblTieuDe.Text = "Tùy chọn cột hiển thị";
+            this.lblHienThiCot.AutoSize = true;
+            this.lblHienThiCot.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblHienThiCot.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(41)))), ((int)(((byte)(59)))));
+            this.lblHienThiCot.Location = new System.Drawing.Point(20, 16);
+            this.lblHienThiCot.Name = "lblHienThiCot";
+            this.lblHienThiCot.Size = new System.Drawing.Size(86, 19);
+            this.lblHienThiCot.TabIndex = 0;
+            this.lblHienThiCot.Text = "Hiển thị cột";
             // 
             // chkMaPhieu
             // 
             this.chkMaPhieu.AutoSize = true;
-            this.chkMaPhieu.Location = new System.Drawing.Point(16, 40);
+            this.chkMaPhieu.Checked = true;
+            this.chkMaPhieu.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkMaPhieu.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.chkMaPhieu.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkMaPhieu.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
+            this.chkMaPhieu.Location = new System.Drawing.Point(24, 48);
             this.chkMaPhieu.Name = "chkMaPhieu";
             this.chkMaPhieu.Size = new System.Drawing.Size(111, 21);
             this.chkMaPhieu.TabIndex = 1;
@@ -71,7 +56,12 @@
             // chkThoiGian
             // 
             this.chkThoiGian.AutoSize = true;
-            this.chkThoiGian.Location = new System.Drawing.Point(16, 70);
+            this.chkThoiGian.Checked = true;
+            this.chkThoiGian.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkThoiGian.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.chkThoiGian.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkThoiGian.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
+            this.chkThoiGian.Location = new System.Drawing.Point(24, 76);
             this.chkThoiGian.Name = "chkThoiGian";
             this.chkThoiGian.Size = new System.Drawing.Size(81, 21);
             this.chkThoiGian.TabIndex = 2;
@@ -81,7 +71,12 @@
             // chkMaNcc
             // 
             this.chkMaNcc.AutoSize = true;
-            this.chkMaNcc.Location = new System.Drawing.Point(16, 100);
+            this.chkMaNcc.Checked = true;
+            this.chkMaNcc.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkMaNcc.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.chkMaNcc.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkMaNcc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
+            this.chkMaNcc.Location = new System.Drawing.Point(24, 104);
             this.chkMaNcc.Name = "chkMaNcc";
             this.chkMaNcc.Size = new System.Drawing.Size(130, 21);
             this.chkMaNcc.TabIndex = 3;
@@ -91,7 +86,12 @@
             // chkTenNcc
             // 
             this.chkTenNcc.AutoSize = true;
-            this.chkTenNcc.Location = new System.Drawing.Point(16, 130);
+            this.chkTenNcc.Checked = true;
+            this.chkTenNcc.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkTenNcc.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.chkTenNcc.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkTenNcc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
+            this.chkTenNcc.Location = new System.Drawing.Point(24, 132);
             this.chkTenNcc.Name = "chkTenNcc";
             this.chkTenNcc.Size = new System.Drawing.Size(131, 21);
             this.chkTenNcc.TabIndex = 4;
@@ -101,7 +101,12 @@
             // chkCanTraNcc
             // 
             this.chkCanTraNcc.AutoSize = true;
-            this.chkCanTraNcc.Location = new System.Drawing.Point(16, 160);
+            this.chkCanTraNcc.Checked = true;
+            this.chkCanTraNcc.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkCanTraNcc.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.chkCanTraNcc.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkCanTraNcc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
+            this.chkCanTraNcc.Location = new System.Drawing.Point(24, 160);
             this.chkCanTraNcc.Name = "chkCanTraNcc";
             this.chkCanTraNcc.Size = new System.Drawing.Size(95, 21);
             this.chkCanTraNcc.TabIndex = 5;
@@ -111,7 +116,12 @@
             // chkTongTien
             // 
             this.chkTongTien.AutoSize = true;
-            this.chkTongTien.Location = new System.Drawing.Point(16, 190);
+            this.chkTongTien.Checked = true;
+            this.chkTongTien.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkTongTien.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.chkTongTien.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkTongTien.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
+            this.chkTongTien.Location = new System.Drawing.Point(24, 188);
             this.chkTongTien.Name = "chkTongTien";
             this.chkTongTien.Size = new System.Drawing.Size(83, 21);
             this.chkTongTien.TabIndex = 6;
@@ -121,7 +131,12 @@
             // chkTrangThai
             // 
             this.chkTrangThai.AutoSize = true;
-            this.chkTrangThai.Location = new System.Drawing.Point(16, 220);
+            this.chkTrangThai.Checked = true;
+            this.chkTrangThai.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkTrangThai.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.chkTrangThai.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkTrangThai.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
+            this.chkTrangThai.Location = new System.Drawing.Point(24, 216);
             this.chkTrangThai.Name = "chkTrangThai";
             this.chkTrangThai.Size = new System.Drawing.Size(86, 21);
             this.chkTrangThai.TabIndex = 7;
@@ -130,29 +145,31 @@
             // 
             // frmHienCotNhapHang
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(230, 260);
-            this.Controls.Add(this.pnlMain);
+            this.ClientSize = new System.Drawing.Size(220, 255);
+            this.Controls.Add(this.chkTrangThai);
+            this.Controls.Add(this.chkTongTien);
+            this.Controls.Add(this.chkCanTraNcc);
+            this.Controls.Add(this.chkTenNcc);
+            this.Controls.Add(this.chkMaNcc);
+            this.Controls.Add(this.chkThoiGian);
+            this.Controls.Add(this.chkMaPhieu);
+            this.Controls.Add(this.lblHienThiCot);
             this.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.KeyPreview = true;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "frmHienCotNhapHang";
-            this.ShowIcon = false;
-            this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Text = "Hiện cột";
-            this.Deactivate += new System.EventHandler(this.frmHienCotNhapHang_Deactivate);
-            this.pnlMain.ResumeLayout(false);
-            this.pnlMain.PerformLayout();
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.ResumeLayout(false);
+            this.PerformLayout();
         }
 
         #endregion
 
-        private System.Windows.Forms.Panel pnlMain;
-        private System.Windows.Forms.Label lblTieuDe;
+        private System.Windows.Forms.Label lblHienThiCot;
         private System.Windows.Forms.CheckBox chkMaPhieu;
         private System.Windows.Forms.CheckBox chkThoiGian;
         private System.Windows.Forms.CheckBox chkMaNcc;

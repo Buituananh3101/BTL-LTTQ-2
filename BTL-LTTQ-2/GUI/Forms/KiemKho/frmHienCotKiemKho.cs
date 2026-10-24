@@ -31,11 +31,6 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             };
         }
 
-        private void frmHienCotKiemKho_Deactivate(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
         private void DongBoTrangThaiCot()
         {
             if (dgvKiemKho == null) return;
@@ -80,11 +75,6 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             {
                 dgvKiemKho.Columns[colName].Visible = visible;
             }
-        }
-
-        private void btnDong_Click(object sender, EventArgs e)
-        {
-            this.Close();
         }
     }
 }

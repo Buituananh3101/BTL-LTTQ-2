@@ -461,7 +461,9 @@
             // colMaPhieu
             // 
             this.colMaPhieu.DataPropertyName = "MaPhieu";
-            this.colMaPhieu.HeaderText = "Mã trả hàng nhập";
+            this.colMaPhieu.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+ this.colMaPhieu.FillWeight = 120F;
+ this.colMaPhieu.HeaderText = "Mã trả hàng nhập";
             this.colMaPhieu.MinimumWidth = 6;
             this.colMaPhieu.Name = "colMaPhieu";
             this.colMaPhieu.ReadOnly = true;
@@ -470,7 +472,9 @@
             // colThoiGian
             // 
             this.colThoiGian.DataPropertyName = "NgayTra";
-            this.colThoiGian.HeaderText = "Thời gian";
+            this.colThoiGian.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+ this.colThoiGian.FillWeight = 140F;
+ this.colThoiGian.HeaderText = "Thời gian";
             this.colThoiGian.MinimumWidth = 6;
             this.colThoiGian.Name = "colThoiGian";
             this.colThoiGian.ReadOnly = true;
@@ -480,7 +484,8 @@
             // 
             this.colTenNcc.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.colTenNcc.DataPropertyName = "TenDonVi";
-            this.colTenNcc.HeaderText = "Nhà cung cấp";
+            this.colTenNcc.FillWeight = 220F;
+ this.colTenNcc.HeaderText = "Nhà cung cấp";
             this.colTenNcc.MinimumWidth = 6;
             this.colTenNcc.Name = "colTenNcc";
             this.colTenNcc.ReadOnly = true;
@@ -488,7 +493,9 @@
             // colTongTienHang
             // 
             this.colTongTienHang.DataPropertyName = "TongTienHang";
-            this.colTongTienHang.HeaderText = "Tổng tiền hàng";
+            this.colTongTienHang.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+ this.colTongTienHang.FillWeight = 130F;
+ this.colTongTienHang.HeaderText = "Tổng tiền hàng";
             this.colTongTienHang.MinimumWidth = 6;
             this.colTongTienHang.Name = "colTongTienHang";
             this.colTongTienHang.ReadOnly = true;
@@ -497,7 +504,9 @@
             // colGiamGia
             // 
             this.colGiamGia.DataPropertyName = "GiamGia";
-            this.colGiamGia.HeaderText = "Giảm giá";
+            this.colGiamGia.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+ this.colGiamGia.FillWeight = 110F;
+ this.colGiamGia.HeaderText = "Giảm giá";
             this.colGiamGia.MinimumWidth = 6;
             this.colGiamGia.Name = "colGiamGia";
             this.colGiamGia.ReadOnly = true;
@@ -506,7 +515,9 @@
             // colCanThuNcc
             // 
             this.colCanThuNcc.DataPropertyName = "CanThuNcc";
-            this.colCanThuNcc.HeaderText = "NCC cần trả";
+            this.colCanThuNcc.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+ this.colCanThuNcc.FillWeight = 130F;
+ this.colCanThuNcc.HeaderText = "NCC cần trả";
             this.colCanThuNcc.MinimumWidth = 6;
             this.colCanThuNcc.Name = "colCanThuNcc";
             this.colCanThuNcc.ReadOnly = true;
@@ -515,7 +526,9 @@
             // colDaThuNcc
             // 
             this.colDaThuNcc.DataPropertyName = "DaThuNcc";
-            this.colDaThuNcc.HeaderText = "NCC đã trả";
+            this.colDaThuNcc.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+ this.colDaThuNcc.FillWeight = 130F;
+ this.colDaThuNcc.HeaderText = "NCC đã trả";
             this.colDaThuNcc.MinimumWidth = 6;
             this.colDaThuNcc.Name = "colDaThuNcc";
             this.colDaThuNcc.ReadOnly = true;
@@ -524,7 +537,9 @@
             // colTrangThai
             // 
             this.colTrangThai.DataPropertyName = "TenTrangThai";
-            this.colTrangThai.HeaderText = "Trạng thái";
+            this.colTrangThai.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+ this.colTrangThai.FillWeight = 120F;
+ this.colTrangThai.HeaderText = "Trạng thái";
             this.colTrangThai.MinimumWidth = 6;
             this.colTrangThai.Name = "colTrangThai";
             this.colTrangThai.ReadOnly = true;

@@ -22,7 +22,6 @@ namespace BTL_LTTQ_2.GUI.Forms.DonViTinh
 
         private void CaiDatSuKienPhim()
         {
-            // Nhấn phím Escape để đóng form
             this.KeyDown += (s, e) =>
             {
                 if (e.KeyCode == Keys.Escape)
@@ -32,15 +31,6 @@ namespace BTL_LTTQ_2.GUI.Forms.DonViTinh
             };
         }
 
-        private void frmHienCotDvt_Deactivate(object sender, EventArgs e)
-        {
-            // Tự đóng khi người dùng click ra ngoài
-            this.Close();
-        }
-
-        /// <summary>
-        /// Nạp trạng thái Visible hiện thời của các cột trên DataGridView vào CheckBox
-        /// </summary>
         private void DongBoTrangThaiCot()
         {
             if (dgvDonViTinh == null) return;
@@ -52,17 +42,14 @@ namespace BTL_LTTQ_2.GUI.Forms.DonViTinh
             SetCheckedIfExists("colHangHoaTieuBieu", chkHangHoaTieuBieu);
         }
 
-        private void SetCheckedIfExists(string columnName, CheckBox chk)
+        private void SetCheckedIfExists(string colName, CheckBox chk)
         {
-            if (dgvDonViTinh.Columns.Contains(columnName))
+            if (dgvDonViTinh.Columns.Contains(colName))
             {
-                chk.Checked = dgvDonViTinh.Columns[columnName].Visible;
+                chk.Checked = dgvDonViTinh.Columns[colName].Visible;
             }
         }
 
-        /// <summary>
-        /// Gắn sự kiện khi tick/bỏ tick CheckBox thì ẩn/hiện cột tương ứng trên DataGridView
-        /// </summary>
         private void DangKySuKienCot()
         {
             chkMaDVT.CheckedChanged += (s, e) => DoiTrangThaiCot("colMaDVT", chkMaDVT.Checked);
@@ -72,11 +59,11 @@ namespace BTL_LTTQ_2.GUI.Forms.DonViTinh
             chkHangHoaTieuBieu.CheckedChanged += (s, e) => DoiTrangThaiCot("colHangHoaTieuBieu", chkHangHoaTieuBieu.Checked);
         }
 
-        private void DoiTrangThaiCot(string columnName, bool visible)
+        private void DoiTrangThaiCot(string colName, bool visible)
         {
-            if (dgvDonViTinh != null && dgvDonViTinh.Columns.Contains(columnName))
+            if (dgvDonViTinh != null && dgvDonViTinh.Columns.Contains(colName))
             {
-                dgvDonViTinh.Columns[columnName].Visible = visible;
+                dgvDonViTinh.Columns[colName].Visible = visible;
             }
         }
     }

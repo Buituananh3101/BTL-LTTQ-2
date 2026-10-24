@@ -49,6 +49,28 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
             colTongGiaTri.DefaultCellStyle.Format = "N0";
             colTrangThai.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
+            // Cấu hình co giãn các cột tự động lấp đầy DataGridView theo tỷ lệ
+            colMaPhieu.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colMaPhieu.FillWeight = 120;
+            colNgayLap.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colNgayLap.FillWeight = 140;
+            colKhoNguon.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colKhoNguon.FillWeight = 180;
+            colKhoDich.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colKhoDich.FillWeight = 180;
+            colTongSlChuyen.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colTongSlChuyen.FillWeight = 110;
+            colTongSlNhan.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colTongSlNhan.FillWeight = 110;
+            colTongGiaTri.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colTongGiaTri.FillWeight = 130;
+            colNguoiTao.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colNguoiTao.FillWeight = 140;
+            colGhiChu.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colGhiChu.FillWeight = 180;
+            colTrangThai.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colTrangThai.FillWeight = 120;
+
             dangNapDuLieu = true;
 
             // Thiết lập mặc định lọc thời gian: 30 ngày gần nhất
@@ -407,10 +429,42 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
 
         private void btnHienCot_Click(object sender, EventArgs e)
         {
+            foreach (Form openForm in Application.OpenForms)
+            {
+                if (openForm is frmHienCotChuyenKho)
+                {
+                    openForm.Activate();
+                    openForm.BringToFront();
+                    return;
+                }
+            }
+
             frmHienCotChuyenKho frm = new frmHienCotChuyenKho(dgvChuyenKho);
-            Point pt = btnHienCot.PointToScreen(new Point(0, btnHienCot.Height));
-            frm.Location = pt;
-            frm.Show();
+            frm.StartPosition = FormStartPosition.Manual;
+
+            // Tính toạ độ hiển thị ngay phía dưới nút btnHienCot (căn thẳng mép phải nút)
+            Point btnPos = btnHienCot.PointToScreen(Point.Empty);
+            int posX = btnPos.X + btnHienCot.Width - frm.Width;
+            int posY = btnPos.Y + btnHienCot.Height + 2;
+
+            // Bảo đảm form không bị tràn ra ngoài màn hình làm việc
+            Rectangle workingArea = Screen.FromControl(btnHienCot).WorkingArea;
+            if (posX + frm.Width > workingArea.Right)
+            {
+                posX = workingArea.Right - frm.Width;
+            }
+            if (posX < workingArea.Left)
+            {
+                posX = workingArea.Left;
+            }
+            if (posY + frm.Height > workingArea.Bottom)
+            {
+                posY = btnPos.Y - frm.Height - 2;
+            }
+
+            frm.Location = new Point(posX, posY);
+            frm.Show(this);
+            frm.BringToFront();
         }
 
         private void btnHuongDanSuDung_Click(object sender, EventArgs e)

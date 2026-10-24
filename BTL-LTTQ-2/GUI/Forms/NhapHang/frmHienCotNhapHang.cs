@@ -31,11 +31,6 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             };
         }
 
-        private void frmHienCotNhapHang_Deactivate(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
         private void DongBoTrangThaiCot()
         {
             if (dgvNhapHang == null) return;

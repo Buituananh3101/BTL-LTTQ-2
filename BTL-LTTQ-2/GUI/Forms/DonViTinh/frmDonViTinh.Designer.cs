@@ -435,7 +435,9 @@
             // colMaDVT
             // 
             this.colMaDVT.DataPropertyName = "MaHienThi";
-            this.colMaDVT.HeaderText = "Mã ĐVT";
+            this.colMaDVT.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+ this.colMaDVT.FillWeight = 120F;
+ this.colMaDVT.HeaderText = "Mã ĐVT";
             this.colMaDVT.MinimumWidth = 110;
             this.colMaDVT.Name = "colMaDVT";
             this.colMaDVT.ReadOnly = true;
@@ -444,7 +446,9 @@
             // colTenDVT
             // 
             this.colTenDVT.DataPropertyName = "TenDVT";
-            this.colTenDVT.HeaderText = "Tên đơn vị tính";
+            this.colTenDVT.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+ this.colTenDVT.FillWeight = 180F;
+ this.colTenDVT.HeaderText = "Tên đơn vị tính";
             this.colTenDVT.MinimumWidth = 160;
             this.colTenDVT.Name = "colTenDVT";
             this.colTenDVT.ReadOnly = true;
@@ -453,7 +457,9 @@
             // colSoLuongHangHoa
             // 
             this.colSoLuongHangHoa.DataPropertyName = "SoLuongHangHoa";
-            this.colSoLuongHangHoa.HeaderText = "Số lượng hàng hóa";
+            this.colSoLuongHangHoa.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+ this.colSoLuongHangHoa.FillWeight = 160F;
+ this.colSoLuongHangHoa.HeaderText = "Số lượng hàng hóa";
             this.colSoLuongHangHoa.MinimumWidth = 140;
             this.colSoLuongHangHoa.Name = "colSoLuongHangHoa";
             this.colSoLuongHangHoa.ReadOnly = true;
@@ -462,7 +468,9 @@
             // colTrangThai
             // 
             this.colTrangThai.DataPropertyName = "TrangThaiSuDung";
-            this.colTrangThai.HeaderText = "Trạng thái sử dụng";
+            this.colTrangThai.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+ this.colTrangThai.FillWeight = 160F;
+ this.colTrangThai.HeaderText = "Trạng thái sử dụng";
             this.colTrangThai.MinimumWidth = 140;
             this.colTrangThai.Name = "colTrangThai";
             this.colTrangThai.ReadOnly = true;
@@ -472,7 +480,8 @@
             // 
             this.colHangHoaTieuBieu.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.colHangHoaTieuBieu.DataPropertyName = "HangHoaTieuBieu";
-            this.colHangHoaTieuBieu.HeaderText = "Mặt hàng tiêu biểu";
+            this.colHangHoaTieuBieu.FillWeight = 250F;
+ this.colHangHoaTieuBieu.HeaderText = "Mặt hàng tiêu biểu";
             this.colHangHoaTieuBieu.MinimumWidth = 250;
             this.colHangHoaTieuBieu.Name = "colHangHoaTieuBieu";
             this.colHangHoaTieuBieu.ReadOnly = true;

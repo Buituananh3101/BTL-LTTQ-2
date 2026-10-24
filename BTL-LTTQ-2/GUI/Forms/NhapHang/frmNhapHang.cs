@@ -72,6 +72,22 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             colTongTien.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             colTrangThai.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
+            // Cấu hình co giãn các cột tự động lấp đầy DataGridView theo tỷ lệ
+            colMaPhieu.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colMaPhieu.FillWeight = 120;
+            colThoiGian.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colThoiGian.FillWeight = 140;
+            colMaNcc.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colMaNcc.FillWeight = 110;
+            colTenNcc.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colTenNcc.FillWeight = 220;
+            colCanTraNcc.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colCanTraNcc.FillWeight = 130;
+            colTongTien.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colTongTien.FillWeight = 130;
+            colTrangThai.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colTrangThai.FillWeight = 120;
+
             colCanTraNcc.DefaultCellStyle.Format = "N0";
             colTongTien.DefaultCellStyle.Format = "N0";
             colThoiGian.DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";

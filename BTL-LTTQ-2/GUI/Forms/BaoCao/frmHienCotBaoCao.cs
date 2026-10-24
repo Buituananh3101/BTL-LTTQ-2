@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace BTL_LTTQ_2.GUI.Forms.BaoCao
@@ -21,7 +23,6 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
 
         private void CaiDatSuKienPhim()
         {
-            this.KeyPreview = true;
             this.KeyDown += (s, e) =>
             {
                 if (e.KeyCode == Keys.Escape)
@@ -35,14 +36,32 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
         {
             if (targetDgv == null) return;
 
-            flpCot.SuspendLayout();
-            flpCot.Controls.Clear();
+            this.SuspendLayout();
 
+            // Lấy danh sách các cột hợp lệ cần tùy chọn hiển thị
+            List<DataGridViewColumn> validCols = new List<DataGridViewColumn>();
             foreach (DataGridViewColumn col in targetDgv.Columns)
             {
-                // Bỏ qua cột không có HeaderText hoặc cột khóa chính ẩn
-                if (string.IsNullOrWhiteSpace(col.HeaderText) || col.Name.StartsWith("colMa") && col.Name.EndsWith("Id"))
+                if (string.IsNullOrWhiteSpace(col.HeaderText) || 
+                    (col.Name.StartsWith("colMa") && col.Name.EndsWith("Id")) ||
+                    col is DataGridViewCheckBoxColumn)
+                {
                     continue;
+                }
+                validCols.Add(col);
+            }
+
+            int count = validCols.Count;
+            int numRows = (count + 1) / 2; // Số dòng nếu chia 2 cột
+
+            for (int i = 0; i < count; i++)
+            {
+                DataGridViewColumn col = validCols[i];
+                int colIndex = i < numRows ? 0 : 1; // Nửa đầu xếp cột 1, nửa sau xếp cột 2
+                int rowIndex = i < numRows ? i : (i - numRows);
+
+                int posX = colIndex == 0 ? 24 : 185;
+                int posY = 48 + rowIndex * 28;
 
                 CheckBox chk = new CheckBox
                 {
@@ -50,8 +69,11 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                     Tag = col.Name,
                     Checked = col.Visible,
                     AutoSize = true,
-                    Margin = new Padding(3, 4, 3, 4),
-                    Font = new System.Drawing.Font("Segoe UI", 9.5F)
+                    Location = new Point(posX, posY),
+                    Cursor = Cursors.Hand,
+                    Font = new Font("Segoe UI", 9.5F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0))),
+                    ForeColor = Color.FromArgb(51, 65, 85),
+                    UseVisualStyleBackColor = true
                 };
 
                 string colName = col.Name;
@@ -63,42 +85,15 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                     }
                 };
 
-                flpCot.Controls.Add(chk);
+                this.Controls.Add(chk);
             }
 
-            flpCot.ResumeLayout();
-        }
+            // Tự động tính chiều cao form vừa vặn theo số hàng
+            int formHeight = Math.Max(120, 48 + numRows * 28 + 20);
+            this.ClientSize = new Size(340, formHeight);
 
-        private void btnChonTatCa_Click(object sender, EventArgs e)
-        {
-            bool coMucChuaChon = false;
-            foreach (Control ctrl in flpCot.Controls)
-            {
-                if (ctrl is CheckBox chk && !chk.Checked)
-                {
-                    coMucChuaChon = true;
-                    break;
-                }
-            }
-
-            foreach (Control ctrl in flpCot.Controls)
-            {
-                if (ctrl is CheckBox chk)
-                {
-                    chk.Checked = coMucChuaChon;
-                }
-            }
-        }
-
-        private void btnDong_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
-        private void frmHienCotBaoCao_Deactivate(object sender, EventArgs e)
-        {
-            // Tự đóng khi người dùng click ra ngoài
-            this.Close();
+            this.ResumeLayout(false);
+            this.PerformLayout();
         }
     }
 }

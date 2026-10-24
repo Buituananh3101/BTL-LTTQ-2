@@ -472,7 +472,9 @@
             // colMaPhieu
             // 
             this.colMaPhieu.DataPropertyName = "MaPhieu";
-            this.colMaPhieu.HeaderText = "Mã nhập hàng";
+            this.colMaPhieu.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+ this.colMaPhieu.FillWeight = 120F;
+ this.colMaPhieu.HeaderText = "Mã nhập hàng";
             this.colMaPhieu.Name = "colMaPhieu";
             this.colMaPhieu.ReadOnly = true;
             this.colMaPhieu.Width = 140;
@@ -480,7 +482,9 @@
             // colThoiGian
             // 
             this.colThoiGian.DataPropertyName = "NgayLap";
-            this.colThoiGian.HeaderText = "Thời gian";
+            this.colThoiGian.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+ this.colThoiGian.FillWeight = 140F;
+ this.colThoiGian.HeaderText = "Thời gian";
             this.colThoiGian.Name = "colThoiGian";
             this.colThoiGian.ReadOnly = true;
             this.colThoiGian.Width = 150;
@@ -488,7 +492,9 @@
             // colMaNcc
             // 
             this.colMaNcc.DataPropertyName = "MaNccHienThi";
-            this.colMaNcc.HeaderText = "Mã nhà cung cấp";
+            this.colMaNcc.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+ this.colMaNcc.FillWeight = 110F;
+ this.colMaNcc.HeaderText = "Mã nhà cung cấp";
             this.colMaNcc.Name = "colMaNcc";
             this.colMaNcc.ReadOnly = true;
             this.colMaNcc.Width = 140;
@@ -497,14 +503,17 @@
             // 
             this.colTenNcc.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.colTenNcc.DataPropertyName = "TenDonVi";
-            this.colTenNcc.HeaderText = "Tên nhà cung cấp";
+            this.colTenNcc.FillWeight = 220F;
+ this.colTenNcc.HeaderText = "Tên nhà cung cấp";
             this.colTenNcc.Name = "colTenNcc";
             this.colTenNcc.ReadOnly = true;
             // 
             // colCanTraNcc
             // 
             this.colCanTraNcc.DataPropertyName = "CanTraNcc";
-            this.colCanTraNcc.HeaderText = "Cần trả NCC";
+            this.colCanTraNcc.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+ this.colCanTraNcc.FillWeight = 130F;
+ this.colCanTraNcc.HeaderText = "Cần trả NCC";
             this.colCanTraNcc.Name = "colCanTraNcc";
             this.colCanTraNcc.ReadOnly = true;
             this.colCanTraNcc.Width = 140;
@@ -512,7 +521,9 @@
             // colTongTien
             // 
             this.colTongTien.DataPropertyName = "TongTien";
-            this.colTongTien.HeaderText = "Tổng tiền";
+            this.colTongTien.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+ this.colTongTien.FillWeight = 130F;
+ this.colTongTien.HeaderText = "Tổng tiền";
             this.colTongTien.Name = "colTongTien";
             this.colTongTien.ReadOnly = true;
             this.colTongTien.Width = 140;
@@ -520,7 +531,9 @@
             // colTrangThai
             // 
             this.colTrangThai.DataPropertyName = "TenTrangThai";
-            this.colTrangThai.HeaderText = "Trạng thái";
+            this.colTrangThai.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+ this.colTrangThai.FillWeight = 120F;
+ this.colTrangThai.HeaderText = "Trạng thái";
             this.colTrangThai.Name = "colTrangThai";
             this.colTrangThai.ReadOnly = true;
             this.colTrangThai.Width = 130;

@@ -31,11 +31,6 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
             };
         }
 
-        private void frmHienCotChuyenKho_Deactivate(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
         private void DongBoTrangThaiCot()
         {
             if (dgvChuyenKho == null) return;
@@ -44,9 +39,9 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
             SetCheckedIfExists("colNgayLap", chkNgayLap);
             SetCheckedIfExists("colKhoNguon", chkKhoNguon);
             SetCheckedIfExists("colKhoDich", chkKhoDich);
-            SetCheckedIfExists("colTongSlChuyen", chkTongSlChuyen);
-            SetCheckedIfExists("colTongSlNhan", chkTongSlNhan);
-            SetCheckedIfExists("colTongGiaTri", chkTongGiaTri);
+            SetCheckedIfExists("chkTongSlChuyen", chkTongSlChuyen);
+            SetCheckedIfExists("chkTongSlNhan", chkTongSlNhan);
+            SetCheckedIfExists("chkTongGiaTri", chkTongGiaTri);
             SetCheckedIfExists("colNguoiTao", chkNguoiTao);
             SetCheckedIfExists("colGhiChu", chkGhiChu);
             SetCheckedIfExists("colTrangThai", chkTrangThai);
@@ -62,29 +57,24 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
 
         private void DangKySuKienCot()
         {
-            chkMaPhieu.CheckedChanged += (s, e) => ToggleColumn("colMaPhieu", chkMaPhieu.Checked);
-            chkNgayLap.CheckedChanged += (s, e) => ToggleColumn("colNgayLap", chkNgayLap.Checked);
-            chkKhoNguon.CheckedChanged += (s, e) => ToggleColumn("colKhoNguon", chkKhoNguon.Checked);
-            chkKhoDich.CheckedChanged += (s, e) => ToggleColumn("colKhoDich", chkKhoDich.Checked);
-            chkTongSlChuyen.CheckedChanged += (s, e) => ToggleColumn("colTongSlChuyen", chkTongSlChuyen.Checked);
-            chkTongSlNhan.CheckedChanged += (s, e) => ToggleColumn("colTongSlNhan", chkTongSlNhan.Checked);
-            chkTongGiaTri.CheckedChanged += (s, e) => ToggleColumn("colTongGiaTri", chkTongGiaTri.Checked);
-            chkNguoiTao.CheckedChanged += (s, e) => ToggleColumn("colNguoiTao", chkNguoiTao.Checked);
-            chkGhiChu.CheckedChanged += (s, e) => ToggleColumn("colGhiChu", chkGhiChu.Checked);
-            chkTrangThai.CheckedChanged += (s, e) => ToggleColumn("colTrangThai", chkTrangThai.Checked);
+            chkMaPhieu.CheckedChanged += (s, e) => DoiTrangThaiCot("colMaPhieu", chkMaPhieu.Checked);
+            chkNgayLap.CheckedChanged += (s, e) => DoiTrangThaiCot("colNgayLap", chkNgayLap.Checked);
+            chkKhoNguon.CheckedChanged += (s, e) => DoiTrangThaiCot("colKhoNguon", chkKhoNguon.Checked);
+            chkKhoDich.CheckedChanged += (s, e) => DoiTrangThaiCot("colKhoDich", chkKhoDich.Checked);
+            chkTongSlChuyen.CheckedChanged += (s, e) => DoiTrangThaiCot("chkTongSlChuyen", chkTongSlChuyen.Checked);
+            chkTongSlNhan.CheckedChanged += (s, e) => DoiTrangThaiCot("chkTongSlNhan", chkTongSlNhan.Checked);
+            chkTongGiaTri.CheckedChanged += (s, e) => DoiTrangThaiCot("chkTongGiaTri", chkTongGiaTri.Checked);
+            chkNguoiTao.CheckedChanged += (s, e) => DoiTrangThaiCot("colNguoiTao", chkNguoiTao.Checked);
+            chkGhiChu.CheckedChanged += (s, e) => DoiTrangThaiCot("colGhiChu", chkGhiChu.Checked);
+            chkTrangThai.CheckedChanged += (s, e) => DoiTrangThaiCot("colTrangThai", chkTrangThai.Checked);
         }
 
-        private void ToggleColumn(string colName, bool isVisible)
+        private void DoiTrangThaiCot(string colName, bool visible)
         {
             if (dgvChuyenKho != null && dgvChuyenKho.Columns.Contains(colName))
             {
-                dgvChuyenKho.Columns[colName].Visible = isVisible;
+                dgvChuyenKho.Columns[colName].Visible = visible;
             }
-        }
-
-        private void btnDong_Click(object sender, EventArgs e)
-        {
-            this.Close();
         }
     }
 }
