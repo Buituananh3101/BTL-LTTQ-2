@@ -147,7 +147,6 @@
             // lblNguoiChuyenVal
             // 
             this.lblNguoiChuyenVal.AutoSize = true;
-            this.lblNguoiChuyenVal.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.lblNguoiChuyenVal.Location = new System.Drawing.Point(740, 20);
             this.lblNguoiChuyenVal.Name = "lblNguoiChuyenVal";
             this.lblNguoiChuyenVal.Size = new System.Drawing.Size(117, 17);
@@ -272,8 +271,6 @@
             // lblTonKhoGui
             // 
             this.lblTonKhoGui.AutoSize = true;
-            this.lblTonKhoGui.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.lblTonKhoGui.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
             this.lblTonKhoGui.Location = new System.Drawing.Point(440, 18);
             this.lblTonKhoGui.Name = "lblTonKhoGui";
             this.lblTonKhoGui.Size = new System.Drawing.Size(107, 17);
@@ -425,8 +422,6 @@
             // 
             this.lblTongGiaTri.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTongGiaTri.AutoSize = true;
-            this.lblTongGiaTri.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
-            this.lblTongGiaTri.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
             this.lblTongGiaTri.Location = new System.Drawing.Point(820, 15);
             this.lblTongGiaTri.Name = "lblTongGiaTri";
             this.lblTongGiaTri.Size = new System.Drawing.Size(193, 20);
@@ -436,7 +431,6 @@
             // lblTongSoLuong
             // 
             this.lblTongSoLuong.AutoSize = true;
-            this.lblTongSoLuong.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.lblTongSoLuong.Location = new System.Drawing.Point(220, 17);
             this.lblTongSoLuong.Name = "lblTongSoLuong";
             this.lblTongSoLuong.Size = new System.Drawing.Size(155, 17);

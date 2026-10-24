@@ -123,7 +123,6 @@
             // lblTonCuoiVal
             // 
             this.lblTonCuoiVal.AutoSize = true;
-            this.lblTonCuoiVal.Font = new System.Drawing.Font("Segoe UI", 12.5F, System.Drawing.FontStyle.Bold);
             this.lblTonCuoiVal.Location = new System.Drawing.Point(8, 25);
             this.lblTonCuoiVal.Name = "lblTonCuoiVal";
             this.lblTonCuoiVal.Size = new System.Drawing.Size(20, 23);
@@ -134,7 +133,6 @@
             // 
             this.lblTonCuoiTitle.AutoSize = true;
             this.lblTonCuoiTitle.Font = new System.Drawing.Font("Segoe UI", 8.5F);
-            this.lblTonCuoiTitle.ForeColor = System.Drawing.Color.DimGray;
             this.lblTonCuoiTitle.Location = new System.Drawing.Point(8, 6);
             this.lblTonCuoiTitle.Name = "lblTonCuoiTitle";
             this.lblTonCuoiTitle.Size = new System.Drawing.Size(70, 15);
@@ -155,8 +153,6 @@
             // lblXuatKyVal
             // 
             this.lblXuatKyVal.AutoSize = true;
-            this.lblXuatKyVal.Font = new System.Drawing.Font("Segoe UI", 12.5F, System.Drawing.FontStyle.Bold);
-            this.lblXuatKyVal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(85)))), ((int)(((byte)(105)))));
             this.lblXuatKyVal.Location = new System.Drawing.Point(8, 25);
             this.lblXuatKyVal.Name = "lblXuatKyVal";
             this.lblXuatKyVal.Size = new System.Drawing.Size(20, 23);
@@ -167,7 +163,6 @@
             // 
             this.lblXuatKyTitle.AutoSize = true;
             this.lblXuatKyTitle.Font = new System.Drawing.Font("Segoe UI", 8.5F);
-            this.lblXuatKyTitle.ForeColor = System.Drawing.Color.DimGray;
             this.lblXuatKyTitle.Location = new System.Drawing.Point(8, 6);
             this.lblXuatKyTitle.Name = "lblXuatKyTitle";
             this.lblXuatKyTitle.Size = new System.Drawing.Size(127, 15);
@@ -188,8 +183,6 @@
             // lblNhapKyVal
             // 
             this.lblNhapKyVal.AutoSize = true;
-            this.lblNhapKyVal.Font = new System.Drawing.Font("Segoe UI", 12.5F, System.Drawing.FontStyle.Bold);
-            this.lblNhapKyVal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(163)))), ((int)(((byte)(74)))));
             this.lblNhapKyVal.Location = new System.Drawing.Point(8, 25);
             this.lblNhapKyVal.Name = "lblNhapKyVal";
             this.lblNhapKyVal.Size = new System.Drawing.Size(20, 23);
@@ -200,7 +193,6 @@
             // 
             this.lblNhapKyTitle.AutoSize = true;
             this.lblNhapKyTitle.Font = new System.Drawing.Font("Segoe UI", 8.5F);
-            this.lblNhapKyTitle.ForeColor = System.Drawing.Color.DimGray;
             this.lblNhapKyTitle.Location = new System.Drawing.Point(8, 6);
             this.lblNhapKyTitle.Name = "lblNhapKyTitle";
             this.lblNhapKyTitle.Size = new System.Drawing.Size(131, 15);
@@ -221,7 +213,6 @@
             // lblTonDauVal
             // 
             this.lblTonDauVal.AutoSize = true;
-            this.lblTonDauVal.Font = new System.Drawing.Font("Segoe UI", 12.5F, System.Drawing.FontStyle.Bold);
             this.lblTonDauVal.Location = new System.Drawing.Point(8, 25);
             this.lblTonDauVal.Name = "lblTonDauVal";
             this.lblTonDauVal.Size = new System.Drawing.Size(20, 23);
@@ -232,7 +223,6 @@
             // 
             this.lblTonDauTitle.AutoSize = true;
             this.lblTonDauTitle.Font = new System.Drawing.Font("Segoe UI", 8.5F);
-            this.lblTonCuoiTitle.ForeColor = System.Drawing.Color.DimGray;
             this.lblTonDauTitle.Location = new System.Drawing.Point(8, 6);
             this.lblTonDauTitle.Name = "lblTonDauTitle";
             this.lblTonDauTitle.Size = new System.Drawing.Size(68, 15);
@@ -254,7 +244,6 @@
             // 
             this.lblThongTinChiTiet.AutoSize = true;
             this.lblThongTinChiTiet.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.lblThongTinChiTiet.ForeColor = System.Drawing.Color.DimGray;
             this.lblThongTinChiTiet.Location = new System.Drawing.Point(8, 31);
             this.lblThongTinChiTiet.Name = "lblThongTinChiTiet";
             this.lblThongTinChiTiet.Size = new System.Drawing.Size(271, 15);
@@ -264,7 +253,6 @@
             // lblTenHangHienThi
             // 
             this.lblTenHangHienThi.AutoSize = true;
-            this.lblTenHangHienThi.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.lblTenHangHienThi.Location = new System.Drawing.Point(8, 6);
             this.lblTenHangHienThi.Name = "lblTenHangHienThi";
             this.lblTenHangHienThi.Size = new System.Drawing.Size(189, 20);

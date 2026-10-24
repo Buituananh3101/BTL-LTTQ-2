@@ -53,7 +53,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             colThanhTien.DefaultCellStyle.Format = "N0";
 
             // Đánh dấu ô số lượng trả rõ ràng bằng font chữ đậm
-            colSoLuongTra.DefaultCellStyle.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold);
+            // colSoLuongTra.DefaultCellStyle.Font = Segoe UI 9.5F Regular
         }
 
         private void frmTraHangNhap_Load(object sender, EventArgs e)
@@ -559,7 +559,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                 if (e.Control is TextBox tb)
                 {
                     tb.TextAlign = HorizontalAlignment.Right;
-                    tb.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold);
+                    
                     tb.KeyPress -= Tb_KeyPress;
                     tb.KeyPress += Tb_KeyPress;
                     this.BeginInvoke(new Action(() => tb.SelectAll()));

@@ -58,7 +58,6 @@
             // 
             this.lblThongTinPhieu.AutoSize = true;
             this.lblThongTinPhieu.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.lblThongTinPhieu.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(85)))), ((int)(((byte)(105)))));
             this.lblThongTinPhieu.Location = new System.Drawing.Point(16, 34);
             this.lblThongTinPhieu.Name = "lblThongTinPhieu";
             this.lblThongTinPhieu.Size = new System.Drawing.Size(376, 17);
@@ -205,7 +204,6 @@
             // 
             this.lblTongHaoHut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTongHaoHut.AutoSize = true;
-            this.lblTongHaoHut.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.lblTongHaoHut.Location = new System.Drawing.Point(670, 38);
             this.lblTongHaoHut.Name = "lblTongHaoHut";
             this.lblTongHaoHut.Size = new System.Drawing.Size(107, 17);
@@ -216,7 +214,6 @@
             // 
             this.lblTongThucNhan.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTongThucNhan.AutoSize = true;
-            this.lblTongThucNhan.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.lblTongThucNhan.Location = new System.Drawing.Point(670, 14);
             this.lblTongThucNhan.Name = "lblTongThucNhan";
             this.lblTongThucNhan.Size = new System.Drawing.Size(124, 17);

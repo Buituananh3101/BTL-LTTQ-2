@@ -199,7 +199,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                 }
                 else
                 {
-                    lblCanTraNccVal.ForeColor = Color.FromArgb(30, 41, 59);
+                    lblCanTraNccVal.ForeColor = SystemColors.ControlText;
                 }
             }
             catch (Exception ex)

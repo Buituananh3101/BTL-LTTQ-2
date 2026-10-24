@@ -1,4 +1,4 @@
-﻿# Sổ Quyết định Kỹ thuật & Nghiệp vụ (Architecture & Business Decisions)
+# Sổ Quyết định Kỹ thuật & Nghiệp vụ (Architecture & Business Decisions)
 ## Hệ Thống Quản Lý Kho Hàng BTL-LTTQ-2 (Windows Forms C#)
 
 > **Mục đích**: Ghi lại mọi quyết định kiến trúc, công nghệ và nghiệp vụ đã được thống nhất để các phiên làm việc tiếp theo không hỏi lại hoặc làm mâu thuẫn với các quyết định trước. Mỗi dòng ghi theo định dạng: `[Ngày] – [Quyết định] – [Lý do]`.
@@ -116,14 +116,19 @@
      - rmBaoCaoTonKho: Gỡ bỏ nút tnXemTheKho, sự kiện tnXemTheKho_Click, sự kiện CellDoubleClick và phương thức MoBaoCaoTheKho; cập nhật lại hướng dẫn sử dụng tnHuongDanSuDung_Click; các nút góc phải đồng bộ 100% với form Thẻ kho.
   3. **Biên dịch & Định dạng**: Lưu định dạng **UTF-8 with BOM** (Điều luật 18). Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
 
-- **2026-10-24 (Phiên 33) – Bổ sung nút "Hoàn thành" cho các chứng từ ở trạng thái Phiếu tạm (Nhập hàng, Trả hàng nhập, Kiểm kho, Chuyển kho)**:
-  1. **Bối cảnh & Yêu cầu**: Người dùng yêu cầu các chức năng cho phép lưu phiếu dưới dạng phiếu tạm cần có thêm chức năng (nút) "Hoàn thành" để chuyển trạng thái từ Phiếu tạm sang Đã nhận / Đã nhập / Đã trả hàng / Đã cân bằng. Qua khảo sát, người dùng thống nhất: đặt nút "Hoàn thành" trên thanh thao tác đáy của Form Chi tiết chứng từ (`frmChiTiet...`), và đối với Chuyển kho, hoàn thành phiếu tạm sẽ chuyển sang trạng thái "Đang chuyển" (`DA_XUAT`) để kho nhận tiếp tục quy trình nhận hàng.
-  2. **Giải pháp thực hiện trên 4 Form Chi tiết**:
-     - **Nhập hàng (`frmChiTietPhieuNhap`)**: Thêm nút `btnHoanThanh` ("Hoàn thành"). Khi `TrangThai == 'NHAP'`, nút hiển thị (`Visible = true`) và ẩn nút `Trả hàng nhập`. Bấm Hoàn thành: hỏi xác nhận, bọc trong Transaction cập nhật `TrangThai = 'DA_XAC_NHAN'`, `NgayXacNhan = GETDATE()`, `MaNVXacNhan`, tự động cộng tồn kho và ghi nhận công nợ NCC.
-     - **Trả hàng nhập (`frmChiTietTraHangNhap`)**: Thêm nút `btnHoanThanh`. Khi `TrangThai == 'NHAP'`, nút hiển thị. Bấm Hoàn thành: kiểm tra tồn kho từng mặt hàng qua `vw_TonKhoHienTai` (chặn âm tồn kho theo Luật 6), hỏi xác nhận, bọc trong Transaction cập nhật `TrangThai = 'DA_TRA_HANG'`, `NgayTra = GETDATE()`, `MaNvtra`, trừ tồn kho tự động qua View và trừ nợ NCC.
-     - **Kiểm kho (`frmChiTietKiemKho`)**: Thêm nút `btnHoanThanh`. Khi `TrangThai` là Phiếu tạm (`NHAP`, `DANG_KIEM`, `DA_KIEM`), nút hiển thị. Bấm Hoàn thành: hỏi xác nhận, bọc trong Transaction cập nhật `PhieuKiemKe` sang `DA_DIEU_CHINH`, sinh `PhieuDieuChinh` và `ChiTietPhieuDieuChinh` trạng thái `DA_DUYET`, cân bằng tồn kho tức thời và khóa vĩnh viễn phiếu.
-     - **Chuyển kho (`frmChiTietChuyenKho`)**: Thêm nút `btnHoanThanh`. Khi `TrangThai == 'NHAP'`, nút hiển thị và ẩn nút `Nhận hàng`. Bấm Hoàn thành: kiểm tra tồn kho tại kho gửi (chặn âm kho gửi theo Luật 6), hỏi xác nhận, bọc trong Transaction cập nhật `TrangThai = 'DA_XUAT'`, `ThoiDiemXuat = GETDATE()`, `MaNVXuat`, xuất hàng khỏi kho gửi và chuyển sang trạng thái "Đang chuyển" để kho đích nhận hàng.
+- **2026-10-24 (Phiên 34) – Chuẩn hóa toàn bộ Font chữ, Màu chữ theo `frmDanhSachHangHoa` và Ban hành Quy chuẩn Kích thước Form**:
+  1. **Bối cảnh & Yêu cầu**: Người dùng phản hồi các form (chi tiết chứng từ, thêm mới, danh mục, báo cáo...) tự ý in đậm (`FontStyle.Bold`) và chọn màu chữ (`ForeColor`) mỗi trường một kiểu cọc cạch (Tổng tiền hàng, NCC cần trả, Mã phiếu, nhãn thông tin...). Yêu cầu đưa TẤT CẢ các form về đúng một chuẩn duy nhất theo form mẫu `frmDanhSachHangHoa`. Đồng thời, chuẩn hóa và ban hành vào Rule phân tầng kích thước form: chức năng lớn lấy `frmDanhSachHangHoa` làm chuẩn duy nhất; chức năng nhỏ hơn phân làm 3 cỡ: Size Lớn (`frmHangHoa`), Size Vừa (`frmDonViCapHang`), Size Nhỏ (`frmDoiKho`).
+  2. **Giải pháp thực hiện**:
+     - **Cập nhật Điều luật 15 & 18 trong `AGENTS.md` và `.agent/rules/03-giao-dien-layout.md`**:
+       + *Chuẩn Font & Màu chữ*: Lấy `frmDanhSachHangHoa` làm chuẩn duy nhất toàn hệ thống (`Segoe UI, 9.5pt Regular`, màu chữ mặc định hệ thống `SystemColors.ControlText`). Nghiêm cấm tự ý in đậm các trường dữ liệu, số tiền, nhãn thống kê; cấm tự ý chọn màu chữ mỗi trường một kiểu. Ngoại lệ duy nhất: Tiêu đề lớn 12pt Bold, Header DataGridView 9.5pt Bold, Cảnh báo đỏ Bold cho chênh lệch kiểm kê/tồn <= 0/nợ quá hạn (Điều 15a), Màu trạng thái 3 nhóm (Điều 15b/19a).
+       + *Phân tầng Kích thước Form*:
+         * Chức năng lớn: Chuẩn `frmDanhSachHangHoa` (`1782 x 853`, `FixedSingle`, `MaximizeBox = false`, `CenterScreen`). Ngoại trừ duy nhất form chức năng lớn Đổi kho (`frmDoiKho`) dùng size nhỏ.
+         * Chức năng nhỏ - Size Lớn: Chuẩn `frmHangHoa` (`1182 x 803`) cho các form thêm mới chứng từ phức tạp nhiều trường.
+         * Chức năng nhỏ - Size Vừa: Chuẩn `frmDonViCapHang` (`960 x 705`) cho các form chi tiết chứng từ Master-Detail và cập nhật danh mục trung bình.
+         * Chức năng nhỏ - Size Nhỏ: Chuẩn `frmDoiKho` (`356 x 136`) cho các form modal lựa chọn nhanh, xác nhận.
+     - **Quét và chuẩn hóa toàn bộ các Form ngoài `DanhSachHangHoa`**: Loại bỏ toàn bộ việc gán ForeColor và FontStyle.Bold tùy tiện trên các Label, TextBox, Button trong 8 phân hệ (TraHangNhap, NhapHang, KiemKho, ChuyenKho, NhaCungCap, DonViTinh, BaoCao, DoiKho).
   3. **Biên dịch & Định dạng**: 100% file mã nguồn lưu định dạng **UTF-8 with BOM** (Điều luật 18). Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+
 - **2026-10-24 (Phiên 32)** – Chuẩn hóa toàn bộ trạng thái chức năng Chuyển kho và các thuộc tính 2 chức năng Báo cáo về font chữ thường theo mẫu Trả hàng nhập:
   1. **Bối cảnh & Yêu cầu**: Cột trạng thái trên Chuyển kho và nhiều thuộc tính trong 2 form Báo cáo (Báo cáo tồn kho, Báo cáo thẻ kho) bị in đậm trái với quy chuẩn UI/UX. Chuẩn hóa toàn bộ về font chữ thường (FontStyle.Regular) và kiểu chữ tiêu chuẩn theo thuộc tính trạng thái của form Trả hàng nhập (rmTraHangNhap).
   2. **Giải pháp thực hiện**:
@@ -136,11 +141,15 @@
      - **Danh mục Đơn vị tính (rmDonViTinh)**: Đồng bộ loại bỏ FontStyle.Bold trên colTrangThai khi "Đang sử dụng".
   3. **Biên dịch & Định dạng**: Lưu định dạng **UTF-8 with BOM** (Điều luật 18). Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
 
-- **2026-10-24 (Phiên 33) – Bổ sung nút "Hoàn thành" cho các chứng từ ở trạng thái Phiếu tạm (Nhập hàng, Trả hàng nhập, Kiểm kho, Chuyển kho)**:
-  1. **Bối cảnh & Yêu cầu**: Người dùng yêu cầu các chức năng cho phép lưu phiếu dưới dạng phiếu tạm cần có thêm chức năng (nút) "Hoàn thành" để chuyển trạng thái từ Phiếu tạm sang Đã nhận / Đã nhập / Đã trả hàng / Đã cân bằng. Qua khảo sát, người dùng thống nhất: đặt nút "Hoàn thành" trên thanh thao tác đáy của Form Chi tiết chứng từ (`frmChiTiet...`), và đối với Chuyển kho, hoàn thành phiếu tạm sẽ chuyển sang trạng thái "Đang chuyển" (`DA_XUAT`) để kho nhận tiếp tục quy trình nhận hàng.
-  2. **Giải pháp thực hiện trên 4 Form Chi tiết**:
-     - **Nhập hàng (`frmChiTietPhieuNhap`)**: Thêm nút `btnHoanThanh` ("Hoàn thành"). Khi `TrangThai == 'NHAP'`, nút hiển thị (`Visible = true`) và ẩn nút `Trả hàng nhập`. Bấm Hoàn thành: hỏi xác nhận, bọc trong Transaction cập nhật `TrangThai = 'DA_XAC_NHAN'`, `NgayXacNhan = GETDATE()`, `MaNVXacNhan`, tự động cộng tồn kho và ghi nhận công nợ NCC.
-     - **Trả hàng nhập (`frmChiTietTraHangNhap`)**: Thêm nút `btnHoanThanh`. Khi `TrangThai == 'NHAP'`, nút hiển thị. Bấm Hoàn thành: kiểm tra tồn kho từng mặt hàng qua `vw_TonKhoHienTai` (chặn âm tồn kho theo Luật 6), hỏi xác nhận, bọc trong Transaction cập nhật `TrangThai = 'DA_TRA_HANG'`, `NgayTra = GETDATE()`, `MaNvtra`, trừ tồn kho tự động qua View và trừ nợ NCC.
-     - **Kiểm kho (`frmChiTietKiemKho`)**: Thêm nút `btnHoanThanh`. Khi `TrangThai` là Phiếu tạm (`NHAP`, `DANG_KIEM`, `DA_KIEM`), nút hiển thị. Bấm Hoàn thành: hỏi xác nhận, bọc trong Transaction cập nhật `PhieuKiemKe` sang `DA_DIEU_CHINH`, sinh `PhieuDieuChinh` và `ChiTietPhieuDieuChinh` trạng thái `DA_DUYET`, cân bằng tồn kho tức thời và khóa vĩnh viễn phiếu.
-     - **Chuyển kho (`frmChiTietChuyenKho`)**: Thêm nút `btnHoanThanh`. Khi `TrangThai == 'NHAP'`, nút hiển thị và ẩn nút `Nhận hàng`. Bấm Hoàn thành: kiểm tra tồn kho tại kho gửi (chặn âm kho gửi theo Luật 6), hỏi xác nhận, bọc trong Transaction cập nhật `TrangThai = 'DA_XUAT'`, `ThoiDiemXuat = GETDATE()`, `MaNVXuat`, xuất hàng khỏi kho gửi và chuyển sang trạng thái "Đang chuyển" để kho đích nhận hàng.
+- **2026-10-24 (Phiên 34) – Chuẩn hóa toàn bộ Font chữ, Màu chữ theo `frmDanhSachHangHoa` và Ban hành Quy chuẩn Kích thước Form**:
+  1. **Bối cảnh & Yêu cầu**: Người dùng phản hồi các form (chi tiết chứng từ, thêm mới, danh mục, báo cáo...) tự ý in đậm (`FontStyle.Bold`) và chọn màu chữ (`ForeColor`) mỗi trường một kiểu cọc cạch (Tổng tiền hàng, NCC cần trả, Mã phiếu, nhãn thông tin...). Yêu cầu đưa TẤT CẢ các form về đúng một chuẩn duy nhất theo form mẫu `frmDanhSachHangHoa`. Đồng thời, chuẩn hóa và ban hành vào Rule phân tầng kích thước form: chức năng lớn lấy `frmDanhSachHangHoa` làm chuẩn duy nhất; chức năng nhỏ hơn phân làm 3 cỡ: Size Lớn (`frmHangHoa`), Size Vừa (`frmDonViCapHang`), Size Nhỏ (`frmDoiKho`).
+  2. **Giải pháp thực hiện**:
+     - **Cập nhật Điều luật 15 & 18 trong `AGENTS.md` và `.agent/rules/03-giao-dien-layout.md`**:
+       + *Chuẩn Font & Màu chữ*: Lấy `frmDanhSachHangHoa` làm chuẩn duy nhất toàn hệ thống (`Segoe UI, 9.5pt Regular`, màu chữ mặc định hệ thống `SystemColors.ControlText`). Nghiêm cấm tự ý in đậm các trường dữ liệu, số tiền, nhãn thống kê; cấm tự ý chọn màu chữ mỗi trường một kiểu. Ngoại lệ duy nhất: Tiêu đề lớn 12pt Bold, Header DataGridView 9.5pt Bold, Cảnh báo đỏ Bold cho chênh lệch kiểm kê/tồn <= 0/nợ quá hạn (Điều 15a), Màu trạng thái 3 nhóm (Điều 15b/19a).
+       + *Phân tầng Kích thước Form*:
+         * Chức năng lớn: Chuẩn `frmDanhSachHangHoa` (`1782 x 853`, `FixedSingle`, `MaximizeBox = false`, `CenterScreen`). Ngoại trừ duy nhất form chức năng lớn Đổi kho (`frmDoiKho`) dùng size nhỏ.
+         * Chức năng nhỏ - Size Lớn: Chuẩn `frmHangHoa` (`1182 x 803`) cho các form thêm mới chứng từ phức tạp nhiều trường.
+         * Chức năng nhỏ - Size Vừa: Chuẩn `frmDonViCapHang` (`960 x 705`) cho các form chi tiết chứng từ Master-Detail và cập nhật danh mục trung bình.
+         * Chức năng nhỏ - Size Nhỏ: Chuẩn `frmDoiKho` (`356 x 136`) cho các form modal lựa chọn nhanh, xác nhận.
+     - **Quét và chuẩn hóa toàn bộ các Form ngoài `DanhSachHangHoa`**: Loại bỏ toàn bộ việc gán ForeColor và FontStyle.Bold tùy tiện trên các Label, TextBox, Button trong 8 phân hệ (TraHangNhap, NhapHang, KiemKho, ChuyenKho, NhaCungCap, DonViTinh, BaoCao, DoiKho).
   3. **Biên dịch & Định dạng**: 100% file mã nguồn lưu định dạng **UTF-8 with BOM** (Điều luật 18). Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.

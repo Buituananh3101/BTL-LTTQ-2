@@ -320,7 +320,6 @@
             this.btnThemNhomNCC.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnThemNhomNCC.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.btnThemNhomNCC.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnThemNhomNCC.Font = new System.Drawing.Font("Segoe UI", 10.5F, System.Drawing.FontStyle.Bold);
             this.btnThemNhomNCC.Location = new System.Drawing.Point(311, 66);
             this.btnThemNhomNCC.Margin = new System.Windows.Forms.Padding(0);
             this.btnThemNhomNCC.Name = "btnThemNhomNCC";
@@ -376,7 +375,6 @@
             // lblTongSoNCC
             // 
             this.lblTongSoNCC.AutoSize = true;
-            this.lblTongSoNCC.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.lblTongSoNCC.Location = new System.Drawing.Point(15, 11);
             this.lblTongSoNCC.Name = "lblTongSoNCC";
             this.lblTongSoNCC.Size = new System.Drawing.Size(159, 17);

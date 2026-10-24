@@ -475,7 +475,6 @@
             // 
             // txtCanTraNcc
             // 
-            this.txtCanTraNcc.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.txtCanTraNcc.ForeColor = System.Drawing.Color.Red;
             this.txtCanTraNcc.Location = new System.Drawing.Point(890, 60);
             this.txtCanTraNcc.Name = "txtCanTraNcc";
@@ -488,7 +487,6 @@
             // lblCanTraNcc
             // 
             this.lblCanTraNcc.AutoSize = true;
-            this.lblCanTraNcc.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblCanTraNcc.Location = new System.Drawing.Point(790, 64);
             this.lblCanTraNcc.Name = "lblCanTraNcc";
             this.lblCanTraNcc.Size = new System.Drawing.Size(89, 17);
@@ -516,7 +514,6 @@
             // 
             // txtTongCong
             // 
-            this.txtTongCong.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.txtTongCong.Location = new System.Drawing.Point(600, 60);
             this.txtTongCong.Name = "txtTongCong";
             this.txtTongCong.ReadOnly = true;
@@ -528,7 +525,6 @@
             // lblTongCong
             // 
             this.lblTongCong.AutoSize = true;
-            this.lblTongCong.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblTongCong.Location = new System.Drawing.Point(500, 64);
             this.lblTongCong.Name = "lblTongCong";
             this.lblTongCong.Size = new System.Drawing.Size(78, 17);

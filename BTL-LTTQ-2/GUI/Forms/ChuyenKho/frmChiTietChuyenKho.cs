@@ -183,7 +183,7 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                 }
                 else
                 {
-                    lblTongHaoHutVal.ForeColor = Color.FromArgb(30, 41, 59);
+                    lblTongHaoHutVal.ForeColor = SystemColors.ControlText;
                 }
             }
             catch (Exception ex)

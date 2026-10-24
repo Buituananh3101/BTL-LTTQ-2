@@ -65,8 +65,6 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             colDonGia.DefaultCellStyle.Format = "N0";
             colGiaTriChenhLech.DefaultCellStyle.Format = "N0";
 
-            colSoLuongThucTe.DefaultCellStyle.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-
             dgvHangKiem.CellFormatting += dgvHangKiem_CellFormatting;
 
             dgvHangKiem.DataSource = dtHangKiem;

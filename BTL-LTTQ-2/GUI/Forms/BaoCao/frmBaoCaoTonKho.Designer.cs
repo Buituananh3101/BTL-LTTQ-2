@@ -124,7 +124,6 @@
             // lblCardCanLuuYVal
             // 
             this.lblCardCanLuuYVal.AutoSize = true;
-            this.lblCardCanLuuYVal.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblCardCanLuuYVal.ForeColor = System.Drawing.Color.Red;
             this.lblCardCanLuuYVal.Location = new System.Drawing.Point(8, 24);
             this.lblCardCanLuuYVal.Name = "lblCardCanLuuYVal";
@@ -136,7 +135,6 @@
             // 
             this.lblCardCanLuuYTitle.AutoSize = true;
             this.lblCardCanLuuYTitle.Font = new System.Drawing.Font("Segoe UI", 8.5F);
-            this.lblCardCanLuuYTitle.ForeColor = System.Drawing.Color.DimGray;
             this.lblCardCanLuuYTitle.Location = new System.Drawing.Point(8, 5);
             this.lblCardCanLuuYTitle.Name = "lblCardCanLuuYTitle";
             this.lblCardCanLuuYTitle.Size = new System.Drawing.Size(172, 15);
@@ -157,7 +155,6 @@
             // lblCardGiaTriVal
             // 
             this.lblCardGiaTriVal.AutoSize = true;
-            this.lblCardGiaTriVal.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblCardGiaTriVal.Location = new System.Drawing.Point(8, 24);
             this.lblCardGiaTriVal.Name = "lblCardGiaTriVal";
             this.lblCardGiaTriVal.Size = new System.Drawing.Size(37, 21);
@@ -168,7 +165,6 @@
             // 
             this.lblCardGiaTriTitle.AutoSize = true;
             this.lblCardGiaTriTitle.Font = new System.Drawing.Font("Segoe UI", 8.5F);
-            this.lblCardGiaTriTitle.ForeColor = System.Drawing.Color.DimGray;
             this.lblCardGiaTriTitle.Location = new System.Drawing.Point(8, 5);
             this.lblCardGiaTriTitle.Name = "lblCardGiaTriTitle";
             this.lblCardGiaTriTitle.Size = new System.Drawing.Size(163, 15);
@@ -189,7 +185,6 @@
             // lblCardSoLuongVal
             // 
             this.lblCardSoLuongVal.AutoSize = true;
-            this.lblCardSoLuongVal.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblCardSoLuongVal.Location = new System.Drawing.Point(8, 24);
             this.lblCardSoLuongVal.Name = "lblCardSoLuongVal";
             this.lblCardSoLuongVal.Size = new System.Drawing.Size(19, 21);
@@ -200,7 +195,6 @@
             // 
             this.lblCardSoLuongTitle.AutoSize = true;
             this.lblCardSoLuongTitle.Font = new System.Drawing.Font("Segoe UI", 8.5F);
-            this.lblCardSoLuongTitle.ForeColor = System.Drawing.Color.DimGray;
             this.lblCardSoLuongTitle.Location = new System.Drawing.Point(8, 5);
             this.lblCardSoLuongTitle.Name = "lblCardSoLuongTitle";
             this.lblCardSoLuongTitle.Size = new System.Drawing.Size(126, 15);
@@ -221,7 +215,6 @@
             // lblCardSkuVal
             // 
             this.lblCardSkuVal.AutoSize = true;
-            this.lblCardSkuVal.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblCardSkuVal.Location = new System.Drawing.Point(8, 24);
             this.lblCardSkuVal.Name = "lblCardSkuVal";
             this.lblCardSkuVal.Size = new System.Drawing.Size(19, 21);
@@ -232,7 +225,6 @@
             // 
             this.lblCardSkuTitle.AutoSize = true;
             this.lblCardSkuTitle.Font = new System.Drawing.Font("Segoe UI", 8.5F);
-            this.lblCardSkuTitle.ForeColor = System.Drawing.Color.DimGray;
             this.lblCardSkuTitle.Location = new System.Drawing.Point(8, 5);
             this.lblCardSkuTitle.Name = "lblCardSkuTitle";
             this.lblCardSkuTitle.Size = new System.Drawing.Size(135, 15);

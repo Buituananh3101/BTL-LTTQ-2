@@ -624,7 +624,7 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                 }
                 else
                 {
-                    lblTonCuoiVal.ForeColor = Color.Black;
+                    lblTonCuoiVal.ForeColor = SystemColors.ControlText;
                 }
 
                 lblTongSoGiaoDich.Text = $"Tổng số: {(stt - 1):N0} giao dịch phát sinh trong kỳ";
@@ -669,7 +669,7 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                 }
                 else if (loai == "Xuất bán hàng" || loai == "Chuyển kho đi" || loai == "Trả hàng nhập" || loai == "Xuất hủy")
                 {
-                    e.CellStyle.ForeColor = Color.FromArgb(71, 85, 105); // Slate
+                    e.CellStyle.ForeColor = SystemColors.ControlText;
                 }
             }
         }

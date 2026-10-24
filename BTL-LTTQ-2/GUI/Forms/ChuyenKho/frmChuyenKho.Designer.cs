@@ -355,7 +355,6 @@
             // lblTongSoPhieu
             // 
             this.lblTongSoPhieu.AutoSize = true;
-            this.lblTongSoPhieu.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.lblTongSoPhieu.Location = new System.Drawing.Point(12, 12);
             this.lblTongSoPhieu.Name = "lblTongSoPhieu";
             this.lblTongSoPhieu.Size = new System.Drawing.Size(148, 17);

@@ -81,7 +81,6 @@
             // 
             this.lblMaPhieuGoc.AutoSize = true;
             this.lblMaPhieuGoc.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblMaPhieuGoc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(85)))), ((int)(((byte)(105)))));
             this.lblMaPhieuGoc.Location = new System.Drawing.Point(165, 17);
             this.lblMaPhieuGoc.Name = "lblMaPhieuGoc";
             this.lblMaPhieuGoc.Size = new System.Drawing.Size(176, 19);
@@ -142,7 +141,6 @@
             // lblNoCanTraGocVal
             // 
             this.lblNoCanTraGocVal.AutoSize = true;
-            this.lblNoCanTraGocVal.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblNoCanTraGocVal.ForeColor = System.Drawing.Color.Red;
             this.lblNoCanTraGocVal.Location = new System.Drawing.Point(135, 72);
             this.lblNoCanTraGocVal.Name = "lblNoCanTraGocVal";
@@ -198,7 +196,6 @@
             // lblKhoVal
             // 
             this.lblKhoVal.AutoSize = true;
-            this.lblKhoVal.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblKhoVal.Location = new System.Drawing.Point(135, 48);
             this.lblKhoVal.Name = "lblKhoVal";
             this.lblKhoVal.Size = new System.Drawing.Size(95, 17);
@@ -217,7 +214,6 @@
             // lblNccVal
             // 
             this.lblNccVal.AutoSize = true;
-            this.lblNccVal.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblNccVal.Location = new System.Drawing.Point(135, 24);
             this.lblNccVal.Name = "lblNccVal";
             this.lblNccVal.Size = new System.Drawing.Size(124, 17);
@@ -382,8 +378,6 @@
             // txtTienNccTraLai
             // 
             this.txtTienNccTraLai.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtTienNccTraLai.Font = new System.Drawing.Font("Segoe UI", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.txtTienNccTraLai.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(163)))), ((int)(((byte)(74)))));
             this.txtTienNccTraLai.Location = new System.Drawing.Point(810, 68);
             this.txtTienNccTraLai.Name = "txtTienNccTraLai";
             this.txtTienNccTraLai.ReadOnly = true;
@@ -396,8 +390,6 @@
             // 
             this.lblTienNccTraLai.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTienNccTraLai.AutoSize = true;
-            this.lblTienNccTraLai.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblTienNccTraLai.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(163)))), ((int)(((byte)(74)))));
             this.lblTienNccTraLai.Location = new System.Drawing.Point(620, 72);
             this.lblTienNccTraLai.Name = "lblTienNccTraLai";
             this.lblTienNccTraLai.Size = new System.Drawing.Size(177, 19);
@@ -407,7 +399,6 @@
             // txtNoConLai
             // 
             this.txtNoConLai.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtNoConLai.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.txtNoConLai.ForeColor = System.Drawing.Color.Red;
             this.txtNoConLai.Location = new System.Drawing.Point(810, 26);
             this.txtNoConLai.Name = "txtNoConLai";
@@ -448,7 +439,6 @@
             // 
             // txtTongTienTra
             // 
-            this.txtTongTienTra.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.txtTongTienTra.Location = new System.Drawing.Point(400, 26);
             this.txtTongTienTra.Name = "txtTongTienTra";
             this.txtTongTienTra.ReadOnly = true;
@@ -460,7 +450,6 @@
             // lblTongTienTra
             // 
             this.lblTongTienTra.AutoSize = true;
-            this.lblTongTienTra.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblTongTienTra.Location = new System.Drawing.Point(260, 30);
             this.lblTongTienTra.Name = "lblTongTienTra";
             this.lblTongTienTra.Size = new System.Drawing.Size(130, 17);

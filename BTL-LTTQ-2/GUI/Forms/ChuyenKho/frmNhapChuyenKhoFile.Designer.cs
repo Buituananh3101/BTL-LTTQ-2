@@ -262,7 +262,6 @@
             // lblThongKe
             // 
             this.lblThongKe.AutoSize = true;
-            this.lblThongKe.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.lblThongKe.Location = new System.Drawing.Point(15, 17);
             this.lblThongKe.Name = "lblThongKe";
             this.lblThongKe.Size = new System.Drawing.Size(185, 17);

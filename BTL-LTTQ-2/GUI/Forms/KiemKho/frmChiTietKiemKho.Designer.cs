@@ -84,7 +84,6 @@
             // 
             this.lblMaPhieu.AutoSize = true;
             this.lblMaPhieu.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.lblMaPhieu.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
             this.lblMaPhieu.Location = new System.Drawing.Point(12, 12);
             this.lblMaPhieu.Name = "lblMaPhieu";
             this.lblMaPhieu.Size = new System.Drawing.Size(148, 32);
@@ -142,7 +141,6 @@
             // 
             this.lblKho.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblKho.AutoSize = true;
-            this.lblKho.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.lblKho.Location = new System.Drawing.Point(820, 18);
             this.lblKho.Name = "lblKho";
             this.lblKho.Size = new System.Drawing.Size(148, 21);
@@ -297,7 +295,6 @@
             // lblGhiChuTieuDe
             // 
             this.lblGhiChuTieuDe.AutoSize = true;
-            this.lblGhiChuTieuDe.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.lblGhiChuTieuDe.Location = new System.Drawing.Point(3, 4);
             this.lblGhiChuTieuDe.Name = "lblGhiChuTieuDe";
             this.lblGhiChuTieuDe.Size = new System.Drawing.Size(72, 21);
@@ -346,7 +343,6 @@
             // lblTongThucTeVal
             // 
             this.lblTongThucTeVal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblTongThucTeVal.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.lblTongThucTeVal.Location = new System.Drawing.Point(240, 8);
             this.lblTongThucTeVal.Name = "lblTongThucTeVal";
             this.lblTongThucTeVal.Size = new System.Drawing.Size(255, 21);
@@ -366,7 +362,6 @@
             // lblTongLechTangVal
             // 
             this.lblTongLechTangVal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblTongLechTangVal.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.lblTongLechTangVal.Location = new System.Drawing.Point(240, 38);
             this.lblTongLechTangVal.Name = "lblTongLechTangVal";
             this.lblTongLechTangVal.Size = new System.Drawing.Size(255, 21);
@@ -386,7 +381,6 @@
             // lblTongLechGiamVal
             // 
             this.lblTongLechGiamVal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblTongLechGiamVal.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.lblTongLechGiamVal.Location = new System.Drawing.Point(240, 68);
             this.lblTongLechGiamVal.Name = "lblTongLechGiamVal";
             this.lblTongLechGiamVal.Size = new System.Drawing.Size(255, 21);
@@ -397,7 +391,6 @@
             // lblTongChenhLechLbl
             // 
             this.lblTongChenhLechLbl.AutoSize = true;
-            this.lblTongChenhLechLbl.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.lblTongChenhLechLbl.Location = new System.Drawing.Point(15, 102);
             this.lblTongChenhLechLbl.Name = "lblTongChenhLechLbl";
             this.lblTongChenhLechLbl.Size = new System.Drawing.Size(147, 23);
@@ -407,7 +400,6 @@
             // lblTongChenhLechVal
             // 
             this.lblTongChenhLechVal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblTongChenhLechVal.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.lblTongChenhLechVal.Location = new System.Drawing.Point(220, 100);
             this.lblTongChenhLechVal.Name = "lblTongChenhLechVal";
             this.lblTongChenhLechVal.Size = new System.Drawing.Size(275, 25);

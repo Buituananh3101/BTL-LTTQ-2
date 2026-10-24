@@ -92,8 +92,7 @@
             // lblMaPhieuVal
             // 
             this.lblMaPhieuVal.AutoSize = true;
-            this.lblMaPhieuVal.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblMaPhieuVal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(85)))), ((int)(((byte)(105)))));
+            this.lblMaPhieuVal.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblMaPhieuVal.Location = new System.Drawing.Point(165, 17);
             this.lblMaPhieuVal.Name = "lblMaPhieuVal";
             this.lblMaPhieuVal.Size = new System.Drawing.Size(91, 19);
@@ -250,7 +249,7 @@
             // btnThemHang
             // 
             this.btnThemHang.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnThemHang.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.btnThemHang.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.btnThemHang.Location = new System.Drawing.Point(950, 24);
             this.btnThemHang.Name = "btnThemHang";
             this.btnThemHang.Size = new System.Drawing.Size(102, 30);
@@ -304,7 +303,7 @@
             // lblTonKhoVal
             // 
             this.lblTonKhoVal.AutoSize = true;
-            this.lblTonKhoVal.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.lblTonKhoVal.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblTonKhoVal.Location = new System.Drawing.Point(545, 31);
             this.lblTonKhoVal.Name = "lblTonKhoVal";
             this.lblTonKhoVal.Size = new System.Drawing.Size(15, 17);
@@ -323,7 +322,6 @@
             // lblDonViTinhVal
             // 
             this.lblDonViTinhVal.AutoSize = true;
-            this.lblDonViTinhVal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(85)))), ((int)(((byte)(105)))));
             this.lblDonViTinhVal.Location = new System.Drawing.Point(420, 31);
             this.lblDonViTinhVal.Name = "lblDonViTinhVal";
             this.lblDonViTinhVal.Size = new System.Drawing.Size(26, 17);
@@ -528,7 +526,7 @@
             // lblCanThuNccVal
             // 
             this.lblCanThuNccVal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblCanThuNccVal.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.lblCanThuNccVal.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblCanThuNccVal.Location = new System.Drawing.Point(880, 52);
             this.lblCanThuNccVal.Name = "lblCanThuNccVal";
             this.lblCanThuNccVal.Size = new System.Drawing.Size(160, 20);
@@ -540,8 +538,7 @@
             // 
             this.lblCanThuNcc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCanThuNcc.AutoSize = true;
-            this.lblCanThuNcc.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblCanThuNcc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
+            this.lblCanThuNcc.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblCanThuNcc.Location = new System.Drawing.Point(740, 55);
             this.lblCanThuNcc.Name = "lblCanThuNcc";
             this.lblCanThuNcc.Size = new System.Drawing.Size(84, 17);
@@ -572,8 +569,7 @@
             // lblTongTienTraVal
             // 
             this.lblTongTienTraVal.AutoSize = true;
-            this.lblTongTienTraVal.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblTongTienTraVal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
+            this.lblTongTienTraVal.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblTongTienTraVal.Location = new System.Drawing.Point(170, 60);
             this.lblTongTienTraVal.Name = "lblTongTienTraVal";
             this.lblTongTienTraVal.Size = new System.Drawing.Size(32, 19);
@@ -592,7 +588,7 @@
             // lblTongSlTraVal
             // 
             this.lblTongSlTraVal.AutoSize = true;
-            this.lblTongSlTraVal.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.lblTongSlTraVal.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblTongSlTraVal.Location = new System.Drawing.Point(170, 26);
             this.lblTongSlTraVal.Name = "lblTongSlTraVal";
             this.lblTongSlTraVal.Size = new System.Drawing.Size(17, 19);

@@ -59,8 +59,6 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
             colDonGiaTra.DefaultCellStyle.Format = "N0";
             colThanhTien.DefaultCellStyle.Format = "N0";
 
-            colSoLuongTra.DefaultCellStyle.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-
             dgvHangTra.DataSource = dtHangTra;
         }
 

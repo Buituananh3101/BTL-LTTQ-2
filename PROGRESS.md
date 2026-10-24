@@ -1,18 +1,17 @@
 ﻿# Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-24 – Bổ sung nút Hoàn thành cho các phiếu tạm trên 4 phân hệ chứng từ (Phiên 33)
+**Cập nhật lần cuối**: 2026-10-24 – Chuẩn hóa toàn bộ Font chữ, Màu chữ theo frmDanhSachHangHoa và Ban hành Quy chuẩn Kích thước Form (Phiên 34)
 
 ---
 
 ## Đang làm
-- [x] Bỏ nút `In thẻ kho` (`btnInTheKho`) và sự kiện `btnInTheKho_Click` trên Báo cáo thẻ kho (`frmBaoCaoTheKho`).
-- [x] Bỏ nút `Xem thẻ kho` (`btnXemTheKho`) khỏi thanh công cụ `frmBaoCaoTonKho`, giữ nguyên tính năng nhấn đúp (`CellDoubleClick`) mở Thẻ kho của mặt hàng.
-- [x] Căn chỉnh nhóm nút thao tác bên phải trên cả 2 form báo cáo đồng bộ chuẩn 100%: `btnXuatFile` (1465, 18), `btnHienCot` (1590, 18), `btnHuongDanSuDung` (1705, 18).
-- [x] Kiểm tra biên dịch mã nguồn C# bằng MSBuild: **0 Warning(s), 0 Error(s)**.
+- [x] Cập nhật Điều luật 15 và 18 trong `AGENTS.md` và `.agent/rules/03-giao-dien-layout.md`: Lấy font và màu chữ của `frmDanhSachHangHoa` làm chuẩn duy nhất toàn hệ thống; ban hành quy chuẩn phân tầng kích thước form (Chức năng lớn và 3 cỡ chức năng nhỏ: Lớn/Vừa/Nhỏ).
+- [x] Quét và loại bỏ 100% việc in đậm (`FontStyle.Bold`) tùy tiện và tô màu (`ForeColor`) tùy tiện trên tất cả các controls/nhãn trong các phân hệ: Trả hàng nhập, Nhập hàng, Kiểm kho, Chuyển kho, Nhà cung cấp, Đơn vị tính, Báo cáo.
+- [x] Bảo đảm 100% file mã nguồn lưu định dạng **UTF-8 with BOM** (Điều luật 18).
+- [x] Kiểm tra biên dịch mã nguồn C# bằng MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
 - [ ] Tiện ích băm mật khẩu `Classes/PasswordHelper.cs` (SHA-256).
 - [ ] Thiết kế và hoàn thiện Form Đăng nhập (`frmDangNhap`) hỗ trợ chọn chi nhánh kho làm việc.
 - [ ] Chuyển sang phân hệ Xác thực & Phân quyền (`frmDangNhap`, tiện ích mã hóa mật khẩu `PasswordHelper.cs` SHA-256, liên kết phân quyền trên `frmMain`).
-
 ---
 
 ## Việc kế tiếp
@@ -49,6 +48,27 @@
 ---
 
 ## Nhật ký phiên (Session Logs)
+
+- **Phiên 34 (2026-10-24) – Chuẩn hóa toàn bộ Font chữ & Màu chữ theo `frmDanhSachHangHoa` và Ban hành Quy chuẩn Kích thước Form**:
+  - **Nhu cầu**: Người dùng phản hồi trên các form (chi tiết chứng từ, thêm mới, báo cáo...), các nhãn và trường dữ liệu (Tổng tiền hàng, NCC cần trả, Mã phiếu...) bị tự ý in đậm (`FontStyle.Bold`) và chọn màu chữ (`ForeColor`) mỗi trường một kiểu cọc cạch như ảnh 2. Yêu cầu:
+    1. Đưa TẤT CẢ các form về đúng một chuẩn duy nhất theo form mẫu `frmDanhSachHangHoa` (Font thường `Regular 9.5pt`, màu chữ mặc định hệ thống `SystemColors.ControlText`).
+    2. Thêm vào Rule: Chuẩn font chữ, màu chữ bắt buộc tuân thủ tuyệt đối; ban hành quy chuẩn phân tầng kích thước form (Chức năng lớn chuẩn `frmDanhSachHangHoa`: `1782 x 853`, chức năng nhỏ hơn phân làm 3 cỡ: Size Lớn theo `frmHangHoa`: `1182 x 803`, Size Vừa theo `frmDonViCapHang`: `960 x 705`, Size Nhỏ theo `frmDoiKho`: `356 x 136`).
+  - **Kết quả thực hiện**:
+    1. **Quy chuẩn Rules (`AGENTS.md` & `.agent/rules/03-giao-dien-layout.md`)**:
+       - Cập nhật Điều luật 15(e) & Điều luật 18: Nghiêm cấm tự ý in đậm các trường dữ liệu, số tiền, nhãn thống kê; cấm tự ý chọn màu chữ mỗi trường một kiểu. Mọi controls đều dùng `Segoe UI, 9.5pt Regular` và màu mặc định. Ngoại lệ: Tiêu đề lớn 12pt Bold, Header DataGridView 9.5pt Bold, Cảnh báo đỏ Bold cho chênh lệch kiểm kê/tồn <= 0/nợ quá hạn (Điều 15a), Màu trạng thái 3 nhóm (Điều 15b/19a).
+       - Bổ sung quy chuẩn phân tầng kích thước Form rõ ràng cho Chức năng lớn và 3 cỡ Chức năng nhỏ (Lớn / Vừa / Nhỏ).
+    2. **Chuẩn hóa toàn diện mã nguồn các Form**:
+       - `TraHangNhap`: Gỡ bỏ toàn bộ ForeColor xám/slate/xanh đen và gỡ bỏ `FontStyle.Bold` trên `frmChiTietTraHangNhap` và `frmThemPhieuTraHang`.
+       - `NhapHang`: Gỡ bỏ ForeColor và Bold trên `frmChiTietPhieuNhap`, `frmThemPhieuNhap`, `frmTraHangNhap`.
+       - `KiemKho`: Gỡ bỏ Bold và ForeColor trên `frmChiTietKiemKho` (ảnh 1), `frmThemPhieuKiemKho`, `frmKiemKho`, `frmNhapKiemKhoFile`.
+       - `ChuyenKho`: Gỡ bỏ ForeColor và Bold trên `frmChiTietChuyenKho`, `frmThemPhieuChuyenKho`, `frmNhanChuyenKho`, `frmChuyenKho`.
+       - `NhaCungCap`: Gỡ bỏ ForeColor và Bold trên `frmDonViCapHang`, `frmNhaCungCap`, `frmNhomNhaCungCap`.
+       - `DonViTinh`: Gỡ bỏ ForeColor và Bold trên `frmChiTietDonViTinh`, `frmDonViTinh`.
+       - `BaoCao`: Gỡ bỏ ForeColor `DimGray`/Slate và Bold trên thẻ KPI của `frmBaoCaoTonKho` và `frmBaoCaoTheKho`.
+    3. **Kiểm tra biên dịch & Chuẩn định dạng**:
+       - 100% file mã nguồn lưu định dạng **UTF-8 with BOM** (Điều luật 18).
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+
 
 - **Phiên 32 (2026-10-24) – Chuẩn hóa toàn bộ trạng thái Chuyển kho và các thuộc tính Báo cáo về font chữ thường theo mẫu Trả hàng nhập**:
   - **Nhu cầu**: Người dùng phản hồi thanh/cột trạng thái của chức năng Chuyển kho và nhiều thuộc tính ở 2 chức năng Báo cáo (Báo cáo tồn kho, Báo cáo thẻ kho) bị in đậm không theo yêu cầu. Yêu cầu chuẩn hóa tất cả về font chữ thường (FontStyle.Regular) và kiểu chữ tiêu chuẩn như thuộc tính trạng thái trong form Trả hàng nhập (rmTraHangNhap).
@@ -398,3 +418,4 @@
 
 - **Phiên 14 (2026-10-23) – Thiết kế và hiện thực trọn vẹn Phân hệ Trả hàng nhập (`GUI/Forms/TraHangNhap/`) theo Design System & chuẩn giao diện KiotViet**:
   - Tạo mới 4 Form: `frmTraHangNhap`, `frmThemPhieuTraHang`, `frmChiTietTraHangNhap` (chỉ 2 nút: Xóa và Xuất file), `frmHienCotTraHang`. Bổ sung cột `MaPhieuNhap INT NULL` vào bảng `PhieuTraHangNhap`.
+

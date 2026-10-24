@@ -119,11 +119,13 @@ Mọi thông báo giao tiếp với người dùng phải tuân theo 4 cấp đ�
 Phân hệ **Danh mục Hàng hóa** (`frmDanhSachHangHoa` & `frmHangHoa`) đã được chốt làm **Khuôn mẫu chuẩn (Design System)** cho toàn bộ các màn hình phát triển tiếp theo (Nhập kho, Kiểm kê, Chuyển kho, Danh mục Nhà cung cấp, Khách hàng, Báo cáo):
 
 ### 6.1. Quy chuẩn Phông chữ (Typography) – Lấy `frmDanhSachHangHoa` làm chuẩn duy nhất (100% Segoe UI)
-- **Quy tắc bắt buộc (Điều luật 18)**: Toàn bộ Form, Dialog, UserControl trong ứng dụng bắt buộc sử dụng bộ font chuẩn của `frmDanhSachHangHoa`. Tuyệt đối không tự ý thay đổi font family hoặc font size khi chưa có yêu cầu từ người dùng.
+- **Quy tắc bắt buộc (Điều luật 18)**: Toàn bộ Form, Dialog, UserControl trong ứng dụng bắt buộc sử dụng bộ font chuẩn và màu chữ của `frmDanhSachHangHoa`. Mọi form phải tuân thủ tuyệt đối, không được làm khác trừ khi được yêu cầu.
 - **Phông nền tảng cấp Form (`this.Font`)**: `Segoe UI, 9.5pt, Regular` (`new System.Drawing.Font("Segoe UI", 9.5F)`).
 - **Tiêu đề lớn của Form (`lblTieuDe`, `lblTaoHangHoa`)**: `Segoe UI, 12pt, Bold` (`new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold)`).
-- **Tiêu đề phân nhóm / GroupBox / Header popup (`lblTieuDeGia`, `lblHienThiCot`)**: `Segoe UI, 9.5pt` hoặc `10pt, Bold`.
-- **Nội dung / Textbox / ComboBox / Dòng DataGridView**: `Segoe UI, 9.5pt, Regular`.
+- **Tiêu đề phân nhóm / GroupBox**: `Segoe UI, 9.5pt, Regular` (hoặc tiêu đề nhóm danh mục lớn giữ chuẩn WinForms).
+- **Tiêu đề cột DataGridView**: `Segoe UI, 9.5pt, Bold`.
+- **Nội dung / Textbox / ComboBox / Dòng DataGridView / Toàn bộ nhãn thông tin và nhãn thống kê**: Bắt buộc dùng `Segoe UI, 9.5pt, Regular`.
+  + **Nghiêm cấm tự ý in đậm (`FontStyle.Bold`)**: Không được tự ý in đậm các trường dữ liệu, số tiền, nhãn thống kê như Tổng tiền hàng, NCC cần trả, Giảm giá, NCC đã trả, Tổng số lượng, Đơn giá... Toàn bộ phải để chữ thường `Regular`.
 - **Thanh trạng thái góc dưới (StatusStrip)**: `Segoe UI, 9pt, Regular` hoặc `9.5pt`.
 - **Khai báo chuỗi tiếng Việt & Encoding file**:
   - Mọi câu lệnh SQL chứa ký tự tiếng Việt có dấu (ví dụ: `N'['`, `N' (Tồn: '`, `N'Phiếu tạm'`) BẮT BUỘC phải có tiền tố `N` phía trước dấu nháy đơn (`N'...'`) để tránh SQL Server chuyển đổi sang ANSI biến thành dấu hỏi `?`.
@@ -136,8 +138,8 @@ Phân hệ **Danh mục Hàng hóa** (`frmDanhSachHangHoa` & `frmHangHoa`) đã 
   - Dòng chẵn: `Color.White` (`#FFFFFF`).
   - Dòng lẻ: `Color.FromArgb(248, 250, 252)`.
   - Dòng đang chọn (Selected Row): Nền `Color.FromArgb(224, 231, 255)`, Chữ `Color.FromArgb(30, 41, 59)`.
-- **Quy chuẩn màu chữ (ForeColor) & Màu trạng thái**:
-  - Tuyệt đối KHÔNG tự ý tô màu các dòng chữ trong bất kỳ form nào (Mã hàng, Mã phiếu, tổng tiền, nhãn thống kê...).
+- **Quy chuẩn màu chữ (ForeColor) & Màu trạng thái (Lấy `frmDanhSachHangHoa` làm chuẩn duy nhất)**:
+  - **Màu chữ mặc định**: Mọi nhãn (Label), ô nhập liệu (TextBox), ComboBox... đều dùng màu chữ mặc định của hệ thống (`SystemColors.ControlText` / kế thừa từ Form cha), **tuyệt đối KHÔNG tự ý chọn màu chữ mỗi trường một kiểu** (như tự ý tô `DimGray`, `FromArgb(100, 116, 139)`, `FromArgb(71, 85, 105)`, `FromArgb(15, 23, 42)`, `FromArgb(30, 41, 59)`...).
   - Chỉ các trường hợp **chênh lệch hoặc bất thường cần lưu ý mới được tô ĐỎ** (`Color.Red`, font Bold) – ví dụ: chênh lệch khi kiểm kho (cả lệch tăng và lệch giảm khi khác 0 đều tô đỏ, theo mẫu cảnh báo tồn kho <= 0 của `frmDanhSachHangHoa`), công nợ quá hạn/tồn âm.
   - **Quy chuẩn màu sắc hiển thị trạng thái (3 nhóm chuẩn toàn hệ thống)**:
     + **Nhóm Hoàn thành / Hoạt động** (*Đã nhập hàng*, *Đã nhận*, *Đã cân bằng*, *Đã trả hàng*, *Đang hoạt động*, *Đang bán*): Màu **Xanh lá** (`Color.ForestGreen` hoặc `Color.FromArgb(22, 163, 74)` theo mẫu `frmNhaCungCap`).
@@ -149,14 +151,22 @@ Phân hệ **Danh mục Hàng hóa** (`frmDanhSachHangHoa` & `frmHangHoa`) đã 
   - Tuyệt đối KHÔNG gán phím tắt hàng F (`F9`, `F10`...) cho các nút chức năng trên giao diện.
   - **Quy chuẩn nút Xóa**: Khi 1 phiếu/đơn không đủ điều kiện xóa (ví dụ phiếu đã cân bằng kho, đã duyệt, đã hủy...), CHỈ disable nút xóa (`btnXoa.Enabled = false`), **vẫn giữ nguyên chữ "Xóa"**, tuyệt đối không được tự ý đổi text của nút (không đổi thành "Không thể xóa", "Đã hủy"...) hoặc đưa ra thông báo cảnh báo khi nhấn như trong `frmDanhSachHangHoa`.
 
-### 6.3. Tiêu Chuẩn Trải Nghiệm & Tương Tác (UX / Behavior)
+### 6.3. Tiêu Chuẩn Trải Nghiệm & Kích Thước Form (Form Sizes Hierarchy)
 - **Đệm đôi chống nhấp nháy**: Mọi DataGridView bắt buộc kích hoạt `DoubleBuffered = true` bằng Reflection tại sự kiện `Load`.
 - **Khóa chỉnh sửa trên lưới danh sách**: `ReadOnly = true`, `AllowUserToAddRows = false`, `SelectionMode = FullRowSelect`.
-- **Kích thước & Tỉ lệ Form khởi đầu các chức năng lớn**: Form danh sách khởi đầu của tất cả các chức năng lớn (`frmDanhSachHangHoa`, `frmKiemKho`, `frmNhapHang`, `frmTraHangNhap`, `frmNhaCungCap`) lấy `frmDanhSachHangHoa` làm chuẩn duy nhất:
-  + Kích thước: `ClientSize = new System.Drawing.Size(1782, 853);`
-  + Khóa mở rộng: `FormBorderStyle = FormBorderStyle.FixedSingle;`, `MaximizeBox = false;`
-  + Định vị: `StartPosition = FormStartPosition.CenterScreen;`
-  + **Tuyệt đối KHÔNG gán `WindowState = FormWindowState.Maximized;`** khi mở form từ `frmMain`, giữ nguyên kích thước chuẩn cố định không fill full màn hình.
+- **Quy chuẩn Kích thước Form toàn hệ thống (Lấy các form mẫu làm khung chuẩn)**:
+  1. **Chức năng lớn (Màn hình danh sách chính / Phân hệ lớn)**:
+     - Lấy `frmDanhSachHangHoa` làm chuẩn kích thước duy nhất:
+       + Kích thước: `ClientSize = new System.Drawing.Size(1782, 853);`
+       + Khóa mở rộng: `FormBorderStyle = FormBorderStyle.FixedSingle;`, `MaximizeBox = false;`
+       + Định vị: `StartPosition = FormStartPosition.CenterScreen;`
+     - Mọi form chức năng lớn khác đều phải có kích thước đúng như vậy, tuyệt đối không được làm khác trừ khi được yêu cầu cụ thể (ngoại trừ duy nhất form chức năng lớn Đổi kho `frmDoiKho` được yêu cầu làm bằng form size nhỏ).
+     - **Tuyệt đối KHÔNG gán `WindowState = FormWindowState.Maximized;`** khi mở form từ `frmMain`, giữ nguyên kích thước chuẩn cố định không fill full màn hình.
+  2. **Chức năng nhỏ hơn (Form chi tiết, Form thêm/sửa/xóa, Popup, Modal)**:
+     - Lấy mẫu các form sau làm khung để các form khác tuân thủ:
+       + **Size Lớn**: Lấy size của form Cập nhật hàng hóa (`frmHangHoa`) làm chuẩn (`ClientSize = new System.Drawing.Size(1182, 803)`). Dành cho các form thêm mới chứng từ nhiều trường, nhiều vùng dữ liệu phức tạp (`frmThemPhieuNhap`, `frmThemPhieuKiemKho`, `frmThemPhieuChuyenKho`, `frmThemPhieuTraHang`...).
+       + **Size Vừa**: Lấy size form Cập nhật thông tin nhà cung cấp (`frmDonViCapHang`) làm chuẩn (`ClientSize = new System.Drawing.Size(960, 705)`). Dành cho các form chi tiết chứng từ Master-Detail (`frmChiTietPhieuNhap`, `frmChiTietTraHangNhap`, `frmChiTietKiemKho`, `frmChiTietChuyenKho`...) và form cập nhật danh mục trung bình.
+       + **Size Nhỏ**: Lấy size của form chức năng lớn Đổi kho (`frmDoiKho`) làm chuẩn (`ClientSize = new System.Drawing.Size(356, 136)`). Dành cho các form modal lựa chọn nhanh, popup xác nhận đơn giản.
 - **Thanh phân trang đáy (Pagination)**: Dock dưới cùng, hỗ trợ tùy chọn số dòng/trang (10, 15, 20, 50, 100), nút trước/sau và nhãn trang hiện tại.
 
 ### 6.4. Quy Chuẩn Bộ Lọc GroupBox Bên Trái (Left Filter GroupBox) – Đồng bộ với `frmDanhSachHangHoa`
