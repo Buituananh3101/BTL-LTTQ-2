@@ -46,7 +46,6 @@
             this.lblTieuDe = new System.Windows.Forms.Label();
             this.lblTimKiem = new System.Windows.Forms.Label();
             this.txtTimKiem = new System.Windows.Forms.TextBox();
-            this.btnXemTheKho = new System.Windows.Forms.Button();
             this.btnXuatFile = new System.Windows.Forms.Button();
             this.btnHienCot = new System.Windows.Forms.Button();
             this.btnHuongDanSuDung = new System.Windows.Forms.Button();
@@ -247,7 +246,6 @@
             this.grpTop.Controls.Add(this.lblTieuDe);
             this.grpTop.Controls.Add(this.lblTimKiem);
             this.grpTop.Controls.Add(this.txtTimKiem);
-            this.grpTop.Controls.Add(this.btnXemTheKho);
             this.grpTop.Controls.Add(this.btnXuatFile);
             this.grpTop.Controls.Add(this.btnHienCot);
             this.grpTop.Controls.Add(this.btnHuongDanSuDung);
@@ -284,24 +282,13 @@
             this.txtTimKiem.TabIndex = 2;
             this.txtTimKiem.TextChanged += new System.EventHandler(this.txtTimKiem_TextChanged);
             // 
-            // btnXemTheKho
-            // 
-            this.btnXemTheKho.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnXemTheKho.Location = new System.Drawing.Point(1335, 18);
-            this.btnXemTheKho.Name = "btnXemTheKho";
-            this.btnXemTheKho.Size = new System.Drawing.Size(115, 29);
-            this.btnXemTheKho.TabIndex = 3;
-            this.btnXemTheKho.Text = "Xem thẻ kho";
-            this.btnXemTheKho.UseVisualStyleBackColor = true;
-            this.btnXemTheKho.Click += new System.EventHandler(this.btnXemTheKho_Click);
-            // 
             // btnXuatFile
             // 
             this.btnXuatFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnXuatFile.Location = new System.Drawing.Point(1465, 18);
             this.btnXuatFile.Name = "btnXuatFile";
             this.btnXuatFile.Size = new System.Drawing.Size(110, 29);
-            this.btnXuatFile.TabIndex = 4;
+            this.btnXuatFile.TabIndex = 3;
             this.btnXuatFile.Text = "Xuất file";
             this.btnXuatFile.UseVisualStyleBackColor = true;
             this.btnXuatFile.Click += new System.EventHandler(this.btnXuatFile_Click);
@@ -635,7 +622,6 @@
         private System.Windows.Forms.Label lblTieuDe;
         private System.Windows.Forms.Label lblTimKiem;
         private System.Windows.Forms.TextBox txtTimKiem;
-        private System.Windows.Forms.Button btnXemTheKho;
         private System.Windows.Forms.Button btnXuatFile;
         private System.Windows.Forms.Button btnHienCot;
         private System.Windows.Forms.Button btnHuongDanSuDung;

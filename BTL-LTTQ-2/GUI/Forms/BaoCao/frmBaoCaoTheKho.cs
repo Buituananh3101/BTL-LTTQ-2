@@ -752,24 +752,6 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
             }
         }
 
-        private void btnInTheKho_Click(object sender, EventArgs e)
-        {
-            string thongTin = $"THẺ KHO HÀNG HÓA\n\n" +
-                $"Mặt hàng: {lblTenHangHienThi.Text}\n" +
-                $"Chi tiết: {lblThongTinChiTiet.Text}\n" +
-                $"Kho: {cboKho.Text}\n" +
-                $"Kỳ báo cáo: Từ {dtpTuNgay.Value:dd/MM/yyyy} đến {dtpDenNgay.Value:dd/MM/yyyy}\n" +
-                $"--------------------------------------------------\n" +
-                $"Tồn đầu kỳ: {lblTonDauVal.Text}\n" +
-                $"Tổng nhập trong kỳ: +{lblNhapKyVal.Text}\n" +
-                $"Tổng xuất trong kỳ: -{lblXuatKyVal.Text}\n" +
-                $"Tồn cuối kỳ: {lblTonCuoiVal.Text}\n" +
-                $"--------------------------------------------------\n" +
-                $"Dữ liệu đã sẵn sàng để xuất file in ấn hoặc lưu trữ sổ sách.";
-
-            MessageBox.Show(thongTin, "Thông tin in thẻ kho", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
         private void btnHienCot_Click(object sender, EventArgs e)
         {
             frmHienCotBaoCao frm = new frmHienCotBaoCao(dgvTheKho);

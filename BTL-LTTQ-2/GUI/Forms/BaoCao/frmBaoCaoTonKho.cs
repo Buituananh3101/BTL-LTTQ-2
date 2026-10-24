@@ -626,11 +626,6 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
             }
         }
 
-        private void btnXemTheKho_Click(object sender, EventArgs e)
-        {
-            MoBaoCaoTheKho();
-        }
-
         private void dgvBaoCaoTonKho_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
@@ -752,7 +747,7 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
             string huongDan = "HƯỚNG DẪN BÁO CÁO TỒN KHO\n\n" +
                 "1. Xem tồn kho: Chọn Chi nhánh kho ở bộ lọc bên trái để xem tồn từng kho, hoặc chọn '-- Tất cả các kho --' để xem tổng hợp toàn hệ thống.\n" +
                 "2. Bộ lọc: Kết hợp lọc theo Nhóm hàng, Tiêu chí mức tồn (Còn tồn, Hết hàng, Tồn âm, Dưới định mức, Vượt định mức) và Trạng thái kinh doanh.\n" +
-                "3. Xem thẻ kho: Chọn một mặt hàng và nhấn 'Xem thẻ kho' (hoặc nhấp đúp vào dòng hàng) để mở lịch sử xuất - nhập - tồn chi tiết.\n" +
+                "3. Xem thẻ kho: Nhấp đúp vào dòng mặt hàng trên bảng để mở xem lịch sử xuất - nhập - tồn thẻ kho chi tiết.\n" +
                 "4. Xuất file: Nhấn 'Xuất file' để xuất danh sách ra định dạng CSV chuẩn tiếng Việt có dấu.\n" +
                 "5. Cảnh báo đỏ: Các mặt hàng hết hàng hoặc tồn âm được đánh dấu đỏ nổi bật.";
 

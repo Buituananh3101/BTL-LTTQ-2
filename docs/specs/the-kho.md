@@ -39,7 +39,7 @@ Số liệu Thẻ kho được truy vấn từ View CSDL **`vw_BienDongKho`** (h
   - Khi `moTuTonKho = true`: Nút `Quay lại` (`btnQuayLai`) hiển thị ở thanh tiêu đề bên cạnh "Báo cáo thẻ kho". Khi bấm `Quay lại`, nhấn phím `Escape` hoặc đóng form (dấu [X]), hệ thống tự động đóng Thẻ kho và kích hoạt lại `frmBaoCaoTonKho` (`Activate()`) đưa người dùng về ngay dòng hàng và trang đang xem dở.
 - **Phân vùng giao diện**:
   - `pnlTop` (Cao 135px):
-    - `grpTop`: Tiêu đề "Báo cáo thẻ kho", nút `Quay lại` (`btnQuayLai` - chỉ hiển thị theo ngữ cảnh), ô tìm kiếm nhanh chứng từ/đối tác, nút `In thẻ kho`, `Xuất file`, `Hiện cột`, `?`.
+    - `grpTop`: Tiêu đề "Báo cáo thẻ kho", nút `Quay lại` (`btnQuayLai` - chỉ hiển thị theo ngữ cảnh), ô tìm kiếm nhanh chứng từ/đối tác, nút `Xuất file`, `Hiện cột`, `?`.
     - `pnlBannerHangHoa`: Banner hiển thị tên sản phẩm, mã SKU, ĐVT, nhóm hàng, vị trí, giá vốn cùng 4 thẻ KPI Thẻ kho (Tồn đầu kỳ, Tổng nhập trong kỳ, Tổng xuất trong kỳ, Tồn cuối kỳ).
   - `pnlBoLoc` (Rộng 360px bên trái):
     - `cboHangHoa`: ComboBox chọn mặt hàng (tích hợp `ComboboxHelper.CaiDatTimKiem`).

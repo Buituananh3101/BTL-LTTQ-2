@@ -1,4 +1,4 @@
-# Sổ Quyết định Kỹ thuật & Nghiệp vụ (Architecture & Business Decisions)
+﻿# Sổ Quyết định Kỹ thuật & Nghiệp vụ (Architecture & Business Decisions)
 ## Hệ Thống Quản Lý Kho Hàng BTL-LTTQ-2 (Windows Forms C#)
 
 > **Mục đích**: Ghi lại mọi quyết định kiến trúc, công nghệ và nghiệp vụ đã được thống nhất để các phiên làm việc tiếp theo không hỏi lại hoặc làm mâu thuẫn với các quyết định trước. Mỗi dòng ghi theo định dạng: `[Ngày] – [Quyết định] – [Lý do]`.
@@ -108,3 +108,10 @@
      - **Cơ chế quay lại đa kênh**: Khi nhấn nút `btnQuayLai`, nhấn phím `Escape`, hoặc bấm dấu `[X]` đóng cửa sổ con, hệ thống tự động `Activate()` lại `frmBaoCaoTonKho` và đóng cửa sổ thẻ kho.
      - **Bảo toàn trạng thái**: Dòng hàng đang chọn, trang hiện tại, bộ lọc của `frmBaoCaoTonKho` được bảo toàn 100%, đồng thời tự động focus lại DataGridView khi kích hoạt (`OnActivated`).
   3. **Biên dịch & Định dạng**: 100% file mã nguồn lưu định dạng **UTF-8 with BOM** (Điều luật 18). Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+
+- **2026-10-24 (Phiên 31)** – Loại bỏ tính năng In thẻ kho trên Báo cáo thẻ kho (rmBaoCaoTheKho) và Xem thẻ kho trên Báo cáo tồn kho (rmBaoCaoTonKho):
+  1. **Bối cảnh & Yêu cầu**: Người dùng yêu cầu loại bỏ tính năng in thẻ kho trong 2 chức năng báo cáo. Xác nhận cụ thể theo mong muốn người dùng: gỡ bỏ nút In thẻ kho trên form Thẻ kho và gỡ bỏ nút Xem thẻ kho trên form Báo cáo tồn kho.
+  2. **Giải pháp thực hiện**:
+     - rmBaoCaoTheKho: Gỡ bỏ nút tnInTheKho và sự kiện tnInTheKho_Click; căn chỉnh lại tnXuatFile (1465, 18), tnHienCot (1590, 18), tnHuongDanSuDung (1705, 18).
+     - rmBaoCaoTonKho: Gỡ bỏ nút tnXemTheKho, sự kiện tnXemTheKho_Click, sự kiện CellDoubleClick và phương thức MoBaoCaoTheKho; cập nhật lại hướng dẫn sử dụng tnHuongDanSuDung_Click; các nút góc phải đồng bộ 100% với form Thẻ kho.
+  3. **Biên dịch & Định dạng**: Lưu định dạng **UTF-8 with BOM** (Điều luật 18). Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.

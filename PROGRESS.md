@@ -1,12 +1,13 @@
-# Tiến độ dự án BTL-LTTQ-2
+﻿# Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-24 – Khắc phục vị trí nút `?` hướng dẫn bị tràn viền / che khuất trên Báo cáo thẻ kho (Phiên 30)
+**Cập nhật lần cuối**: 2026-10-24 – Bỏ tính năng in/xem thẻ kho trên 2 chức năng Báo cáo (Phiên 31)
 
 ---
 
 ## Đang làm
-- [x] Sửa vị trí nhóm nút thao tác trên `grpTop` của `frmBaoCaoTheKho`: căn chỉnh `btnInTheKho` (1370), `btnXuatFile` (1480), `btnHienCot` (1590) và đưa nút `?` (`btnHuongDanSuDung`) về vị trí chuẩn `(1705, 18)` góc trên cùng bên phải.
-- [x] Khắc phục triệt để hiện tượng tràn viền vượt quá chiều rộng Form (1782) và hiện tượng nút `?` bị đè dưới nhãn "Báo cáo thẻ kho".
+- [x] Bỏ nút `In thẻ kho` (`btnInTheKho`) và sự kiện `btnInTheKho_Click` trên Báo cáo thẻ kho (`frmBaoCaoTheKho`).
+- [x] Bỏ nút `Xem thẻ kho` (`btnXemTheKho`) khỏi thanh công cụ `frmBaoCaoTonKho`, giữ nguyên tính năng nhấn đúp (`CellDoubleClick`) mở Thẻ kho của mặt hàng.
+- [x] Căn chỉnh nhóm nút thao tác bên phải trên cả 2 form báo cáo đồng bộ chuẩn 100%: `btnXuatFile` (1465, 18), `btnHienCot` (1590, 18), `btnHuongDanSuDung` (1705, 18).
 - [x] Kiểm tra biên dịch mã nguồn C# bằng MSBuild: **0 Warning(s), 0 Error(s)**.
 - [ ] Tiện ích băm mật khẩu `Classes/PasswordHelper.cs` (SHA-256).
 - [ ] Thiết kế và hoàn thiện Form Đăng nhập (`frmDangNhap`) hỗ trợ chọn chi nhánh kho làm việc.
@@ -49,6 +50,21 @@
 
 ## Nhật ký phiên (Session Logs)
 
+- **Phiên 31 (2026-10-24) – Bỏ nút in/xem thẻ kho trên 2 chức năng báo cáo, giữ nguyên thao tác nhấn đúp mở Thẻ kho**:
+  - **Nhu cầu**: Người dùng yêu cầu bỏ tính năng in thẻ kho trong 2 chức năng báo cáo. Sau khi xác nhận cụ thể với người dùng qua câu hỏi làm rõ, hệ thống thực hiện: bỏ nút `In thẻ kho` trên form Báo cáo thẻ kho và bỏ nút `Xem thẻ kho` trên form Báo cáo tồn kho.
+  - **Kết quả thực hiện**:
+    1. **`frmBaoCaoTheKho` (Báo cáo thẻ kho)**:
+       - Loại bỏ hoàn toàn control `btnInTheKho` ("In thẻ kho") và sự kiện `btnInTheKho_Click`.
+       - Căn chỉnh lại nhóm nút thao tác bên phải của `grpTop`: `btnXuatFile` Location `(1465, 18)`, Size `(110, 29)`; `btnHienCot` Location `(1590, 18)`, Size `(95, 29)`; `btnHuongDanSuDung` Location `(1705, 18)`, Size `(43, 29)`.
+        2. **`frmBaoCaoTonKho` (Báo cáo tồn kho)**:
+       - Loại bỏ nút `btnXemTheKho` ("Xem thẻ kho") và sự kiện `btnXemTheKho_Click` khỏi thanh công cụ trên cùng.
+       - Giữ nguyên sự kiện `dgvBaoCaoTonKho_CellDoubleClick` và phương thức `MoBaoCaoTheKho()`: khi người dùng nhấp đúp vào bất kỳ dòng hàng nào trên bảng, hệ thống tự động mở Báo cáo thẻ kho tương ứng của mặt hàng đó (kèm nút `Quay lại`).
+       - Cập nhật lại nội dung `btnHuongDanSuDung_Click` hướng dẫn thao tác nhấp đúp xem thẻ kho.
+       - Nhóm nút thao tác bên phải đồng bộ 100% tọa độ và kích thước với Báo cáo thẻ kho.
+    3. **Kiểm tra biên dịch & Chuẩn định dạng**:
+       - 100% file mã nguồn lưu định dạng **UTF-8 with BOM** (Điều luật 18).
+       - Biên dịch MSBuild thành công: **0 Warning(s), 0 Error(s)**.
+       - Đồng bộ đầy đủ `docs/specs/the-kho.md`, `docs/specs/bao-cao-ton-kho.md`, `docs/quyet-dinh.md` và `PROGRESS.md`.
 - **Phiên 30 (2026-10-24) – Khắc phục vị trí nút `?` hướng dẫn bị tràn viền / che khuất trên `frmBaoCaoTheKho`**:
   - **Nhu cầu**: Người dùng phản hồi nút `?` hướng dẫn trên `frmBaoCaoTheKho` bị đè dưới tên chức năng "Báo cáo thẻ kho" và mất khỏi góc phải phía trên thanh công cụ.
   - **Nguyên nhân**: Trong `frmBaoCaoTheKho.Designer.cs`, cụm nút góc phải bị định vị quá xa về phía bên phải (`btnInTheKho: 1440`, `btnXuatFile: 1550`, `btnHienCot: 1660`, `btnHuongDanSuDung: 1765`), khiến nút `?` (`X=1765 + 43 = 1808 > 1782`) bị tràn ra ngoài biên phải của form (1782) và biến mất khỏi góc phải, đồng thời gây xung đột layout.
