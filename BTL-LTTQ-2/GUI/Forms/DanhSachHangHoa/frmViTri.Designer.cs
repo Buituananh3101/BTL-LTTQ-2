@@ -1,4 +1,4 @@
-namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
+﻿namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
 {
     partial class frmViTri
     {

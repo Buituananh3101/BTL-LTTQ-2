@@ -1,4 +1,4 @@
-namespace BTL_LTTQ_2.GUI.Forms.NhapHang
+﻿namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 {
     partial class frmThemPhieuNhap
     {
@@ -446,7 +446,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             // 
             this.colXoa.HeaderText = "Xóa";
             this.colXoa.Name = "colXoa";
-            this.colXoa.Text = "✕";
+            this.colXoa.Text = "Xóa";
             this.colXoa.UseColumnTextForButtonValue = true;
             this.colXoa.Width = 50;
             // 
@@ -610,7 +610,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             this.btnHoanThanh.Name = "btnHoanThanh";
             this.btnHoanThanh.Size = new System.Drawing.Size(120, 30);
             this.btnHoanThanh.TabIndex = 2;
-            this.btnHoanThanh.Text = "Hoàn thành";
+            this.btnHoanThanh.Text = "Lưu";
             this.btnHoanThanh.UseVisualStyleBackColor = true;
             this.btnHoanThanh.Click += new System.EventHandler(this.btnHoanThanh_Click);
             // 
@@ -648,7 +648,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             this.Controls.Add(this.grpHangHoa);
             this.Controls.Add(this.grpThongTinChung);
             this.Controls.Add(this.pnlTop);
-            this.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.MinimumSize = new System.Drawing.Size(950, 650);
             this.Name = "frmThemPhieuNhap";

@@ -101,7 +101,7 @@
             // 
             this.btnBoQua.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnBoQua.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnBoQua.Location = new System.Drawing.Point(346, 10);
+            this.btnBoQua.Location = new System.Drawing.Point(235, 10);
             this.btnBoQua.Name = "btnBoQua";
             this.btnBoQua.Size = new System.Drawing.Size(95, 32);
             this.btnBoQua.TabIndex = 1;
@@ -112,7 +112,7 @@
             // btnLuu
             // 
             this.btnLuu.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnLuu.Location = new System.Drawing.Point(235, 10);
+            this.btnLuu.Location = new System.Drawing.Point(346, 10);
             this.btnLuu.Name = "btnLuu";
             this.btnLuu.Size = new System.Drawing.Size(95, 32);
             this.btnLuu.TabIndex = 0;

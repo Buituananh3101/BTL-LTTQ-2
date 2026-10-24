@@ -51,6 +51,23 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             colSlLech.DefaultCellStyle.Format = "N0";
             colDonGia.DefaultCellStyle.Format = "N0";
             colGiaTriLech.DefaultCellStyle.Format = "N0";
+
+            dgvChiTiet.CellFormatting += dgvChiTiet_CellFormatting;
+        }
+
+        private void dgvChiTiet_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.RowIndex >= dgvChiTiet.Rows.Count) return;
+
+            string colName = dgvChiTiet.Columns[e.ColumnIndex].Name;
+            if ((colName == "colSlLech" || colName == "colGiaTriLech") && e.Value != null)
+            {
+                if (decimal.TryParse(e.Value.ToString(), out decimal val) && val != 0)
+                {
+                    e.CellStyle.ForeColor = Color.Red;
+                    e.CellStyle.Font = new Font(dgvChiTiet.Font, FontStyle.Bold);
+                }
+            }
         }
 
         private void frmChiTietKiemKho_Load(object sender, EventArgs e)
@@ -108,9 +125,8 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                 // Trạng thái và Người cân bằng
                 if (trangThai == "DA_DIEU_CHINH")
                 {
-                    lblTrangThaiBadge.Text = "Đã cân bằng kho";
-                    lblTrangThaiBadge.BackColor = Color.FromArgb(209, 250, 229);
-                    lblTrangThaiBadge.ForeColor = Color.FromArgb(5, 150, 105);
+                    lblTrangThaiBadge.Text = "Đã cân bằng";
+                    lblTrangThaiBadge.ForeColor = Color.FromArgb(22, 163, 74);
 
                     string tenNvCanBang = row["TenNvCanBang"].ToString();
                     if (string.IsNullOrEmpty(tenNvCanBang)) tenNvCanBang = tenNvLap;
@@ -126,12 +142,11 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
 
                     // Phiếu đã cân bằng: Không được phép xóa (Luật 6)
                     btnXoa.Enabled = false;
-                    btnXoa.Text = "🔒 Không thể xóa";
+                    btnXoa.Text = "Xóa";
                 }
                 else if (trangThai == "NHAP" || trangThai == "DANG_KIEM" || trangThai == "DA_KIEM")
                 {
                     lblTrangThaiBadge.Text = "Phiếu tạm";
-                    lblTrangThaiBadge.BackColor = Color.FromArgb(254, 243, 199);
                     lblTrangThaiBadge.ForeColor = Color.FromArgb(217, 119, 6);
 
                     lblNguoiCanBang.Text = "Người cân bằng: --";
@@ -140,19 +155,18 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                     lblNgayCanBang.Visible = true;
 
                     btnXoa.Enabled = true;
-                    btnXoa.Text = "🗑 Xóa";
+                    btnXoa.Text = "Xóa";
                 }
                 else // HUY
                 {
                     lblTrangThaiBadge.Text = "Đã hủy";
-                    lblTrangThaiBadge.BackColor = Color.FromArgb(243, 244, 246);
-                    lblTrangThaiBadge.ForeColor = Color.FromArgb(107, 114, 128);
+                    lblTrangThaiBadge.ForeColor = Color.FromArgb(100, 116, 139);
 
                     lblNguoiCanBang.Visible = false;
                     lblNgayCanBang.Visible = false;
 
                     btnXoa.Enabled = false;
-                    btnXoa.Text = "Đã hủy";
+                    btnXoa.Text = "Xóa";
                 }
 
                 // Nạp chi tiết hàng hóa kiểm kê
@@ -242,6 +256,12 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                 lblTongLechTangVal.Text = $"{tongLechTang:N0}  |  {tongGiaTriLechTang:N0} đ";
                 lblTongLechGiamVal.Text = $"{tongLechGiam:N0}  |  {tongGiaTriLechGiam:N0} đ";
                 lblTongChenhLechVal.Text = $"{tongChenhLech:N0}  |  {tongGiaTriChenhLech:N0} đ";
+
+                // Chỉ tô đỏ khi có chênh lệch hoặc bất thường (cả lệch tăng và lệch giảm khi != 0 đều tô đỏ)
+                lblTongThucTeVal.ForeColor = SystemColors.ControlText;
+                lblTongLechTangVal.ForeColor = tongLechTang > 0 ? Color.Red : SystemColors.ControlText;
+                lblTongLechGiamVal.ForeColor = tongLechGiam > 0 ? Color.Red : SystemColors.ControlText;
+                lblTongChenhLechVal.ForeColor = tongChenhLech != 0 ? Color.Red : SystemColors.ControlText;
             }
             catch (Exception ex)
             {

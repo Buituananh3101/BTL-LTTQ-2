@@ -1,4 +1,4 @@
-namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
+﻿namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
 {
     partial class frmChiTietTraHangNhap
     {
@@ -134,7 +134,6 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
             // 
             this.lblMaNhapHangVal.AutoSize = true;
             this.lblMaNhapHangVal.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblMaNhapHangVal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(2)))), ((int)(((byte)(132)))), ((int)(((byte)(199)))));
             this.lblMaNhapHangVal.Location = new System.Drawing.Point(475, 52);
             this.lblMaNhapHangVal.Name = "lblMaNhapHangVal";
             this.lblMaNhapHangVal.Size = new System.Drawing.Size(64, 17);
@@ -156,7 +155,6 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
             // 
             this.lblTenNccVal.AutoSize = true;
             this.lblTenNccVal.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblTenNccVal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(2)))), ((int)(((byte)(132)))), ((int)(((byte)(199)))));
             this.lblTenNccVal.Location = new System.Drawing.Point(100, 52);
             this.lblTenNccVal.Name = "lblTenNccVal";
             this.lblTenNccVal.Size = new System.Drawing.Size(125, 17);
@@ -412,7 +410,6 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
             // 
             this.lblCanThuNccVal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCanThuNccVal.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblCanThuNccVal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(2)))), ((int)(((byte)(132)))), ((int)(((byte)(199)))));
             this.lblCanThuNccVal.Location = new System.Drawing.Point(840, 90);
             this.lblCanThuNccVal.Name = "lblCanThuNccVal";
             this.lblCanThuNccVal.Size = new System.Drawing.Size(170, 19);

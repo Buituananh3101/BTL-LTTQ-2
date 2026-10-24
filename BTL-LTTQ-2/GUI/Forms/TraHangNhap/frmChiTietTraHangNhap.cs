@@ -1,4 +1,4 @@
-using BTL_LTTQ_2.Classes;
+﻿using BTL_LTTQ_2.Classes;
 using System;
 using System.Data;
 using System.Data.SqlClient;
@@ -124,7 +124,7 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                 else
                 {
                     lblTrangThai.Text = "Đã hủy";
-                    lblTrangThai.ForeColor = Color.FromArgb(220, 38, 38); // Red
+                    lblTrangThai.ForeColor = Color.FromArgb(100, 116, 139); // Gray/Slate nhạt
                 }
 
                 lblNguoiTaoVal.Text = row["TenNvLap"].ToString();

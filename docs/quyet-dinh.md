@@ -34,3 +34,26 @@
   1. Loại bỏ cột đánh dấu sao (`colDaDanhDau`) và nút "Làm mới bộ lọc" (`btnLamMoi`) khỏi `frmKiemKho` để tuân thủ 100% mẫu chuẩn.
   2. Khắc phục triệt để lỗi tràn ngang và co bẹp cột: Đồng bộ kích thước form `ClientSize = (1782, 853)`, thiết lập mở maximized (`WindowState = FormWindowState.Maximized`) từ `frmMain.cs`; cố định `MinimumWidth = 85` cho cột `SL thực tế` (`colSlThucTe`), các cột số lượng/giá trị khác và `colGhiChu` (`AutoSizeMode = Fill`, `MinimumWidth = 120`).
   3. Khắc phục triệt để lỗi font / mojibake: Khôi phục toàn bộ text tiếng Việt trên `menuStrip` và `statusStrip` của `frmMain.Designer.cs`; sửa câu lệnh SQL string concat nạp sản phẩm trong `frmThemPhieuKiemKho.cs` có tiền tố `N` (`N'['`, `N' (Tồn: '`); chuyển toàn bộ file mã nguồn sang UTF-8 with BOM và bổ sung `<CodePage>65001</CodePage>` trong file project `.csproj`.
+- **2026-10-24 (Phiên 20)** – Chuẩn hóa toàn diện màu chữ, nút bấm, biểu tượng, bộ lọc và phông chữ toàn hệ thống (Cập nhật Điều luật 15 & 16):
+  1. **Quy chuẩn màu chữ**: Cấm tự ý tô màu chữ (`ForeColor`) trong bất kỳ form nào (mã phiếu, mã hàng, nhãn tổng kết, trạng thái...). Chỉ tô ĐỎ (`Color.Red`, font Bold) khi có chênh lệch hoặc bất thường (lệch kiểm kho tăng/giảm khác 0, tồn kho <= 0, nợ cần trả > 0).
+  2. **Quy chuẩn nút Xóa**: Khi phiếu/đơn không đủ điều kiện xóa (đã cân bằng, đã duyệt, đã hoàn thành, đã hủy), chỉ disable nút xóa (`btnXoa.Enabled = false`), giữ nguyên nội dung Text là "Xóa", tuyệt đối không đổi text sang "Không thể xóa" hay "Đã hủy".
+  3. **Cấm chèn icon/emoji vào nút bấm**: Tuyệt đối không tự ý chèn emoji hoặc biểu tượng (như 🔒, 🗑, ✕...) vào nội dung Text của nút bấm WinForms.
+  4. **Chuẩn hóa bộ lọc thời gian tạo**: Cụm `grpThoiGianTao` (2 DateTimePicker) BẮT BUỘC đặt ở vị trí CUỐI CÙNG (ở đáy) của vùng bộ lọc bên trái trên toàn bộ các form danh sách; tất cả các ComboBox danh mục đặt ở phía trên.
+  5. **Khắc phục lỗi font chữ & mojibake**: Phục hồi 100% tiếng Việt có dấu trong ComboBox và thông báo tại `frmNhaCungCap`, `frmNhapHang`, `frmTraHangNhap`; chuyển 100% file mã nguồn sang UTF-8 with BOM; chuẩn hóa phông `Segoe UI, 9.5pt`.
+- **2026-10-24 (Phiên 21)** – Cố định tỉ lệ form khởi đầu theo `frmDanhSachHangHoa`, loại bỏ phím tắt hàng F, chuẩn hóa bảng màu trạng thái 3 nhóm:
+  1. **Tỉ lệ form khởi đầu cố định chuẩn `frmDanhSachHangHoa`**: Mọi form danh sách khởi đầu (`frmDanhSachHangHoa`, `frmKiemKho`, `frmNhapHang`, `frmTraHangNhap`, `frmNhaCungCap`) đều có `ClientSize = (1782, 853)`, `FormBorderStyle = FixedSingle`, `MaximizeBox = false`, `StartPosition = CenterScreen`. Bỏ lệnh `WindowState = Maximized;` khi mở form từ `frmMain` để form không fill full toàn bộ màn hình, khóa cố định tỉ lệ theo đúng ảnh mẫu 1.
+  2. **Loại bỏ phím tắt hàng F**: Không gán các phím tắt F9, F10... cho chức năng; xóa text `(F9)`, `(F10)` trên nút bấm (đổi thành "Lưu tạm", "Cân bằng kho") và bỏ sự kiện bắt phím tắt `Keys.F9`, `Keys.F10` trong mã nguồn.
+  3. **Chuẩn hóa bảng màu trạng thái 3 nhóm toàn hệ thống**:
+     - *Nhóm Đã hoàn thành/hoạt động* (Đã nhập hàng, Đã nhận, Đã cân bằng, Đã trả hàng, Đang hoạt động, Đang bán): Tô màu **Xanh lá** (`Color.ForestGreen` hoặc `Color.FromArgb(22, 163, 74)` theo mẫu `frmNhaCungCap`).
+     - *Nhóm Tạm thời* (Phiếu tạm): Tô màu **Vàng** (`Color.FromArgb(217, 119, 6)` theo mẫu `frmChiTietTraHangNhap`).
+     - *Nhóm Đã hủy/ngừng* (Đã hủy, Ngừng hoạt động, Ngừng bán): Tô màu **Xám nhạt** (`Color.FromArgb(100, 116, 139)` theo mẫu `frmTraHangNhap`).
+- **2026-10-24 (Phiên 22)** – Chuẩn hóa hiển thị nhãn trạng thái dòng chữ màu (bỏ khung badge) và thống nhất vị trí & thứ tự nút chức năng nhỏ ở cuối form (Ban hành Điều luật 19):
+  1. **Hiển thị nhãn trạng thái chứng từ (Điều luật 19a)**: Nhãn đánh dấu trạng thái chứng từ (ở form chi tiết) hiển thị dưới dạng dòng chữ có màu trạng thái (3 nhóm màu chuẩn: Xanh lá / Vàng amber / Xám nhạt) lấy `frmChiTietPhieuNhap` làm khuôn mẫu; tuyệt đối không làm thành khung badge có viền, nền màu hay đệm padding. Đã sửa `frmChiTietKiemKho` từ badge nền viền sang dòng chữ màu như mẫu `frmChiTietPhieuNhap`.
+  2. **Vị trí và thứ tự các nút chức năng nhỏ trên form (Điều luật 19b)**:
+     - Toàn bộ các nút chức năng thao tác của form nghiệp vụ/nhập liệu bắt buộc đặt ở CUỐI (đáy) form lấy khuôn mẫu `frmThemPhieuNhap`, tuyệt đối không đặt lên trên đầu/header form như ảnh 2.
+     - Chốt thống nhất thứ tự các nút từ trái qua phải trên toàn bộ các form là: `Bỏ qua` ➜ `Lưu tạm` (nếu có) ➜ `Lưu` (đối với form danh mục chỉ có Lưu thì thứ tự là `Bỏ qua` ➜ `Lưu`).
+     - Đã áp dụng đồng bộ:
+       + `frmThemPhieuKiemKho`: Đưa nút `Bỏ qua`, `Lưu tạm`, `Lưu` xuống thanh đáy (`pnlActions`) theo đúng thứ tự; đưa nút `Nhập file` sang thanh chọn hàng nhanh `pnlThemHang` cạnh nút "Nạp tất cả hàng trong kho"; thanh tiêu đề `pnlTop` chỉ giữ lại tiêu đề form.
+       + `frmThemPhieuTraHang`: Đổi thứ tự nút đáy từ `Lưu tạm`, `Trả hàng`, `Bỏ qua` sang đúng thứ tự `Bỏ qua` ➜ `Lưu tạm` ➜ `Lưu`.
+       + `frmThemPhieuNhap`: Đổi text nút hoàn thành sang `Lưu` đồng bộ thứ tự `Bỏ qua` ➜ `Lưu tạm` ➜ `Lưu`.
+       + `frmNhomNhaCungCap`: Đổi thứ tự nút đáy sang đúng `Bỏ qua` ➜ `Lưu`.

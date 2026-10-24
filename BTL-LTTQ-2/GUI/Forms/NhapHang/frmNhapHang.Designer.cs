@@ -543,9 +543,11 @@
             this.Controls.Add(this.pnlBoLoc);
             this.Controls.Add(this.pnlTop);
             this.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.MinimumSize = new System.Drawing.Size(1200, 700);
+            this.MaximizeBox = false;
             this.Name = "frmNhapHang";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Nhập hàng";
             this.Load += new System.EventHandler(this.frmNhapHang_Load);
             this.pnlTop.ResumeLayout(false);

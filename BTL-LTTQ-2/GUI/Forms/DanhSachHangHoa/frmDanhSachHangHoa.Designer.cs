@@ -1,4 +1,4 @@
-namespace BTL_LTTQ_2.GUI.Forms
+﻿namespace BTL_LTTQ_2.GUI.Forms
 {
     partial class frmDanhSachHangHoa
     {

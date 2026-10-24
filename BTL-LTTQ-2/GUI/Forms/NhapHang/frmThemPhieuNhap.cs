@@ -21,7 +21,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 
         private void CauHinhGridChiTiet()
         {
-            // Báº­t Ä‘á»‡m Ä‘Ã´i chá»‘ng giáº­t lag
+            // Bật đệm đôi chống giật lag
             typeof(DataGridView).InvokeMember("DoubleBuffered",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.SetProperty,
                 null, dgvChiTietHang, new object[] { true });
@@ -45,7 +45,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             colGiamGia.DefaultCellStyle.Format = "N0";
             colThanhTien.DefaultCellStyle.Format = "N0";
 
-            // Há»— trá»£ phÃ­m Enter khi chá»n hÃ ng vÃ  nháº­p sá»‘ lÆ°á»£ng, Ä‘Æ¡n giÃ¡
+            // Hỗ trợ phím Enter khi chọn hàng và nhập số lượng, đơn giá
             cboHangHoa.KeyDown += (s, ev) =>
             {
                 if (ev.KeyCode == Keys.Enter)

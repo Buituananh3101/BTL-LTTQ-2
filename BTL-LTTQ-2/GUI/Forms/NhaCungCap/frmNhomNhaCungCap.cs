@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Data.SqlClient;
 using System.Windows.Forms;
 using BTL_LTTQ_2.Classes;

@@ -1,4 +1,4 @@
-namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
+﻿namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
 {
     partial class frmHienCotNcc
     {

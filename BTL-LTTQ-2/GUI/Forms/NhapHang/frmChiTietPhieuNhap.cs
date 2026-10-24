@@ -30,7 +30,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 
         private void CauHinhDataGridView()
         {
-            // Báº­t Ä‘á»‡m Ä‘Ã´i chá»‘ng giáº­t lag
+            // Bật đệm đôi chống giật lag
             typeof(DataGridView).InvokeMember("DoubleBuffered",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.SetProperty,
                 null, dgvChiTiet, new object[] { true });
@@ -131,7 +131,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                 else if (currentTrangThai == "NHAP")
                 {
                     lblTrangThai.Text = "Phiếu tạm";
-                    lblTrangThai.ForeColor = Color.FromArgb(37, 99, 235);
+                    lblTrangThai.ForeColor = Color.FromArgb(217, 119, 6);
                     btnXoa.Enabled = true;
                     btnTraHangNhap.Enabled = false; // Chưa nhập kho nên không thể trả hàng
                 }

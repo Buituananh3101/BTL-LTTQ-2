@@ -1,4 +1,4 @@
-namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
+﻿namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
 {
     partial class frmTraHangNhap
     {
@@ -551,10 +551,12 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
             this.Controls.Add(this.pnlBoLoc);
             this.Controls.Add(this.pnlTop);
             this.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Margin = new System.Windows.Forms.Padding(4);
+            this.MaximizeBox = false;
             this.Name = "frmTraHangNhap";
             this.ShowIcon = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Trả hàng nhập";
             this.Load += new System.EventHandler(this.frmTraHangNhap_Load);
             this.pnlTop.ResumeLayout(false);

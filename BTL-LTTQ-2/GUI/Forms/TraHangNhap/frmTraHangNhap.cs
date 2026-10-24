@@ -1,4 +1,4 @@
-using BTL_LTTQ_2.Classes;
+﻿using BTL_LTTQ_2.Classes;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -649,7 +649,7 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                 }
                 else if (tt == "Phiếu tạm")
                 {
-                    e.CellStyle.ForeColor = Color.FromArgb(37, 99, 235);
+                    e.CellStyle.ForeColor = Color.FromArgb(217, 119, 6);
                 }
                 else if (tt == "Đã hủy")
                 {

@@ -189,7 +189,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                 DataTable dtNhom = DataProcessing.ReadData(sqlNhom);
                 DataRow drAllNhom = dtNhom.NewRow();
                 drAllNhom["MaNhomNcc"] = 0;
-                drAllNhom["TenNhom"] = "-- Táº¥t cáº£ cÃ¡c nhÃ³m --";
+                drAllNhom["TenNhom"] = "-- Tất cả các nhóm --";
                 dtNhom.Rows.InsertAt(drAllNhom, 0);
 
                 Action action = locDuLieu ?? new Action(() =>
@@ -214,7 +214,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lá»—i táº£i danh má»¥c nhÃ³m nhÃ  cung cáº¥p: " + ex.Message, "ThÃ´ng bÃ¡o", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Lỗi tải danh mục nhóm nhà cung cấp: " + ex.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 

@@ -67,7 +67,24 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
 
             colSoLuongThucTe.DefaultCellStyle.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
 
+            dgvHangKiem.CellFormatting += dgvHangKiem_CellFormatting;
+
             dgvHangKiem.DataSource = dtHangKiem;
+        }
+
+        private void dgvHangKiem_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.RowIndex >= dgvHangKiem.Rows.Count) return;
+
+            string colName = dgvHangKiem.Columns[e.ColumnIndex].Name;
+            if ((colName == "colSlChenhLech" || colName == "colGiaTriChenhLech") && e.Value != null)
+            {
+                if (decimal.TryParse(e.Value.ToString(), out decimal val) && val != 0)
+                {
+                    e.CellStyle.ForeColor = Color.Red;
+                    e.CellStyle.Font = new Font(dgvHangKiem.Font, FontStyle.Bold);
+                }
+            }
         }
 
         private void frmThemPhieuKiemKho_Load(object sender, EventArgs e)
@@ -421,6 +438,12 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             lblTongLechTangVal.Text = $"{tongLechTang:N0}  |  {tongGiaTriLechTang:N0} đ";
             lblTongLechGiamVal.Text = $"{tongLechGiam:N0}  |  {tongGiaTriLechGiam:N0} đ";
             lblTongChenhLechVal.Text = $"{tongChenhLech:N0}  |  {tongGiaTriChenhLech:N0} đ";
+
+            // Chỉ tô đỏ khi có chênh lệch hoặc bất thường (cả lệch tăng và lệch giảm khi != 0 đều tô đỏ)
+            lblTongThucTeVal.ForeColor = SystemColors.ControlText;
+            lblTongLechTangVal.ForeColor = tongLechTang > 0 ? Color.Red : SystemColors.ControlText;
+            lblTongLechGiamVal.ForeColor = tongLechGiam > 0 ? Color.Red : SystemColors.ControlText;
+            lblTongChenhLechVal.ForeColor = tongChenhLech != 0 ? Color.Red : SystemColors.ControlText;
         }
 
         #endregion
@@ -679,30 +702,20 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
 
         private void frmThemPhieuKiemKho_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.F9)
+            if (e.KeyCode == Keys.Escape)
             {
-                btnLuuTam_Click(null, null);
-                e.Handled = true;
-            }
-            else if (e.KeyCode == Keys.F10)
-            {
-                btnCanBangKho_Click(null, null);
-                e.Handled = true;
-            }
-            else if (e.KeyCode == Keys.Escape)
-            {
-                btnDong_Click(null, null);
+                btnBoQua_Click(null, null);
                 e.Handled = true;
             }
         }
 
-        private void btnDong_Click(object sender, EventArgs e)
+        private void btnBoQua_Click(object sender, EventArgs e)
         {
             if (dtHangKiem.Rows.Count > 0)
             {
                 DialogResult dr = MessageBox.Show(
-                    "Dữ liệu phiếu kiểm chưa được lưu. Bạn có chắc chắn muốn đóng?",
-                    "Xác nhận đóng",
+                    "Dữ liệu phiếu kiểm chưa được lưu. Bạn có chắc chắn muốn bỏ qua?",
+                    "Xác nhận bỏ qua",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question);
 
@@ -710,6 +723,11 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             }
 
             this.Close();
+        }
+
+        private void btnDong_Click(object sender, EventArgs e)
+        {
+            btnBoQua_Click(sender, e);
         }
     }
 }

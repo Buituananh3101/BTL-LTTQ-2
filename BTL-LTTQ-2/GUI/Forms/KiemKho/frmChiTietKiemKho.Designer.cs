@@ -93,15 +93,13 @@
             // lblTrangThaiBadge
             // 
             this.lblTrangThaiBadge.AutoSize = true;
-            this.lblTrangThaiBadge.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(209)))), ((int)(((byte)(250)))), ((int)(((byte)(229)))));
-            this.lblTrangThaiBadge.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.lblTrangThaiBadge.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(5)))), ((int)(((byte)(150)))), ((int)(((byte)(105)))));
+            this.lblTrangThaiBadge.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.lblTrangThaiBadge.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(163)))), ((int)(((byte)(74)))));
             this.lblTrangThaiBadge.Location = new System.Drawing.Point(175, 18);
             this.lblTrangThaiBadge.Name = "lblTrangThaiBadge";
-            this.lblTrangThaiBadge.Padding = new System.Windows.Forms.Padding(8, 3, 8, 3);
-            this.lblTrangThaiBadge.Size = new System.Drawing.Size(147, 27);
+            this.lblTrangThaiBadge.Size = new System.Drawing.Size(87, 19);
             this.lblTrangThaiBadge.TabIndex = 1;
-            this.lblTrangThaiBadge.Text = "Đã cân bằng kho";
+            this.lblTrangThaiBadge.Text = "Đã cân bằng";
             // 
             // lblNguoiTao
             // 
@@ -367,7 +365,6 @@
             // 
             this.lblTongLechTangVal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTongLechTangVal.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.lblTongLechTangVal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
             this.lblTongLechTangVal.Location = new System.Drawing.Point(240, 38);
             this.lblTongLechTangVal.Name = "lblTongLechTangVal";
             this.lblTongLechTangVal.Size = new System.Drawing.Size(255, 21);
@@ -388,7 +385,6 @@
             // 
             this.lblTongLechGiamVal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTongLechGiamVal.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.lblTongLechGiamVal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
             this.lblTongLechGiamVal.Location = new System.Drawing.Point(240, 68);
             this.lblTongLechGiamVal.Name = "lblTongLechGiamVal";
             this.lblTongLechGiamVal.Size = new System.Drawing.Size(255, 21);
@@ -410,7 +406,6 @@
             // 
             this.lblTongChenhLechVal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTongChenhLechVal.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
-            this.lblTongChenhLechVal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(64)))), ((int)(((byte)(175)))));
             this.lblTongChenhLechVal.Location = new System.Drawing.Point(220, 100);
             this.lblTongChenhLechVal.Name = "lblTongChenhLechVal";
             this.lblTongChenhLechVal.Size = new System.Drawing.Size(275, 25);
@@ -433,9 +428,9 @@
             // 
             this.btnXoa.Location = new System.Drawing.Point(0, 4);
             this.btnXoa.Name = "btnXoa";
-            this.btnXoa.Size = new System.Drawing.Size(110, 32);
+            this.btnXoa.Size = new System.Drawing.Size(100, 32);
             this.btnXoa.TabIndex = 0;
-            this.btnXoa.Text = "🗑 Xóa";
+            this.btnXoa.Text = "Xóa";
             this.btnXoa.UseVisualStyleBackColor = true;
             this.btnXoa.Click += new System.EventHandler(this.btnXoa_Click);
             // 

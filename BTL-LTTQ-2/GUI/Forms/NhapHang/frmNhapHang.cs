@@ -133,7 +133,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                 DataTable dt = DataProcessing.ReadData(sql);
                 DataRow drAll = dt.NewRow();
                 drAll["MaDonViCapHang"] = 0;
-                drAll["TenDonVi"] = "-- Táº¥t cáº£ nhÃ  cung cáº¥p --";
+                drAll["TenDonVi"] = "-- Tất cả nhà cung cấp --";
                 dt.Rows.InsertAt(drAll, 0);
 
                 Action action = locDuLieu ?? new Action(() =>
@@ -147,7 +147,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lá»—i náº¡p danh sÃ¡ch nhÃ  cung cáº¥p: " + ex.Message, "ThÃ´ng bÃ¡o lá»—i", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Lỗi nạp danh sách nhà cung cấp: " + ex.Message, "Thông báo lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -159,11 +159,11 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                 DataTable dtNvl = DataProcessing.ReadData(sql);
                 DataRow drAllNvl = dtNvl.NewRow();
                 drAllNvl["MaNV"] = 0;
-                drAllNvl["HoTen"] = "-- Táº¥t cáº£ ngÆ°á»i táº¡o --";
+                drAllNvl["HoTen"] = "-- Tất cả người tạo --";
                 dtNvl.Rows.InsertAt(drAllNvl, 0);
 
                 DataTable dtNvn = dtNvl.Copy();
-                dtNvn.Rows[0]["HoTen"] = "-- Táº¥t cáº£ ngÆ°á»i nháº­p --";
+                dtNvn.Rows[0]["HoTen"] = "-- Tất cả người nhập --";
 
                 Action action = locDuLieu ?? new Action(() =>
                 {
@@ -179,7 +179,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lá»—i náº¡p danh sÃ¡ch nhÃ¢n viÃªn: " + ex.Message, "ThÃ´ng bÃ¡o lá»—i", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Lỗi nạp danh sách nhân viên: " + ex.Message, "Thông báo lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -388,6 +388,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             if (e.RowIndex < 0) return;
             if (dgvNhapHang.Columns[e.ColumnIndex].Name == "colChon") return;
 
+
             int maPhieuNhap = Convert.ToInt32(dgvNhapHang.Rows[e.RowIndex].Cells["colMaPhieuNhap"].Value);
             using (frmChiTietPhieuNhap frm = new frmChiTietPhieuNhap(maPhieuNhap))
             {
@@ -485,6 +486,25 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
         private void dgvNhapHang_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             if (e.RowIndex < 0) return;
+            if (dgvNhapHang.Columns[e.ColumnIndex].Name == "colChon") return;
+
+            // Đổi màu hiển thị trạng thái
+            if (dgvNhapHang.Columns[e.ColumnIndex].Name == "colTrangThai" && e.Value != null)
+            {
+                string tt = e.Value.ToString();
+                if (tt == "Đã nhập hàng" || tt == "Đã nhận")
+                {
+                    e.CellStyle.ForeColor = Color.FromArgb(22, 163, 74);
+                }
+                else if (tt == "Phiếu tạm")
+                {
+                    e.CellStyle.ForeColor = Color.FromArgb(217, 119, 6);
+                }
+                else if (tt == "Đã hủy")
+                {
+                    e.CellStyle.ForeColor = Color.FromArgb(100, 116, 139);
+                }
+            }
 
             // Bôi đỏ nếu còn nợ cần trả NCC
             if (dgvNhapHang.Columns[e.ColumnIndex].Name == "colCanTraNcc" && e.Value != null)
@@ -493,24 +513,6 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                 {
                     e.CellStyle.ForeColor = Color.FromArgb(220, 38, 38);
                     e.CellStyle.Font = new Font(dgvNhapHang.Font, FontStyle.Bold);
-                }
-            }
-
-            // Đổi màu hiển thị trạng thái
-            if (dgvNhapHang.Columns[e.ColumnIndex].Name == "colTrangThai" && e.Value != null)
-            {
-                string tt = e.Value.ToString();
-                if (tt == "Đã nhập hàng")
-                {
-                    e.CellStyle.ForeColor = Color.FromArgb(22, 163, 74);
-                }
-                else if (tt == "Phiếu tạm")
-                {
-                    e.CellStyle.ForeColor = Color.FromArgb(37, 99, 235);
-                }
-                else if (tt == "Đã hủy")
-                {
-                    e.CellStyle.ForeColor = Color.FromArgb(100, 116, 139);
                 }
             }
         }

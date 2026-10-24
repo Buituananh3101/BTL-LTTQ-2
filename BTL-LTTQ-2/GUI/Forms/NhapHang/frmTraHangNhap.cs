@@ -1,4 +1,4 @@
-using BTL_LTTQ_2.Classes;
+﻿using BTL_LTTQ_2.Classes;
 
 using System;
 using System.Data;
@@ -27,7 +27,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 
         private void CauHinhDataGridView()
         {
-            // Báº­t Ä‘á»‡m Ä‘Ã´i chá»‘ng giáº­t lag
+            // Bật đệm đôi chống giật lag
             typeof(DataGridView).InvokeMember("DoubleBuffered",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.SetProperty,
                 null, dgvHangTra, new object[] { true });

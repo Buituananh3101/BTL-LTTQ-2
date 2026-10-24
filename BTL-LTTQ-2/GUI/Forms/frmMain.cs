@@ -139,7 +139,6 @@ namespace BTL_LTTQ_2.GUI.Forms
 
             BTL_LTTQ_2.GUI.Forms.KiemKho.frmKiemKho frm = new BTL_LTTQ_2.GUI.Forms.KiemKho.frmKiemKho();
             frm.MdiParent = this;
-            frm.WindowState = FormWindowState.Maximized;
             frm.Show();
         }
     }

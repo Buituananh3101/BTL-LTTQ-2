@@ -129,20 +129,34 @@ Phân hệ **Danh mục Hàng hóa** (`frmDanhSachHangHoa` & `frmHangHoa`) đã 
   - Mọi câu lệnh SQL chứa ký tự tiếng Việt có dấu (ví dụ: `N'['`, `N' (Tồn: '`, `N'Phiếu tạm'`) BẮT BUỘC phải có tiền tố `N` phía trước dấu nháy đơn (`N'...'`) để tránh SQL Server chuyển đổi sang ANSI biến thành dấu hỏi `?`.
   - Mọi file mã nguồn C# (`.cs`, `.Designer.cs`) chứa chuỗi tiếng Việt BẮT BUỘC phải lưu dưới định dạng **UTF-8 with BOM** (Preamble `0xEF, 0xBB, 0xBF`) để trình biên dịch MSBuild/Roslyn không bị lỗi mã hóa ký tự Unicode.
 
-### 6.2. Bảng Màu Nhận Diện Thống Nhất (Color Palette)
+### 6.2. Bảng Màu Nhận Diện & Nút Bấm Thống Nhất (Color Palette & Controls)
 - **Màu nền vùng MDI Client**: `Color.FromArgb(240, 242, 245)` (`#F0F2F5`).
 - **Màu nền Form / Panel chính**: `Color.White` (`#FFFFFF`).
 - **Màu nền dòng xen kẽ DataGridView**:
   - Dòng chẵn: `Color.White` (`#FFFFFF`).
   - Dòng lẻ: `Color.FromArgb(248, 250, 252)`.
   - Dòng đang chọn (Selected Row): Nền `Color.FromArgb(224, 231, 255)`, Chữ `Color.FromArgb(30, 41, 59)`.
-- **Màu cảnh báo / Nguy hiểm (Hết hàng, Âm tồn, Nút xóa)**: `Color.Red` hoặc `#EF4444` / `#DC2626`.
-- **Màu nút hành động chính (Primary Button)**: Tuân thủ WinForms chuẩn (`UseVisualStyleBackColor = true`), không tự ý đổi màu nền trừ khi có yêu cầu.
+- **Quy chuẩn màu chữ (ForeColor) & Màu trạng thái**:
+  - Tuyệt đối KHÔNG tự ý tô màu các dòng chữ trong bất kỳ form nào (Mã hàng, Mã phiếu, tổng tiền, nhãn thống kê...).
+  - Chỉ các trường hợp **chênh lệch hoặc bất thường cần lưu ý mới được tô ĐỎ** (`Color.Red`, font Bold) – ví dụ: chênh lệch khi kiểm kho (cả lệch tăng và lệch giảm khi khác 0 đều tô đỏ, theo mẫu cảnh báo tồn kho <= 0 của `frmDanhSachHangHoa`), công nợ quá hạn/tồn âm.
+  - **Quy chuẩn màu sắc hiển thị trạng thái (3 nhóm chuẩn toàn hệ thống)**:
+    + **Nhóm Hoàn thành / Hoạt động** (*Đã nhập hàng*, *Đã nhận*, *Đã cân bằng*, *Đã trả hàng*, *Đang hoạt động*, *Đang bán*): Màu **Xanh lá** (`Color.ForestGreen` hoặc `Color.FromArgb(22, 163, 74)` theo mẫu `frmNhaCungCap`).
+    + **Nhóm Tạm thời** (*Phiếu tạm*): Màu **Vàng** (`Color.FromArgb(217, 119, 6)` theo mẫu `frmChiTietTraHangNhap`).
+    + **Nhóm Hủy / Ngừng** (*Đã hủy*, *Ngừng hoạt động*, *Ngừng bán*): Màu **Xám nhạt** (`Color.FromArgb(100, 116, 139)` theo mẫu `frmTraHangNhap`).
+- **Quy chuẩn Nút bấm (Button)**:
+  - Tuân thủ WinForms chuẩn (`UseVisualStyleBackColor = true`), không tự ý đổi màu nền trừ khi có yêu cầu.
+  - Tuyệt đối KHÔNG tự ý chèn icon, emoji (như 🔒, 🗑, v.v.) vào nội dung Text của nút bấm.
+  - Tuyệt đối KHÔNG gán phím tắt hàng F (`F9`, `F10`...) cho các nút chức năng trên giao diện.
+  - **Quy chuẩn nút Xóa**: Khi 1 phiếu/đơn không đủ điều kiện xóa (ví dụ phiếu đã cân bằng kho, đã duyệt, đã hủy...), CHỈ disable nút xóa (`btnXoa.Enabled = false`), **vẫn giữ nguyên chữ "Xóa"**, tuyệt đối không được tự ý đổi text của nút (không đổi thành "Không thể xóa", "Đã hủy"...) hoặc đưa ra thông báo cảnh báo khi nhấn như trong `frmDanhSachHangHoa`.
 
 ### 6.3. Tiêu Chuẩn Trải Nghiệm & Tương Tác (UX / Behavior)
 - **Đệm đôi chống nhấp nháy**: Mọi DataGridView bắt buộc kích hoạt `DoubleBuffered = true` bằng Reflection tại sự kiện `Load`.
 - **Khóa chỉnh sửa trên lưới danh sách**: `ReadOnly = true`, `AllowUserToAddRows = false`, `SelectionMode = FullRowSelect`.
-- **Kích thước Form MDI Child**: Form danh sách phải có `ClientSize = (1782, 853)` và khi mở từ `frmMain` bắt buộc gán `frm.WindowState = FormWindowState.Maximized;` để hiển thị tràn màn hình MDI cha, tránh cửa sổ con lơ lửng bị tràn cuộn ngang.
+- **Kích thước & Tỉ lệ Form khởi đầu các chức năng lớn**: Form danh sách khởi đầu của tất cả các chức năng lớn (`frmDanhSachHangHoa`, `frmKiemKho`, `frmNhapHang`, `frmTraHangNhap`, `frmNhaCungCap`) lấy `frmDanhSachHangHoa` làm chuẩn duy nhất:
+  + Kích thước: `ClientSize = new System.Drawing.Size(1782, 853);`
+  + Khóa mở rộng: `FormBorderStyle = FormBorderStyle.FixedSingle;`, `MaximizeBox = false;`
+  + Định vị: `StartPosition = FormStartPosition.CenterScreen;`
+  + **Tuyệt đối KHÔNG gán `WindowState = FormWindowState.Maximized;`** khi mở form từ `frmMain`, giữ nguyên kích thước chuẩn cố định không fill full màn hình.
 - **Thanh phân trang đáy (Pagination)**: Dock dưới cùng, hỗ trợ tùy chọn số dòng/trang (10, 15, 20, 50, 100), nút trước/sau và nhãn trang hiện tại.
 
 ### 6.4. Quy Chuẩn Bộ Lọc GroupBox Bên Trái (Left Filter GroupBox) – Đồng bộ với `frmDanhSachHangHoa`
@@ -152,9 +166,22 @@ Phân hệ **Danh mục Hàng hóa** (`frmDanhSachHangHoa` & `frmHangHoa`) đã 
 - **Tìm kiếm trực tiếp bằng text nhập vào với danh mục nhiều giá trị**:
   - Đối với các trường danh mục nhiều giá trị (Nhà cung cấp, Nhóm hàng, Vị trí, Người tạo, Người trả/nhập...): bắt buộc tích hợp qua `ComboboxHelper.CaiDatTimKiem(cbo, dt, displayCol, valueCol, onCommitted)`.
   - Cho phép người dùng gõ text tìm kiếm không phân biệt hoa thường, không dấu/có dấu, tự động giới hạn độ cao tối đa 8 dòng dropdown và tự động chọn phần tử đầu tiên khi gõ Enter.
-- **Ngoại trừ duy nhất bộ lọc khoảng thời gian**:
+- **Ngoại trừ duy nhất bộ lọc khoảng thời gian & BẮT BUỘC ĐẶT Ở VỊ TRÍ CUỐI CÙNG (ở đáy)**:
   - Không dùng ComboBox cho khoảng thời gian mà bắt buộc sử dụng **cụm GroupBox con `grpThoiGianTao`** làm chuẩn duy nhất theo mẫu `frmDanhSachHangHoa`:
     - GroupBox: `grpThoiGianTao`, kích thước `322x100`, nằm trong `grpBoLoc`.
+    - **Vị trí bắt buộc**: Đặt ở **CUỐI CÙNG (dưới cùng)** của các bộ lọc bên trái. Tất cả các bộ lọc danh mục ComboBox khác đều phải đặt ở phía trên.
     - Gồm 2 DateTimePicker: `dtpTuNgay` (Từ ngày) và `dtpDenNgay` (Đến ngày) đều cấu hình `Format = Short` (`dd/MM/yyyy`).
     - Nhãn chỉ dẫn: `lblTuNgay` (Từ), `lblDenNgay` (Đến).
     - Sự kiện `ValueChanged` tự động làm mới danh sách bảng dữ liệu về trang 1.
+
+### 6.5. Quy Chuẩn Vị Trí & Thứ Tự Nút Chức Năng Nhỏ và Nhãn Trạng Thái (Điều luật 19)
+- **6.5.1. Nhãn đánh dấu trạng thái chứng từ**:
+  - Nhãn hiển thị trạng thái của phiếu (chi tiết phiếu nhập, chi tiết phiếu kiểm, chi tiết trả hàng...) hiển thị dưới dạng **dòng chữ có màu của trạng thái** (tuân thủ Bảng màu 3 nhóm tại Mục 6.2), lấy khuôn mẫu từ `frmChiTietPhieuNhap` (`lblTrangThai`: `Font = Segoe UI, 10pt Regular`, không viền, không nền màu `BackColor`, không đệm `Padding`).
+  - Tuyệt đối KHÔNG làm thành khung/badge có viền, nền màu hay padding.
+- **6.5.2. Vị trí và thứ tự các nút chức năng nhỏ trên form**:
+  - Toàn bộ các nút chức năng thao tác của form nghiệp vụ/nhập liệu bắt buộc đặt ở **CUỐI (ở đáy) của form** (`DockStyle.Bottom` hoặc panel đáy) lấy khuôn mẫu từ `frmThemPhieuNhap`. Tuyệt đối không đặt lên trên đầu/header của form.
+  - **Thứ tự nút chốt toàn hệ thống (tính từ trái qua phải)**:
+    1. `Bỏ qua`: Hủy/đóng form mà không lưu.
+    2. `Lưu tạm`: Lưu chứng từ ở trạng thái nháp/tạm (`NHAP`), không làm biến động sổ sách tồn kho (nếu form có hỗ trợ lưu tạm).
+    3. `Lưu`: Lưu và xác nhận hoàn tất nghiệp vụ (cập nhật tồn kho / cân bằng kho / lưu dữ liệu chính thức).
+  - Đối với form danh mục không có lưu tạm (ví dụ `frmHangHoa`, `frmDonViCapHang`, `frmNhomNhaCungCap`), thứ tự từ trái qua phải là: `Bỏ qua` ➜ `Lưu`.

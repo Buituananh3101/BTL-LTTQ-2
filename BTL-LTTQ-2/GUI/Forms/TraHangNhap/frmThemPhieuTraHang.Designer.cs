@@ -1,4 +1,4 @@
-namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
+﻿namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
 {
     partial class frmThemPhieuTraHang
     {
@@ -305,7 +305,6 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
             // 
             this.lblTonKhoVal.AutoSize = true;
             this.lblTonKhoVal.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblTonKhoVal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(2)))), ((int)(((byte)(132)))), ((int)(((byte)(199)))));
             this.lblTonKhoVal.Location = new System.Drawing.Point(545, 31);
             this.lblTonKhoVal.Name = "lblTonKhoVal";
             this.lblTonKhoVal.Size = new System.Drawing.Size(15, 17);
@@ -530,7 +529,6 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
             // 
             this.lblCanThuNccVal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCanThuNccVal.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblCanThuNccVal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(2)))), ((int)(((byte)(132)))), ((int)(((byte)(199)))));
             this.lblCanThuNccVal.Location = new System.Drawing.Point(880, 52);
             this.lblCanThuNccVal.Name = "lblCanThuNccVal";
             this.lblCanThuNccVal.Size = new System.Drawing.Size(160, 20);
@@ -595,7 +593,6 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
             // 
             this.lblTongSlTraVal.AutoSize = true;
             this.lblTongSlTraVal.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblTongSlTraVal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(2)))), ((int)(((byte)(132)))), ((int)(((byte)(199)))));
             this.lblTongSlTraVal.Location = new System.Drawing.Point(170, 26);
             this.lblTongSlTraVal.Name = "lblTongSlTraVal";
             this.lblTongSlTraVal.Size = new System.Drawing.Size(17, 19);
@@ -628,10 +625,10 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
             this.btnBoQua.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnBoQua.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnBoQua.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.btnBoQua.Location = new System.Drawing.Point(985, 10);
+            this.btnBoQua.Location = new System.Drawing.Point(755, 10);
             this.btnBoQua.Name = "btnBoQua";
             this.btnBoQua.Size = new System.Drawing.Size(95, 35);
-            this.btnBoQua.TabIndex = 2;
+            this.btnBoQua.TabIndex = 0;
             this.btnBoQua.Text = "Bỏ qua";
             this.btnBoQua.UseVisualStyleBackColor = true;
             this.btnBoQua.Click += new System.EventHandler(this.btnBoQua_Click);
@@ -640,10 +637,10 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
             // 
             this.btnLuuTam.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnLuuTam.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.btnLuuTam.Location = new System.Drawing.Point(755, 10);
+            this.btnLuuTam.Location = new System.Drawing.Point(865, 10);
             this.btnLuuTam.Name = "btnLuuTam";
             this.btnLuuTam.Size = new System.Drawing.Size(100, 35);
-            this.btnLuuTam.TabIndex = 0;
+            this.btnLuuTam.TabIndex = 1;
             this.btnLuuTam.Text = "Lưu tạm";
             this.btnLuuTam.UseVisualStyleBackColor = true;
             this.btnLuuTam.Click += new System.EventHandler(this.btnLuuTam_Click);
@@ -651,12 +648,12 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
             // btnXacNhanTra
             // 
             this.btnXacNhanTra.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnXacNhanTra.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.btnXacNhanTra.Location = new System.Drawing.Point(865, 10);
+            this.btnXacNhanTra.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.btnXacNhanTra.Location = new System.Drawing.Point(980, 10);
             this.btnXacNhanTra.Name = "btnXacNhanTra";
-            this.btnXacNhanTra.Size = new System.Drawing.Size(110, 35);
-            this.btnXacNhanTra.TabIndex = 1;
-            this.btnXacNhanTra.Text = "Trả hàng";
+            this.btnXacNhanTra.Size = new System.Drawing.Size(105, 35);
+            this.btnXacNhanTra.TabIndex = 2;
+            this.btnXacNhanTra.Text = "Lưu";
             this.btnXacNhanTra.UseVisualStyleBackColor = true;
             this.btnXacNhanTra.Click += new System.EventHandler(this.btnXacNhanTra_Click);
             // 

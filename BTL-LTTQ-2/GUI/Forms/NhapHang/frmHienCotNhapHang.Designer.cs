@@ -1,4 +1,4 @@
-namespace BTL_LTTQ_2.GUI.Forms.NhapHang
+﻿namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 {
     partial class frmHienCotNhapHang
     {

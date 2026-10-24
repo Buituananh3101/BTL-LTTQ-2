@@ -1,16 +1,15 @@
 # Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-24 – Chuẩn hóa toàn diện giao diện Phân hệ Kiểm kho & Bộ phông chữ theo chuẩn frmDanhSachHangHoa (Ban hành Điều luật 18) (Phiên 19)
+**Cập nhật lần cuối**: 2026-10-24 – Chuẩn hóa hiển thị nhãn trạng thái chữ màu (bỏ khung badge) và thống nhất vị trí & thứ tự nút chức năng nhỏ (Bỏ qua ➜ Lưu tạm ➜ Lưu) ở cuối form (Phiên 22)
 
 ---
 
 ## Đang làm
-- [x] Thiết kế trọn vẹn cụm form Phân hệ Kiểm kho (`GUI/Forms/KiemKho/`): `frmKiemKho`, `frmThemPhieuKiemKho`, `frmChiTietKiemKho`, `frmNhapKiemKhoFile`, `frmHienCotKiemKho`.
-- [x] Loại bỏ cột sao (★) và nút "Làm mới bộ lọc" ở `frmKiemKho` để tuân thủ 100% mẫu chuẩn; xác nhận CSDL không bị thay đổi.
-- [x] Khắc phục triệt để lỗi tràn ngang và co bẹp cột: Cấu hình `ClientSize = (1782, 853)`, mở maximized (`WindowState = FormWindowState.Maximized`) từ `frmMain.cs`, đặt `MinimumWidth = 85` cho `colSlThucTe` và các cột số liệu, `colGhiChu` (`AutoSizeMode = Fill`, `MinimumWidth = 120`).
-- [x] Khắc phục triệt để lỗi font chữ và mojibake: Sửa toàn bộ menu tiếng Việt trên `frmMain.Designer.cs`, sửa chuỗi SQL concat nạp sản phẩm trong `frmThemPhieuKiemKho.cs` với tiền tố `N`, chuyển toàn bộ file mã nguồn sang UTF-8 with BOM và bổ sung `<CodePage>65001</CodePage>` trong `.csproj`.
-- [x] Ban hành Điều luật 18: Lấy font chữ ở `frmDanhSachHangHoa` làm chuẩn duy nhất toàn hệ thống (`Segoe UI, 9.5pt` cho Form/controls, `Segoe UI, 12pt Bold` cho tiêu đề lớn).
-- [x] Kiểm tra biên dịch: **0 Warning(s), 0 Error(s)**.
+- [x] Chuẩn hóa hiển thị nhãn trạng thái chứng từ: dạng dòng chữ có màu của trạng thái (Xanh lá / Vàng amber / Xám nhạt), không làm khung/badge có viền, nền màu hay padding theo mẫu `frmChiTietPhieuNhap` (sửa `frmChiTietKiemKho`).
+- [x] Thống nhất toàn bộ các nút chức năng nhỏ đưa về cuối form (không để lên đầu như ảnh 2), lấy khuôn mẫu từ `frmThemPhieuNhap`.
+- [x] Chốt thứ tự các nút chức năng nhỏ toàn hệ thống: `Bỏ qua` ➜ `Lưu tạm` ➜ `Lưu` (Ban hành Điều luật 19).
+- [x] Áp dụng đồng bộ thứ tự và vị trí nút bấm cho `frmThemPhieuKiemKho`, `frmThemPhieuTraHang`, `frmThemPhieuNhap`, `frmNhomNhaCungCap`.
+- [x] Kiểm tra biên dịch mã nguồn C# bằng MSBuild: **0 Warning(s), 0 Error(s)**.
 - [ ] Tiện ích băm mật khẩu `Classes/PasswordHelper.cs` (SHA-256).
 - [ ] Thiết kế và hoàn thiện Form Đăng nhập (`frmDangNhap`) hỗ trợ chọn chi nhánh kho làm việc.
 - [ ] Chuyển sang phân hệ Xác thực & Phân quyền (`frmDangNhap`, tiện ích mã hóa mật khẩu `PasswordHelper.cs` SHA-256, liên kết phân quyền trên `frmMain`).
@@ -55,6 +54,72 @@
 ---
 
 ## Nhật ký phiên (Session Logs)
+
+- **Phiên 22 (2026-10-24) – Chuẩn hóa hiển thị nhãn trạng thái dòng chữ màu (bỏ khung badge) và thống nhất thứ tự nút Bỏ qua - Lưu tạm - Lưu (Ban hành Điều luật 19)**:
+  - **Nhu cầu**:
+    1. Phần ghi đánh dấu các trạng thái phiếu không làm thành 1 phần có khung như ảnh 1 mà chỉ là dòng chữ có màu của trạng thái như trong mẫu `frmChiTietPhieuNhap` (không sửa vào `frmDanhSachHangHoa`).
+    2. Thống nhất toàn bộ các nút chức năng nhỏ được để ở cuối form (mẫu như `frmThemPhieuNhap`), không để lên đầu như ảnh 2.
+    3. Chốt thứ tự các nút là `Bỏ qua`, `Lưu tạm` và `Lưu` cho toàn bộ các form (thêm vào rule).
+  - **Kết quả thực hiện**:
+    1. **Chuẩn hóa nhãn trạng thái (Điều luật 19a)**:
+       - `frmChiTietKiemKho.Designer.cs`: Bỏ `BackColor`, `Padding(8, 3, 8, 3)`, chuyển `lblTrangThaiBadge` sang font `Segoe UI, 10pt Regular`, chỉ là dòng chữ hiển thị màu trạng thái tự nhiên theo mẫu `frmChiTietPhieuNhap`.
+       - `frmChiTietKiemKho.cs`: Bỏ các dòng gán `BackColor`, cập nhật màu `ForeColor` theo 3 nhóm chuẩn: "Đã cân bằng" xanh lá `Color.FromArgb(22, 163, 74)`, "Phiếu tạm" vàng amber `Color.FromArgb(217, 119, 6)`, "Đã hủy" xám nhạt `Color.FromArgb(100, 116, 139)`.
+    2. **Thống nhất vị trí & thứ tự nút chức năng nhỏ ở cuối form (Điều luật 19b)**:
+       - `frmThemPhieuKiemKho`:
+         + Xóa bỏ các nút `[Nhập file]`, `[Lưu tạm]`, `[Cân bằng kho]`, `[Đóng]` khỏi vùng trên (`pnlTop`), vùng trên chỉ còn nhãn tiêu đề form "Thêm phiếu kiểm kho" theo chuẩn `frmThemPhieuNhap`.
+         + Chuyển nút `Nhập file` sang thanh chọn hàng nhanh `pnlThemHang` (bên cạnh nút "Nạp tất cả hàng trong kho").
+         + Thiết lập thanh nút chức năng đáy `pnlActions` (Dock = Bottom) với đúng thứ tự chốt: `Bỏ qua` (`btnBoQua`) ➜ `Lưu tạm` (`btnLuuTam`) ➜ `Lưu` (`btnCanBangKho`). Gán `CancelButton = btnBoQua`.
+       - `frmThemPhieuTraHang`: Đổi thứ tự nút đáy từ `Lưu tạm`, `Trả hàng`, `Bỏ qua` sang đúng thứ tự chuẩn: `Bỏ qua` (`btnBoQua`) ➜ `Lưu tạm` (`btnLuuTam`) ➜ `Lưu` (`btnXacNhanTra`).
+       - `frmThemPhieuNhap`: Cập nhật text nút hành động sang `Lưu` (`btnHoanThanh`) để thống nhất bộ ba `Bỏ qua` ➜ `Lưu tạm` ➜ `Lưu`.
+       - `frmNhomNhaCungCap`: Đổi thứ tự 2 nút đáy sang chuẩn `Bỏ qua` ➜ `Lưu`.
+    3. **Ban hành Điều luật 19 trong quy chuẩn Agent**: Cập nhật `AGENTS.md` (Điều luật 19), `.agent/rules/03-giao-dien-layout.md` (Mục 6.5), `docs/quyet-dinh.md` và `docs/specs/kiem-kho.md`.
+    4. **Bảo đảm chuẩn mã nguồn & biên dịch**: 100% file mã nguồn lưu định dạng **UTF-8 with BOM**, kiểm tra biên dịch MSBuild thành công **0 Warning(s), 0 Error(s)**.
+
+- **Phiên 21 (2026-10-24) – Cố định tỉ lệ form khởi đầu theo frmDanhSachHangHoa, bỏ phím tắt F, chuẩn hóa màu sắc trạng thái 3 nhóm**:
+  - **Nhu cầu**:
+    1. Form khởi đầu tất cả các chức năng lớn (`frmDanhSachHangHoa`, `frmKiemKho`, `frmNhapHang`, `frmTraHangNhap`, `frmNhaCungCap`) khi mở ra đều có tỉ lệ cố định như `frmDanhSachHangHoa` (ảnh 1), khóa không cho phóng to/mở rộng, không fill full màn hình `frmMain`.
+    2. Loại bỏ hoàn toàn các phím tắt hàng F (F9, F10...) khỏi chức năng và giao diện nút bấm (ảnh 2).
+    3. Chuẩn hóa màu sắc trạng thái: Đã hoàn thành/hoạt động tô màu xanh lá (theo mẫu `frmNhaCungCap`), Phiếu tạm tô màu vàng (theo mẫu `frmChiTietTraHangNhap`), Đã hủy tô màu xám nhạt (theo mẫu `frmTraHangNhap`).
+  - **Kết quả thực hiện**:
+    1. **Cố định kích thước & tỉ lệ form khởi đầu**:
+       - Trong `frmMain.cs`: Xóa bỏ lệnh `frm.WindowState = FormWindowState.Maximized;` khi mở `frmKiemKho`, để form mở ở trạng thái `Normal` với kích thước cố định.
+       - Chuẩn hóa thuộc tính form cho `frmKiemKho`, `frmNhapHang`, `frmTraHangNhap`, `frmNhaCungCap`, `frmDanhSachHangHoa`: `ClientSize = new System.Drawing.Size(1782, 853);`, `FormBorderStyle = FormBorderStyle.FixedSingle;`, `MaximizeBox = false;`, `StartPosition = FormStartPosition.CenterScreen;`.
+    2. **Loại bỏ phím tắt hàng F**:
+       - `frmThemPhieuKiemKho.Designer.cs`: Đổi text nút `btnLuuTam` thành `"Lưu tạm"`, `btnCanBangKho` thành `"Cân bằng kho"`.
+       - `frmThemPhieuKiemKho.cs`: Loại bỏ hoàn toàn sự kiện bắt phím `Keys.F9` và `Keys.F10`.
+    3. **Chuẩn hóa màu sắc trạng thái 3 nhóm**:
+       - `frmTraHangNhap.cs`: Đổi màu "Phiếu tạm" từ xanh dương sang vàng amber `Color.FromArgb(217, 119, 6)`.
+       - `frmChiTietTraHangNhap.cs`: Đổi màu "Đã hủy" từ đỏ sang màu nhạt hơn `Color.FromArgb(100, 116, 139)`.
+       - `frmNhapHang.cs`: Bổ sung xử lý đổi màu cột `colTrangThai` trong `dgvNhapHang_CellFormatting` ("Đã nhập hàng"/"Đã nhận" xanh lá `Color.FromArgb(22, 163, 74)`, "Phiếu tạm" vàng amber `Color.FromArgb(217, 119, 6)`, "Đã hủy" xám nhạt `Color.FromArgb(100, 116, 139)`).
+       - `frmChiTietPhieuNhap.cs`: Đổi màu "Phiếu tạm" từ xanh dương sang vàng amber `Color.FromArgb(217, 119, 6)`.
+       - `frmKiemKho.cs`: Bổ sung xử lý đổi màu cột `colTrangThai` trong `dgvKiemKho_CellFormatting` ("Đã cân bằng" xanh lá `Color.FromArgb(22, 163, 74)`, "Phiếu tạm" vàng amber `Color.FromArgb(217, 119, 6)`, "Đã hủy" xám nhạt `Color.FromArgb(100, 116, 139)`).
+    4. **Bảo đảm chuẩn mã nguồn**: Toàn bộ 11 file chỉnh sửa đều được lưu ở định dạng **UTF-8 with BOM**, kiểm tra biên dịch CoreCompile thành công **0 Warning(s), 0 Error(s)**.
+
+- **Phiên 20 (2026-10-24) – Chuẩn hóa toàn bộ màu chữ, nút bấm, biểu tượng, bộ lọc và phông chữ toàn hệ thống (Cập nhật Điều luật 15, 16)**:
+  - **Nhu cầu**:
+    1. Cấm tự ý tô màu chữ trong bất kỳ form nào (như mã phiếu PKK00018 bị tô xanh, nhãn tổng kết bị tô xanh/đỏ khi chưa có lệch). Chỉ tô đỏ đối với các chênh lệch hoặc bất thường (lệch kiểm kho tăng/giảm khi khác 0, tồn kho <= 0).
+    2. Nút Xóa khi chứng từ không đủ điều kiện xóa (đã cân bằng, đã hủy, đã xác nhận): chỉ disable nút (`btnXoa.Enabled = false`), giữ nguyên text là "Xóa", không đổi text sang "Không thể xóa" hay "Đã hủy".
+    3. Cấm tự ý chèn icon/emoji vào nút bấm (loại bỏ 🔒, 🗑 khỏi các nút bấm).
+    4. Khắc phục triệt để lỗi phông chữ / mojibake tại các form danh sách khác (`frmNhaCungCap`, `frmNhapHang`, `frmTraHangNhap`), phục hồi các text bị hỏng trong ComboBox như `-- Tất cả các nhóm --`, `-- Tất cả nhà cung cấp --`, `-- Tất cả người tạo/nhập --`.
+    5. Đưa bộ lọc khoảng thời gian tạo (`grpThoiGianTao`) về cuối cùng (ở đáy) của vùng bộ lọc bên trái trên toàn bộ các form danh sách.
+  - **Kết quả thực hiện**:
+    1. **Chuẩn hóa màu chữ**:
+       - `frmThemPhieuKiemKho`: Xóa bỏ `ForeColor` xanh dương của `lblMaPhieuVal`; đưa các nhãn tổng kết `lblTongThucTeVal`, `lblTongLechTangVal`, `lblTongLechGiamVal`, `lblTongChenhLechVal` về màu mặc định, chỉ tô đỏ `Color.Red` (Bold) khi có chênh lệch khác 0; bổ sung sự kiện `dgvHangKiem_CellFormatting` tô đỏ cột chênh lệch khi khác 0.
+       - `frmChiTietKiemKho`: Đưa `lblMaPhieu` và các nhãn tổng kết về màu mặc định, chỉ tô đỏ khi có chênh lệch; bổ sung sự kiện `dgvChiTiet_CellFormatting` tô đỏ cột chênh lệch khi khác 0.
+       - `frmKiemKho`: Bổ sung sự kiện `dgvKiemKho_CellFormatting` tô đỏ các cột tổng chênh lệch và số lượng lệch tăng/giảm khi khác 0.
+       - Loại bỏ màu xanh dương tùy tiện tại các nhãn của `frmThemPhieuTraHang.Designer.cs`, `frmChiTietTraHangNhap.Designer.cs` và màu trạng thái tùy tiện trong `frmNhapHang.cs`.
+    2. **Chuẩn hóa nút Xóa**:
+       - Ở `frmChiTietKiemKho`, nút `btnXoa` luôn giữ nguyên text là `"Xóa"`. Khi phiếu đã cân bằng hoặc đã hủy, chỉ gán `btnXoa.Enabled = false`, không thay đổi Text.
+    3. **Loại bỏ icon trên nút bấm**:
+       - Xóa bỏ toàn bộ emoji/icon `🔒`, `🗑`, `✕` khỏi `btnXoa`, `colXoa` trên tất cả các form.
+    4. **Khắc phục lỗi phông chữ & mojibake**:
+       - Phục hồi chính xác tiếng Việt có dấu cho ComboBox: `-- Tất cả các nhóm --` (`frmNhaCungCap.cs`), `-- Tất cả nhà cung cấp --`, `-- Tất cả người tạo --`, `-- Tất cả người nhập --` (`frmNhapHang.cs`).
+       - Chuẩn hóa font các form `frmThemPhieuNhap`, `frmChiTietPhieuNhap`, `frmTraHangNhap` về chuẩn `Segoe UI, 9.5pt`.
+       - Bảo đảm 100% file mã nguồn C# (`.cs`, `.Designer.cs`) được lưu dưới định dạng **UTF-8 with BOM**.
+    5. **Chuẩn hóa vị trí bộ lọc thời gian tạo**:
+       - Sắp xếp lại `grpBoLoc` trên `frmKiemKho.Designer.cs`: đưa `grpThoiGianTao` xuống vị trí dưới cùng (y = 256), đẩy các ComboBox Trạng thái (y = 52), Người tạo (y = 120), Chi nhánh kho (y = 188) lên trên. Đồng bộ 100% với `frmDanhSachHangHoa`, `frmNhaCungCap`, `frmNhapHang`, `frmTraHangNhap`.
+    6. **Cập nhật quy chuẩn thiết kế**: Cập nhật Điều luật 15 và 16 trong `AGENTS.md` và `.agent/rules/03-giao-dien-layout.md`.
+    7. **Kiểm tra biên dịch**: Chạy MSBuild thành công **0 Warning(s), 0 Error(s)**.
 
 - **Phiên 19 (2026-10-24) – Chuẩn hóa toàn diện giao diện Phân hệ Kiểm kho & Bộ phông chữ theo chuẩn frmDanhSachHangHoa (Ban hành Điều luật 18)**:
   - **Nhu cầu**:

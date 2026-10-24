@@ -1,4 +1,4 @@
-namespace BTL_LTTQ_2.GUI.Forms.KiemKho
+﻿namespace BTL_LTTQ_2.GUI.Forms.KiemKho
 {
     partial class frmKiemKho
     {
@@ -195,68 +195,68 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             this.grpBoLoc.TabStop = false;
             this.grpBoLoc.Text = "Bộ lọc tìm kiếm";
             // 
-            // lblKho
-            // 
-            this.lblKho.AutoSize = true;
-            this.lblKho.Location = new System.Drawing.Point(9, 298);
-            this.lblKho.Name = "lblKho";
-            this.lblKho.Size = new System.Drawing.Size(111, 21);
-            this.lblKho.TabIndex = 6;
-            this.lblKho.Text = "Chi nhánh kho:";
-            // 
-            // cboKho
-            // 
-            this.cboKho.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboKho.FormattingEnabled = true;
-            this.cboKho.Location = new System.Drawing.Point(13, 323);
-            this.cboKho.Name = "cboKho";
-            this.cboKho.Size = new System.Drawing.Size(322, 29);
-            this.cboKho.TabIndex = 7;
-            this.cboKho.SelectedIndexChanged += new System.EventHandler(this.BoLoc_ThayDoi);
-            // 
-            // lblNguoiTao
-            // 
-            this.lblNguoiTao.AutoSize = true;
-            this.lblNguoiTao.Location = new System.Drawing.Point(9, 230);
-            this.lblNguoiTao.Name = "lblNguoiTao";
-            this.lblNguoiTao.Size = new System.Drawing.Size(83, 21);
-            this.lblNguoiTao.TabIndex = 4;
-            this.lblNguoiTao.Text = "Người tạo:";
-            // 
-            // cboNguoiTao
-            // 
-            this.cboNguoiTao.FormattingEnabled = true;
-            this.cboNguoiTao.Location = new System.Drawing.Point(13, 255);
-            this.cboNguoiTao.Name = "cboNguoiTao";
-            this.cboNguoiTao.Size = new System.Drawing.Size(322, 29);
-            this.cboNguoiTao.TabIndex = 5;
-            // 
             // lblTrangThai
             // 
             this.lblTrangThai.AutoSize = true;
-            this.lblTrangThai.Location = new System.Drawing.Point(9, 162);
+            this.lblTrangThai.Location = new System.Drawing.Point(9, 27);
             this.lblTrangThai.Name = "lblTrangThai";
             this.lblTrangThai.Size = new System.Drawing.Size(82, 21);
-            this.lblTrangThai.TabIndex = 2;
+            this.lblTrangThai.TabIndex = 0;
             this.lblTrangThai.Text = "Trạng thái:";
             // 
             // cboTrangThai
             // 
             this.cboTrangThai.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboTrangThai.FormattingEnabled = true;
-            this.cboTrangThai.Location = new System.Drawing.Point(13, 187);
+            this.cboTrangThai.Location = new System.Drawing.Point(13, 52);
             this.cboTrangThai.Name = "cboTrangThai";
             this.cboTrangThai.Size = new System.Drawing.Size(322, 29);
-            this.cboTrangThai.TabIndex = 3;
+            this.cboTrangThai.TabIndex = 1;
             this.cboTrangThai.SelectedIndexChanged += new System.EventHandler(this.BoLoc_ThayDoi);
+            // 
+            // lblNguoiTao
+            // 
+            this.lblNguoiTao.AutoSize = true;
+            this.lblNguoiTao.Location = new System.Drawing.Point(9, 95);
+            this.lblNguoiTao.Name = "lblNguoiTao";
+            this.lblNguoiTao.Size = new System.Drawing.Size(83, 21);
+            this.lblNguoiTao.TabIndex = 2;
+            this.lblNguoiTao.Text = "Người tạo:";
+            // 
+            // cboNguoiTao
+            // 
+            this.cboNguoiTao.FormattingEnabled = true;
+            this.cboNguoiTao.Location = new System.Drawing.Point(13, 120);
+            this.cboNguoiTao.Name = "cboNguoiTao";
+            this.cboNguoiTao.Size = new System.Drawing.Size(322, 29);
+            this.cboNguoiTao.TabIndex = 3;
+            // 
+            // lblKho
+            // 
+            this.lblKho.AutoSize = true;
+            this.lblKho.Location = new System.Drawing.Point(9, 163);
+            this.lblKho.Name = "lblKho";
+            this.lblKho.Size = new System.Drawing.Size(111, 21);
+            this.lblKho.TabIndex = 4;
+            this.lblKho.Text = "Chi nhánh kho:";
+            // 
+            // cboKho
+            // 
+            this.cboKho.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboKho.FormattingEnabled = true;
+            this.cboKho.Location = new System.Drawing.Point(13, 188);
+            this.cboKho.Name = "cboKho";
+            this.cboKho.Size = new System.Drawing.Size(322, 29);
+            this.cboKho.TabIndex = 5;
+            this.cboKho.SelectedIndexChanged += new System.EventHandler(this.BoLoc_ThayDoi);
             // 
             // lblThoiGianTao
             // 
             this.lblThoiGianTao.AutoSize = true;
-            this.lblThoiGianTao.Location = new System.Drawing.Point(9, 27);
+            this.lblThoiGianTao.Location = new System.Drawing.Point(9, 231);
             this.lblThoiGianTao.Name = "lblThoiGianTao";
             this.lblThoiGianTao.Size = new System.Drawing.Size(104, 21);
-            this.lblThoiGianTao.TabIndex = 0;
+            this.lblThoiGianTao.TabIndex = 6;
             this.lblThoiGianTao.Text = "Thời gian tạo:";
             // 
             // grpThoiGianTao
@@ -265,10 +265,10 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             this.grpThoiGianTao.Controls.Add(this.dtpDenNgay);
             this.grpThoiGianTao.Controls.Add(this.lblTuNgay);
             this.grpThoiGianTao.Controls.Add(this.lblDenNgay);
-            this.grpThoiGianTao.Location = new System.Drawing.Point(13, 49);
+            this.grpThoiGianTao.Location = new System.Drawing.Point(13, 256);
             this.grpThoiGianTao.Name = "grpThoiGianTao";
             this.grpThoiGianTao.Size = new System.Drawing.Size(322, 100);
-            this.grpThoiGianTao.TabIndex = 1;
+            this.grpThoiGianTao.TabIndex = 7;
             this.grpThoiGianTao.TabStop = false;
             // 
             // dtpTuNgay
@@ -551,7 +551,9 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             this.Controls.Add(this.pnlBoLoc);
             this.Controls.Add(this.pnlTop);
             this.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.MaximizeBox = false;
             this.Name = "frmKiemKho";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Quản lý phiếu kiểm kho";

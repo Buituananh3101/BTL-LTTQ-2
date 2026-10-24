@@ -54,6 +54,40 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             colSlLechTang.DefaultCellStyle.Format = "N0";
             colSlLechGiam.DefaultCellStyle.Format = "N0";
             colSlThucTe.DefaultCellStyle.Format = "N0";
+
+            dgvKiemKho.CellFormatting += dgvKiemKho_CellFormatting;
+        }
+
+        private void dgvKiemKho_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.RowIndex >= dgvKiemKho.Rows.Count) return;
+
+            string colName = dgvKiemKho.Columns[e.ColumnIndex].Name;
+
+            if (colName == "colTrangThai" && e.Value != null)
+            {
+                string tt = e.Value.ToString();
+                if (tt == "Đã cân bằng")
+                {
+                    e.CellStyle.ForeColor = Color.FromArgb(22, 163, 74);
+                }
+                else if (tt == "Phiếu tạm")
+                {
+                    e.CellStyle.ForeColor = Color.FromArgb(217, 119, 6);
+                }
+                else if (tt == "Đã hủy")
+                {
+                    e.CellStyle.ForeColor = Color.FromArgb(100, 116, 139);
+                }
+            }
+            if ((colName == "colTongChenhLech" || colName == "colSlLechTang" || colName == "colSlLechGiam") && e.Value != null)
+            {
+                if (decimal.TryParse(e.Value.ToString(), out decimal val) && val != 0)
+                {
+                    e.CellStyle.ForeColor = Color.Red;
+                    e.CellStyle.Font = new Font(dgvKiemKho.Font, FontStyle.Bold);
+                }
+            }
         }
 
         private void frmKiemKho_Load(object sender, EventArgs e)
