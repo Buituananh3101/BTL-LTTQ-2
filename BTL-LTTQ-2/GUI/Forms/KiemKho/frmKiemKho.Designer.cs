@@ -27,6 +27,7 @@
             this.lblTimKiem = new System.Windows.Forms.Label();
             this.txtTimKiem = new System.Windows.Forms.TextBox();
             this.pnlBoLoc = new System.Windows.Forms.Panel();
+            this.splitter1 = new System.Windows.Forms.Splitter();
             this.grpBoLoc = new System.Windows.Forms.GroupBox();
             this.lblKho = new System.Windows.Forms.Label();
             this.cboKho = new System.Windows.Forms.ComboBox();
@@ -60,7 +61,6 @@
             this.colGhiChu = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colTrangThai = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colMaPhieuKiemKe = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.splitter1 = new System.Windows.Forms.Splitter();
             this.pnlTop.SuspendLayout();
             this.grpTop.SuspendLayout();
             this.pnlBoLoc.SuspendLayout();
@@ -177,6 +177,16 @@
             this.pnlBoLoc.Padding = new System.Windows.Forms.Padding(12, 0, 0, 10);
             this.pnlBoLoc.Size = new System.Drawing.Size(360, 769);
             this.pnlBoLoc.TabIndex = 1;
+            // 
+            // splitter1
+            // 
+            this.splitter1.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.splitter1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.splitter1.Location = new System.Drawing.Point(12, 0);
+            this.splitter1.Name = "splitter1";
+            this.splitter1.Size = new System.Drawing.Size(348, 1);
+            this.splitter1.TabIndex = 1;
+            this.splitter1.TabStop = false;
             // 
             // grpBoLoc
             // 
@@ -529,16 +539,6 @@
             this.colMaPhieuKiemKe.ReadOnly = true;
             this.colMaPhieuKiemKe.Visible = false;
             this.colMaPhieuKiemKe.Width = 125;
-            // 
-            // splitter1
-            // 
-            this.splitter1.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.splitter1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.splitter1.Location = new System.Drawing.Point(12, 0);
-            this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(348, 1);
-            this.splitter1.TabIndex = 1;
-            this.splitter1.TabStop = false;
             // 
             // frmKiemKho
             // 
