@@ -237,9 +237,9 @@
             // 
             this.btnThemViTriNhanh.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
             this.btnThemViTriNhanh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnThemViTriNhanh.Location = new System.Drawing.Point(308, 409);
+            this.btnThemViTriNhanh.Location = new System.Drawing.Point(315, 411);
             this.btnThemViTriNhanh.Name = "btnThemViTriNhanh";
-            this.btnThemViTriNhanh.Size = new System.Drawing.Size(29, 29);
+            this.btnThemViTriNhanh.Size = new System.Drawing.Size(25, 25);
             this.btnThemViTriNhanh.TabIndex = 12;
             this.btnThemViTriNhanh.Text = "+";
             this.btnThemViTriNhanh.UseVisualStyleBackColor = true;
@@ -249,9 +249,9 @@
             // 
             this.btnThemDonViTinhNhanh.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
             this.btnThemDonViTinhNhanh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnThemDonViTinhNhanh.Location = new System.Drawing.Point(308, 139);
+            this.btnThemDonViTinhNhanh.Location = new System.Drawing.Point(315, 141);
             this.btnThemDonViTinhNhanh.Name = "btnThemDonViTinhNhanh";
-            this.btnThemDonViTinhNhanh.Size = new System.Drawing.Size(29, 29);
+            this.btnThemDonViTinhNhanh.Size = new System.Drawing.Size(25, 25);
             this.btnThemDonViTinhNhanh.TabIndex = 13;
             this.btnThemDonViTinhNhanh.Text = "+";
             this.btnThemDonViTinhNhanh.UseVisualStyleBackColor = true;
@@ -261,9 +261,9 @@
             // 
             this.btnThemNhomNhanh.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
             this.btnThemNhomNhanh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnThemNhomNhanh.Location = new System.Drawing.Point(308, 49);
+            this.btnThemNhomNhanh.Location = new System.Drawing.Point(315, 51);
             this.btnThemNhomNhanh.Name = "btnThemNhomNhanh";
-            this.btnThemNhomNhanh.Size = new System.Drawing.Size(29, 29);
+            this.btnThemNhomNhanh.Size = new System.Drawing.Size(25, 25);
             this.btnThemNhomNhanh.TabIndex = 12;
             this.btnThemNhomNhanh.Text = "+";
             this.btnThemNhomNhanh.UseVisualStyleBackColor = true;
@@ -366,7 +366,7 @@
             this.cboViTri.FormattingEnabled = true;
             this.cboViTri.Location = new System.Drawing.Point(18, 411);
             this.cboViTri.Name = "cboViTri";
-            this.cboViTri.Size = new System.Drawing.Size(284, 25);
+            this.cboViTri.Size = new System.Drawing.Size(291, 25);
             this.cboViTri.TabIndex = 5;
             // 
             // cboTieuChiTon
@@ -408,7 +408,7 @@
             this.cboNhomHang.FormattingEnabled = true;
             this.cboNhomHang.Location = new System.Drawing.Point(18, 51);
             this.cboNhomHang.Name = "cboNhomHang";
-            this.cboNhomHang.Size = new System.Drawing.Size(284, 25);
+            this.cboNhomHang.Size = new System.Drawing.Size(291, 25);
             this.cboNhomHang.TabIndex = 1;
             // 
             // lblDonViTinh
@@ -425,7 +425,7 @@
             this.cboDonViTinh.FormattingEnabled = true;
             this.cboDonViTinh.Location = new System.Drawing.Point(18, 141);
             this.cboDonViTinh.Name = "cboDonViTinh";
-            this.cboDonViTinh.Size = new System.Drawing.Size(284, 25);
+            this.cboDonViTinh.Size = new System.Drawing.Size(291, 25);
             this.cboDonViTinh.TabIndex = 2;
             // 
             // splitterBoLoc
@@ -456,7 +456,7 @@
             // 
             this.lblTongSoHang.AutoSize = true;
             this.lblTongSoHang.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblTongSoHang.Location = new System.Drawing.Point(15, 11);
+            this.lblTongSoHang.Location = new System.Drawing.Point(22, 12);
             this.lblTongSoHang.Name = "lblTongSoHang";
             this.lblTongSoHang.Size = new System.Drawing.Size(108, 19);
             this.lblTongSoHang.TabIndex = 0;
@@ -466,7 +466,7 @@
             // 
             this.lblSoDongMoiTrang.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSoDongMoiTrang.AutoSize = true;
-            this.lblSoDongMoiTrang.Location = new System.Drawing.Point(951, 12);
+            this.lblSoDongMoiTrang.Location = new System.Drawing.Point(932, 13);
             this.lblSoDongMoiTrang.Name = "lblSoDongMoiTrang";
             this.lblSoDongMoiTrang.Size = new System.Drawing.Size(61, 17);
             this.lblSoDongMoiTrang.TabIndex = 1;
@@ -482,7 +482,7 @@
             "20",
             "50",
             "100"});
-            this.cboSoDongMoiTrang.Location = new System.Drawing.Point(1035, 7);
+            this.cboSoDongMoiTrang.Location = new System.Drawing.Point(1008, 10);
             this.cboSoDongMoiTrang.Name = "cboSoDongMoiTrang";
             this.cboSoDongMoiTrang.Size = new System.Drawing.Size(70, 25);
             this.cboSoDongMoiTrang.TabIndex = 2;
@@ -491,7 +491,7 @@
             // btnTrangTruoc
             // 
             this.btnTrangTruoc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnTrangTruoc.Location = new System.Drawing.Point(1118, 6);
+            this.btnTrangTruoc.Location = new System.Drawing.Point(1117, 6);
             this.btnTrangTruoc.Name = "btnTrangTruoc";
             this.btnTrangTruoc.Size = new System.Drawing.Size(80, 31);
             this.btnTrangTruoc.TabIndex = 3;
@@ -503,7 +503,7 @@
             // 
             this.lblTrangHienTai.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTrangHienTai.AutoSize = true;
-            this.lblTrangHienTai.Location = new System.Drawing.Point(1211, 11);
+            this.lblTrangHienTai.Location = new System.Drawing.Point(1214, 13);
             this.lblTrangHienTai.Name = "lblTrangHienTai";
             this.lblTrangHienTai.Size = new System.Drawing.Size(72, 17);
             this.lblTrangHienTai.TabIndex = 4;
@@ -512,7 +512,7 @@
             // btnTrangSau
             // 
             this.btnTrangSau.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnTrangSau.Location = new System.Drawing.Point(1309, 6);
+            this.btnTrangSau.Location = new System.Drawing.Point(1303, 6);
             this.btnTrangSau.Name = "btnTrangSau";
             this.btnTrangSau.Size = new System.Drawing.Size(80, 31);
             this.btnTrangSau.TabIndex = 5;

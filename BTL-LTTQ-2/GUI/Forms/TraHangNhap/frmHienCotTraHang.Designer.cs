@@ -26,6 +26,7 @@
             this.chkCanThuNcc = new System.Windows.Forms.CheckBox();
             this.chkDaThuNcc = new System.Windows.Forms.CheckBox();
             this.chkTrangThai = new System.Windows.Forms.CheckBox();
+            this.chkKho = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // lblHienThiCot
@@ -159,11 +160,25 @@
             this.chkTrangThai.Text = "Trạng thái";
             this.chkTrangThai.UseVisualStyleBackColor = true;
             // 
+            // chkKho
+            // 
+            this.chkKho.AutoSize = true;
+            this.chkKho.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.chkKho.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkKho.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
+            this.chkKho.Location = new System.Drawing.Point(24, 160);
+            this.chkKho.Name = "chkKho";
+            this.chkKho.Size = new System.Drawing.Size(51, 21);
+            this.chkKho.TabIndex = 9;
+            this.chkKho.Text = "Kho";
+            this.chkKho.UseVisualStyleBackColor = true;
+            // 
             // frmHienCotTraHang
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(340, 175);
+            this.ClientSize = new System.Drawing.Size(340, 205);
+            this.Controls.Add(this.chkKho);
             this.Controls.Add(this.chkTrangThai);
             this.Controls.Add(this.chkDaThuNcc);
             this.Controls.Add(this.chkCanThuNcc);
@@ -195,5 +210,6 @@
         private System.Windows.Forms.CheckBox chkCanThuNcc;
         private System.Windows.Forms.CheckBox chkDaThuNcc;
         private System.Windows.Forms.CheckBox chkTrangThai;
+        private System.Windows.Forms.CheckBox chkKho;
     }
 }

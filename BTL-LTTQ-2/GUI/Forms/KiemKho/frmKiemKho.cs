@@ -102,22 +102,22 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             // Cấu hình co giãn các cột tự động lấp đầy DataGridView theo tỷ lệ
             colMaPhieu.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             colMaPhieu.FillWeight = 115;
-            colThoiGian.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            colThoiGian.FillWeight = 135;
-            colTongThucTe.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            colTongThucTe.FillWeight = 130;
-            colTongChenhLech.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            colTongChenhLech.FillWeight = 130;
+            colNgayCanBang.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colNgayCanBang.FillWeight = 135;
             colSlLechTang.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             colSlLechTang.FillWeight = 95;
             colSlLechGiam.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             colSlLechGiam.FillWeight = 95;
-            colNgayCanBang.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            colNgayCanBang.FillWeight = 135;
             colSlThucTe.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             colSlThucTe.FillWeight = 95;
             colGhiChu.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             colGhiChu.FillWeight = 150;
+            colTongThucTe.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colTongThucTe.FillWeight = 130;
+            colTongChenhLech.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colTongChenhLech.FillWeight = 130;
+            colThoiGian.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colThoiGian.FillWeight = 135;
             colTrangThai.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             colTrangThai.FillWeight = 120;
             colSlThucTe.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
@@ -192,7 +192,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             // Nạp các bộ lọc ComboBox
             NapBoLocTrangThai();
             NapBoLocNguoiTao();
-            NapBoLocKho();
+
 
             isInitializing = false;
             TaiDuLieu();
@@ -234,11 +234,13 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                     WHERE tk.TrangThai = 'HOAT_DONG' OR tk.TrangThai = 'ACTIVE' OR tk.TrangThai IS NULL";
 
                 DataTable dt = DataProcessing.ReadData(sql);
-                ComboboxHelper.CaiDatTimKiem(cboNguoiTao, dt, "HoTen", "MaNhanVien", () =>
+                Action callbackNguoiTao = () => { trangHienTai = 1; TaiDuLieu(); };
+                ComboboxHelper.CaiDatTimKiem(cboNguoiTao, dt, "HoTen", "MaNhanVien", callbackNguoiTao);
+                Action dummy = () =>
                 {
                     trangHienTai = 1;
                     TaiDuLieu();
-                });
+                };
             }
             catch (Exception ex)
             {
@@ -246,7 +248,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             }
         }
 
-        private void NapBoLocKho()
+        private void NapBoLocKho_Disabled()
         {
             try
             {
@@ -257,12 +259,12 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                     WHERE TrangThai = 'HOAT_DONG' OR TrangThai = 'ACTIVE' OR TrangThai IS NULL";
 
                 DataTable dt = DataProcessing.ReadData(sql);
-                ComboboxHelper.CaiDatTimKiem(cboKho, dt, "TenKho", "MaKho", () =>
+                Action loc = () =>
                 {
                     trangHienTai = 1;
                     TaiDuLieu();
-                });
-                cboKho.SelectedIndex = 0;
+                };
+                return;
             }
             catch (Exception ex)
             {
@@ -327,10 +329,10 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                 }
 
                 // Lọc theo kho
-                if (cboKho.SelectedValue != null && int.TryParse(cboKho.SelectedValue.ToString(), out int maKho) && maKho > 0)
+                if (SessionContext.MaKhoHienTai > 0)
                 {
                     whereClause += " AND pkk.MaKho = @MaKho ";
-                    listParams.Add(new SqlParameter("@MaKho", maKho));
+                    listParams.Add(new SqlParameter("@MaKho", SessionContext.MaKhoHienTai));
                 }
 
                 // 2. Đếm tổng số bản ghi
@@ -351,6 +353,8 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                 // 4. Truy vấn lấy dữ liệu chi tiết của trang hiện tại
                 string sqlData = $@"
                     SELECT 
+                        pkk.MaKho,
+                        ISNULL(k.TenKho, N'') AS TenKho,
                         pkk.MaPhieuKiemKe,
                         ISNULL(pkk.MaPhieu, 'PKK' + RIGHT('000000' + CAST(pkk.MaPhieuKiemKe AS VARCHAR(10)), 6)) AS MaPhieu,
                         pkk.ThoiDiemChot,
@@ -364,7 +368,8 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                         ISNULL(pkk.GhiChu, '') AS GhiChu,
                         pdc.NgayDuyet,
                         CASE 
-                            WHEN pdc.NgayDuyet IS NOT NULL THEN CONVERT(VARCHAR(16), pdc.NgayDuyet, 120)
+                            WHEN pkk.TrangThai = 'DA_DIEU_CHINH' THEN 
+                                ISNULL(CONVERT(VARCHAR(16), pdc.NgayDuyet, 120), CONVERT(VARCHAR(16), pkk.ThoiDiemChot, 120))
                             ELSE ''
                         END AS NgayCanBang,
                         -- Tính các chỉ số thực tế và chênh lệch từ ChiTietPhieuKiemKe
@@ -374,7 +379,13 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                         ISNULL(ct.SlLechGiam, 0) AS SlLechGiam,
                         ISNULL(ct.TongGiaTriChenhLech, 0) AS TongGiaTriChenhLech
                     FROM PhieuKiemKe pkk
-                    LEFT JOIN PhieuDieuChinh pdc ON pdc.MaPhieuKiemKe = pkk.MaPhieuKiemKe AND pdc.TrangThai = 'DA_DUYET'
+                    LEFT JOIN Kho k ON pkk.MaKho = k.MaKho
+                    LEFT JOIN (
+                        SELECT MaPhieuKiemKe, MAX(NgayDuyet) AS NgayDuyet
+                        FROM PhieuDieuChinh
+                        WHERE TrangThai = 'DA_DUYET'
+                        GROUP BY MaPhieuKiemKe
+                    ) pdc ON pdc.MaPhieuKiemKe = pkk.MaPhieuKiemKe
                     LEFT JOIN (
                         SELECT 
                             MaPhieuKiemKe,
@@ -398,7 +409,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
 
                 // 5. Cập nhật nhãn phân trang
                 lblTongSoPhieu.Text = $"Tổng số: {tongSoBanGhi:N0} phiếu kiểm";
-                lblTrangHienTai.Text = $"{trangHienTai} / {tongSoTrang}";
+                lblTrangHienTai.Text = $"Trang {trangHienTai} / {tongSoTrang}";
                 btnTrangTruoc.Enabled = (trangHienTai > 1);
                 btnTrangSau.Enabled = (trangHienTai < tongSoTrang);
             }
@@ -601,7 +612,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
         private void XuatCsvDanhSach(string filePath)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("Mã kiểm kho,Thời gian,Tổng thực tế,Tổng chênh lệch,SL lệch tăng,SL lệch giảm,Ngày cân bằng,SL thực tế,Ghi chú,Trạng thái");
+            sb.AppendLine("Mã kiểm kho,Ngày cân bằng,SL lệch tăng,SL lệch giảm,SL thực tế,Ghi chú,Tổng thực tế,Tổng chênh lệch,Thời gian tạo,Trạng thái");
 
             foreach (DataRow r in dtDanhSachPhieu.Rows)
             {
@@ -631,14 +642,14 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             sb.AppendLine("<table>");
             sb.AppendLine("<tr>");
             sb.AppendLine("<th>Mã kiểm kho</th>");
-            sb.AppendLine("<th>Thời gian</th>");
-            sb.AppendLine("<th>SL l\u1ec7ch t\u0103ng</th>");
-            sb.AppendLine("<th>SL l\u1ec7ch gi\u1ea3m</th>");
-            sb.AppendLine("<th>Ng\u00e0y c\u00e2n b\u1eb1ng</th>");
-            sb.AppendLine("<th>SL th\u1ef1c t\u1ebf</th>");
-            sb.AppendLine("<th>Ghi ch\u00fa</th>");
-            sb.AppendLine("<th>T\u1ed5ng th\u1ef1c t\u1ebf</th>");
-            sb.AppendLine("<th>T\u1ed5ng ch\u00eanh l\u1ec7ch</th>");
+            sb.AppendLine("<th>Ngày cân bằng</th>");
+            sb.AppendLine("<th>SL lệch tăng</th>");
+            sb.AppendLine("<th>SL lệch giảm</th>");
+            sb.AppendLine("<th>SL thực tế</th>");
+            sb.AppendLine("<th>Ghi chú</th>");
+            sb.AppendLine("<th>Tổng thực tế</th>");
+            sb.AppendLine("<th>Tổng chênh lệch</th>");
+            sb.AppendLine("<th>Thời gian tạo</th>");
             sb.AppendLine("<th>Trạng thái</th>");
             sb.AppendLine("</tr>");
 
@@ -646,14 +657,14 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             {
                 sb.AppendLine("<tr>");
                 sb.AppendLine($"<td class=\"center\">{r["MaPhieu"]}</td>");
-                sb.AppendLine($"<td class=\"center\">{r["ThoiGian"]}</td>");
+                sb.AppendLine($"<td class=\"center\">{r["NgayCanBang"]}</td>");
                 sb.AppendLine($"<td class=\"num\">{Convert.ToDecimal(r["SlLechTang"]):N0}</td>");
                 sb.AppendLine($"<td class=\"num\">{Convert.ToDecimal(r["SlLechGiam"]):N0}</td>");
-                sb.AppendLine($"<td class=\"center\">{r["NgayCanBang"]}</td>");
                 sb.AppendLine($"<td class=\"num\">{Convert.ToDecimal(r["TongSlThucTe"]):N0}</td>");
                 sb.AppendLine($"<td>{r["GhiChu"]}</td>");
                 sb.AppendLine($"<td class=\"num\">{Convert.ToDecimal(r["TongGiaTriThucTe"]):N0}</td>");
                 sb.AppendLine($"<td class=\"num\">{Convert.ToDecimal(r["TongGiaTriChenhLech"]):N0}</td>");
+                sb.AppendLine($"<td class=\"center\">{r["ThoiGian"]}</td>");
                 sb.AppendLine($"<td class=\"center\">{r["TenTrangThai"]}</td>");
                 sb.AppendLine("</tr>");
             }

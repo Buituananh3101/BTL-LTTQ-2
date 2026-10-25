@@ -28,6 +28,7 @@
             this.chkSlThucTe = new System.Windows.Forms.CheckBox();
             this.chkGhiChu = new System.Windows.Forms.CheckBox();
             this.chkTrangThai = new System.Windows.Forms.CheckBox();
+            this.chkKho = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // lblHienThiCot
@@ -59,8 +60,8 @@
             // chkThoiGian
             // 
             this.chkThoiGian.AutoSize = true;
-            this.chkThoiGian.Checked = true;
-            this.chkThoiGian.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkThoiGian.Checked = false;
+            this.chkThoiGian.CheckState = System.Windows.Forms.CheckState.Unchecked;
             this.chkThoiGian.Cursor = System.Windows.Forms.Cursors.Hand;
             this.chkThoiGian.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkThoiGian.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
@@ -68,7 +69,7 @@
             this.chkThoiGian.Name = "chkThoiGian";
             this.chkThoiGian.Size = new System.Drawing.Size(81, 21);
             this.chkThoiGian.TabIndex = 2;
-            this.chkThoiGian.Text = "Thời gian";
+            this.chkThoiGian.Text = "Thời gian tạo";
             this.chkThoiGian.UseVisualStyleBackColor = true;
             // 
             // chkTongThucTe
@@ -195,7 +196,23 @@
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(340, 205);
+            // 
+            // chkKho
+            // 
+            this.chkKho.AutoSize = true;
+            this.chkKho.Checked = false;
+            this.chkKho.CheckState = System.Windows.Forms.CheckState.Unchecked;
+            this.chkKho.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.chkKho.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkKho.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
+            this.chkKho.Location = new System.Drawing.Point(24, 188);
+            this.chkKho.Name = "chkKho";
+            this.chkKho.Size = new System.Drawing.Size(52, 21);
+            this.chkKho.TabIndex = 11;
+            this.chkKho.Text = "Kho";
+            this.chkKho.UseVisualStyleBackColor = true;
+            this.ClientSize = new System.Drawing.Size(340, 230);
+            this.Controls.Add(this.chkKho);
             this.Controls.Add(this.chkTrangThai);
             this.Controls.Add(this.chkGhiChu);
             this.Controls.Add(this.chkSlThucTe);
@@ -231,5 +248,6 @@
         private System.Windows.Forms.CheckBox chkSlThucTe;
         private System.Windows.Forms.CheckBox chkGhiChu;
         private System.Windows.Forms.CheckBox chkTrangThai;
+        private System.Windows.Forms.CheckBox chkKho;
     }
 }

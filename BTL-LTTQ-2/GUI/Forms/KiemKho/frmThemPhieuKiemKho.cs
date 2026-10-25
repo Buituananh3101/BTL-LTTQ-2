@@ -61,10 +61,13 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
 
             colTonKho.DefaultCellStyle.Format = "N0";
             colSoLuongThucTe.DefaultCellStyle.Format = "N0";
+            colSoLuongThucTe.DefaultCellStyle.BackColor = Color.FromArgb(254, 252, 232);
+            colSoLuongThucTe.ToolTipText = "Nhập trực tiếp số lượng thực tế kiểm đếm tại đây";
             colSlChenhLech.DefaultCellStyle.Format = "N0";
             colDonGia.DefaultCellStyle.Format = "N0";
             colGiaTriChenhLech.DefaultCellStyle.Format = "N0";
 
+            dgvHangKiem.EditMode = DataGridViewEditMode.EditOnEnter;
             dgvHangKiem.CellFormatting += dgvHangKiem_CellFormatting;
 
             dgvHangKiem.DataSource = dtHangKiem;
@@ -75,6 +78,10 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             if (e.RowIndex < 0 || e.RowIndex >= dgvHangKiem.Rows.Count) return;
 
             string colName = dgvHangKiem.Columns[e.ColumnIndex].Name;
+            if (colName == "colSoLuongThucTe")
+            {
+                e.CellStyle.BackColor = Color.FromArgb(254, 252, 232);
+            }
             if ((colName == "colSlChenhLech" || colName == "colGiaTriChenhLech") && e.Value != null)
             {
                 if (decimal.TryParse(e.Value.ToString(), out decimal val) && val != 0)
@@ -125,6 +132,17 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
         {
             try
             {
+                if (SessionContext.MaKhoHienTai > 0)
+                {
+                    DataTable dtKhoHienTai = DataProcessing.ReadData("SELECT MaKho, TenKho FROM Kho WHERE MaKho = @MaKho", new SqlParameter[] { new SqlParameter("@MaKho", SessionContext.MaKhoHienTai) });
+                    cboKho.DisplayMember = "TenKho";
+                    cboKho.ValueMember = "MaKho";
+                    cboKho.DataSource = dtKhoHienTai;
+                    cboKho.SelectedValue = SessionContext.MaKhoHienTai;
+                    cboKho.Enabled = false;
+                    return;
+                }
+                cboKho.Enabled = true;
                 string sql = "SELECT MaKho, TenKho FROM Kho WHERE TrangThai = 'HOAT_DONG' OR TrangThai = 'ACTIVE' OR TrangThai IS NULL ORDER BY TenKho ASC";
                 DataTable dt = DataProcessing.ReadData(sql);
                 cboKho.DisplayMember = "TenKho";
@@ -673,7 +691,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                     {
                         string sqlPdc = @"
                             INSERT INTO PhieuDieuChinh (MaPhieuKiemKe, MaNVLap, MaNVDuyet, NgayLap, NgayDuyet, TrangThai, GhiChu)
-                            VALUES (@MaPhieuKiemKe, @MaNVLap, @MaNVDuyet, sysdatetime(), sysdatetime(), 'DA_DUYET', @GhiChu);
+                            VALUES (@MaPhieuKiemKe, @MaNVLap, @MaNVDuyet, @ThoiDiemChot, @ThoiDiemChot, 'DA_DUYET', @GhiChu);
                             SELECT SCOPE_IDENTITY();";
 
                         int newMaPhieuDieuChinh = 0;
@@ -682,6 +700,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                             cmdPdc.Parameters.AddWithValue("@MaPhieuKiemKe", newMaPhieuKiemKe);
                             cmdPdc.Parameters.AddWithValue("@MaNVLap", maNhanVien);
                             cmdPdc.Parameters.AddWithValue("@MaNVDuyet", maNhanVien);
+                            cmdPdc.Parameters.AddWithValue("@ThoiDiemChot", thoiDiemChot);
                             cmdPdc.Parameters.AddWithValue("@GhiChu", $"Cân bằng kiểm kê phiếu {maPhieu}");
 
                             object pdcRes = cmdPdc.ExecuteScalar();

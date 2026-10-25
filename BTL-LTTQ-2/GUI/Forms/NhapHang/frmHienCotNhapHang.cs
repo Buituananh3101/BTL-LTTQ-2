@@ -42,6 +42,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             SetCheckedIfExists("colCanTraNcc", chkCanTraNcc);
             SetCheckedIfExists("colTongTien", chkTongTien);
             SetCheckedIfExists("colTrangThai", chkTrangThai);
+            SetCheckedIfExists("colKho", chkKho);
         }
 
         private void SetCheckedIfExists(string colName, CheckBox chk)
@@ -61,6 +62,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             chkCanTraNcc.CheckedChanged += (s, e) => DoiTrangThaiCot("colCanTraNcc", chkCanTraNcc.Checked);
             chkTongTien.CheckedChanged += (s, e) => DoiTrangThaiCot("colTongTien", chkTongTien.Checked);
             chkTrangThai.CheckedChanged += (s, e) => DoiTrangThaiCot("colTrangThai", chkTrangThai.Checked);
+            chkKho.CheckedChanged += (s, e) => DoiTrangThaiCot("colKho", chkKho.Checked);
         }
 
         private void DoiTrangThaiCot(string colName, bool visible)

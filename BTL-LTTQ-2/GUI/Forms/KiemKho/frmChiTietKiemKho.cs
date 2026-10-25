@@ -145,7 +145,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                     btnXoa.Text = "Xóa";
                     btnHoanThanh.Visible = false;
                 }
-                else if (trangThai == "NHAP" || trangThai == "DANG_KIEM" || trangThai == "DA_KIEM")
+                else
                 {
                     lblTrangThaiBadge.Text = "Phiếu tạm";
                     lblTrangThaiBadge.ForeColor = Color.FromArgb(217, 119, 6);
@@ -159,18 +159,6 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                     btnXoa.Text = "Xóa";
                     btnHoanThanh.Visible = true;
                     btnHoanThanh.Enabled = true;
-                }
-                else // HUY
-                {
-                    lblTrangThaiBadge.Text = "Đã hủy";
-                    lblTrangThaiBadge.ForeColor = Color.FromArgb(100, 116, 139);
-
-                    lblNguoiCanBang.Visible = false;
-                    lblNgayCanBang.Visible = false;
-
-                    btnXoa.Enabled = false;
-                    btnXoa.Text = "Xóa";
-                    btnHoanThanh.Visible = false;
                 }
 
                 // Nạp chi tiết hàng hóa kiểm kê
@@ -373,7 +361,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
 
         private void btnHoanThanh_Click(object sender, EventArgs e)
         {
-            if (trangThai == "DA_DIEU_CHINH" || trangThai == "HUY") return;
+            if (trangThai == "DA_DIEU_CHINH") return;
 
             if (dtChiTietData == null || dtChiTietData.Rows.Count == 0)
             {
@@ -398,8 +386,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                     // 1. Cập nhật trạng thái PhieuKiemKe sang DA_DIEU_CHINH
                     string sqlUpdatePkk = @"
                         UPDATE PhieuKiemKe 
-                        SET TrangThai = 'DA_DIEU_CHINH', 
-                            ThoiDiemChot = sysdatetime() 
+                        SET TrangThai = 'DA_DIEU_CHINH'
                         WHERE MaPhieuKiemKe = @MaPhieuKiemKe";
 
                     using (SqlCommand cmdPkk = new SqlCommand(sqlUpdatePkk, conn, trans))

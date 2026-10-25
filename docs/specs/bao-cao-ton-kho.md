@@ -29,7 +29,7 @@
       - Nhấp đúp vào một dòng hàng hóa trên lưới sẽ tự động kích hoạt form **Báo cáo thẻ kho** (`frmBaoCaoTheKho`) của mặt hàng và chi nhánh kho đó (hỗ trợ nút `Quay lại` để trở về danh sách tồn kho mà không mất trạng thái phân trang/bộ lọc).
 $15. **Xuất file**:
      - Xuất dữ liệu danh sách tồn kho ra file CSV chuẩn UTF-8 with BOM mở trực tiếp bằng Excel không lỗi font tiếng Việt.$16. **Tùy chọn hiển thị cột**:
-     - Hỗ trợ popup `frmHienCotBaoCao` cho phép bật/tắt hiển thị từng cột dữ liệu trên lưới.
+     - Hỗ trợ popup `frmHienCotBaoCao` cho phép bật/tắt hiển thị từng cột dữ liệu trên lưới (quản lý 13 cột nghiệp vụ hợp lệ; loại trừ tuyệt đối cột khóa chính kỹ thuật nội bộ `colMaHang` luôn ẩn `Visible = false`).
 
 ---
 

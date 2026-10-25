@@ -37,8 +37,6 @@
             this.cboNhaCungCap = new System.Windows.Forms.ComboBox();
             this.lblNhaCungCap = new System.Windows.Forms.Label();
             this.pnlDiv2 = new System.Windows.Forms.Panel();
-            this.lblTrangThaiVal = new System.Windows.Forms.Label();
-            this.lblTrangThaiTitle = new System.Windows.Forms.Label();
             this.lblMaPhieuVal = new System.Windows.Forms.Label();
             this.lblMaPhieu = new System.Windows.Forms.Label();
             this.pnlDiv1 = new System.Windows.Forms.Panel();
@@ -119,8 +117,6 @@
             this.pnlRightContent.Controls.Add(this.cboNhaCungCap);
             this.pnlRightContent.Controls.Add(this.lblNhaCungCap);
             this.pnlRightContent.Controls.Add(this.pnlDiv2);
-            this.pnlRightContent.Controls.Add(this.lblTrangThaiVal);
-            this.pnlRightContent.Controls.Add(this.lblTrangThaiTitle);
             this.pnlRightContent.Controls.Add(this.lblMaPhieuVal);
             this.pnlRightContent.Controls.Add(this.lblMaPhieu);
             this.pnlRightContent.Controls.Add(this.pnlDiv1);
@@ -293,7 +289,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboNhaCungCap.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboNhaCungCap.FormattingEnabled = true;
-            this.cboNhaCungCap.Location = new System.Drawing.Point(115, 150);
+            this.cboNhaCungCap.Location = new System.Drawing.Point(115, 126);
             this.cboNhaCungCap.Name = "cboNhaCungCap";
             this.cboNhaCungCap.Size = new System.Drawing.Size(205, 25);
             this.cboNhaCungCap.TabIndex = 11;
@@ -301,7 +297,7 @@
             // lblNhaCungCap
             // 
             this.lblNhaCungCap.AutoSize = true;
-            this.lblNhaCungCap.Location = new System.Drawing.Point(15, 154);
+            this.lblNhaCungCap.Location = new System.Drawing.Point(15, 130);
             this.lblNhaCungCap.Name = "lblNhaCungCap";
             this.lblNhaCungCap.Size = new System.Drawing.Size(92, 17);
             this.lblNhaCungCap.TabIndex = 10;
@@ -312,31 +308,10 @@
             this.pnlDiv2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlDiv2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
-            this.pnlDiv2.Location = new System.Drawing.Point(15, 138);
+            this.pnlDiv2.Location = new System.Drawing.Point(15, 116);
             this.pnlDiv2.Name = "pnlDiv2";
             this.pnlDiv2.Size = new System.Drawing.Size(305, 1);
             this.pnlDiv2.TabIndex = 9;
-            // 
-            // lblTrangThaiVal
-            // 
-            this.lblTrangThaiVal.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblTrangThaiVal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(217)))), ((int)(((byte)(119)))), ((int)(((byte)(6)))));
-            this.lblTrangThaiVal.Location = new System.Drawing.Point(115, 114);
-            this.lblTrangThaiVal.Name = "lblTrangThaiVal";
-            this.lblTrangThaiVal.Size = new System.Drawing.Size(205, 20);
-            this.lblTrangThaiVal.TabIndex = 8;
-            this.lblTrangThaiVal.Text = "Phiếu tạm";
-            this.lblTrangThaiVal.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lblTrangThaiTitle
-            // 
-            this.lblTrangThaiTitle.AutoSize = true;
-            this.lblTrangThaiTitle.Location = new System.Drawing.Point(15, 114);
-            this.lblTrangThaiTitle.Name = "lblTrangThaiTitle";
-            this.lblTrangThaiTitle.Size = new System.Drawing.Size(69, 17);
-            this.lblTrangThaiTitle.TabIndex = 7;
-            this.lblTrangThaiTitle.Text = "Trạng thái:";
             // 
             // lblMaPhieuVal
             // 
@@ -791,8 +766,6 @@
         private System.Windows.Forms.Panel pnlDiv1;
         private System.Windows.Forms.Label lblMaPhieu;
         private System.Windows.Forms.Label lblMaPhieuVal;
-        private System.Windows.Forms.Label lblTrangThaiTitle;
-        private System.Windows.Forms.Label lblTrangThaiVal;
         private System.Windows.Forms.Panel pnlDiv2;
         private System.Windows.Forms.Label lblNhaCungCap;
         private System.Windows.Forms.ComboBox cboNhaCungCap;

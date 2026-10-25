@@ -101,6 +101,7 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
             colChon.ReadOnly = false;
             colMaPhieu.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colThoiGian.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colKho.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             colTenNcc.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             colTongTienHang.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             colGiamGia.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
@@ -313,6 +314,12 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                 }
 
                 DateTime tuNgay = dtpTuNgay.Value.Date;
+                int maKhoHienTai = SessionContext.MaKhoHienTai;
+                string filterKhoSql = "";
+                if (maKhoHienTai > 0)
+                {
+                    filterKhoSql = " AND pth.MaKho = @MaKho ";
+                }
                 DateTime denNgay = dtpDenNgay.Value.Date.AddDays(1);
                 string timKiem = txtTimKiem.Text.Trim();
 
@@ -320,7 +327,9 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                     SELECT COUNT(1)
                     FROM PhieuTraHangNhap pth
                     LEFT JOIN DonViCapHang ncc ON pth.MaDonViCapHang = ncc.MaDonViCapHang
+                    LEFT JOIN Kho k ON pth.MaKho = k.MaKho
                     WHERE (pth.NgayTra >= @TuNgay AND pth.NgayTra < @DenNgay)
+                      {filterKhoSql}
                       {filterTrangThaiSql}
                       {filterNccSql}
                       {filterNvlSql}
@@ -339,6 +348,7 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                     new SqlParameter("@TimKiem", timKiem),
                     new SqlParameter("@TimKiemLike", "%" + timKiem + "%")
                 };
+                if (maKhoHienTai > 0) countParams.Add(new SqlParameter("@MaKho", maKhoHienTai));
                 if (!string.IsNullOrEmpty(maTrangThai)) countParams.Add(new SqlParameter("@TrangThai", maTrangThai));
                 if (maNcc > 0) countParams.Add(new SqlParameter("@MaNCC", maNcc));
                 if (maNvLap > 0) countParams.Add(new SqlParameter("@MaNVLap", maNvLap));
@@ -359,6 +369,7 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                         pth.MaPhieuTraHang,
                         ISNULL(pth.MaPhieu, 'THN' + RIGHT('000000' + CAST(pth.MaPhieuTraHang AS VARCHAR(10)), 6)) AS MaPhieu,
                         pth.NgayTra,
+                        ISNULL(k.TenKho, N'') AS TenKho,
                         ISNULL(ncc.TenDonVi, N'Nhà cung cấp lẻ') AS TenDonVi,
                         pth.TongTienHang,
                         pth.GiamGia,
@@ -373,7 +384,9 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                         END AS TenTrangThai
                     FROM PhieuTraHangNhap pth
                     LEFT JOIN DonViCapHang ncc ON pth.MaDonViCapHang = ncc.MaDonViCapHang
+                    LEFT JOIN Kho k ON pth.MaKho = k.MaKho
                     WHERE (pth.NgayTra >= @TuNgay AND pth.NgayTra < @DenNgay)
+                      {filterKhoSql}
                       {filterTrangThaiSql}
                       {filterNccSql}
                       {filterNvlSql}
@@ -396,6 +409,7 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                     new SqlParameter("@Skip", skip),
                     new SqlParameter("@Take", soDongMoiTrang)
                 };
+                if (maKhoHienTai > 0) queryParams.Add(new SqlParameter("@MaKho", maKhoHienTai));
                 if (!string.IsNullOrEmpty(maTrangThai)) queryParams.Add(new SqlParameter("@TrangThai", maTrangThai));
                 if (maNcc > 0) queryParams.Add(new SqlParameter("@MaNCC", maNcc));
                 if (maNvLap > 0) queryParams.Add(new SqlParameter("@MaNVLap", maNvLap));
@@ -424,9 +438,9 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
 
         private void CapNhatThanhPhanTrang()
         {
-            int tuDong = tongSoBanGhi == 0 ? 0 : (trangHienTai - 1) * soDongMoiTrang + 1;
-            int denDong = Math.Min(trangHienTai * soDongMoiTrang, tongSoBanGhi);
-            lblTongSoPhieu.Text = $"Hiển thị {tuDong:N0} - {denDong:N0} trên tổng số {tongSoBanGhi:N0} phiếu trả hàng";
+
+
+            lblTongSoPhieu.Text = $"Tổng số: {tongSoBanGhi:N0} phiếu trả hàng";
             lblTrangHienTai.Text = $"Trang {trangHienTai} / {tongSoTrang}";
             btnTrangTruoc.Enabled = trangHienTai > 1;
             btnTrangSau.Enabled = trangHienTai < tongSoTrang;
@@ -554,6 +568,12 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                         }
 
                         DateTime tuNgay = dtpTuNgay.Value.Date;
+                int maKhoHienTai = SessionContext.MaKhoHienTai;
+                string filterKhoSql = "";
+                if (maKhoHienTai > 0)
+                {
+                    filterKhoSql = " AND pth.MaKho = @MaKho ";
+                }
                         DateTime denNgay = dtpDenNgay.Value.Date.AddDays(1);
                         string timKiem = txtTimKiem.Text.Trim();
 
@@ -561,6 +581,7 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                             SELECT 
                                 ISNULL(pth.MaPhieu, 'THN' + RIGHT('000000' + CAST(pth.MaPhieuTraHang AS VARCHAR(10)), 6)) AS MaPhieu,
                                 pth.NgayTra,
+                        ISNULL(k.TenKho, N'') AS TenKho,
                                 ISNULL(ncc.TenDonVi, N'Nhà cung cấp lẻ') AS TenDonVi,
                                 pth.TongTienHang,
                                 pth.GiamGia,
@@ -574,8 +595,10 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                                 END AS TenTrangThai
                             FROM PhieuTraHangNhap pth
                             LEFT JOIN DonViCapHang ncc ON pth.MaDonViCapHang = ncc.MaDonViCapHang
+                    LEFT JOIN Kho k ON pth.MaKho = k.MaKho
                             WHERE (pth.NgayTra >= @TuNgay AND pth.NgayTra < @DenNgay)
-                              {filterTrangThaiSql}
+                              {filterKhoSql}
+                      {filterTrangThaiSql}
                               {filterNccSql}
                               {filterNvlSql}
                               {filterNvtSql}
@@ -594,6 +617,7 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                             new SqlParameter("@TimKiem", timKiem),
                             new SqlParameter("@TimKiemLike", "%" + timKiem + "%")
                         };
+                        if (maKhoHienTai > 0) p.Add(new SqlParameter("@MaKho", maKhoHienTai));
                         if (!string.IsNullOrEmpty(maTrangThai)) p.Add(new SqlParameter("@TrangThai", maTrangThai));
                         if (maNcc > 0) p.Add(new SqlParameter("@MaNCC", maNcc));
                         if (maNvLap > 0) p.Add(new SqlParameter("@MaNVLap", maNvLap));

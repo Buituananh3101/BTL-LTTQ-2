@@ -42,7 +42,9 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
             List<DataGridViewColumn> validCols = new List<DataGridViewColumn>();
             foreach (DataGridViewColumn col in targetDgv.Columns)
             {
-                if (string.IsNullOrWhiteSpace(col.HeaderText) || 
+                if (string.IsNullOrWhiteSpace(col.HeaderText) ||
+                    col.Name == "colMaHang" ||
+                    string.Equals(col.HeaderText, "colMaHang", StringComparison.OrdinalIgnoreCase) || 
                     (col.Name.StartsWith("colMa") && col.Name.EndsWith("Id")) ||
                     col is DataGridViewCheckBoxColumn)
                 {

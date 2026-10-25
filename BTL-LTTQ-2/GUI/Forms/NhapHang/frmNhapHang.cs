@@ -263,10 +263,12 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                     SELECT COUNT(1)
                     FROM PhieuNhap pn
                     LEFT JOIN DonViCapHang ncc ON pn.MaDonViCapHang = ncc.MaDonViCapHang
+                    LEFT JOIN Kho k ON pn.MaKho = k.MaKho
                     WHERE (@TrangThai IS NULL OR pn.TrangThai = @TrangThai)
                       AND (@MaNcc IS NULL OR pn.MaDonViCapHang = @MaNcc)
                       AND (@MaNVLap IS NULL OR pn.MaNVLap = @MaNVLap)
                       AND (@MaNVNhap IS NULL OR pn.MaNVXacNhan = @MaNVNhap)
+                      AND (@MaKho IS NULL OR pn.MaKho = @MaKho)
                       AND (pn.NgayLap >= @TuNgay AND pn.NgayLap < @DenNgay)
                       AND (
                           @TimKiem = ''
@@ -283,6 +285,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                     new SqlParameter("@MaNcc", (object)maNcc ?? DBNull.Value),
                     new SqlParameter("@MaNVLap", (object)maNvLap ?? DBNull.Value),
                     new SqlParameter("@MaNVNhap", (object)maNvNhap ?? DBNull.Value),
+                    new SqlParameter("@MaKho", SessionContext.MaKhoHienTai > 0 ? (object)SessionContext.MaKhoHienTai : DBNull.Value),
                     new SqlParameter("@TuNgay", tuNgay),
                     new SqlParameter("@DenNgay", denNgay),
                     new SqlParameter("@TimKiem", timKiem),
@@ -303,6 +306,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                         pn.MaPhieuNhap,
                         ISNULL(pn.MaPhieu, 'PN' + RIGHT('000000' + CAST(pn.MaPhieuNhap AS VARCHAR(10)), 6)) AS MaPhieu,
                         pn.NgayLap,
+                        ISNULL(k.TenKho, N'') AS TenKho,
                         ISNULL(ncc.MaNcc, 'NCC' + RIGHT('00000' + CAST(ISNULL(ncc.MaDonViCapHang, 0) AS VARCHAR(10)), 5)) AS MaNccHienThi,
                         ISNULL(ncc.TenDonVi, N'Nhà cung cấp lẻ') AS TenDonVi,
                         pn.CanTraNcc,
@@ -316,10 +320,12 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                         END AS TenTrangThai
                     FROM PhieuNhap pn
                     LEFT JOIN DonViCapHang ncc ON pn.MaDonViCapHang = ncc.MaDonViCapHang
+                    LEFT JOIN Kho k ON pn.MaKho = k.MaKho
                     WHERE (@TrangThai IS NULL OR pn.TrangThai = @TrangThai)
                       AND (@MaNcc IS NULL OR pn.MaDonViCapHang = @MaNcc)
                       AND (@MaNVLap IS NULL OR pn.MaNVLap = @MaNVLap)
                       AND (@MaNVNhap IS NULL OR pn.MaNVXacNhan = @MaNVNhap)
+                      AND (@MaKho IS NULL OR pn.MaKho = @MaKho)
                       AND (pn.NgayLap >= @TuNgay AND pn.NgayLap < @DenNgay)
                       AND (
                           @TimKiem = ''
@@ -338,6 +344,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                     new SqlParameter("@MaNcc", (object)maNcc ?? DBNull.Value),
                     new SqlParameter("@MaNVLap", (object)maNvLap ?? DBNull.Value),
                     new SqlParameter("@MaNVNhap", (object)maNvNhap ?? DBNull.Value),
+                    new SqlParameter("@MaKho", SessionContext.MaKhoHienTai > 0 ? (object)SessionContext.MaKhoHienTai : DBNull.Value),
                     new SqlParameter("@TuNgay", tuNgay),
                     new SqlParameter("@DenNgay", denNgay),
                     new SqlParameter("@TimKiem", timKiem),
@@ -369,9 +376,9 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 
         private void CapNhatThanhPhanTrang()
         {
-            int tuDong = tongSoBanGhi == 0 ? 0 : (trangHienTai - 1) * soDongMoiTrang + 1;
-            int denDong = Math.Min(trangHienTai * soDongMoiTrang, tongSoBanGhi);
-            lblTongSoPhieu.Text = $"Hiển thị {tuDong:N0} - {denDong:N0} trên tổng số {tongSoBanGhi:N0} phiếu nhập";
+
+
+            lblTongSoPhieu.Text = $"Tổng số: {tongSoBanGhi:N0} phiếu nhập";
             lblTrangHienTai.Text = $"Trang {trangHienTai} / {tongSoTrang}";
             btnTrangTruoc.Enabled = trangHienTai > 1;
             btnTrangSau.Enabled = trangHienTai < tongSoTrang;

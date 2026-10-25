@@ -321,7 +321,8 @@ namespace BTL_LTTQ_2.GUI.Forms
                 StringBuilder whereSql = new StringBuilder(" WHERE 1=1 ");
 
                 // Tham số kho hiện tại
-                parameters.Add(new SqlParameter("@MaKho", SessionContext.MaKhoHienTai));
+                int currentMaKho = SessionContext.MaKhoHienTai;
+                parameters.Add(new SqlParameter("@MaKho", currentMaKho));
 
                 // Lọc từ khóa (Mã hàng, tên hàng, quy cách)
                 if (!string.IsNullOrWhiteSpace(txtTimKiem.Text))
@@ -392,13 +393,17 @@ namespace BTL_LTTQ_2.GUI.Forms
                 }
 
                 // 1. Đếm tổng số bản ghi
+                string joinTonKho = currentMaKho > 0 ? "LEFT JOIN vw_TonKhoHienTai tk ON h.MaHang = tk.MaHang AND tk.MaKho = @MaKho" : "LEFT JOIN (SELECT MaHang, SUM(SoLuongTon) AS SoLuongTon FROM vw_TonKhoHienTai GROUP BY MaHang) tk ON h.MaHang = tk.MaHang";
+                string joinNguongTon = currentMaKho > 0 ? "LEFT JOIN NguongTonKho ntk ON h.MaHang = ntk.MaHang AND ntk.MaKho = @MaKho" : "LEFT JOIN (SELECT MaHang, MAX(TonToiThieu) AS TonToiThieu FROM NguongTonKho GROUP BY MaHang) ntk ON h.MaHang = ntk.MaHang";
+
+
                 string sqlCount = $@"
                     SELECT COUNT(DISTINCT h.MaHang)
                     FROM HangHoa h
                     LEFT JOIN NhomHang nh ON h.MaNhom = nh.MaNhom
                     LEFT JOIN DonViTinh dvt ON h.MaDVT = dvt.MaDVT
-                    LEFT JOIN vw_TonKhoHienTai tk ON h.MaHang = tk.MaHang AND tk.MaKho = @MaKho
-                    LEFT JOIN NguongTonKho ntk ON h.MaHang = ntk.MaHang AND ntk.MaKho = @MaKho
+                    {joinTonKho}
+                    {joinNguongTon}
                     {whereSql};";
 
                 SqlParameter[] countParams = new SqlParameter[parameters.Count];
@@ -434,20 +439,20 @@ namespace BTL_LTTQ_2.GUI.Forms
                     FROM HangHoa h
                     LEFT JOIN NhomHang nh ON h.MaNhom = nh.MaNhom
                     LEFT JOIN DonViTinh dvt ON h.MaDVT = dvt.MaDVT
-                    LEFT JOIN vw_TonKhoHienTai tk ON h.MaHang = tk.MaHang AND tk.MaKho = @MaKho
-                    LEFT JOIN NguongTonKho ntk ON h.MaHang = ntk.MaHang AND ntk.MaKho = @MaKho
+                    {joinTonKho}
+                    {joinNguongTon}
                     LEFT JOIN (
                         SELECT ctdb.MaHang, SUM(ctdb.SoLuong) AS SoLuongKhachDat
                         FROM DonBan db
                         JOIN ChiTietDonBan ctdb ON db.MaDonBan = ctdb.MaDonBan
-                        WHERE db.MaKho = @MaKho
+                        WHERE (@MaKho = 0 OR db.MaKho = @MaKho)
                           AND db.TrangThai NOT IN ('HOAN_TAT', 'HUY')
                         GROUP BY ctdb.MaHang
                     ) kd ON h.MaHang = kd.MaHang
                     LEFT JOIN (
                         SELECT MaHang, SUM(SoLuongGiam) AS XuatBan30Ngay
                         FROM vw_BienDongKho
-                        WHERE MaKho = @MaKho 
+                        WHERE (@MaKho = 0 OR MaKho = @MaKho)
                           AND SoLuongGiam > 0
                           AND NgayGiaoDich >= DATEADD(day, -30, GETDATE())
                         GROUP BY MaHang

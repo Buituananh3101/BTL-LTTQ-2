@@ -32,8 +32,6 @@
             this.cboTrangThai = new System.Windows.Forms.ComboBox();
             this.lblHuongChuyen = new System.Windows.Forms.Label();
             this.cboHuongChuyen = new System.Windows.Forms.ComboBox();
-            this.lblKhoDoiUng = new System.Windows.Forms.Label();
-            this.cboKhoDoiUng = new System.Windows.Forms.ComboBox();
             this.lblNguoiTao = new System.Windows.Forms.Label();
             this.cboNguoiTao = new System.Windows.Forms.ComboBox();
             this.lblThoiGianTao = new System.Windows.Forms.Label();
@@ -104,7 +102,7 @@
             this.lblTieuDe.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblTieuDe.Location = new System.Drawing.Point(12, 23);
             this.lblTieuDe.Name = "lblTieuDe";
-            this.lblTieuDe.Size = new System.Drawing.Size(133, 21);
+            this.lblTieuDe.Size = new System.Drawing.Size(147, 21);
             this.lblTieuDe.TabIndex = 0;
             this.lblTieuDe.Text = "Phiếu chuyển kho";
             // 
@@ -176,7 +174,6 @@
             this.pnlBoLoc.Dock = System.Windows.Forms.DockStyle.Left;
             this.pnlBoLoc.Location = new System.Drawing.Point(0, 84);
             this.pnlBoLoc.Name = "pnlBoLoc";
-
             this.pnlBoLoc.Size = new System.Drawing.Size(387, 769);
             this.pnlBoLoc.TabIndex = 1;
             // 
@@ -186,24 +183,20 @@
             this.grpBoLoc.Controls.Add(this.cboTrangThai);
             this.grpBoLoc.Controls.Add(this.lblHuongChuyen);
             this.grpBoLoc.Controls.Add(this.cboHuongChuyen);
-            this.grpBoLoc.Controls.Add(this.lblKhoDoiUng);
-            this.grpBoLoc.Controls.Add(this.cboKhoDoiUng);
             this.grpBoLoc.Controls.Add(this.lblNguoiTao);
             this.grpBoLoc.Controls.Add(this.cboNguoiTao);
             this.grpBoLoc.Controls.Add(this.lblThoiGianTao);
             this.grpBoLoc.Controls.Add(this.grpThoiGianTao);
-
             this.grpBoLoc.Location = new System.Drawing.Point(12, 9);
             this.grpBoLoc.Name = "grpBoLoc";
             this.grpBoLoc.Size = new System.Drawing.Size(360, 717);
             this.grpBoLoc.TabIndex = 0;
             this.grpBoLoc.TabStop = false;
-
             // 
             // lblTrangThai
             // 
             this.lblTrangThai.AutoSize = true;
-            this.lblTrangThai.Location = new System.Drawing.Point(14, 42);
+            this.lblTrangThai.Location = new System.Drawing.Point(15, 322);
             this.lblTrangThai.Name = "lblTrangThai";
             this.lblTrangThai.Size = new System.Drawing.Size(69, 17);
             this.lblTrangThai.TabIndex = 0;
@@ -213,7 +206,7 @@
             // 
             this.cboTrangThai.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboTrangThai.FormattingEnabled = true;
-            this.cboTrangThai.Location = new System.Drawing.Point(18, 76);
+            this.cboTrangThai.Location = new System.Drawing.Point(19, 356);
             this.cboTrangThai.Name = "cboTrangThai";
             this.cboTrangThai.Size = new System.Drawing.Size(322, 25);
             this.cboTrangThai.TabIndex = 1;
@@ -222,7 +215,7 @@
             // lblHuongChuyen
             // 
             this.lblHuongChuyen.AutoSize = true;
-            this.lblHuongChuyen.Location = new System.Drawing.Point(14, 150);
+            this.lblHuongChuyen.Location = new System.Drawing.Point(14, 189);
             this.lblHuongChuyen.Name = "lblHuongChuyen";
             this.lblHuongChuyen.Size = new System.Drawing.Size(95, 17);
             this.lblHuongChuyen.TabIndex = 2;
@@ -232,43 +225,25 @@
             // 
             this.cboHuongChuyen.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboHuongChuyen.FormattingEnabled = true;
-            this.cboHuongChuyen.Location = new System.Drawing.Point(18, 184);
+            this.cboHuongChuyen.Location = new System.Drawing.Point(18, 223);
             this.cboHuongChuyen.Name = "cboHuongChuyen";
             this.cboHuongChuyen.Size = new System.Drawing.Size(322, 25);
             this.cboHuongChuyen.TabIndex = 3;
             this.cboHuongChuyen.SelectedIndexChanged += new System.EventHandler(this.BoLoc_ThayDoi);
             // 
-            // lblKhoDoiUng
-            // 
-            this.lblKhoDoiUng.AutoSize = true;
-            this.lblKhoDoiUng.Location = new System.Drawing.Point(14, 258);
-            this.lblKhoDoiUng.Name = "lblKhoDoiUng";
-            this.lblKhoDoiUng.Size = new System.Drawing.Size(83, 17);
-            this.lblKhoDoiUng.TabIndex = 4;
-            this.lblKhoDoiUng.Text = "Kho đối ứng:";
-            // 
-            // cboKhoDoiUng
-            // 
-            this.cboKhoDoiUng.FormattingEnabled = true;
-            this.cboKhoDoiUng.Location = new System.Drawing.Point(18, 292);
-            this.cboKhoDoiUng.Name = "cboKhoDoiUng";
-            this.cboKhoDoiUng.Size = new System.Drawing.Size(322, 25);
-            this.cboKhoDoiUng.TabIndex = 5;
-            this.cboKhoDoiUng.SelectedIndexChanged += new System.EventHandler(this.BoLoc_ThayDoi);
-            // 
             // lblNguoiTao
             // 
             this.lblNguoiTao.AutoSize = true;
-            this.lblNguoiTao.Location = new System.Drawing.Point(14, 366);
+            this.lblNguoiTao.Location = new System.Drawing.Point(15, 58);
             this.lblNguoiTao.Name = "lblNguoiTao";
-            this.lblNguoiTao.Size = new System.Drawing.Size(70, 17);
+            this.lblNguoiTao.Size = new System.Drawing.Size(71, 17);
             this.lblNguoiTao.TabIndex = 6;
             this.lblNguoiTao.Text = "Người tạo:";
             // 
             // cboNguoiTao
             // 
             this.cboNguoiTao.FormattingEnabled = true;
-            this.cboNguoiTao.Location = new System.Drawing.Point(18, 400);
+            this.cboNguoiTao.Location = new System.Drawing.Point(19, 92);
             this.cboNguoiTao.Name = "cboNguoiTao";
             this.cboNguoiTao.Size = new System.Drawing.Size(322, 25);
             this.cboNguoiTao.TabIndex = 7;
@@ -277,9 +252,9 @@
             // lblThoiGianTao
             // 
             this.lblThoiGianTao.AutoSize = true;
-            this.lblThoiGianTao.Location = new System.Drawing.Point(14, 477);
+            this.lblThoiGianTao.Location = new System.Drawing.Point(15, 488);
             this.lblThoiGianTao.Name = "lblThoiGianTao";
-            this.lblThoiGianTao.Size = new System.Drawing.Size(86, 17);
+            this.lblThoiGianTao.Size = new System.Drawing.Size(88, 17);
             this.lblThoiGianTao.TabIndex = 8;
             this.lblThoiGianTao.Text = "Thời gian tạo:";
             // 
@@ -289,7 +264,7 @@
             this.grpThoiGianTao.Controls.Add(this.dtpDenNgay);
             this.grpThoiGianTao.Controls.Add(this.lblTuNgay);
             this.grpThoiGianTao.Controls.Add(this.lblDenNgay);
-            this.grpThoiGianTao.Location = new System.Drawing.Point(18, 513);
+            this.grpThoiGianTao.Location = new System.Drawing.Point(19, 524);
             this.grpThoiGianTao.Name = "grpThoiGianTao";
             this.grpThoiGianTao.Size = new System.Drawing.Size(322, 108);
             this.grpThoiGianTao.TabIndex = 9;
@@ -358,9 +333,9 @@
             // lblTongSoPhieu
             // 
             this.lblTongSoPhieu.AutoSize = true;
-            this.lblTongSoPhieu.Location = new System.Drawing.Point(12, 12);
+            this.lblTongSoPhieu.Location = new System.Drawing.Point(22, 12);
             this.lblTongSoPhieu.Name = "lblTongSoPhieu";
-            this.lblTongSoPhieu.Size = new System.Drawing.Size(148, 17);
+            this.lblTongSoPhieu.Size = new System.Drawing.Size(150, 17);
             this.lblTongSoPhieu.TabIndex = 0;
             this.lblTongSoPhieu.Text = "Tổng số: 0 phiếu chuyển";
             // 
@@ -368,11 +343,11 @@
             // 
             this.lblSoDongMoiTrang.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSoDongMoiTrang.AutoSize = true;
-            this.lblSoDongMoiTrang.Location = new System.Drawing.Point(1042, 12);
+            this.lblSoDongMoiTrang.Location = new System.Drawing.Point(932, 13);
             this.lblSoDongMoiTrang.Name = "lblSoDongMoiTrang";
-            this.lblSoDongMoiTrang.Size = new System.Drawing.Size(56, 17);
+            this.lblSoDongMoiTrang.Size = new System.Drawing.Size(61, 17);
             this.lblSoDongMoiTrang.TabIndex = 1;
-            this.lblSoDongMoiTrang.Text = "Hiển thị:";
+            this.lblSoDongMoiTrang.Text = "Số dòng:";
             // 
             // cboSoDongMoiTrang
             // 
@@ -385,20 +360,20 @@
             "20",
             "50",
             "100"});
-            this.cboSoDongMoiTrang.Location = new System.Drawing.Point(1117, 8);
+            this.cboSoDongMoiTrang.Location = new System.Drawing.Point(1008, 10);
             this.cboSoDongMoiTrang.Name = "cboSoDongMoiTrang";
-            this.cboSoDongMoiTrang.Size = new System.Drawing.Size(70, 24);
+            this.cboSoDongMoiTrang.Size = new System.Drawing.Size(70, 25);
             this.cboSoDongMoiTrang.TabIndex = 2;
             this.cboSoDongMoiTrang.SelectedIndexChanged += new System.EventHandler(this.cboSoDongMoiTrang_SelectedIndexChanged);
             // 
             // btnTrangTruoc
             // 
             this.btnTrangTruoc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnTrangTruoc.Location = new System.Drawing.Point(1212, 7);
+            this.btnTrangTruoc.Location = new System.Drawing.Point(1117, 6);
             this.btnTrangTruoc.Name = "btnTrangTruoc";
-            this.btnTrangTruoc.Size = new System.Drawing.Size(40, 30);
+            this.btnTrangTruoc.Size = new System.Drawing.Size(80, 31);
             this.btnTrangTruoc.TabIndex = 3;
-            this.btnTrangTruoc.Text = "<";
+            this.btnTrangTruoc.Text = "◀ Trước";
             this.btnTrangTruoc.UseVisualStyleBackColor = true;
             this.btnTrangTruoc.Click += new System.EventHandler(this.btnTrangTruoc_Click);
             // 
@@ -406,20 +381,20 @@
             // 
             this.lblTrangHienTai.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTrangHienTai.AutoSize = true;
-            this.lblTrangHienTai.Location = new System.Drawing.Point(1262, 12);
+            this.lblTrangHienTai.Location = new System.Drawing.Point(1214, 13);
             this.lblTrangHienTai.Name = "lblTrangHienTai";
-            this.lblTrangHienTai.Size = new System.Drawing.Size(36, 17);
+            this.lblTrangHienTai.Size = new System.Drawing.Size(72, 17);
             this.lblTrangHienTai.TabIndex = 4;
-            this.lblTrangHienTai.Text = "1 / 1";
+            this.lblTrangHienTai.Text = "Trang 1 / 1";
             // 
             // btnTrangSau
             // 
             this.btnTrangSau.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnTrangSau.Location = new System.Drawing.Point(1327, 7);
+            this.btnTrangSau.Location = new System.Drawing.Point(1303, 6);
             this.btnTrangSau.Name = "btnTrangSau";
-            this.btnTrangSau.Size = new System.Drawing.Size(40, 30);
+            this.btnTrangSau.Size = new System.Drawing.Size(80, 31);
             this.btnTrangSau.TabIndex = 5;
-            this.btnTrangSau.Text = ">";
+            this.btnTrangSau.Text = "Sau ▶";
             this.btnTrangSau.UseVisualStyleBackColor = true;
             this.btnTrangSau.Click += new System.EventHandler(this.btnTrangSau_Click);
             // 
@@ -462,103 +437,94 @@
             this.colChon.Name = "colChon";
             this.colChon.ReadOnly = true;
             this.colChon.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.colChon.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.colChon.Width = 35;
             // 
             // colMaPhieu
             // 
-            this.colMaPhieu.DataPropertyName = "MaPhieu";
             this.colMaPhieu.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
- this.colMaPhieu.FillWeight = 120F;
- this.colMaPhieu.HeaderText = "Mã chuyển kho";
+            this.colMaPhieu.DataPropertyName = "MaPhieu";
+            this.colMaPhieu.FillWeight = 120F;
+            this.colMaPhieu.HeaderText = "Mã chuyển kho";
             this.colMaPhieu.MinimumWidth = 100;
             this.colMaPhieu.Name = "colMaPhieu";
             this.colMaPhieu.ReadOnly = true;
-            this.colMaPhieu.Width = 115;
             // 
             // colNgayLap
             // 
-            this.colNgayLap.DataPropertyName = "NgayLapHienThi";
             this.colNgayLap.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
- this.colNgayLap.FillWeight = 140F;
- this.colNgayLap.HeaderText = "Thời gian";
+            this.colNgayLap.DataPropertyName = "NgayLapHienThi";
+            this.colNgayLap.FillWeight = 140F;
+            this.colNgayLap.HeaderText = "Thời gian";
             this.colNgayLap.MinimumWidth = 120;
             this.colNgayLap.Name = "colNgayLap";
             this.colNgayLap.ReadOnly = true;
-            this.colNgayLap.Width = 135;
             // 
             // colKhoNguon
             // 
-            this.colKhoNguon.DataPropertyName = "TenKhoNguon";
             this.colKhoNguon.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
- this.colKhoNguon.FillWeight = 180F;
- this.colKhoNguon.HeaderText = "Kho gửi";
+            this.colKhoNguon.DataPropertyName = "TenKhoNguon";
+            this.colKhoNguon.FillWeight = 180F;
+            this.colKhoNguon.HeaderText = "Kho gửi";
             this.colKhoNguon.MinimumWidth = 120;
             this.colKhoNguon.Name = "colKhoNguon";
             this.colKhoNguon.ReadOnly = true;
-            this.colKhoNguon.Width = 160;
             // 
             // colKhoDich
             // 
-            this.colKhoDich.DataPropertyName = "TenKhoDich";
             this.colKhoDich.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
- this.colKhoDich.FillWeight = 180F;
- this.colKhoDich.HeaderText = "Kho nhận";
+            this.colKhoDich.DataPropertyName = "TenKhoDich";
+            this.colKhoDich.FillWeight = 180F;
+            this.colKhoDich.HeaderText = "Kho nhận";
             this.colKhoDich.MinimumWidth = 120;
             this.colKhoDich.Name = "colKhoDich";
             this.colKhoDich.ReadOnly = true;
-            this.colKhoDich.Width = 160;
             // 
             // colTongSlChuyen
             // 
-            this.colTongSlChuyen.DataPropertyName = "TongSoLuongChuyen";
             this.colTongSlChuyen.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
- this.colTongSlChuyen.FillWeight = 110F;
- this.colTongSlChuyen.HeaderText = "Tổng SL chuyển";
+            this.colTongSlChuyen.DataPropertyName = "TongSoLuongChuyen";
+            this.colTongSlChuyen.FillWeight = 110F;
+            this.colTongSlChuyen.HeaderText = "Tổng SL chuyển";
             this.colTongSlChuyen.MinimumWidth = 100;
             this.colTongSlChuyen.Name = "colTongSlChuyen";
             this.colTongSlChuyen.ReadOnly = true;
-            this.colTongSlChuyen.Width = 115;
             // 
             // colTongSlNhan
             // 
-            this.colTongSlNhan.DataPropertyName = "TongSoLuongNhanHienThi";
             this.colTongSlNhan.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
- this.colTongSlNhan.FillWeight = 110F;
- this.colTongSlNhan.HeaderText = "Tổng SL nhận";
+            this.colTongSlNhan.DataPropertyName = "TongSoLuongNhanHienThi";
+            this.colTongSlNhan.FillWeight = 110F;
+            this.colTongSlNhan.HeaderText = "Tổng SL nhận";
             this.colTongSlNhan.MinimumWidth = 100;
             this.colTongSlNhan.Name = "colTongSlNhan";
             this.colTongSlNhan.ReadOnly = true;
-            this.colTongSlNhan.Width = 115;
             // 
             // colTongGiaTri
             // 
-            this.colTongGiaTri.DataPropertyName = "TongGiaTriChuyen";
             this.colTongGiaTri.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
- this.colTongGiaTri.FillWeight = 130F;
- this.colTongGiaTri.HeaderText = "Tổng giá trị";
+            this.colTongGiaTri.DataPropertyName = "TongGiaTriChuyen";
+            this.colTongGiaTri.FillWeight = 130F;
+            this.colTongGiaTri.HeaderText = "Tổng giá trị";
             this.colTongGiaTri.MinimumWidth = 110;
             this.colTongGiaTri.Name = "colTongGiaTri";
             this.colTongGiaTri.ReadOnly = true;
-            this.colTongGiaTri.Width = 130;
             // 
             // colNguoiTao
             // 
-            this.colNguoiTao.DataPropertyName = "TenNguoiTao";
             this.colNguoiTao.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
- this.colNguoiTao.FillWeight = 140F;
- this.colNguoiTao.HeaderText = "Người tạo";
+            this.colNguoiTao.DataPropertyName = "TenNguoiTao";
+            this.colNguoiTao.FillWeight = 140F;
+            this.colNguoiTao.HeaderText = "Người tạo";
             this.colNguoiTao.MinimumWidth = 110;
             this.colNguoiTao.Name = "colNguoiTao";
             this.colNguoiTao.ReadOnly = true;
-            this.colNguoiTao.Width = 140;
             // 
             // colGhiChu
             // 
             this.colGhiChu.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.colGhiChu.DataPropertyName = "GhiChu";
             this.colGhiChu.FillWeight = 180F;
- this.colGhiChu.HeaderText = "Ghi chú";
+            this.colGhiChu.HeaderText = "Ghi chú";
             this.colGhiChu.MinimumWidth = 150;
             this.colGhiChu.Name = "colGhiChu";
             this.colGhiChu.ReadOnly = true;
@@ -566,14 +532,13 @@
             // 
             // colTrangThai
             // 
-            this.colTrangThai.DataPropertyName = "TrangThaiHienThi";
             this.colTrangThai.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
- this.colTrangThai.FillWeight = 120F;
- this.colTrangThai.HeaderText = "Trạng thái";
+            this.colTrangThai.DataPropertyName = "TrangThaiHienThi";
+            this.colTrangThai.FillWeight = 120F;
+            this.colTrangThai.HeaderText = "Trạng thái";
             this.colTrangThai.MinimumWidth = 100;
             this.colTrangThai.Name = "colTrangThai";
             this.colTrangThai.ReadOnly = true;
-            this.colTrangThai.Width = 120;
             // 
             // colMaPhieuChuyen
             // 
@@ -590,7 +555,6 @@
             this.ClientSize = new System.Drawing.Size(1782, 853);
             this.Controls.Add(this.dgvChuyenKho);
             this.Controls.Add(this.pnlPhanTrang);
-
             this.Controls.Add(this.pnlBoLoc);
             this.Controls.Add(this.pnlTop);
             this.Font = new System.Drawing.Font("Segoe UI", 9.5F);
@@ -633,8 +597,8 @@
         private System.Windows.Forms.ComboBox cboTrangThai;
         private System.Windows.Forms.Label lblHuongChuyen;
         private System.Windows.Forms.ComboBox cboHuongChuyen;
-        private System.Windows.Forms.Label lblKhoDoiUng;
-        private System.Windows.Forms.ComboBox cboKhoDoiUng;
+
+
         private System.Windows.Forms.Label lblNguoiTao;
         private System.Windows.Forms.ComboBox cboNguoiTao;
         private System.Windows.Forms.Label lblThoiGianTao;

@@ -161,11 +161,11 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
             rowTatCaKho["TenKho"] = "-- Tất cả kho đối ứng --";
             dtKho.Rows.InsertAt(rowTatCaKho, 0);
 
-            ComboboxHelper.CaiDatTimKiem(cboKhoDoiUng, dtKho, "TenKho", "MaKho", () => {
+            Action locKhoDoiUng = () => {
                 trangHienTai = 1;
                 TaiDuLieu();
-            });
-            cboKhoDoiUng.SelectedValue = 0;
+            };
+
 
             // 4. Người tạo
             string sqlNguoiTao = @"SELECT tk.MaNV, ISNULL(nv.HoTen, tk.TenDangNhap) AS HoTen
@@ -179,10 +179,12 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
             rowTatCaNguoiTao["HoTen"] = "-- Tất cả người tạo --";
             dtNguoiTao.Rows.InsertAt(rowTatCaNguoiTao, 0);
 
-            ComboboxHelper.CaiDatTimKiem(cboNguoiTao, dtNguoiTao, "HoTen", "MaNV", () => {
+            Action cbTao = () => { trangHienTai = 1; TaiDuLieu(); };
+            ComboboxHelper.CaiDatTimKiem(cboNguoiTao, dtNguoiTao, "HoTen", "MaNV", cbTao);
+            Action dummy = () => {
                 trangHienTai = 1;
                 TaiDuLieu();
-            });
+            };
             cboNguoiTao.SelectedValue = 0;
         }
 
@@ -240,7 +242,7 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                 else
                 {
                     // Nếu không phải admin: mặc định chỉ thấy phiếu liên quan đến kho hiện tại
-                    if (!SessionContext.IsAdmin && khoHienTai > 0)
+                    if (khoHienTai > 0)
                     {
                         sbWhere.Append(" AND (pc.MaKhoNguon = @KhoHienTai OR pc.MaKhoDich = @KhoHienTai) ");
                         paras[paramIndex++] = new SqlParameter("@KhoHienTai", khoHienTai);
@@ -248,10 +250,10 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                 }
 
                 // 5. Kho đối ứng
-                if (cboKhoDoiUng.SelectedValue != null && int.TryParse(cboKhoDoiUng.SelectedValue.ToString(), out int maKhoDoiUng) && maKhoDoiUng > 0)
+                if (paramIndex < 0)
                 {
-                    sbWhere.Append(" AND (pc.MaKhoNguon = @KhoDoiUng OR pc.MaKhoDich = @KhoDoiUng) ");
-                    paras[paramIndex++] = new SqlParameter("@KhoDoiUng", maKhoDoiUng);
+                    // kho doi ung removed
+                    // kho doi ung removed
                 }
 
                 // 6. Người tạo
@@ -350,7 +352,7 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                 dgvChuyenKho.DataSource = dtDanhSach;
 
                 lblTongSoPhieu.Text = string.Format("Tổng số: {0:N0} phiếu chuyển", tongSoDong);
-                lblTrangHienTai.Text = string.Format("{0} / {1}", trangHienTai, tongSoTrang);
+                lblTrangHienTai.Text = string.Format("Trang {0} / {1}", trangHienTai, tongSoTrang);
 
                 btnTrangTruoc.Enabled = trangHienTai > 1;
                 btnTrangSau.Enabled = trangHienTai < tongSoTrang;

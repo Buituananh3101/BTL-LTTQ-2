@@ -56,11 +56,12 @@
   - Nút `?` (`btnHuongDanSuDung`): Hiển thị hướng dẫn sử dụng.
 - **Khối bộ lọc bên trái (Left Filter GroupBox)**:
   - Cụm `grpThoiGianTao` (322x100): 2 `DateTimePicker` `dtpTuNgay`, `dtpDenNgay` định dạng Short.
-  - `cboTrangThai`: ComboBox DropDownList (-- Tất cả trạng thái --, Đã cân bằng, Phiếu tạm, Đã hủy).
+  - `cboTrangThai`: ComboBox DropDownList (-- Tất cả trạng thái --, Đã cân bằng, Phiếu tạm; không có trạng thái Đã hủy do phiếu đã cân bằng không cho xóa/hủy, còn phiếu tạm thì bị xóa hẳn).
   - `cboNguoiTao`: ComboBox tìm kiếm tiếng Việt không dấu qua `ComboboxHelper.CaiDatTimKiem`.
   - `cboKho`: ComboBox chọn chi nhánh kho.
 - **Lưới danh sách `dgvKiemKho`**:
-  - Gồm 11 cột hiển thị chuẩn: Checkbox (colChon), Mã kiểm kho (colMaPhieu), Thời gian (colThoiGian), Tổng thực tế (colTongThucTe), Tổng chênh lệch (colTongChenhLech), SL lệch tăng (colSlLechTang), SL lệch giảm (colSlLechGiam), Ngày cân bằng (colNgayCanBang), SL thực tế (colSlThucTe), Ghi chú (colGhiChu - Fill), Trạng thái (colTrangThai).
+  - Gồm các cột hiển thị chuẩn: Checkbox (colChon), Mã kiểm kho (colMaPhieu), Ngày cân bằng (colNgayCanBang), SL lệch tăng (colSlLechTang), SL lệch giảm (colSlLechGiam), SL thực tế (colSlThucTe), Ghi chú (colGhiChu - ẩn mặc định), Tổng thực tế (colTongThucTe), Tổng chênh lệch (colTongChenhLech), Thời gian tạo (colThoiGian - ẩn mặc định, hiển thị sau Tổng chênh lệch và trước Trạng thái khi bật trong Hiện cột), Trạng thái (colTrangThai).
+  - Nghiệp vụ thời gian: Cột "Thời gian tạo" chỉ lưu thời gian tạo ra phiếu (ThoiDiemChot), cố định không thay đổi khi đổi trạng thái phiếu. Cột "Ngày cân bằng" đặt ngay sau cột Mã kiểm kho; nếu là phiếu tạm thì để trống, lưu thời gian phiếu được tạo ở trạng thái đã cân bằng hoặc cập nhật thời gian là thời gian phiếu tạm được ấn hoàn thành.
   - Đệm đôi chống nhấp nháy (`DoubleBuffered = true`), màu xen kẽ, căn phải số lượng và đơn giá định dạng `N0`, các cột có `MinimumWidth` chuẩn chống co bẹp cột.
   - **Sự kiện nhấn đúp (`CellDoubleClick`)**: Kích hoạt mở form `frmChiTietKiemKho`.
 - **Khối phân trang đáy**: Hiển thị tổng số phiếu, tùy chọn số dòng mỗi trang (10, 15, 20, 50, 100), nút trang trước/sau.
@@ -83,23 +84,13 @@
   - Nút **Đóng** (`btnDong`).
 
 ### 3.3. Màn hình Thêm mới `frmThemPhieuKiemKho`
-- **Thanh tiêu đề trên (`pnlTop`)**: Chỉ chứa tiêu đề Form "Thêm phiếu kiểm kho", không để nút bấm lên đầu theo Điều luật 19b.
-- **Thanh chọn hàng nhanh (`pnlThemHang`)**:
-  - ComboBox `cboHangHoa` chọn từ danh mục sản phẩm của kho.
-  - NumericUpDown `nudSoLuongThucTe` nhập số lượng thực tế.
-  - Nút `+ Thêm hàng` và nút `Nạp tất cả hàng trong kho`.
-  - Nút **Nhập file** (`btnNhapFile`): Mở popup `frmNhapKiemKhoFile`.
+- **Kích thước form**: Size Lớn `ClientSize = (1182, 803)` theo Điều luật 15e.
+- **Thanh tiêu đề trên (`pnlTopLeft`)**: Tiêu đề "Thêm phiếu kiểm kho", nút `Nhập file` ở góc phải, thanh chọn hàng nhanh gồm `cboHangHoa`, `nudSoLuongThucTe`, nút `+ Thêm hàng`, `Nạp tất cả hàng trong kho`.
+- **Right Panel (`pnlRight`)**: Chứa thông tin Người kiểm, Ngày kiểm, Mã phiếu (không hiển thị trường trạng thái; trạng thái được quyết định khi người dùng ấn Lưu tạm hoặc Lưu), Kho kiểm, Ghi chú, tóm tắt kết quả (Số dòng kiểm, Tổng thực tế, Tổng lệch tăng, Tổng lệch giảm, Tổng chênh lệch). Ở đáy là thanh nút chuẩn: `Bỏ qua` ➜ `Lưu tạm` ➜ `Lưu`.
 - **Lưới kiểm kê `dgvHangKiem`**:
-  - Cho phép người dùng chỉnh sửa trực tiếp số lượng thực tế trên ô lưới (`CellEndEdit`) để nhập liệu nhanh.
+  - Độ rộng các cột được tối ưu hóa chuẩn xác đảm bảo cột `Xóa` luôn hiển thị đầy đủ, không bị che khuất.
+  - Cột `SL thực tế (nhập)` cho phép người dùng click sửa trực tiếp (`EditMode = EditOnEnter`), có màu nền phân biệt rõ (`#FEFCE8`) và ToolTip hướng dẫn.
   - Tự động tính chênh lệch số lượng và thành tiền lệch realtime.
-  - Nút Xóa dòng hàng.
-- **Vùng Tổng kết (`pnlTongKet`)**:
-  - Hiển thị tóm tắt: Số dòng kiểm, Tổng thực tế, Tổng lệch tăng, Tổng lệch giảm, Tổng chênh lệch (tô đỏ khi chênh lệch khác 0).
-- **Thanh nút đáy (`pnlActions`)**: Thống nhất ở cuối form theo thứ tự chuẩn Điều luật 19b:
-  - Nút **Bỏ qua** (`btnBoQua`): Hủy/đóng form khi chưa lưu dữ liệu.
-  - Nút **Lưu tạm** (`btnLuuTam`): Lưu phiếu trạng thái `'NHAP'`, không thay đổi tồn kho sổ sách.
-  - Nút **Lưu** (`btnCanBangKho`): Hỏi xác nhận, đọc lại tồn sổ sách, sinh `PhieuDieuChinh` `DA_DUYET`, cập nhật tồn kho qua `vw_TonKhoHienTai`, chuyển phiếu sang `'DA_DIEU_CHINH'` và khóa phiếu vĩnh viễn.
-  - Nút Xóa dòng hàng.
 
 ### 3.4. Màn hình Nhập file `frmNhapKiemKhoFile`
 - Cung cấp 2 nút tải file mẫu:

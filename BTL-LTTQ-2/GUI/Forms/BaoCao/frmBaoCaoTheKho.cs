@@ -118,10 +118,6 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
 
             dangNapDuLieu = true;
 
-            if (maKho > 0)
-            {
-                cboKho.SelectedValue = maKho;
-            }
 
             if (maHang > 0)
             {
@@ -160,6 +156,7 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                 HeaderText = "Thời gian",
                 DataPropertyName = "NgayGiaoDichStr",
                 Width = 135
+
             };
             colNgayGiaoDich.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dgvTheKho.Columns.Add(colNgayGiaoDich);
@@ -202,9 +199,10 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
             DataGridViewTextBoxColumn colTenKho = new DataGridViewTextBoxColumn
             {
                 Name = "colTenKho",
-                HeaderText = "Chi nhánh kho",
+                HeaderText = "Kho",
                 DataPropertyName = "TenKho",
-                Width = 135
+                Width = 135,
+                Visible = false
             };
             dgvTheKho.Columns.Add(colTenKho);
 
@@ -292,60 +290,6 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                 MessageBox.Show("Lỗi tải danh mục hàng hóa: " + ex.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
-            // 2. Nạp Chi nhánh kho
-            try
-            {
-                string sqlKho;
-                SqlParameter[] pKho = null;
-
-                if (SessionContext.IsAdmin)
-                {
-                    sqlKho = "SELECT MaKho, TenKho FROM Kho WHERE TrangThai = 'HOAT_DONG' OR TrangThai = 'ACTIVE' ORDER BY MaKho ASC";
-                }
-                else
-                {
-                    sqlKho = @"SELECT k.MaKho, k.TenKho 
-                              FROM Kho k 
-                              INNER JOIN TaiKhoanKho tk ON k.MaKho = tk.MaKho 
-                              WHERE tk.MaTaiKhoan = @MaTaiKhoan 
-                                AND (k.TrangThai = 'HOAT_DONG' OR k.TrangThai = 'ACTIVE') 
-                              ORDER BY k.MaKho ASC";
-                    pKho = new SqlParameter[] { new SqlParameter("@MaTaiKhoan", SessionContext.MaTaiKhoan) };
-                }
-
-                DataTable dtKho = DataProcessing.ReadData(sqlKho, pKho);
-                DataTable dtComboKho = new DataTable();
-                dtComboKho.Columns.Add("MaKho", typeof(int));
-                dtComboKho.Columns.Add("TenKho", typeof(string));
-
-                dtComboKho.Rows.Add(0, "-- Tất cả các kho --");
-                if (dtKho != null)
-                {
-                    foreach (DataRow r in dtKho.Rows)
-                    {
-                        dtComboKho.Rows.Add(Convert.ToInt32(r["MaKho"]), r["TenKho"].ToString());
-                    }
-                }
-
-                ComboboxHelper.CaiDatTimKiem(cboKho, dtComboKho, "TenKho", "MaKho", () =>
-                {
-                    TaiDuLieuTheKho();
-                });
-
-                if (SessionContext.MaKhoHienTai > 0)
-                {
-                    cboKho.SelectedValue = SessionContext.MaKhoHienTai;
-                }
-                else
-                {
-                    cboKho.SelectedIndex = 0;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi tải danh mục kho: " + ex.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-
             // 3. Loại chứng từ / giao dịch
             cboLoaiChungTu.Items.Clear();
             cboLoaiChungTu.Items.AddRange(new object[] {
@@ -417,11 +361,7 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                 }
 
                 // 3. Đọc các tham số lọc
-                int maKho = 0;
-                if (cboKho.SelectedValue != null && int.TryParse(cboKho.SelectedValue.ToString(), out int kVal))
-                {
-                    maKho = kVal;
-                }
+                int maKho = SessionContext.MaKhoHienTai;
 
                 DateTime tuNgay = dtpTuNgay.Value.Date;
                 DateTime denNgay = dtpDenNgay.Value.Date.AddDays(1).AddSeconds(-1);
@@ -531,7 +471,7 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                 dtTheKhoHienThi.Columns.Add("GhiChu", typeof(string));
 
                 // Dòng Tồn đầu kỳ (font chữ thường chuẩn hóa theo mẫu Trả hàng nhập)
-                string tenKhoHienThi = (maKho > 0) ? (cboKho.Text) : "Toàn hệ thống";
+                string tenKhoHienThi = (maKho > 0) ? SessionContext.TenKhoHienTai : "Toàn hệ thống";
                 dtTheKhoHienThi.Rows.Add(
                     "",
                     tuNgay.ToString("dd/MM/yyyy"),

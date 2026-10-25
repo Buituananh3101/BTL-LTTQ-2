@@ -256,17 +256,17 @@ namespace BTL_LTTQ_2.GUI.Forms.DonViTinh
         {
             if (tongSoBanGhi == 0)
             {
-                lblTongSoDvt.Text = "Không tìm thấy đơn vị tính nào";
-                lblTrangHienTai.Text = "0 / 0";
+                lblTongSoDvt.Text = "Tổng số: 0 đơn vị tính";
+                lblTrangHienTai.Text = "Trang 0 / 0";
                 btnTrangTruoc.Enabled = false;
                 btnTrangSau.Enabled = false;
             }
             else
             {
-                int tuDong = (trangHienTai - 1) * soDongMoiTrang + 1;
-                int denDong = Math.Min(trangHienTai * soDongMoiTrang, tongSoBanGhi);
-                lblTongSoDvt.Text = string.Format("Hiển thị {0} - {1} trên tổng số {2} đơn vị tính", tuDong, denDong, tongSoBanGhi);
-                lblTrangHienTai.Text = string.Format("{0} / {1}", trangHienTai, tongSoTrang);
+
+
+                lblTongSoDvt.Text = $"Tổng số: {tongSoBanGhi:N0} đơn vị tính";
+                lblTrangHienTai.Text = string.Format("Trang {0} / {1}", trangHienTai, tongSoTrang);
                 btnTrangTruoc.Enabled = (trangHienTai > 1);
                 btnTrangSau.Enabled = (trangHienTai < tongSoTrang);
             }

@@ -95,6 +95,9 @@
     <EmbeddedResource Include="GUI\Forms\ChuyenKho\frmChiTietChuyenKho.resx">
       <DependentUpon>frmChiTietChuyenKho.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Forms\ChuyenKho\frmChuyenKho.resx">
+      <DependentUpon>frmChuyenKho.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\DanhSachHangHoa\frmHienCot.resx">
       <DependentUpon>frmHienCot.cs</DependentUpon>
     </EmbeddedResource>

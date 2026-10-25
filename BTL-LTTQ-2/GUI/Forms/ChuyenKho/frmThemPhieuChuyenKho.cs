@@ -55,6 +55,9 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
             colTonKho.DefaultCellStyle.Format = "N0";
             colSoLuong.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             colSoLuong.DefaultCellStyle.Format = "N0";
+            colSoLuong.DefaultCellStyle.BackColor = Color.FromArgb(254, 252, 232);
+            colSoLuong.ToolTipText = "Nhập số lượng chuyển trực tiếp tại đây";
+            dgvChiTiet.EditMode = DataGridViewEditMode.EditOnEnter;
             colDonGia.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             colDonGia.DefaultCellStyle.Format = "N0";
             colThanhTien.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
@@ -64,6 +67,14 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
 
             lblNguoiChuyenVal.Text = SessionContext.HoTen;
             dtpNgayChuyen.Value = DateTime.Now;
+            try
+            {
+                string sqlMax = "SELECT ISNULL(MAX(MaPhieuChuyen), 0) + 1 FROM PhieuChuyenKho";
+                object val = DataProcessing.ReadValue(sqlMax);
+                int nextId = (val != null && val != DBNull.Value) ? Convert.ToInt32(val) : 1;
+                lblMaPhieuVal.Text = "CK" + nextId.ToString("D6");
+            }
+            catch { }
 
             TaiDanhSachKho();
             TaiDanhSachHangHoa();
@@ -74,10 +85,23 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
             try
             {
                 string sqlKho = "SELECT MaKho, TenKho FROM Kho WHERE TrangThai = 'HOAT_DONG' OR TrangThai = 'ACTIVE' ORDER BY MaKho ASC";
-                DataTable dtKhoNguon = DataProcessing.ReadData(sqlKho);
+                DataTable dtKhoNguon;
+                if (SessionContext.MaKhoHienTai > 0)
+                {
+                    dtKhoNguon = DataProcessing.ReadData("SELECT MaKho, TenKho FROM Kho WHERE MaKho = @MaKho", new SqlParameter[] { new SqlParameter("@MaKho", SessionContext.MaKhoHienTai) });
+                    cboKhoNguon.DataSource = dtKhoNguon;
+                    cboKhoNguon.DisplayMember = "TenKho";
+                    cboKhoNguon.ValueMember = "MaKho";
+                    cboKhoNguon.SelectedValue = SessionContext.MaKhoHienTai;
+                    cboKhoNguon.Enabled = false;
+                    CapNhatDanhSachKhoDich();
+                    return;
+                }
+                cboKhoNguon.Enabled = true;
+                DataTable dtKhoNguonAll = DataProcessing.ReadData(sqlKho);
                 DataTable dtKhoDich = DataProcessing.ReadData(sqlKho);
 
-                cboKhoNguon.DataSource = dtKhoNguon;
+                cboKhoNguon.DataSource = dtKhoNguonAll;
                 cboKhoNguon.DisplayMember = "TenKho";
                 cboKhoNguon.ValueMember = "MaKho";
 
@@ -86,7 +110,7 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                     cboKhoNguon.SelectedValue = SessionContext.MaKhoHienTai;
                 }
 
-                if (!SessionContext.IsAdmin)
+                if (cboKhoNguon == null)
                 {
                     cboKhoNguon.Enabled = false;
                 }
@@ -369,9 +393,9 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                 tongGiaTri += Convert.ToDecimal(r["ThanhTien"]);
             }
 
-            lblSoMatHang.Text = "Số mặt hàng: " + soMatHang.ToString("N0");
-            lblTongSoLuong.Text = "Tổng số lượng chuyển: " + tongSoLuong.ToString("N0");
-            lblTongGiaTri.Text = "Tổng giá trị: " + tongGiaTri.ToString("N0") + " VNĐ";
+            lblSoMatHangVal.Text = soMatHang.ToString("N0");
+            lblTongSoLuongVal.Text = tongSoLuong.ToString("N0");
+            lblTongGiaTriVal.Text = tongGiaTri.ToString("N0") + " VNĐ";
         }
 
         private void btnBoQua_Click(object sender, EventArgs e)

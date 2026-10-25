@@ -114,7 +114,10 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
             DataGridViewTextBoxColumn colMaHang = new DataGridViewTextBoxColumn
             {
                 Name = "colMaHang",
+                HeaderText = "",
                 DataPropertyName = "MaHang",
+
+
                 Visible = false
             };
             dgvBaoCaoTonKho.Columns.Add(colMaHang);
@@ -167,9 +170,10 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
             DataGridViewTextBoxColumn colTenKho = new DataGridViewTextBoxColumn
             {
                 Name = "colTenKho",
-                HeaderText = "Chi nhánh kho",
+                HeaderText = "Kho",
                 DataPropertyName = "TenKho",
-                Width = 140
+                Width = 140,
+                Visible = false
             };
             dgvBaoCaoTonKho.Columns.Add(colTenKho);
 
@@ -272,60 +276,6 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
         {
             dangNapDuLieu = true;
 
-            // 1. Nạp danh sách Chi nhánh kho
-            try
-            {
-                string sqlKho;
-                SqlParameter[] pKho = null;
-
-                if (SessionContext.IsAdmin)
-                {
-                    sqlKho = "SELECT MaKho, TenKho FROM Kho WHERE TrangThai = 'HOAT_DONG' OR TrangThai = 'ACTIVE' ORDER BY MaKho ASC";
-                }
-                else
-                {
-                    sqlKho = @"SELECT k.MaKho, k.TenKho 
-                              FROM Kho k 
-                              INNER JOIN TaiKhoanKho tk ON k.MaKho = tk.MaKho 
-                              WHERE tk.MaTaiKhoan = @MaTaiKhoan 
-                                AND (k.TrangThai = 'HOAT_DONG' OR k.TrangThai = 'ACTIVE') 
-                              ORDER BY k.MaKho ASC";
-                    pKho = new SqlParameter[] { new SqlParameter("@MaTaiKhoan", SessionContext.MaTaiKhoan) };
-                }
-
-                DataTable dtKho = DataProcessing.ReadData(sqlKho, pKho);
-                DataTable dtComboKho = new DataTable();
-                dtComboKho.Columns.Add("MaKho", typeof(int));
-                dtComboKho.Columns.Add("TenKho", typeof(string));
-
-                dtComboKho.Rows.Add(0, "-- Tất cả các kho --");
-                if (dtKho != null)
-                {
-                    foreach (DataRow r in dtKho.Rows)
-                    {
-                        dtComboKho.Rows.Add(Convert.ToInt32(r["MaKho"]), r["TenKho"].ToString());
-                    }
-                }
-
-                ComboboxHelper.CaiDatTimKiem(cboKho, dtComboKho, "TenKho", "MaKho", () =>
-                {
-                    trangHienTai = 1;
-                    TaiDuLieu();
-                });
-
-                if (SessionContext.MaKhoHienTai > 0)
-                {
-                    cboKho.SelectedValue = SessionContext.MaKhoHienTai;
-                }
-                else
-                {
-                    cboKho.SelectedIndex = 0;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi tải danh mục kho: " + ex.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
 
             // 2. Nạp Nhóm hàng
             try
@@ -388,11 +338,7 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
 
             try
             {
-                int maKho = 0;
-                if (cboKho.SelectedValue != null && int.TryParse(cboKho.SelectedValue.ToString(), out int kVal))
-                {
-                    maKho = kVal;
-                }
+                int maKho = SessionContext.MaKhoHienTai;
 
                 string tuKhoa = txtTimKiem.Text.Trim();
                 string nhomHang = cboNhomHang.Text.Trim();
@@ -537,6 +483,10 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
 
                 DataTable dtData = DataProcessing.ReadData(sqlData, parameters.ToArray());
                 dgvBaoCaoTonKho.DataSource = dtData;
+                if (dgvBaoCaoTonKho.Columns.Contains("colMaHang"))
+                {
+                    dgvBaoCaoTonKho.Columns["colMaHang"].Visible = false;
+                }
 
                 // 4. Cập nhật phân trang
                 CapNhatThanhPhanTrang();
@@ -701,11 +651,7 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                 int.TryParse(dgvBaoCaoTonKho.CurrentRow.Cells["colMaHang"].Value.ToString(), out maHang);
             }
 
-            int maKho = 0;
-            if (cboKho.SelectedValue != null)
-            {
-                int.TryParse(cboKho.SelectedValue.ToString(), out maKho);
-            }
+                int maKho = SessionContext.MaKhoHienTai;
 
             // Kiểm tra xem form Thẻ kho đã mở trong MDI chưa
             if (this.MdiParent != null)

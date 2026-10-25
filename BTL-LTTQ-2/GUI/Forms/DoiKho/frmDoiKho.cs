@@ -41,20 +41,26 @@ namespace BTL_LTTQ_2.GUI.Forms.DoiKho
                 }
 
                 DataTable dtKho = DataProcessing.ReadData(sql, paras);
-                if (dtKho != null && dtKho.Rows.Count > 0)
+                if (dtKho == null)
                 {
-                    cboKhoLamViec.DataSource = dtKho;
-                    cboKhoLamViec.DisplayMember = "TenKho";
-                    cboKhoLamViec.ValueMember = "MaKho";
-
-                    if (SessionContext.MaKhoHienTai > 0)
-                    {
-                        cboKhoLamViec.SelectedValue = SessionContext.MaKhoHienTai;
-                    }
+                    dtKho = new DataTable();
+                    dtKho.Columns.Add("MaKho", typeof(int));
+                    dtKho.Columns.Add("TenKho", typeof(string));
                 }
-                else
+
+                // Thêm lựa chọn "Tất cả kho" vào đầu danh sách
+                DataRow rTatCa = dtKho.NewRow();
+                rTatCa["MaKho"] = 0;
+                rTatCa["TenKho"] = "Tất cả kho";
+                dtKho.Rows.InsertAt(rTatCa, 0);
+
+                cboKhoLamViec.DataSource = dtKho;
+                cboKhoLamViec.DisplayMember = "TenKho";
+                cboKhoLamViec.ValueMember = "MaKho";
+
+                if (SessionContext.MaKhoHienTai >= 0)
                 {
-                    MessageBox.Show("Không tìm thấy kho làm việc nào được phân quyền cho tài khoản này!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    cboKhoLamViec.SelectedValue = SessionContext.MaKhoHienTai;
                 }
             }
             catch (Exception ex)

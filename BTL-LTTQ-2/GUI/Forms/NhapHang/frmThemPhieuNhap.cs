@@ -107,6 +107,17 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
         {
             try
             {
+                if (SessionContext.MaKhoHienTai > 0)
+                {
+                    DataTable dtKhoHienTai = DataProcessing.ReadData("SELECT MaKho, TenKho FROM Kho WHERE MaKho = @MaKho", new SqlParameter[] { new SqlParameter("@MaKho", SessionContext.MaKhoHienTai) });
+                    cboKho.DisplayMember = "TenKho";
+                    cboKho.ValueMember = "MaKho";
+                    cboKho.DataSource = dtKhoHienTai;
+                    cboKho.SelectedValue = SessionContext.MaKhoHienTai;
+                    cboKho.Enabled = false;
+                    return;
+                }
+                cboKho.Enabled = true;
                 string sql = "SELECT MaKho, TenKho FROM Kho WHERE TrangThai = 'HOAT_DONG' OR TrangThai = 'ACTIVE' ORDER BY TenKho ASC";
                 DataTable dt = DataProcessing.ReadData(sql);
                 cboKho.DisplayMember = "TenKho";

@@ -46,12 +46,12 @@
             this.lblNhomNCC = new System.Windows.Forms.Label();
             this.splitterBoLoc = new System.Windows.Forms.Splitter();
             this.pnlPhanTrang = new System.Windows.Forms.Panel();
-            this.lblTongSoNCC = new System.Windows.Forms.Label();
             this.lblSoDongMoiTrang = new System.Windows.Forms.Label();
             this.cboSoDongMoiTrang = new System.Windows.Forms.ComboBox();
             this.btnTrangTruoc = new System.Windows.Forms.Button();
             this.lblTrangHienTai = new System.Windows.Forms.Label();
             this.btnTrangSau = new System.Windows.Forms.Button();
+            this.lblTongSoNCC = new System.Windows.Forms.Label();
             this.dgvNhaCungCap = new System.Windows.Forms.DataGridView();
             this.pnlTop.SuspendLayout();
             this.grpTop.SuspendLayout();
@@ -320,10 +320,10 @@
             this.btnThemNhomNCC.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnThemNhomNCC.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.btnThemNhomNCC.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnThemNhomNCC.Location = new System.Drawing.Point(308, 76);
+            this.btnThemNhomNCC.Location = new System.Drawing.Point(312, 76);
             this.btnThemNhomNCC.Margin = new System.Windows.Forms.Padding(0);
             this.btnThemNhomNCC.Name = "btnThemNhomNCC";
-            this.btnThemNhomNCC.Size = new System.Drawing.Size(29, 29);
+            this.btnThemNhomNCC.Size = new System.Drawing.Size(25, 25);
             this.btnThemNhomNCC.TabIndex = 2;
             this.btnThemNhomNCC.Text = "+";
             this.btnThemNhomNCC.UseVisualStyleBackColor = true;
@@ -331,13 +331,11 @@
             // 
             // cboNhomNCC
             // 
-            // this.cboNhomNCC.DropDownStyle managed by ComboboxHelper
             this.cboNhomNCC.FormattingEnabled = true;
             this.cboNhomNCC.Location = new System.Drawing.Point(18, 76);
             this.cboNhomNCC.Name = "cboNhomNCC";
-            this.cboNhomNCC.Size = new System.Drawing.Size(284, 25);
+            this.cboNhomNCC.Size = new System.Drawing.Size(291, 25);
             this.cboNhomNCC.TabIndex = 1;
-            // this.cboNhomNCC.SelectedIndexChanged managed by ComboboxHelper
             // 
             // lblNhomNCC
             // 
@@ -360,36 +358,27 @@
             // 
             // pnlPhanTrang
             // 
-            this.pnlPhanTrang.Controls.Add(this.lblTongSoNCC);
             this.pnlPhanTrang.Controls.Add(this.lblSoDongMoiTrang);
             this.pnlPhanTrang.Controls.Add(this.cboSoDongMoiTrang);
             this.pnlPhanTrang.Controls.Add(this.btnTrangTruoc);
             this.pnlPhanTrang.Controls.Add(this.lblTrangHienTai);
             this.pnlPhanTrang.Controls.Add(this.btnTrangSau);
+            this.pnlPhanTrang.Controls.Add(this.lblTongSoNCC);
             this.pnlPhanTrang.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pnlPhanTrang.Location = new System.Drawing.Point(387, 811);
             this.pnlPhanTrang.Name = "pnlPhanTrang";
             this.pnlPhanTrang.Size = new System.Drawing.Size(1395, 42);
             this.pnlPhanTrang.TabIndex = 3;
             // 
-            // lblTongSoNCC
-            // 
-            this.lblTongSoNCC.AutoSize = true;
-            this.lblTongSoNCC.Location = new System.Drawing.Point(15, 11);
-            this.lblTongSoNCC.Name = "lblTongSoNCC";
-            this.lblTongSoNCC.Size = new System.Drawing.Size(159, 17);
-            this.lblTongSoNCC.TabIndex = 0;
-            this.lblTongSoNCC.Text = "Tổng số: 0 nhà cung cấp";
-            // 
             // lblSoDongMoiTrang
             // 
             this.lblSoDongMoiTrang.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSoDongMoiTrang.AutoSize = true;
-            this.lblSoDongMoiTrang.Location = new System.Drawing.Point(951, 12);
+            this.lblSoDongMoiTrang.Location = new System.Drawing.Point(932, 13);
             this.lblSoDongMoiTrang.Name = "lblSoDongMoiTrang";
-            this.lblSoDongMoiTrang.Size = new System.Drawing.Size(55, 17);
-            this.lblSoDongMoiTrang.TabIndex = 1;
-            this.lblSoDongMoiTrang.Text = "Hiển thị:";
+            this.lblSoDongMoiTrang.Size = new System.Drawing.Size(61, 17);
+            this.lblSoDongMoiTrang.TabIndex = 6;
+            this.lblSoDongMoiTrang.Text = "Số dòng:";
             // 
             // cboSoDongMoiTrang
             // 
@@ -401,19 +390,19 @@
             "20",
             "50",
             "100"});
-            this.cboSoDongMoiTrang.Location = new System.Drawing.Point(1035, 7);
+            this.cboSoDongMoiTrang.Location = new System.Drawing.Point(1008, 10);
             this.cboSoDongMoiTrang.Name = "cboSoDongMoiTrang";
             this.cboSoDongMoiTrang.Size = new System.Drawing.Size(70, 25);
-            this.cboSoDongMoiTrang.TabIndex = 2;
+            this.cboSoDongMoiTrang.TabIndex = 7;
             this.cboSoDongMoiTrang.SelectedIndexChanged += new System.EventHandler(this.cboSoDongMoiTrang_SelectedIndexChanged);
             // 
             // btnTrangTruoc
             // 
             this.btnTrangTruoc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnTrangTruoc.Location = new System.Drawing.Point(1118, 6);
+            this.btnTrangTruoc.Location = new System.Drawing.Point(1117, 6);
             this.btnTrangTruoc.Name = "btnTrangTruoc";
             this.btnTrangTruoc.Size = new System.Drawing.Size(80, 31);
-            this.btnTrangTruoc.TabIndex = 3;
+            this.btnTrangTruoc.TabIndex = 8;
             this.btnTrangTruoc.Text = "◀ Trước";
             this.btnTrangTruoc.UseVisualStyleBackColor = true;
             this.btnTrangTruoc.Click += new System.EventHandler(this.btnTrangTruoc_Click);
@@ -422,22 +411,31 @@
             // 
             this.lblTrangHienTai.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTrangHienTai.AutoSize = true;
-            this.lblTrangHienTai.Location = new System.Drawing.Point(1211, 11);
+            this.lblTrangHienTai.Location = new System.Drawing.Point(1214, 13);
             this.lblTrangHienTai.Name = "lblTrangHienTai";
             this.lblTrangHienTai.Size = new System.Drawing.Size(72, 17);
-            this.lblTrangHienTai.TabIndex = 4;
+            this.lblTrangHienTai.TabIndex = 9;
             this.lblTrangHienTai.Text = "Trang 1 / 1";
             // 
             // btnTrangSau
             // 
             this.btnTrangSau.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnTrangSau.Location = new System.Drawing.Point(1309, 6);
+            this.btnTrangSau.Location = new System.Drawing.Point(1303, 6);
             this.btnTrangSau.Name = "btnTrangSau";
             this.btnTrangSau.Size = new System.Drawing.Size(80, 31);
-            this.btnTrangSau.TabIndex = 5;
+            this.btnTrangSau.TabIndex = 10;
             this.btnTrangSau.Text = "Sau ▶";
             this.btnTrangSau.UseVisualStyleBackColor = true;
             this.btnTrangSau.Click += new System.EventHandler(this.btnTrangSau_Click);
+            // 
+            // lblTongSoNCC
+            // 
+            this.lblTongSoNCC.AutoSize = true;
+            this.lblTongSoNCC.Location = new System.Drawing.Point(22, 12);
+            this.lblTongSoNCC.Name = "lblTongSoNCC";
+            this.lblTongSoNCC.Size = new System.Drawing.Size(152, 17);
+            this.lblTongSoNCC.TabIndex = 0;
+            this.lblTongSoNCC.Text = "Tổng số: 0 nhà cung cấp";
             // 
             // dgvNhaCungCap
             // 
@@ -524,12 +522,12 @@
         private System.Windows.Forms.Label lblThoiGianTao;
         private System.Windows.Forms.Panel pnlPhanTrang;
         private System.Windows.Forms.Label lblTongSoNCC;
+        private System.Windows.Forms.DataGridView dgvNhaCungCap;
         private System.Windows.Forms.Label lblSoDongMoiTrang;
         private System.Windows.Forms.ComboBox cboSoDongMoiTrang;
         private System.Windows.Forms.Button btnTrangTruoc;
         private System.Windows.Forms.Label lblTrangHienTai;
         private System.Windows.Forms.Button btnTrangSau;
-        private System.Windows.Forms.DataGridView dgvNhaCungCap;
     }
 }
 

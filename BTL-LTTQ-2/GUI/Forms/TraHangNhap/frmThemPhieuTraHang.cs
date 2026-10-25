@@ -94,15 +94,24 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
         {
             try
             {
-                string sql = "SELECT MaKho, TenKho FROM Kho WHERE TrangThai = 'HOAT_DONG' OR TrangThai = 'ACTIVE' ORDER BY TenKho ASC";
-                DataTable dt = DataProcessing.ReadData(sql);
-                cboKho.DisplayMember = "TenKho";
-                cboKho.ValueMember = "MaKho";
-                cboKho.DataSource = dt;
-
                 if (SessionContext.MaKhoHienTai > 0)
                 {
+                    string sql = "SELECT MaKho, TenKho FROM Kho WHERE MaKho = @MaKho";
+                    DataTable dt = DataProcessing.ReadData(sql, new SqlParameter[] { new SqlParameter("@MaKho", SessionContext.MaKhoHienTai) });
+                    cboKho.DisplayMember = "TenKho";
+                    cboKho.ValueMember = "MaKho";
+                    cboKho.DataSource = dt;
                     cboKho.SelectedValue = SessionContext.MaKhoHienTai;
+                    cboKho.Enabled = false;
+                }
+                else
+                {
+                    string sql = "SELECT MaKho, TenKho FROM Kho WHERE TrangThai = 'HOAT_DONG' OR TrangThai = 'ACTIVE' ORDER BY TenKho ASC";
+                    DataTable dt = DataProcessing.ReadData(sql);
+                    cboKho.DisplayMember = "TenKho";
+                    cboKho.ValueMember = "MaKho";
+                    cboKho.DataSource = dt;
+                    cboKho.Enabled = true;
                 }
             }
             catch (Exception ex)

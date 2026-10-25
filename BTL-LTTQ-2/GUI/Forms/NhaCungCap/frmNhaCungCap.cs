@@ -492,9 +492,9 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
         private void CapNhatGiaoDienPhanTrang()
         {
             lblTrangHienTai.Text = $"Trang {trangHienTai} / {tongSoTrang}";
-            int tuDong = tongSoBanGhi == 0 ? 0 : (trangHienTai - 1) * soDongMoiTrang + 1;
-            int denDong = Math.Min(trangHienTai * soDongMoiTrang, tongSoBanGhi);
-            lblTongSoNCC.Text = $"Hiển thị {tuDong:N0} - {denDong:N0} trên tổng số {tongSoBanGhi:N0} nhà cung cấp";
+
+
+            lblTongSoNCC.Text = $"Tổng số: {tongSoBanGhi:N0} nhà cung cấp";
 
             btnTrangTruoc.Enabled = (trangHienTai > 1);
             btnTrangSau.Enabled = (trangHienTai < tongSoTrang);

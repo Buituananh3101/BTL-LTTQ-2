@@ -58,8 +58,6 @@
             this.grpBoLoc = new System.Windows.Forms.GroupBox();
             this.lblHangHoa = new System.Windows.Forms.Label();
             this.cboHangHoa = new System.Windows.Forms.ComboBox();
-            this.lblKho = new System.Windows.Forms.Label();
-            this.cboKho = new System.Windows.Forms.ComboBox();
             this.lblLoaiChungTu = new System.Windows.Forms.Label();
             this.cboLoaiChungTu = new System.Windows.Forms.ComboBox();
             this.lblThoiGianTao = new System.Windows.Forms.Label();
@@ -376,8 +374,6 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.grpBoLoc.Controls.Add(this.lblHangHoa);
             this.grpBoLoc.Controls.Add(this.cboHangHoa);
-            this.grpBoLoc.Controls.Add(this.lblKho);
-            this.grpBoLoc.Controls.Add(this.cboKho);
             this.grpBoLoc.Controls.Add(this.lblLoaiChungTu);
             this.grpBoLoc.Controls.Add(this.cboLoaiChungTu);
             this.grpBoLoc.Controls.Add(this.lblThoiGianTao);
@@ -405,29 +401,10 @@
             this.cboHangHoa.Size = new System.Drawing.Size(322, 25);
             this.cboHangHoa.TabIndex = 1;
             // 
-            // lblKho
-            // 
-            this.lblKho.AutoSize = true;
-            this.lblKho.Location = new System.Drawing.Point(14, 189);
-            this.lblKho.Name = "lblKho";
-            this.lblKho.Size = new System.Drawing.Size(89, 17);
-            this.lblKho.TabIndex = 2;
-            this.lblKho.Text = "Chi nhánh kho";
-            // 
-            // cboKho
-            // 
-            this.cboKho.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboKho.FormattingEnabled = true;
-            this.cboKho.Location = new System.Drawing.Point(18, 223);
-            this.cboKho.Name = "cboKho";
-            this.cboKho.Size = new System.Drawing.Size(322, 25);
-            this.cboKho.TabIndex = 3;
-            this.cboKho.SelectedIndexChanged += new System.EventHandler(this.BoLoc_SelectedIndexChanged);
-            // 
             // lblLoaiChungTu
             // 
             this.lblLoaiChungTu.AutoSize = true;
-            this.lblLoaiChungTu.Location = new System.Drawing.Point(14, 333);
+            this.lblLoaiChungTu.Location = new System.Drawing.Point(14, 189);
             this.lblLoaiChungTu.Name = "lblLoaiChungTu";
             this.lblLoaiChungTu.Size = new System.Drawing.Size(94, 17);
             this.lblLoaiChungTu.TabIndex = 4;
@@ -437,7 +414,7 @@
             // 
             this.cboLoaiChungTu.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboLoaiChungTu.FormattingEnabled = true;
-            this.cboLoaiChungTu.Location = new System.Drawing.Point(18, 367);
+            this.cboLoaiChungTu.Location = new System.Drawing.Point(18, 223);
             this.cboLoaiChungTu.Name = "cboLoaiChungTu";
             this.cboLoaiChungTu.Size = new System.Drawing.Size(322, 25);
             this.cboLoaiChungTu.TabIndex = 5;
@@ -446,7 +423,7 @@
             // lblThoiGianTao
             // 
             this.lblThoiGianTao.AutoSize = true;
-            this.lblThoiGianTao.Location = new System.Drawing.Point(14, 477);
+            this.lblThoiGianTao.Location = new System.Drawing.Point(14, 333);
             this.lblThoiGianTao.Name = "lblThoiGianTao";
             this.lblThoiGianTao.Size = new System.Drawing.Size(120, 17);
             this.lblThoiGianTao.TabIndex = 6;
@@ -458,7 +435,7 @@
             this.grpThoiGianTao.Controls.Add(this.dtpTuNgay);
             this.grpThoiGianTao.Controls.Add(this.lblDenNgay);
             this.grpThoiGianTao.Controls.Add(this.dtpDenNgay);
-            this.grpThoiGianTao.Location = new System.Drawing.Point(18, 513);
+            this.grpThoiGianTao.Location = new System.Drawing.Point(18, 367);
             this.grpThoiGianTao.Name = "grpThoiGianTao";
             this.grpThoiGianTao.Size = new System.Drawing.Size(322, 108);
             this.grpThoiGianTao.TabIndex = 6;
@@ -514,7 +491,7 @@
             // 
             this.lblTongSoGiaoDich.AutoSize = true;
             this.lblTongSoGiaoDich.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblTongSoGiaoDich.Location = new System.Drawing.Point(15, 11);
+            this.lblTongSoGiaoDich.Location = new System.Drawing.Point(22, 12);
             this.lblTongSoGiaoDich.Name = "lblTongSoGiaoDich";
             this.lblTongSoGiaoDich.Size = new System.Drawing.Size(199, 19);
             this.lblTongSoGiaoDich.TabIndex = 0;
@@ -616,8 +593,6 @@
         private System.Windows.Forms.GroupBox grpBoLoc;
         private System.Windows.Forms.Label lblHangHoa;
         private System.Windows.Forms.ComboBox cboHangHoa;
-        private System.Windows.Forms.Label lblKho;
-        private System.Windows.Forms.ComboBox cboKho;
         private System.Windows.Forms.Label lblLoaiChungTu;
         private System.Windows.Forms.ComboBox cboLoaiChungTu;
         private System.Windows.Forms.Label lblThoiGianTao;

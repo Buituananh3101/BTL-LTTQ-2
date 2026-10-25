@@ -199,6 +199,14 @@ namespace BTL_LTTQ_2.GUI.Forms
                         {
                             bcthk.TaiDuLieuTheKho();
                         }
+                        else if (form is frmDanhSachHangHoa dshh)
+                        {
+                            dshh.HienThiDanhSach();
+                        }
+                        else if (form is BTL_LTTQ_2.GUI.Forms.TraHangNhap.frmTraHangNhap thn)
+                        {
+                            thn.LoadData();
+                        }
                     }
                 }
             }

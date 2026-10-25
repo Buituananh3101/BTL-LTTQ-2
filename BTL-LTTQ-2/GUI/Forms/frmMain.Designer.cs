@@ -28,6 +28,7 @@
             this.mnuChuyenKho = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuDoiKho = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuDanhMuc = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuDanhSachHangHoa = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuMuaHang = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuNhaCungCap = new System.Windows.Forms.ToolStripMenuItem();
@@ -55,7 +56,7 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuHeThong,
             this.mnuQuanLyKho,
-            this.mnuDanhSachHangHoa,
+            this.mnuDanhMuc,
             this.mnuMuaHang,
             this.mnuBaoCao,
             this.mnuTroGiup});
@@ -138,11 +139,19 @@
             this.mnuDoiKho.Text = "Đổi kho";
             this.mnuDoiKho.Click += new System.EventHandler(this.mnuDoiKho_Click);
             // 
+            // mnuDanhMuc
+            // 
+            this.mnuDanhMuc.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuDanhSachHangHoa});
+            this.mnuDanhMuc.Name = "mnuDanhMuc";
+            this.mnuDanhMuc.Size = new System.Drawing.Size(77, 21);
+            this.mnuDanhMuc.Text = "H&àng hóa";
+            // 
             // mnuDanhSachHangHoa
             // 
             this.mnuDanhSachHangHoa.Name = "mnuDanhSachHangHoa";
-            this.mnuDanhSachHangHoa.Size = new System.Drawing.Size(77, 21);
-            this.mnuDanhSachHangHoa.Text = "H&àng hóa";
+            this.mnuDanhSachHangHoa.Size = new System.Drawing.Size(195, 22);
+            this.mnuDanhSachHangHoa.Text = "Danh sách hàng hóa";
             this.mnuDanhSachHangHoa.Click += new System.EventHandler(this.mnuDanhSachHangHoa_Click);
             // 
             // mnuMuaHang
@@ -291,7 +300,7 @@
         private System.Windows.Forms.ToolStripMenuItem mnuDangXuat;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem mnuThoat;
-        private System.Windows.Forms.ToolStripMenuItem mnuDanhSachHangHoa;
+        private System.Windows.Forms.ToolStripMenuItem mnuDanhMuc;
         private System.Windows.Forms.ToolStripMenuItem mnuQuanLyKho;
         private System.Windows.Forms.ToolStripMenuItem mnuChuyenKho;
         private System.Windows.Forms.ToolStripMenuItem mnuKiemKho;
@@ -312,5 +321,6 @@
         private System.Windows.Forms.ToolStripStatusLabel tssKho;
         private System.Windows.Forms.ToolStripStatusLabel tssThoiGian;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.ToolStripMenuItem mnuDanhSachHangHoa;
     }
 }

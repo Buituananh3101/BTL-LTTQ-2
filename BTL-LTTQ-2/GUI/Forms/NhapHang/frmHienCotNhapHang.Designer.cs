@@ -25,6 +25,7 @@
             this.chkCanTraNcc = new System.Windows.Forms.CheckBox();
             this.chkTongTien = new System.Windows.Forms.CheckBox();
             this.chkTrangThai = new System.Windows.Forms.CheckBox();
+            this.chkKho = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // lblHienThiCot
@@ -147,7 +148,23 @@
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(220, 255);
+            // 
+            // chkKho
+            // 
+            this.chkKho.AutoSize = true;
+            this.chkKho.Checked = false;
+            this.chkKho.CheckState = System.Windows.Forms.CheckState.Unchecked;
+            this.chkKho.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.chkKho.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkKho.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
+            this.chkKho.Location = new System.Drawing.Point(24, 244);
+            this.chkKho.Name = "chkKho";
+            this.chkKho.Size = new System.Drawing.Size(52, 21);
+            this.chkKho.TabIndex = 8;
+            this.chkKho.Text = "Kho";
+            this.chkKho.UseVisualStyleBackColor = true;
+            this.ClientSize = new System.Drawing.Size(220, 285);
+            this.Controls.Add(this.chkKho);
             this.Controls.Add(this.chkTrangThai);
             this.Controls.Add(this.chkTongTien);
             this.Controls.Add(this.chkCanTraNcc);
@@ -177,5 +194,6 @@
         private System.Windows.Forms.CheckBox chkCanTraNcc;
         private System.Windows.Forms.CheckBox chkTongTien;
         private System.Windows.Forms.CheckBox chkTrangThai;
+        private System.Windows.Forms.CheckBox chkKho;
     }
 }

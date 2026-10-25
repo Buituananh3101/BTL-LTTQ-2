@@ -1,19 +1,19 @@
 ﻿# Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-25 – Dàn đều bộ lọc Danh sách hàng hóa, Ẩn cột Ghi chú Kiểm kho & Chuyển kho, Đưa Tổng thực tế & Chênh lệch về trước Trạng thái và Chuẩn hóa báo đỏ in đậm chênh lệch kiểm kê (Phiên 40)
+**Cập nhật lần cuối**: 2026-10-25 – Bỏ trường trạng thái tĩnh trên các form thêm mới, Tối ưu giao diện & nghiệp vụ Kiểm kho, Tái thiết kế Form Thêm phiếu chuyển kho sang Right Menu Layout (Phiên 45)
 
 ---
 
 ## Đang làm
-- [x] Khắc phục triệt để lỗi nút lạ/viền đè dưới nhãn tổng số hàng (`lblTongSoHang`) trên Báo cáo tồn kho (`frmBaoCaoTonKho`): Gỡ bỏ `BackColor = Color.White` trên `pnlPhanTrang` và `pnlBoLoc`, đưa thanh phân trang về nền chuẩn WinForms, đồng bộ 100% tọa độ các nút phân trang (`btnTrangTruoc`, `btnTrangSau`, `cboSoDongMoiTrang`, `lblSoDongMoiTrang`, `lblTrangHienTai`) theo `frmDanhSachHangHoa` (khắc phục lỗi nút `btnTrangSau` bị tràn ra ngoài biên 1416 > 1395), gọi `lblTongSoHang.BringToFront()` trong `frmBaoCaoTonKho_Load`.
-- [x] Mở rộng và chuẩn hóa khoảng cách giữa các bộ lọc bên trái (`grpBoLoc`) trên toàn bộ 8 form danh sách theo mẫu chuẩn `frmDanhSachHangHoa` (`frmBaoCaoTonKho`, `frmBaoCaoTheKho`, `frmNhapHang`, `frmTraHangNhap`, `frmChuyenKho`, `frmKiemKho`, `frmNhaCungCap`, `frmDonViTinh`): Phân bổ thoáng đãng, ComboBox cách Label 34px, cụm thời gian tạo `grpThoiGianTao` cố định ở đáy theo Điều luật 16.
-- [x] Kiểm tra mã hóa tự động `tools/KiemTraMaHoa.ps1`: 151/151 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake.
+- [x] Bỏ trường trạng thái tĩnh trong các form thêm mới (Chuyển kho, Nhập hàng, Trả hàng nhập, Kiểm kho). Trạng thái hiển thị sau khi ấn lưu tạm/lưu.
+- [x] Kiểm kho (`frmThemPhieuKiemKho`): Chuyển sang form Size Lớn (`1182, 803`), phân bổ cột hiển thị trọn vẹn nút Xóa dòng, làm rõ khả năng nhập SL thực tế trực tiếp trên dgv (`colSoLuongThucTe` nền `#FEFCE8`, HeaderText `SL thực tế (nhập)`, `EditMode = EditOnEnter`).
+- [x] Kiểm kho (`frmKiemKho`, `frmChiTietKiemKho`): Bỏ trạng thái "Đã hủy" khỏi filter trạng thái; khóa nút Xóa khi phiếu đã cân bằng; cho phép xóa vĩnh viễn phiếu tạm khỏi CSDL.
+- [x] Chuyển kho (`frmThemPhieuChuyenKho`): Thiết kế lại sang Right Menu Layout theo khuôn mẫu `frmThemPhieuKiemKho` (form Size Lớn, DataGridView trung tâm rộng rãi bên trái, Right Menu bên phải với các nút thao tác `Bỏ qua` ➜ `Lưu tạm` ➜ `Lưu` ở đáy).
+- [x] Kiểm tra mã hóa tự động `tools/KiemTraMaHoa.ps1`: 100% file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake.
 - [x] Kiểm tra biên dịch mã nguồn C# bằng MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
 - [ ] Tiện ích băm mật khẩu `Classes/PasswordHelper.cs` (SHA-256).
 - [ ] Thiết kế và hoàn thiện Form Đăng nhập (`frmDangNhap`) hỗ trợ chọn chi nhánh kho làm việc.
 - [ ] Chuyển sang phân hệ Xác thực & Phân quyền (`frmDangNhap`, tiện ích mã hóa mật khẩu `PasswordHelper.cs` SHA-256, liên kết phân quyền trên `frmMain`).
----
-
 ## Việc kế tiếp
 1. **Xác thực & Phân quyền**: Hoàn tất `frmDangNhap` hỗ trợ chọn chi nhánh kho, tiện ích SHA-256 `PasswordHelper`, tích hợp phân quyền MenuStrip và StatusStrip trên `frmMain`.
 2. **Quản lý Danh mục Cơ bản (Kế thừa khuôn mẫu Danh sách Hàng hóa)**:
@@ -48,6 +48,149 @@
 ---
 
 ## Nhật ký phiên (Session Logs)
+
+- **Phiên 45 (2026-10-25) – Bỏ trường trạng thái tĩnh trên các form thêm mới, Tối ưu giao diện & nghiệp vụ Kiểm kho, Tái thiết kế Form Thêm phiếu chuyển kho sang Right Menu Layout**:
+  - **Nhu cầu**: Người dùng yêu cầu qua 4 ảnh:
+    1. Bỏ trường trạng thái trong các phiếu thêm (ảnh 3) (Chuyển kho, Nhập hàng, Trả hàng nhập, Kiểm kho). Trạng thái sẽ được quyết định và hiển thị lên dgv sau khi người dùng ấn Lưu tạm hay Lưu.
+    2. Chức năng Kiểm kho (ảnh 1 & ảnh 4):
+       - Ảnh 1: Phần xóa hàng khỏi bảng đang bị che mất do thiếu không gian -> Chuyển sang form Size Lớn (1182, 803) để chứa đầy đủ thông tin. Phần số lượng thực tế cho phép nhập trực tiếp từ dgv cần thể hiện rõ ràng, phân biệt rõ có cho nhập vào hay không.
+       - Ảnh 4: Trong filter trạng thái bỏ chọn trạng thái "Đã hủy" (kiểm kho không có trạng thái Đã hủy). Khi đã cân bằng thì không cho xóa, khi là phiếu tạm thì xóa hẳn khỏi CSDL.
+    3. Chức năng Chuyển kho (ảnh 2): Thiết kế phần Right Menu để nhập thông tin và phần dgv để xem thông tin hàng hóa chuyển là chính theo khuôn mẫu form Thêm phiếu kiểm kho.
+  - **Kết quả thực hiện**:
+    1. **Bỏ trường trạng thái tĩnh trên 4 form thêm mới**:
+       - Tại `frmThemPhieuNhap.Designer.cs`, `frmThemPhieuTraHang.Designer.cs`, `frmThemPhieuKiemKho.Designer.cs`, `frmThemPhieuChuyenKho.Designer.cs`: Xóa bỏ nhãn tiêu đề `lblTrangThaiTitle` và giá trị `lblTrangThaiVal`, dời các control phía dưới lên lấp đầy khoảng trống, căn chỉnh layout sắc nét.
+       - Trạng thái chứng từ được quyết định tự động và hiển thị lên DataGridView danh sách khi người dùng nhấn "Lưu tạm" (`NHAP` - Phiếu tạm) hoặc "Lưu" (`DA_NHAP_HANG`, `DA_TRA_HANG`, `DA_DIEU_CHINH`, `DANG_CHUYEN`).
+    2. **Kiểm kho - Form Thêm mới (`frmThemPhieuKiemKho`)**:
+       - Chuyển form sang Size Lớn `ClientSize = (1182, 803)` theo Điều luật 15e.
+       - Phân bổ lại chiều rộng các cột hiển thị trên DataGridView: `colStt` (45), `colMaHangNoiBo` (85), `colTenHang` (Fill, Min 120), `colDonViTinh` (55), `colTonKho` (75), `colSoLuongThucTe` (110), `colSlChenhLech` (75), `colDonGia` (85), `colGiaTriChenhLech` (100), `colXoaDong` (45). Tổng chiều rộng các cột cố định 675px nhỏ hơn chiều rộng grid 812px, đảm bảo cột Xóa dòng hiển thị 100% không bị che khuất.
+       - Làm rõ ô nhập SL thực tế: Đổi `HeaderText = "SL thực tế (nhập)"`, tô màu nền dịu nổi bật `#FEFCE8`, thêm `ToolTipText` hướng dẫn và bật `dgvHangKiem.EditMode = DataGridViewEditMode.EditOnEnter` click 1 lần cho phép nhập ngay.
+    3. **Kiểm kho - Danh sách & Chi tiết (`frmKiemKho`, `frmChiTietKiemKho`)**:
+       - Bỏ lựa chọn "Đã hủy" khỏi ComboBox filter trạng thái `cboTrangThai` và câu lệnh SQL tải dữ liệu.
+       - Tại `frmChiTietKiemKho.cs`: Đối với phiếu đã cân bằng (`DA_DIEU_CHINH`), vô hiệu hóa nút xóa `btnXoa.Enabled = false`, giữ nguyên Text "Xóa" (tuân thủ Điều luật 15d & Luật 6).
+       - Đối với phiếu tạm (`NHAP`): Khi người dùng chọn Xóa, hệ thống xóa vĩnh viễn dữ liệu khỏi CSDL (`DELETE FROM ChiTietPhieuKiemKe`, `DELETE FROM PhieuKiemKe`).
+    4. **Chuyển kho - Tái thiết kế Form Thêm mới (`frmThemPhieuChuyenKho`)**:
+       - Tái thiết kế toàn bộ theo bố cục Right Menu Layout chuẩn mực của `frmThemPhieuKiemKho`: Form Size Lớn `ClientSize = (1182, 803)`.
+       - Lưới hàng hóa chuyển trung tâm bên trái (rộng 842px) với các cột STT, Mã hàng, Tên hàng, ĐVT, Tồn kho gửi, SL chuyển (nền `#FEFCE8`, sửa trực tiếp), Đơn giá, Thành tiền, Xóa dòng.
+       - Right Menu bên phải (rộng 340px) chứa thông tin Người lập, Ngày lập, Mã phiếu (CKxxxxxx tự sinh), Kho gửi, Kho nhận, Ghi chú, thống kê Số mặt hàng / Tổng SL chuyển / Tổng giá trị chuyển. Đáy là cụm 3 nút hành động theo thứ tự chuẩn Điều luật 19b: `Bỏ qua` ➜ `Lưu tạm` ➜ `Lưu`.
+    5. **Đồng bộ tài liệu & Kiểm tra chất lượng**:
+       - Cập nhật tài liệu đặc tả `docs/specs/kiem-kho.md` và `docs/specs/chuyen-kho.md`.
+       - Cập nhật sổ quyết định `docs/quyet-dinh.md` và tiến độ `PROGRESS.md`.
+       - Chạy `tools/KiemTraMaHoa.ps1`: **153/153 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+
+- **Phiên 44 (2026-10-25) – Thiết lập Ngữ cảnh Kho làm việc Tập trung Toàn hệ thống, Thêm lựa chọn "Tất cả kho", Bỏ bộ lọc kho riêng lẻ và Chuẩn hóa hiển thị cột Kho**:
+  - **Nhu cầu**: Người dùng yêu cầu:
+    1. Bỏ phần cho phép lựa chọn kho trong các form: Kiểm kho, Báo cáo tồn kho, Báo cáo thẻ kho (các filter Chi nhánh kho) và Chuyển kho (filter Kho đối ứng).
+    2. Phần chức năng đổi kho, thêm 1 lựa chọn nữa vào comboBox là "Tất cả kho".
+    3. Khi ở trong kho làm việc nào, chỉ hiển thị dữ liệu của kho đó trong tất cả chức năng:
+       - Kiểm kho: Chỉ hiện phiếu của kho đang làm việc, thêm cột Kho trong dgv hiển thị tên kho (mặc định ẩn, bật/tắt qua Hiện cột). Khi thêm phiếu comboBox chọn kho chỉ hiển thị tên kho đang làm việc, không cho phép sửa đổi (trừ khi ở Tất cả kho).
+       - Chuyển kho: Chỉ hiển thị phiếu khi kho đang làm việc là kho gửi hoặc kho nhận, khi thêm phiếu comboBox kho gửi chỉ hiển thị tên kho đang làm việc, không cho phép sửa đổi (trừ khi ở Tất cả kho).
+       - Danh sách hàng hóa: Số lượng tồn kho hiển thị theo đúng số lượng tồn của kho đang làm việc.
+       - Nhập hàng: Thêm cột Kho trong dgv hiển thị tên kho (mặc định ẩn, bật/tắt qua Hiện cột). Khi thêm phiếu comboBox chọn kho chỉ hiển thị tên kho đang làm việc, không cho phép sửa đổi (trừ khi ở Tất cả kho).
+       - Trả hàng nhập: Thêm cột Kho trong dgv hiển thị tên kho (mặc định ẩn, bật/tắt qua Hiện cột). Khi thêm phiếu comboBox chọn kho chỉ hiển thị tên kho đang làm việc, không cho phép sửa đổi (trừ khi ở Tất cả kho).
+       - Báo cáo tồn kho & Thẻ kho: Chỉ hiển thị dữ liệu báo cáo của đúng kho đang làm việc, ẩn cột Chi nhánh kho (thay tên cột thành Kho) trong dgv, khi người dùng chọn hiển thị trong Hiện cột mới hiển thị lên.
+  - **Kết quả thực hiện**:
+    1. **Bổ sung lựa chọn "Tất cả kho" tại `frmDoiKho`**:
+       - Thêm mục `drAll["MaKho"] = 0`, `drAll["TenKho"] = "Tất cả kho"` vào đầu ComboBox đổi kho.
+       - Cập nhật `SessionContext.MaKhoHienTai = 0`, `SessionContext.TenKhoHienTai = "Tất cả kho"`.
+       - Tại `frmMain.cs`, cập nhật tiêu đề form cha và tự động làm mới toàn bộ 7 form con MDI đang mở (`frmChuyenKho`, `frmKiemKho`, `frmNhapHang`, `frmTraHangNhap`, `frmDanhSachHangHoa`, `frmBaoCaoTonKho`, `frmBaoCaoTheKho`).
+    2. **Danh mục Hàng hóa (`frmDanhSachHangHoa`)**:
+       - Tồn kho tự động bám theo kho làm việc: Nếu `MaKhoHienTai > 0` thì `JOIN vw_TonKhoHienTai tk ON h.MaHang = tk.MaHang AND tk.MaKho = @MaKho` và `JOIN NguongTonKho ntk ON h.MaHang = ntk.MaHang AND ntk.MaKho = @MaKho`.
+       - Nếu chọn "Tất cả kho" (`MaKhoHienTai == 0`): Tính tổng tồn toàn hệ thống qua `SELECT MaHang, SUM(SoLuongTon) AS SoLuongTon FROM vw_TonKhoHienTai GROUP BY MaHang`.
+    3. **Phân hệ Kiểm kho (`frmKiemKho`, `frmHienCotKiemKho`, `frmThemPhieuKiemKho`)**:
+       - Xóa `lblKho` và `cboKho` khỏi GroupBox bộ lọc bên trái.
+       - Lọc danh sách phiếu theo đúng kho làm việc: `WHERE pkk.MaKho = @MaKho` khi `MaKhoHienTai > 0`.
+       - Thêm cột `colKho` (`HeaderText = "Kho"`, `DataPropertyName = "TenKho"`, `Visible = false`).
+       - Bổ sung checkbox `chkKho` trên form Hiện cột `frmHienCotKiemKho`.
+       - Khi thêm mới (`frmThemPhieuKiemKho`): Nếu `MaKhoHienTai > 0` chỉ nạp duy nhất kho đang làm việc và khóa `cboKho.Enabled = false`; nếu `MaKhoHienTai == 0` nạp tất cả kho và mở `cboKho.Enabled = true`.
+    4. **Phân hệ Chuyển kho (`frmChuyenKho`, `frmThemPhieuChuyenKho`)**:
+       - Xóa `lblKhoDoiUng` và `cboKhoDoiUng` khỏi bộ lọc bên trái.
+       - Lọc phiếu chuyển theo kho làm việc: `AND (pc.MaKhoNguon = @KhoHienTai OR pc.MaKhoDich = @KhoHienTai)`.
+       - Khi thêm mới (`frmThemPhieuChuyenKho`): Nếu `MaKhoHienTai > 0` chỉ nạp duy nhất kho đang làm việc vào `cboKhoNguon` và khóa `cboKhoNguon.Enabled = false`; nếu `MaKhoHienTai == 0` nạp tất cả kho và mở `cboKhoNguon.Enabled = true`.
+    5. **Phân hệ Nhập hàng (`frmNhapHang`, `frmHienCotNhapHang`, `frmThemPhieuNhap`)**:
+       - Lọc phiếu nhập theo kho làm việc: `AND pn.MaKho = @MaKho` khi `MaKhoHienTai > 0`.
+       - Thêm cột `colKho` (`HeaderText = "Kho"`, `DataPropertyName = "TenKho"`, `Visible = false`).
+       - Bổ sung checkbox `chkKho` trên `frmHienCotNhapHang`.
+       - Khi thêm mới (`frmThemPhieuNhap`): Nếu `MaKhoHienTai > 0` chỉ nạp duy nhất kho đang làm việc và khóa `cboKho.Enabled = false`; nếu `MaKhoHienTai == 0` nạp tất cả kho và mở `cboKho.Enabled = true`.
+    6. **Phân hệ Trả hàng nhập (`frmTraHangNhap`, `frmHienCotTraHang`, `frmThemPhieuTraHang`)**:
+       - Lọc phiếu trả hàng theo kho làm việc: `AND pth.MaKho = @MaKho` khi `MaKhoHienTai > 0`.
+       - Thêm cột `colKho` (`HeaderText = "Kho"`, `DataPropertyName = "TenKho"`, `Visible = false`).
+       - Bổ sung checkbox `chkKho` trên `frmHienCotTraHang`.
+       - Khi thêm mới (`frmThemPhieuTraHang`): Nếu `MaKhoHienTai > 0` chỉ nạp duy nhất kho đang làm việc và khóa `cboKho.Enabled = false`; nếu `MaKhoHienTai == 0` nạp tất cả kho và mở `cboKho.Enabled = true`.
+    7. **Phân hệ Báo cáo tồn kho (`frmBaoCaoTonKho`) & Báo cáo thẻ kho (`frmBaoCaoTheKho`)**:
+       - Xóa ComboBox `cboKho` và nhãn `lblKho` khỏi GroupBox bộ lọc bên trái của cả hai form.
+       - Cột "Chi nhánh kho" được đổi `HeaderText = "Kho"` và ẩn mặc định (`Visible = false`), người dùng tùy chọn hiển thị lại qua `frmHienCotBaoCao`.
+       - Báo cáo tồn kho: Truy vấn tự động tính theo `SessionContext.MaKhoHienTai` (nếu > 0 thì lọc theo kho đó, nếu = 0 thì tổng hợp toàn hệ thống).
+       - Báo cáo thẻ kho: Dữ liệu biến động và tồn đầu kỳ tự động lọc theo `SessionContext.MaKhoHienTai` (khi double-click từ Báo cáo tồn kho tự động đồng bộ kho hiện tại).
+    8. **Kiểm tra chất lượng**:
+       - Chạy `tools/KiemTraMaHoa.ps1`: **153/153 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+
+- **Phiên 43 (2026-10-25) – Khắc phục lỗi cột colMaHang trên Báo cáo tồn kho và Sửa bố cục hiển thị GroupBox bộ lọc Nhập hàng**:
+  - **Nhu cầu**: Người dùng phản hồi qua 2 ảnh:
+    1. Ảnh 1: Phần hiển thị cột của chức năng Báo cáo tồn kho đang có thêm phần `colMaHang` bất thường làm lỗi hệ thống. Yêu cầu xóa nó.
+    2. Ảnh 2: Giao diện của phần groupBox bộ lọc của chức năng Nhập hàng đang bị lỗi bố cục và hiển thị. Yêu cầu sửa lại.
+  - **Kết quả thực hiện**:
+    1. **Khắc phục triệt để lỗi cột `colMaHang` trên Báo cáo tồn kho (`frmBaoCaoTonKho`)**:
+       - Tại `frmBaoCaoTonKho.cs`: Cố định cột khóa chính nội bộ `colMaHang` với `HeaderText = ""` và luôn `Visible = false` (kể cả sau khi gán `DataSource`).
+       - Tại `frmHienCotBaoCao.cs`: Bổ sung điều kiện loại trừ tuyệt đối cột `colMaHang` (`col.Name == "colMaHang" || string.Equals(col.HeaderText, "colMaHang", StringComparison.OrdinalIgnoreCase)`). Popup Hiện cột chỉ quản lý 13 cột nghiệp vụ hợp lệ, hoàn toàn loại bỏ checkbox `colMaHang` và chặn hiển thị cột này trên DataGridView.
+    2. **Chuẩn hóa bố cục và hiển thị GroupBox bộ lọc Nhập hàng (`frmNhapHang`)**:
+       - Tại `frmNhapHang.Designer.cs`:
+         * Gỡ bỏ các thuộc tính sai lệch trên `grpBoLoc`: bỏ `Dock = Fill`, bỏ `FlatStyle = Flat`, bỏ `Padding = 12`.
+         * Thiết lập kích thước và vị trí chuẩn mực theo form mẫu `frmDanhSachHangHoa`: `Location = (12, 9)`, `Size = (360, 717)` mang lại đường viền GroupBox sắc nét, chuẩn WinForms.
+         * Căn chỉnh lề trái các nhãn thẳng hàng với ComboBox (`X = 18`).
+         * Bố trí dàn đều khoảng cách thoáng đãng giữa các bộ lọc: Trạng thái (Top 35/65) ➜ Nhà cung cấp (Top 165/195) ➜ Người tạo (Top 295/325) ➜ Người nhập (Top 425/455) với bước nhảy ~75px.
+         * Đưa cụm thời gian tạo (`lblThoiGianTao` Top 565, `grpThoiGianTao` Top 593, đáy 701) xuống cố định ở vị trí đáy của vùng bộ lọc tuân thủ tuyệt đối Điều luật 16.
+         * Khắc phục triệt để lỗi tràn viền phải của DateTimePicker trong `grpThoiGianTao`: chỉnh `lblTuNgay` / `lblDenNgay` (`X = 6`), `dtpTuNgay` / `dtpDenNgay` (`Location = (92, 23/63)`, `Size = (227, 24)` nằm gọn gàng bên trong khung rộng 322px).
+    3. **Kiểm tra chất lượng**:
+       - Chạy `tools/KiemTraMaHoa.ps1`: **153/153 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+       - Đồng bộ tài liệu đặc tả `docs/specs/bao-cao-ton-kho.md` và `docs/specs/nhap-hang.md`.
+
+- **Phiên 42 (2026-10-25) – Chuẩn hóa thanh panel phân trang đồng nhất 100% với form mẫu Danh sách hàng hóa**:
+  - **Nhu cầu**: Người dùng yêu cầu chuẩn hóa thanh panel phân trang trên toàn bộ các form danh sách để khớp 100% với form mẫu `frmDanhSachHangHoa`:
+    1. Thay label Hiển thị (ngoài cùng bên trái) thành label tổng số và đưa ra tổng số hàng dữ liệu đang có (ví dụ: "Tổng số: 14 phiếu kiểm", "Tổng số: 13 phiếu trả hàng").
+    2. Sửa lại hiển thị của label hiển thị số trang có chữ "Trang ", ví dụ "Trang 1 / 1" hoặc "Trang 1 / 2" thay vì hiển thị trần "1 / 1".
+    3. Chỉnh lại khoảng cách và kích thước cụm: label Số dòng, comboBox số dòng hiển thị, button trang trước, label số trang, button trang sau và căn đều lề viền panel khớp hoàn toàn 100% với form mẫu.
+  - **Kết quả thực hiện**:
+    1. **Chuẩn hóa nhãn tổng số bản ghi ngoài cùng bên trái**:
+       - Cập nhật text hiển thị thành `"Tổng số: {tongSoBanGhi:N0} [tên bản ghi]"` trên `frmTraHangNhap`, `frmNhapHang`, `frmNhaCungCap`, `frmDonViTinh`, `frmKiemKho`, `frmChuyenKho`, `frmBaoCaoTonKho`, `frmBaoCaoTheKho`.
+       - Cố định tọa độ lề trái `Location = (22, 12)` cho nhãn tổng số trên toàn bộ các form danh sách.
+    2. **Đồng bộ tiền tố "Trang " cho nhãn hiển thị số trang**:
+       - Sửa `lblTrangHienTai.Text = $"Trang {trangHienTai} / {tongSoTrang}"` trên `frmKiemKho`, `frmChuyenKho`, `frmDonViTinh`.
+    3. **Đồng bộ 100% bố cục, tọa độ và khoảng cách cụm điều khiển phân trang**:
+       - Chiều cao `pnlPhanTrang`: chuẩn hóa cố định 42px (`Size = (1395, 42)`, `Location = (387, 811)`).
+       - Tọa độ chuẩn của cụm phân trang bên phải:
+         * `lblSoDongMoiTrang`: `Location = (932, 13)`, `Size = (61, 17)`, Text `"Số dòng:"`.
+         * `cboSoDongMoiTrang`: `Location = (1008, 10)`, `Size = (70, 25)`.
+         * `btnTrangTruoc`: `Location = (1117, 6)`, `Size = (80, 31)`, Text `"◀ Trước"`.
+         * `lblTrangHienTai`: `Location = (1214, 13)`, `Size = (72, 17)`, Text `"Trang 1 / 1"`.
+         * `btnTrangSau`: `Location = (1303, 6)`, `Size = (80, 31)`, Text `"Sau ▶"`.
+       - Căn đều dọc cân đối hoàn hảo trong thanh panel cao 42px (nút bấm cao 31px căn giữa Top 6, ComboBox cao 25px căn giữa Top 10, Label cao 17px căn giữa Top 13).
+    4. **Kiểm tra chất lượng**:
+       - Chạy `tools/KiemTraMaHoa.ps1`: **153/153 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+
+- **Phiên 41 (2026-10-25) – Chuẩn hóa cột Thời gian tạo và Ngày cân bằng trên Phân hệ Kiểm kho**:
+  - **Nhu cầu**: Người dùng yêu cầu ở form chức năng Kiểm kho:
+    1. Thay tên cột "Thời gian" thành "Thời gian tạo" (lưu thời gian tạo ra phiếu, cột này chỉ lưu thời gian tạo ra phiếu, không thể thay đổi, không cập nhật khi thay đổi trạng thái của phiếu).
+    2. Ẩn cột này đi mặc định (`Visible = false`), khi người dùng chọn hiển thị trong phần "Hiện cột" mới hiện lên; vị trí hiện lên ở sau cột "Tổng chênh lệch", trước cột "Trạng thái".
+    3. Đưa cột "Ngày cân bằng" lên sau cột "Mã kiểm kho"; nếu phiếu là phiếu tạm thì để trống; lưu thời gian phiếu được tạo ở trạng thái đã cân bằng hoặc cập nhật thời gian là thời gian phiếu tạm được ấn Hoàn thành.
+  - **Kết quả thực hiện**:
+    1. **Đổi tên, ẩn mặc định và định vị cột Thời gian tạo**:
+       - Tại `frmKiemKho.Designer.cs`: Đổi `colThoiGian.HeaderText = "Thời gian tạo"`, `colThoiGian.Visible = false`.
+       - Thứ tự cột hiển thị trên DataGridView: `colChon` ➜ `colMaPhieu` ➜ `colNgayCanBang` ➜ `colSlLechTang` ➜ `colSlLechGiam` ➜ `colSlThucTe` ➜ `colGhiChu` (ẩn) ➜ `colTongThucTe` ➜ `colTongChenhLech` ➜ `colThoiGian` (Thời gian tạo - ẩn) ➜ `colTrangThai` ➜ `colMaPhieuKiemKe`.
+       - Tại `frmHienCotKiemKho.Designer.cs` & `frmHienCotKiemKho.cs`: Đổi checkbox `chkThoiGian.Text = "Thời gian tạo"`, `chkThoiGian.Checked = false`. Khi người dùng tích chọn, cột Thời gian tạo xuất hiện ngay sau Tổng chênh lệch và trước Trạng thái.
+    2. **Đưa Ngày cân bằng lên sau Mã kiểm kho & Logic lưu trữ chuẩn xác**:
+       - Tại `frmKiemKho.cs` (`TaiDuLieu`): Sử dụng subquery `LEFT JOIN (SELECT MaPhieuKiemKe, MAX(NgayDuyet) AS NgayDuyet FROM PhieuDieuChinh WHERE TrangThai = 'DA_DUYET' GROUP BY MaPhieuKiemKe) pdc` để lấy `NgayCanBang` chống nhân dòng.
+       - Logic hiển thị: `CASE WHEN pkk.TrangThai = 'DA_DIEU_CHINH' THEN ISNULL(CONVERT(VARCHAR(16), pdc.NgayDuyet, 120), CONVERT(VARCHAR(16), pkk.ThoiDiemChot, 120)) ELSE '' END AS NgayCanBang`. Nếu phiếu tạm (`NHAP`), hiển thị rỗng `''`.
+       - Tại `frmChiTietKiemKho.cs` (`btnHoanThanh_Click`): Loại bỏ việc cập nhật `ThoiDiemChot = sysdatetime()` để bảo toàn vĩnh viễn thời điểm tạo ban đầu của phiếu tạm; thời điểm ấn Hoàn thành được lưu vào `PhieuDieuChinh.NgayDuyet = sysdatetime()`.
+       - Tại `frmThemPhieuKiemKho.cs`: Khi tạo mới phiếu ở trạng thái Đã cân bằng (`DA_DIEU_CHINH`), gán `NgayDuyet = @ThoiDiemChot` để ngày cân bằng lưu chính xác thời gian tạo phiếu đã cân bằng.
+       - Đồng bộ thứ tự cột xuất file CSV (`XuatCsvDanhSach`) và Excel HTML (`XuatExcelHtmlDanhSach`).
+    3. **Kiểm tra chất lượng**:
+       - Chạy `tools/KiemTraMaHoa.ps1`: **152/152 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+       - Đồng bộ tài liệu `docs/specs/kiem-kho.md` và `docs/quyet-dinh.md`.
 
 - **Phiên 40 (2026-10-25) – Dàn đều bộ lọc Danh sách hàng hóa, Ẩn cột Ghi chú Kiểm kho & Chuyển kho, Đưa Tổng thực tế & Chênh lệch về trước Trạng thái và Chuẩn hóa báo đỏ in đậm chênh lệch kiểm kê**:
   - **Nhu cầu**: Người dùng yêu cầu: (1) Form Danh sách hàng hóa: chỉnh lại khoảng cách giữa các filter cho rộng hơn, không để thừa không gian ở dưới mà các filter lại sát vào nhau; (2) Form Kiểm kho và Chuyển kho: ẩn cột ghi chú mặc định, khi người dùng tích chọn cột ghi chú trong form Hiện cột mới hiện ra; đưa cột Tổng thực tế và Tổng chênh lệch của form Kiểm kho về cuối dgv, phía trước cột Trạng thái; (3) Khi Kiểm kho: lệch tăng và lệch giảm nếu tổng lại về 0 (hoặc bù trừ về 0) thì trong form chi tiết kiểm kho vẫn phải báo đỏ thể hiện bất thường chỉ cần có mặt hàng bị chênh lệch trong phiếu; các trường thông tin Tổng lệch tăng, tổng lệch giảm, tổng chênh lệch khi có báo đỏ bất thường thì in đậm như trong dgv.

@@ -45,7 +45,9 @@
 
 ## 3. Quy chuẩn Giao diện & Bộ lọc (Tuân thủ Luật 14 & 15)
 
-### 3.1. Cột lọc bên trái (Sidebar Filter - 100% ComboBox):
+### 3.1. Cột lọc bên trái (Sidebar Filter - 100% ComboBox - Kế thừa chuẩn `frmDanhSachHangHoa`):
+- Khung `grpBoLoc`: `Location = (12, 9)`, `Size = (360, 717)`, viền chuẩn WinForms, dàn đều các bộ lọc (~75-85px).
+- Cụm `grpThoiGianTao`: `Location = (18, 593)`, `Size = (322, 108)` đặt cố định ở đáy theo Điều luật 16, các DateTimePicker `Size = (227, 24)` nằm trọn vẹn trong khung.
 1. **Trạng thái**: ComboBox `cboTrangThai`: DropDownList ("-- Tất cả trạng thái --", "Phiếu tạm (Lưu tạm)", "Đã nhập hàng", "Đã hủy").
 2. **Nhà cung cấp**: ComboBox `cboNhaCungCap`: DropDownList ("-- Tất cả nhà cung cấp --", danh sách NCC từ CSDL).
 3. **Người tạo**: ComboBox `cboNguoiTao`: DropDownList ("-- Tất cả người tạo --", danh sách nhân viên).
