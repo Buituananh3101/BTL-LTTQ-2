@@ -191,3 +191,14 @@
        + Cột checkbox chọn dòng (`colChon`) và hình ảnh giữ `AutoSizeMode = None` với kích thước cố định.
        + Chuẩn hóa sự kiện `btnHienCot_Click` trên tất cả các form: kiểm tra `Application.OpenForms` chống mở trùng, căn vị trí hiển thị ngay dưới mép phải nút `btnHienCot` và bảo đảm không tràn ra ngoài màn hình làm việc.
   3. **Biên dịch & Định dạng**: 100% file mã nguồn lưu định dạng **UTF-8 with BOM** (Điều luật 18). Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+
+- **2026-10-25 (Phiên 36) – Đồng bộ Bảng Danh Mục ViTri Khớp 100% với Dự Án Cho CSDL QuanLyKhoPhuQuocLTTQ**:
+  1. **Bối cảnh & Vấn đề**: Trong App.config, chuỗi kết nối trỏ về database QuanLyKhoPhuQuocLTTQ. Bảng HangHoa đã có cột ViTri (NVARCHAR(100)), tuy nhiên CSDL này chưa có bảng danh mục ViTri, dẫn đến khi mở form Danh sách hàng hóa (rmDanhSachHangHoa) hoặc form Quản lý vị trí (rmViTri), câu lệnh nạp danh mục SELECT TenViTri FROM ViTri WHERE TrangThai = 'HOAT_DONG' bị báo lỗi thiếu bảng (Invalid object name 'ViTri').
+  2. **Giải pháp thực hiện**:
+     - Tuân thủ Rule 8 và Rule 17 trong AGENTS.md: Truy vấn kiểm tra cấu trúc CSDL thực tế, xin xác nhận của người dùng trước khi cập nhật.
+     - Tạo bảng danh mục ViTri gồm 3 cột chuẩn: MaViTri INT IDENTITY(1,1) PRIMARY KEY, TenViTri NVARCHAR(100) NOT NULL, TrangThai VARCHAR(20) NOT NULL DEFAULT ('HOAT_DONG') trong CSDL QuanLyKhoPhuQuocLTTQ.
+     - Đồng bộ 18 vị trí lưu kho từ bảng HangHoa và CSDL mẫu QuanLyKhoPhuQuocLTW.
+     - Lưu script cập nhật vào Mục 10 của docs/database_update.sql.
+  3. **Kết quả kiểm thử**:
+     - rmDanhSachHangHoa nạp trơn tru 19 mục bộ lọc Vị trí (1 mục -- Tất cả vị trí -- + 18 vị trí).
+     - rmViTri nạp và đếm số lượng mặt hàng chính xác 100%. Biên dịch: **Build succeeded. 0 Warning(s), 0 Error(s)**.

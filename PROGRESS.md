@@ -1,14 +1,14 @@
-﻿# Tiến độ dự án BTL-LTTQ-2
+# Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-25 – Chuẩn hóa toàn bộ Form Hiện cột theo mẫu frmDanhSachHangHoa và Cơ chế Co giãn Cột DataGridView Lấp đầy Bảng (Phiên 35)
+**Cập nhật lần cuối**: 2026-10-25 – Đồng bộ bảng danh mục ViTri cho CSDL QuanLyKhoPhuQuocLTTQ khớp 100% với dự án (Phiên 36)
 
 ---
 
 ## Đang làm
-- [x] Cập nhật Điều luật 15 và 18 trong `AGENTS.md` và `.agent/rules/03-giao-dien-layout.md`: Lấy font và màu chữ của `frmDanhSachHangHoa` làm chuẩn duy nhất toàn hệ thống; ban hành quy chuẩn phân tầng kích thước form (Chức năng lớn và 3 cỡ chức năng nhỏ: Lớn/Vừa/Nhỏ).
-- [x] Quét và loại bỏ 100% việc in đậm (`FontStyle.Bold`) tùy tiện và tô màu (`ForeColor`) tùy tiện trên tất cả các controls/nhãn trong các phân hệ: Trả hàng nhập, Nhập hàng, Kiểm kho, Chuyển kho, Nhà cung cấp, Đơn vị tính, Báo cáo.
-- [x] Bảo đảm 100% file mã nguồn lưu định dạng **UTF-8 with BOM** (Điều luật 18).
-- [x] Kiểm tra biên dịch mã nguồn C# bằng MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+- [x] Tạo bảng danh mục `ViTri` (`MaViTri`, `TenViTri`, `TrangThai`) trong CSDL `QuanLyKhoPhuQuocLTTQ` theo đúng cấu hình `App.config`.
+- [x] Đồng bộ dữ liệu vị trí hiện hữu từ bảng `HangHoa` và CSDL mẫu `QuanLyKhoPhuQuocLTW` vào bảng `ViTri`.
+- [x] Kiểm tra hoạt động nạp ComboBox vị trí trên `frmDanhSachHangHoa` và lưới `frmViTri`: nạp trơn tru 18 vị trí thực tế, 0 lỗi runtime.
+- [x] Lưu script cập nhật vào Mục 10 của `docs/database_update.sql` và cập nhật `docs/quyet-dinh.md`.
 - [ ] Tiện ích băm mật khẩu `Classes/PasswordHelper.cs` (SHA-256).
 - [ ] Thiết kế và hoàn thiện Form Đăng nhập (`frmDangNhap`) hỗ trợ chọn chi nhánh kho làm việc.
 - [ ] Chuyển sang phân hệ Xác thực & Phân quyền (`frmDangNhap`, tiện ích mã hóa mật khẩu `PasswordHelper.cs` SHA-256, liên kết phân quyền trên `frmMain`).
@@ -48,6 +48,16 @@
 ---
 
 ## Nhật ký phiên (Session Logs)
+
+- **Phiên 36 (2026-10-25) – Đồng bộ Bảng Danh Mục `ViTri` Cho CSDL `QuanLyKhoPhuQuocLTTQ` Khớp 100% Code Dự Án**:
+  - **Nhu cầu**: Người dùng phát hiện phần Vị trí bị lệch CSDL. Khi kiểm tra thực tế: file `App.config` trỏ vào `QuanLyKhoPhuQuocLTTQ`; bảng `HangHoa` đã có cột `ViTri` (`NVARCHAR(100)`), nhưng CSDL này chưa có bảng danh mục `ViTri`, khiến `frmDanhSachHangHoa` báo lỗi khi nạp `cboViTri` (`Invalid object name 'ViTri'`).
+  - **Kết quả thực hiện**:
+    1. **Tạo bảng `ViTri` chuẩn**: Thêm bảng `ViTri` (`MaViTri INT IDENTITY(1,1) PRIMARY KEY`, `TenViTri NVARCHAR(100) NOT NULL`, `TrangThai VARCHAR(20) DEFAULT 'HOAT_DONG'`) vào CSDL `QuanLyKhoPhuQuocLTTQ`.
+    2. **Đồng bộ dữ liệu mẫu**: Tự động đồng bộ 18 vị trí từ `HangHoa` và CSDL mẫu `QuanLyKhoPhuQuocLTW`.
+    3. **Kiểm thử tự động**:
+       - `cboViTri` trên `frmDanhSachHangHoa` nạp đủ 19 items (1 mục `-- Tất cả vị trí --` + 18 vị trí thực tế), 0 lỗi.
+       - `frmViTri` nạp danh sách 18 vị trí kèm số lượng mặt hàng chính xác.
+    4. **Tài liệu hóa**: Lưu script vào Mục 10 của `docs/database_update.sql`, cập nhật `docs/quyet-dinh.md` và `PROGRESS.md`. Tuân thủ Rule 8 và Rule 17.
 
 - **Phiên 35 (2026-10-25) – Chuẩn hóa toàn bộ Form  Hiển thị cột theo mẫu rmHienCot của Danh mục hàng hóa và Cơ chế Co giãn Cột DataGridView Lấp đầy Bảng**:
   - **Nhu cầu**: Người dùng phản hồi:

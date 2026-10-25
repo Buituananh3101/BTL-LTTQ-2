@@ -486,3 +486,34 @@ BEGIN
 END
 GO
 
+-- -----------------------------------------------------------------------------------------
+-- 10. BẢNG VITRI: ĐỒNG BỘ DANH MỤC VỊ TRÍ CHO CSDL QUANLYKHOPHUQUOCLTTQ
+-- Lý do: Bổ sung bảng ViTri (MaViTri, TenViTri, TrangThai) cho CSDL QuanLyKhoPhuQuocLTTQ (trong App.config)
+--        khớp 100% với code dự án (frmDanhSachHangHoa, frmHangHoa, frmViTri).
+-- Tuân thủ: "Chỉ cộng, không phá" (Rule 8)
+-- -----------------------------------------------------------------------------------------
+IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = N'ViTri')
+BEGIN
+    CREATE TABLE ViTri (
+        MaViTri INT IDENTITY(1,1) PRIMARY KEY,
+        TenViTri NVARCHAR(100) NOT NULL,
+        TrangThai VARCHAR(20) NOT NULL CONSTRAINT DF_ViTri_TrangThai DEFAULT ('HOAT_DONG')
+    );
+    PRINT N'[OK] Đã tạo bảng ViTri.';
+END
+ELSE
+BEGIN
+    PRINT N'[SKIP] Bảng ViTri đã tồn tại.';
+END
+GO
+
+-- Nạp các vị trí hiện hữu từ bảng HangHoa vào ViTri nếu chưa có
+INSERT INTO ViTri (TenViTri, TrangThai)
+SELECT DISTINCT LTRIM(RTRIM(h.ViTri)), 'HOAT_DONG'
+FROM HangHoa h
+WHERE h.ViTri IS NOT NULL 
+  AND LTRIM(RTRIM(h.ViTri)) <> ''
+  AND NOT EXISTS (SELECT 1 FROM ViTri vt WHERE vt.TenViTri = LTRIM(RTRIM(h.ViTri)));
+PRINT N'[OK] Đã đồng bộ các vị trí từ HangHoa vào bảng ViTri.';
+GO
+
