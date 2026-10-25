@@ -39,7 +39,7 @@
             this.cboKhoNguon = new System.Windows.Forms.ComboBox();
             this.lblKhoNguon = new System.Windows.Forms.Label();
             this.pnlDiv2 = new System.Windows.Forms.Panel();
-            this.lblMaPhieuVal = new System.Windows.Forms.Label();
+            this.txtMaPhieu = new System.Windows.Forms.TextBox();
             this.lblMaPhieu = new System.Windows.Forms.Label();
             this.pnlDiv1 = new System.Windows.Forms.Panel();
             this.dtpNgayChuyen = new System.Windows.Forms.DateTimePicker();
@@ -121,7 +121,7 @@
             this.pnlRightContent.Controls.Add(this.cboKhoNguon);
             this.pnlRightContent.Controls.Add(this.lblKhoNguon);
             this.pnlRightContent.Controls.Add(this.pnlDiv2);
-            this.pnlRightContent.Controls.Add(this.lblMaPhieuVal);
+            this.pnlRightContent.Controls.Add(this.txtMaPhieu);
             this.pnlRightContent.Controls.Add(this.lblMaPhieu);
             this.pnlRightContent.Controls.Add(this.pnlDiv1);
             this.pnlRightContent.Controls.Add(this.dtpNgayChuyen);
@@ -286,16 +286,14 @@
             this.pnlDiv2.Size = new System.Drawing.Size(305, 1);
             this.pnlDiv2.TabIndex = 7;
             // 
-            // lblMaPhieuVal
+            // txtMaPhieu
             // 
-            this.lblMaPhieuVal.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtMaPhieu.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblMaPhieuVal.Location = new System.Drawing.Point(115, 86);
-            this.lblMaPhieuVal.Name = "lblMaPhieuVal";
-            this.lblMaPhieuVal.Size = new System.Drawing.Size(205, 20);
-            this.lblMaPhieuVal.TabIndex = 6;
-            this.lblMaPhieuVal.Text = "Mã tự động";
-            this.lblMaPhieuVal.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.txtMaPhieu.Location = new System.Drawing.Point(115, 82);
+            this.txtMaPhieu.Name = "txtMaPhieu";
+            this.txtMaPhieu.Size = new System.Drawing.Size(205, 25);
+            this.txtMaPhieu.TabIndex = 6;
             // 
             // lblMaPhieu
             // 
@@ -513,10 +511,10 @@
             dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(254)))), ((int)(((byte)(252)))), ((int)(((byte)(232)))));
             dataGridViewCellStyle2.Format = "N0";
             this.colSoLuong.DefaultCellStyle = dataGridViewCellStyle2;
-            this.colSoLuong.HeaderText = "SL chuyển";
+            this.colSoLuong.HeaderText = "SL chuyển (nhập)";
             this.colSoLuong.MinimumWidth = 6;
             this.colSoLuong.Name = "colSoLuong";
-            this.colSoLuong.Width = 85;
+            this.colSoLuong.Width = 120;
             // 
             // colDonGia
             // 
@@ -670,7 +668,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnBoQua;
-            this.ClientSize = new System.Drawing.Size(1182, 803);
+            this.ClientSize = new System.Drawing.Size(1400, 803);
             this.Controls.Add(this.pnlMain);
             this.Controls.Add(this.pnlRight);
             this.Font = new System.Drawing.Font("Segoe UI", 9.5F);
@@ -713,7 +711,7 @@
         private System.Windows.Forms.DateTimePicker dtpNgayChuyen;
         private System.Windows.Forms.Panel pnlDiv1;
         private System.Windows.Forms.Label lblMaPhieu;
-        private System.Windows.Forms.Label lblMaPhieuVal;
+        private System.Windows.Forms.TextBox txtMaPhieu;
         private System.Windows.Forms.Panel pnlDiv2;
         private System.Windows.Forms.Label lblKhoNguon;
         private System.Windows.Forms.ComboBox cboKhoNguon;

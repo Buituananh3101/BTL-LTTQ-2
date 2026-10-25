@@ -70,6 +70,9 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             dgvHangKiem.EditMode = DataGridViewEditMode.EditOnEnter;
             dgvHangKiem.CellFormatting += dgvHangKiem_CellFormatting;
 
+            dgvHangKiem.EditingControlShowing += dgvHangKiem_EditingControlShowing;
+            dgvHangKiem.Leave += (s, e) => { if (dgvHangKiem.IsCurrentCellInEditMode) dgvHangKiem.EndEdit(); };
+
             dgvHangKiem.DataSource = dtHangKiem;
         }
 
@@ -94,7 +97,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
 
         private void frmThemPhieuKiemKho_Load(object sender, EventArgs e)
         {
-            lblMaPhieuVal.Text = SinhMaPhieuTuDong();
+            txtMaPhieu.Text = SinhMaPhieuTuDong();
             dtpThoiDiemChot.Value = DateTime.Now;
 
             nudSoLuongThucTe.KeyDown += (s, ev) =>
@@ -386,6 +389,49 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             }
         }
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Enter && dgvHangKiem.IsCurrentCellInEditMode)
+            {
+                dgvHangKiem.EndEdit();
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void dgvHangKiem_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        {
+            if (e.Control is TextBox txt)
+            {
+                txt.KeyPress -= TxtSoLuongDgv_KeyPress;
+                txt.KeyDown -= TxtSoLuongDgv_KeyDown;
+
+                string colName = dgvHangKiem.CurrentCell != null ? dgvHangKiem.Columns[dgvHangKiem.CurrentCell.ColumnIndex].Name : "";
+                if (colName == "colSoLuongThucTe")
+                {
+                    txt.KeyPress += TxtSoLuongDgv_KeyPress;
+                    txt.KeyDown += TxtSoLuongDgv_KeyDown;
+                }
+            }
+        }
+
+        private void TxtSoLuongDgv_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void TxtSoLuongDgv_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                dgvHangKiem.EndEdit();
+            }
+        }
+
         private void dgvHangKiem_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             if (isCalculating || e.RowIndex < 0) return;
@@ -397,7 +443,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                 if (row.Cells["colSoLuongThucTe"].Value != null &&
                     decimal.TryParse(row.Cells["colSoLuongThucTe"].Value.ToString(), out decimal slThucTe))
                 {
-                    if (slThucTe < 0) slThucTe = 0;
+                    slThucTe = Math.Max(0, (int)Math.Floor(slThucTe));
                     row.Cells["colSoLuongThucTe"].Value = slThucTe;
 
                     decimal tonKho = Convert.ToDecimal(row.Cells["colTonKho"].Value);
@@ -406,6 +452,14 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
 
                     row.Cells["colSlChenhLech"].Value = slLech;
                     row.Cells["colGiaTriChenhLech"].Value = slLech * donGia;
+
+                    if (e.RowIndex < dtHangKiem.Rows.Count)
+                    {
+                        DataRow dr = dtHangKiem.Rows[e.RowIndex];
+                        dr["SoLuongThucTe"] = slThucTe;
+                        dr["SlChenhLech"] = slLech;
+                        dr["GiaTriChenhLech"] = slLech * donGia;
+                    }
                 }
                 TinhToanTongKet();
             }
@@ -587,6 +641,12 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
 
         private void btnCanBangKho_Click(object sender, EventArgs e)
         {
+            if (dgvHangKiem.IsCurrentCellInEditMode)
+            {
+                dgvHangKiem.EndEdit();
+            }
+            this.BindingContext[dtHangKiem]?.EndCurrentEdit();
+
             if (dtHangKiem.Rows.Count == 0)
             {
                 MessageBox.Show("Vui lòng thêm ít nhất một mặt hàng để cân bằng kho!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -607,6 +667,12 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
 
         private void LuuPhieuKiemKho(string trangThaiMoi)
         {
+            if (dgvHangKiem.IsCurrentCellInEditMode)
+            {
+                dgvHangKiem.EndEdit();
+            }
+            this.BindingContext[dtHangKiem]?.EndCurrentEdit();
+
             if (dtHangKiem.Rows.Count == 0)
             {
                 MessageBox.Show("Vui lòng thêm ít nhất một mặt hàng vào phiếu kiểm kê!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -622,7 +688,22 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
 
             DateTime thoiDiemChot = dtpThoiDiemChot.Value;
             string ghiChu = txtGhiChu.Text.Trim();
-            string maPhieu = lblMaPhieuVal.Text.Trim();
+            string maPhieu = txtMaPhieu.Text.Trim();
+            if (string.IsNullOrEmpty(maPhieu))
+            {
+                MessageBox.Show("Mã phiếu không được để trống!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtMaPhieu.Focus();
+                return;
+            }
+
+            string checkSql = "SELECT COUNT(1) FROM PhieuKiemKe WHERE MaPhieu = @MaPhieu";
+            object exist = DataProcessing.ReadValue(checkSql, new SqlParameter[] { new SqlParameter("@MaPhieu", maPhieu) });
+            if (Convert.ToInt32(exist) > 0)
+            {
+                MessageBox.Show(string.Format("Mã phiếu '{0}' đã tồn tại trong hệ thống! Vui lòng chọn mã khác.", maPhieu), "Trùng mã", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtMaPhieu.Focus();
+                return;
+            }
 
             try
             {

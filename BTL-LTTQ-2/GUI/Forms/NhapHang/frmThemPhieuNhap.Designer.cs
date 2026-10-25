@@ -578,9 +578,9 @@
             // 
             // colSoLuong
             // 
-            this.colSoLuong.HeaderText = "Số lượng";
+            this.colSoLuong.HeaderText = "Số lượng (nhập)";
             this.colSoLuong.Name = "colSoLuong";
-            this.colSoLuong.Width = 85;
+            this.colSoLuong.Width = 120;
             // 
             // colDonGia
             // 
@@ -728,7 +728,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnBoQua;
-            this.ClientSize = new System.Drawing.Size(1182, 764);
+            this.ClientSize = new System.Drawing.Size(1400, 803);
             this.Controls.Add(this.pnlMain);
             this.Controls.Add(this.pnlRight);
             this.Font = new System.Drawing.Font("Segoe UI", 9.5F);

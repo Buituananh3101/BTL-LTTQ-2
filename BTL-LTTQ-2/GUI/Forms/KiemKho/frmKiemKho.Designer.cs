@@ -193,7 +193,7 @@
             // lblNguoiTao
             // 
             this.lblNguoiTao.AutoSize = true;
-            this.lblNguoiTao.Location = new System.Drawing.Point(17, 80);
+            this.lblNguoiTao.Location = new System.Drawing.Point(17, 58);
             this.lblNguoiTao.Name = "lblNguoiTao";
             this.lblNguoiTao.Size = new System.Drawing.Size(71, 17);
             this.lblNguoiTao.TabIndex = 2;
@@ -202,7 +202,7 @@
             // cboNguoiTao
             // 
             this.cboNguoiTao.FormattingEnabled = true;
-            this.cboNguoiTao.Location = new System.Drawing.Point(21, 114);
+            this.cboNguoiTao.Location = new System.Drawing.Point(21, 92);
             this.cboNguoiTao.Name = "cboNguoiTao";
             this.cboNguoiTao.Size = new System.Drawing.Size(322, 25);
             this.cboNguoiTao.TabIndex = 3;
@@ -210,7 +210,7 @@
             // lblTrangThai
             // 
             this.lblTrangThai.AutoSize = true;
-            this.lblTrangThai.Location = new System.Drawing.Point(17, 232);
+            this.lblTrangThai.Location = new System.Drawing.Point(17, 189);
             this.lblTrangThai.Name = "lblTrangThai";
             this.lblTrangThai.Size = new System.Drawing.Size(69, 17);
             this.lblTrangThai.TabIndex = 0;
@@ -220,7 +220,7 @@
             // 
             this.cboTrangThai.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboTrangThai.FormattingEnabled = true;
-            this.cboTrangThai.Location = new System.Drawing.Point(21, 266);
+            this.cboTrangThai.Location = new System.Drawing.Point(21, 223);
             this.cboTrangThai.Name = "cboTrangThai";
             this.cboTrangThai.Size = new System.Drawing.Size(322, 25);
             this.cboTrangThai.TabIndex = 1;
@@ -229,7 +229,7 @@
             // lblThoiGianTao
             // 
             this.lblThoiGianTao.AutoSize = true;
-            this.lblThoiGianTao.Location = new System.Drawing.Point(17, 421);
+            this.lblThoiGianTao.Location = new System.Drawing.Point(18, 357);
             this.lblThoiGianTao.Name = "lblThoiGianTao";
             this.lblThoiGianTao.Size = new System.Drawing.Size(88, 17);
             this.lblThoiGianTao.TabIndex = 6;
@@ -241,7 +241,7 @@
             this.grpThoiGianTao.Controls.Add(this.dtpDenNgay);
             this.grpThoiGianTao.Controls.Add(this.lblTuNgay);
             this.grpThoiGianTao.Controls.Add(this.lblDenNgay);
-            this.grpThoiGianTao.Location = new System.Drawing.Point(21, 457);
+            this.grpThoiGianTao.Location = new System.Drawing.Point(22, 393);
             this.grpThoiGianTao.Name = "grpThoiGianTao";
             this.grpThoiGianTao.Size = new System.Drawing.Size(322, 108);
             this.grpThoiGianTao.TabIndex = 7;

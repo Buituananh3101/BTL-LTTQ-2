@@ -143,7 +143,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                     // Phiếu đã cân bằng: Không được phép xóa (Luật 6)
                     btnXoa.Enabled = false;
                     btnXoa.Text = "Xóa";
-                    btnHoanThanh.Visible = false;
+                    btnCanBang.Visible = false;
                 }
                 else
                 {
@@ -157,8 +157,8 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
 
                     btnXoa.Enabled = true;
                     btnXoa.Text = "Xóa";
-                    btnHoanThanh.Visible = true;
-                    btnHoanThanh.Enabled = true;
+                    btnCanBang.Visible = true;
+                    btnCanBang.Enabled = true;
                 }
 
                 // Nạp chi tiết hàng hóa kiểm kê
@@ -359,7 +359,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             }
         }
 
-        private void btnHoanThanh_Click(object sender, EventArgs e)
+        private void btnCanBang_Click(object sender, EventArgs e)
         {
             if (trangThai == "DA_DIEU_CHINH") return;
 

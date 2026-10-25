@@ -63,6 +63,9 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
             colThanhTien.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             colThanhTien.DefaultCellStyle.Format = "N0";
 
+            dgvChiTiet.EditingControlShowing += dgvChiTiet_EditingControlShowing;
+            dgvChiTiet.Leave += (s, ev) => { if (dgvChiTiet.IsCurrentCellInEditMode) dgvChiTiet.EndEdit(); };
+
             dgvChiTiet.DataSource = dtChiTiet;
 
             lblNguoiChuyenVal.Text = SessionContext.HoTen;
@@ -72,7 +75,7 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                 string sqlMax = "SELECT ISNULL(MAX(MaPhieuChuyen), 0) + 1 FROM PhieuChuyenKho";
                 object val = DataProcessing.ReadValue(sqlMax);
                 int nextId = (val != null && val != DBNull.Value) ? Convert.ToInt32(val) : 1;
-                lblMaPhieuVal.Text = "CK" + nextId.ToString("D6");
+                txtMaPhieu.Text = "CK" + nextId.ToString("D6");
             }
             catch { }
 
@@ -336,17 +339,61 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
             }
         }
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Enter && dgvChiTiet.IsCurrentCellInEditMode)
+            {
+                dgvChiTiet.EndEdit();
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void dgvChiTiet_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        {
+            if (e.Control is TextBox txt)
+            {
+                txt.KeyPress -= TxtSoLuongDgv_KeyPress;
+                txt.KeyDown -= TxtSoLuongDgv_KeyDown;
+
+                string colName = dgvChiTiet.CurrentCell != null ? dgvChiTiet.Columns[dgvChiTiet.CurrentCell.ColumnIndex].Name : "";
+                if (colName == "colSoLuong")
+                {
+                    txt.KeyPress += TxtSoLuongDgv_KeyPress;
+                    txt.KeyDown += TxtSoLuongDgv_KeyDown;
+                }
+            }
+        }
+
+        private void TxtSoLuongDgv_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Chỉ cho phép nhập số nguyên
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void TxtSoLuongDgv_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                dgvChiTiet.EndEdit();
+            }
+        }
+
         private void dgvChiTiet_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0 || e.RowIndex >= dtChiTiet.Rows.Count) return;
 
             DataRow row = dtChiTiet.Rows[e.RowIndex];
-            decimal tonKho = Convert.ToDecimal(row["TonKho"]);
-            decimal slChuyen = 0;
+            int tonKho = Convert.ToInt32(row["TonKho"]);
+            int slChuyen = 1;
 
-            if (row["SoLuong"] == DBNull.Value || !decimal.TryParse(row["SoLuong"].ToString(), out slChuyen) || slChuyen <= 0)
+            if (row["SoLuong"] == DBNull.Value || !int.TryParse(row["SoLuong"].ToString().Replace(",", "").Replace(".", "").Trim(), out slChuyen) || slChuyen <= 0)
             {
-                MessageBox.Show("Số lượng chuyển phải là số lớn hơn 0!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Số lượng chuyển phải là số nguyên lớn hơn 0!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 slChuyen = 1;
                 row["SoLuong"] = slChuyen;
             }
@@ -354,6 +401,10 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
             {
                 MessageBox.Show(string.Format("Số lượng chuyển ({0:N0}) không được vượt quá số lượng tồn kho gửi ({1:N0})!", slChuyen, tonKho), "Cảnh báo vượt tồn", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 slChuyen = tonKho;
+                row["SoLuong"] = slChuyen;
+            }
+            else
+            {
                 row["SoLuong"] = slChuyen;
             }
 
@@ -421,6 +472,29 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
 
         private void LuuPhieu(string trangThaiMoi)
         {
+            if (dgvChiTiet.IsCurrentCellInEditMode)
+            {
+                dgvChiTiet.EndEdit();
+            }
+            this.BindingContext[dtChiTiet]?.EndCurrentEdit();
+
+            string maPhieu = txtMaPhieu.Text.Trim();
+            if (string.IsNullOrEmpty(maPhieu))
+            {
+                MessageBox.Show("Mã phiếu không được để trống!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtMaPhieu.Focus();
+                return;
+            }
+
+            string checkSql = "SELECT COUNT(1) FROM PhieuChuyenKho WHERE MaPhieu = @MaPhieu";
+            object exist = DataProcessing.ReadValue(checkSql, new SqlParameter[] { new SqlParameter("@MaPhieu", maPhieu) });
+            if (Convert.ToInt32(exist) > 0)
+            {
+                MessageBox.Show(string.Format("Mã phiếu '{0}' đã tồn tại trong hệ thống! Vui lòng chọn mã khác.", maPhieu), "Trùng mã", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtMaPhieu.Focus();
+                return;
+            }
+
             if (cboKhoNguon.SelectedValue == null || !int.TryParse(cboKhoNguon.SelectedValue.ToString(), out int maKhoNguon) || maKhoNguon <= 0)
             {
                 MessageBox.Show("Vui lòng chọn kho gửi!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -488,16 +562,7 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
             {
                 DataProcessing.ChangeDataTransaction((conn, trans) =>
                 {
-                    // 1. Sinh mã phiếu CK00000X
-                    string sqlMaxId = "SELECT ISNULL(MAX(MaPhieuChuyen), 0) FROM PhieuChuyenKho";
-                    int nextId;
-                    using (SqlCommand cmdMax = new SqlCommand(sqlMaxId, conn, trans))
-                    {
-                        nextId = Convert.ToInt32(cmdMax.ExecuteScalar()) + 1;
-                    }
-                    string maPhieu = "CK" + nextId.ToString("D6");
-
-                    // 2. Chèn PhieuChuyenKho
+                    // Chèn PhieuChuyenKho
                     string sqlInsertP = @"INSERT INTO PhieuChuyenKho 
                                          (MaPhieu, MaKhoNguon, MaKhoDich, MaNVLap, MaNVXuat, NgayLap, ThoiDiemXuat, 
                                           TrangThai, GhiChu, DaDanhDau, TongSoLuongChuyen, TongSoLuongNhan, TongGiaTriChuyen)

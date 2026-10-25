@@ -1,11 +1,14 @@
 ﻿# Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-25 – Bỏ trường trạng thái tĩnh trên các form thêm mới, Tối ưu giao diện & nghiệp vụ Kiểm kho, Tái thiết kế Form Thêm phiếu chuyển kho sang Right Menu Layout (Phiên 45)
+**Cập nhật lần cuối**: 2026-10-25 – Khắc phục lỗi Hiện cột Chuyển kho, Chuẩn hóa TextBox Mã phiếu tự chọn có check trùng, Mở rộng chiều rộng và Tối ưu cơ chế nhập Số lượng nguyên trên DataGridView của 4 form thêm mới (Phiên 46)
 
 ---
 
 ## Đang làm
-- [x] Bỏ trường trạng thái tĩnh trong các form thêm mới (Chuyển kho, Nhập hàng, Trả hàng nhập, Kiểm kho). Trạng thái hiển thị sau khi ấn lưu tạm/lưu.
+- [x] Khắc phục lỗi bỏ chọn trong Hiện cột nhưng không ẩn ở chức năng Chuyển kho (frmHienCotChuyenKho).
+- [x] Chuẩn hóa ô TextBox mã phiếu tự điền + cho phép sửa tự chọn + check trùng mã khi lưu trên 4 form thêm mới (Kiểm kho, Chuyển kho, Nhập hàng, Trả hàng nhập).
+- [x] Tăng chiều rộng 4 form thêm mới lên ClientSize = (1400, 803) để hiển thị thông tin rộng rãi, không bị che khuất.
+- [x] Chuẩn hóa ô nhập số lượng trong DataGridView của 4 form thêm mới: nền #FEFCE8, HeaderText có nhãn (nhập), ấn Enter hoặc click ra ngoài nhận ngay số lượng mới, chỉ cho phép số nguyên dương.
 - [x] Kiểm kho (`frmThemPhieuKiemKho`): Chuyển sang form Size Lớn (`1182, 803`), phân bổ cột hiển thị trọn vẹn nút Xóa dòng, làm rõ khả năng nhập SL thực tế trực tiếp trên dgv (`colSoLuongThucTe` nền `#FEFCE8`, HeaderText `SL thực tế (nhập)`, `EditMode = EditOnEnter`).
 - [x] Kiểm kho (`frmKiemKho`, `frmChiTietKiemKho`): Bỏ trạng thái "Đã hủy" khỏi filter trạng thái; khóa nút Xóa khi phiếu đã cân bằng; cho phép xóa vĩnh viễn phiếu tạm khỏi CSDL.
 - [x] Chuyển kho (`frmThemPhieuChuyenKho`): Thiết kế lại sang Right Menu Layout theo khuôn mẫu `frmThemPhieuKiemKho` (form Size Lớn, DataGridView trung tâm rộng rãi bên trái, Right Menu bên phải với các nút thao tác `Bỏ qua` ➜ `Lưu tạm` ➜ `Lưu` ở đáy).
@@ -48,6 +51,31 @@
 ---
 
 ## Nhật ký phiên (Session Logs)
+
+- **Phiên 46 (2026-10-25) – Khắc phục lỗi Hiện cột Chuyển kho, Chuẩn hóa TextBox Mã phiếu tự chọn có check trùng, Mở rộng chiều rộng và Tối ưu cơ chế nhập Số lượng nguyên trên DataGridView của 4 form thêm mới**:
+  - **Nhu cầu**: Người dùng yêu cầu qua 4 ảnh:
+    1. Lỗi bỏ chọn trong Hiện cột nhưng không bị ẩn trong chức năng Chuyển kho (ảnh 1).
+    2. Khi tạo phiếu, mã phiếu là ô textBox đã được điền sẵn mã tự động nhưng vẫn cho phép người dùng nhập mã tự chọn (có check trùng mã) như trong ảnh 2 chứ không để thành label như ảnh 3.
+    3. Các form: Thêm phiếu kiểm kho, Thêm phiếu chuyển kho, Thêm phiếu nhập hàng và Thêm phiếu trả hàng nhập:
+       - Tăng chiều rộng form để thông tin được hiển thị rộng rãi hơn (nhưng không được bằng hoặc vượt quá form cha).
+       - Cho phép nhập số lượng trong dgv, có dấu hiệu rõ ràng cho người dùng nhận biết (như ảnh 4). Phần nhập số lượng phải cho enter hoặc kích chuột ra ngoài để nhận số lượng nhập vào (hiện tại khi chỉ thêm vào 1 mặt hàng, nhấn số lượng và ấn enter mà form vẫn không nhận số lượng mới) và chỉ cho phép nhập vào số nguyên.
+  - **Kết quả thực hiện**:
+    1. **Sửa lỗi Hiện cột Chuyển kho (`frmHienCotChuyenKho`)**:
+       - Sửa khớp tên cột `"colTongSlChuyen"`, `"colTongSlNhan"`, `"colTongGiaTri"` khi đồng bộ trạng thái ban đầu và khi bắt sự kiện `CheckedChanged`, đảm bảo ẩn/hiện cột ngay lập tức và chính xác 100%.
+    2. **Chuẩn hóa ô TextBox Mã phiếu tự chọn có check trùng**:
+       - Trên cả 4 Form thêm mới (`frmThemPhieuKiemKho`, `frmThemPhieuChuyenKho`, `frmThemPhieuNhap`, `frmThemPhieuTraHang`), chuyển mã phiếu thành `TextBox` (`txtMaPhieu`) được tự động gợi ý mã chuẩn (PKKxxxxxx, CKxxxxxx, PNxxxxxx, THNxxxxxx).
+       - Cho phép người dùng chỉnh sửa hoặc tự đặt mã theo ý muốn.
+       - Khi ấn Lưu hoặc Lưu tạm, hệ thống bắt buộc kiểm tra không để trống và truy vấn CSDL kiểm tra chống trùng mã (`COUNT(1) ... WHERE MaPhieu = @MaPhieu`).
+    3. **Tăng kích thước chiều rộng form (`ClientSize = (1400, 803)`)**:
+       - Cả 4 form thêm mới được mở rộng chiều rộng từ 1182px lên 1400px (nhỏ hơn form cha 1782px), giải phóng không gian cho khối DataGridView trung tâm rộng rãi hơn 218px, hiển thị đầy đủ tên hàng hóa dài, đơn giá, thành tiền/chênh lệch và nút Xóa dòng.
+    4. **Tối ưu trải nghiệm và ràng buộc nhập số lượng nguyên trên DataGridView**:
+       - Cột số lượng trên cả 4 form có nền nhận diện `#FEFCE8`, HeaderText gắn nhãn `(nhập)` rõ ràng ("Số lượng (nhập)", "SL thực tế (nhập)", "SL chuyển (nhập)", "SL trả (nhập)").
+       - Kích hoạt `EditMode = EditOnEnter` cho phép click 1 lần nhập ngay.
+       - Xử lý phím Enter (`ProcessCmdKey` & `EditingControlShowing.KeyDown`) và kích chuột ra ngoài (`Leave`, `CellEndEdit`, `btnLuu.Click`): gọi `dgv.EndEdit()` và commit BindingContext, sửa triệt để lỗi khi bảng chỉ có 1 mặt hàng nhấn Enter hoặc click ra ngoài form không nhận số lượng mới.
+       - Ràng buộc kiểu dữ liệu: Chặn gõ chữ cái, dấu chấm, dấu phẩy, dấu âm qua `KeyPress` (`char.IsDigit`), chỉ cho phép nhập số nguyên dương (đối với kiểm kho là số nguyên $\ge 0$).
+    5. **Kiểm tra chất lượng**:
+       - Chạy `tools/KiemTraMaHoa.ps1`: **153/153 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
 
 - **Phiên 45 (2026-10-25) – Bỏ trường trạng thái tĩnh trên các form thêm mới, Tối ưu giao diện & nghiệp vụ Kiểm kho, Tái thiết kế Form Thêm phiếu chuyển kho sang Right Menu Layout**:
   - **Nhu cầu**: Người dùng yêu cầu qua 4 ảnh:

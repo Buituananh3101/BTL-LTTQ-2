@@ -39,9 +39,9 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
             SetCheckedIfExists("colNgayLap", chkNgayLap);
             SetCheckedIfExists("colKhoNguon", chkKhoNguon);
             SetCheckedIfExists("colKhoDich", chkKhoDich);
-            SetCheckedIfExists("chkTongSlChuyen", chkTongSlChuyen);
-            SetCheckedIfExists("chkTongSlNhan", chkTongSlNhan);
-            SetCheckedIfExists("chkTongGiaTri", chkTongGiaTri);
+            SetCheckedIfExists("colTongSlChuyen", chkTongSlChuyen);
+            SetCheckedIfExists("colTongSlNhan", chkTongSlNhan);
+            SetCheckedIfExists("colTongGiaTri", chkTongGiaTri);
             SetCheckedIfExists("colNguoiTao", chkNguoiTao);
             SetCheckedIfExists("colGhiChu", chkGhiChu);
             SetCheckedIfExists("colTrangThai", chkTrangThai);
@@ -61,9 +61,9 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
             chkNgayLap.CheckedChanged += (s, e) => DoiTrangThaiCot("colNgayLap", chkNgayLap.Checked);
             chkKhoNguon.CheckedChanged += (s, e) => DoiTrangThaiCot("colKhoNguon", chkKhoNguon.Checked);
             chkKhoDich.CheckedChanged += (s, e) => DoiTrangThaiCot("colKhoDich", chkKhoDich.Checked);
-            chkTongSlChuyen.CheckedChanged += (s, e) => DoiTrangThaiCot("chkTongSlChuyen", chkTongSlChuyen.Checked);
-            chkTongSlNhan.CheckedChanged += (s, e) => DoiTrangThaiCot("chkTongSlNhan", chkTongSlNhan.Checked);
-            chkTongGiaTri.CheckedChanged += (s, e) => DoiTrangThaiCot("chkTongGiaTri", chkTongGiaTri.Checked);
+            chkTongSlChuyen.CheckedChanged += (s, e) => DoiTrangThaiCot("colTongSlChuyen", chkTongSlChuyen.Checked);
+            chkTongSlNhan.CheckedChanged += (s, e) => DoiTrangThaiCot("colTongSlNhan", chkTongSlNhan.Checked);
+            chkTongGiaTri.CheckedChanged += (s, e) => DoiTrangThaiCot("colTongGiaTri", chkTongGiaTri.Checked);
             chkNguoiTao.CheckedChanged += (s, e) => DoiTrangThaiCot("colNguoiTao", chkNguoiTao.Checked);
             chkGhiChu.CheckedChanged += (s, e) => DoiTrangThaiCot("colGhiChu", chkGhiChu.Checked);
             chkTrangThai.CheckedChanged += (s, e) => DoiTrangThaiCot("colTrangThai", chkTrangThai.Checked);

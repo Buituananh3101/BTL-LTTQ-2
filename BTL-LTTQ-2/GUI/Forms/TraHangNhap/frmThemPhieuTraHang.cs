@@ -59,12 +59,19 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
             colDonGiaTra.DefaultCellStyle.Format = "N0";
             colThanhTien.DefaultCellStyle.Format = "N0";
 
+            colSoLuongTra.DefaultCellStyle.BackColor = Color.FromArgb(254, 252, 232);
+            colSoLuongTra.ToolTipText = "Nhập số lượng trả trực tiếp tại đây";
+            dgvHangTra.EditMode = DataGridViewEditMode.EditOnEnter;
+            dgvHangTra.EditingControlShowing += dgvHangTra_EditingControlShowing;
+            dgvHangTra.CellEndEdit += dgvHangTra_CellEndEdit;
+            dgvHangTra.Leave += (s, e) => { if (dgvHangTra.IsCurrentCellInEditMode) dgvHangTra.EndEdit(); };
+
             dgvHangTra.DataSource = dtHangTra;
         }
 
         private void frmThemPhieuTraHang_Load(object sender, EventArgs e)
         {
-            lblMaPhieuVal.Text = SinhMaPhieuTuDong();
+            txtMaPhieu.Text = SinhMaPhieuTuDong();
             dtpNgayTra.Value = DateTime.Now;
 
             NapDanhSachKho();
@@ -388,6 +395,93 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
             }
         }
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Enter && dgvHangTra.IsCurrentCellInEditMode)
+            {
+                dgvHangTra.EndEdit();
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void dgvHangTra_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        {
+            if (e.Control is TextBox txt)
+            {
+                txt.KeyPress -= TxtSoLuongDgv_KeyPress;
+                txt.KeyDown -= TxtSoLuongDgv_KeyDown;
+
+                string colName = dgvHangTra.CurrentCell != null ? dgvHangTra.Columns[dgvHangTra.CurrentCell.ColumnIndex].Name : "";
+                if (colName == "colSoLuongTra")
+                {
+                    txt.KeyPress += TxtSoLuongDgv_KeyPress;
+                    txt.KeyDown += TxtSoLuongDgv_KeyDown;
+                }
+            }
+        }
+
+        private void TxtSoLuongDgv_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Chỉ cho phép nhập số nguyên
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void TxtSoLuongDgv_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                dgvHangTra.EndEdit();
+            }
+        }
+
+        private void dgvHangTra_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.RowIndex >= dtHangTra.Rows.Count || isCalculating) return;
+
+            string colName = dgvHangTra.Columns[e.ColumnIndex].Name;
+            if (colName == "colSoLuongTra")
+            {
+                isCalculating = true;
+                try
+                {
+                    DataRow row = dtHangTra.Rows[e.RowIndex];
+                    int tonKho = Convert.ToInt32(row["TonKho"]);
+                    int slTra = 1;
+
+                    if (row["SoLuongTra"] == DBNull.Value || !int.TryParse(row["SoLuongTra"].ToString().Replace(",", "").Replace(".", "").Trim(), out slTra) || slTra <= 0)
+                    {
+                        MessageBox.Show("Số lượng trả phải là số nguyên lớn hơn 0!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        slTra = 1;
+                        row["SoLuongTra"] = slTra;
+                    }
+                    else if (slTra > tonKho)
+                    {
+                        MessageBox.Show(string.Format("Số lượng trả ({0:N0}) không được vượt quá tồn kho hiện tại ({1:N0})!", slTra, tonKho), "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        slTra = tonKho;
+                        row["SoLuongTra"] = slTra;
+                    }
+                    else
+                    {
+                        row["SoLuongTra"] = slTra;
+                    }
+
+                    decimal donGiaTra = Convert.ToDecimal(row["DonGiaTra"]);
+                    row["ThanhTien"] = slTra * donGiaTra;
+                }
+                finally
+                {
+                    isCalculating = false;
+                }
+
+                TinhToanTongKet();
+            }
+        }
+
         private void dgvHangTra_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0 || isCalculating) return;
@@ -496,6 +590,29 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
 
         private void LuuPhieuTraHang(string trangThai)
         {
+            if (dgvHangTra.IsCurrentCellInEditMode)
+            {
+                dgvHangTra.EndEdit();
+            }
+            this.BindingContext[dtHangTra]?.EndCurrentEdit();
+
+            string maPhieu = txtMaPhieu.Text.Trim();
+            if (string.IsNullOrEmpty(maPhieu))
+            {
+                MessageBox.Show("Mã phiếu không được để trống!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtMaPhieu.Focus();
+                return;
+            }
+
+            string checkSql = "SELECT COUNT(1) FROM PhieuTraHangNhap WHERE MaPhieu = @MaPhieu";
+            object exist = DataProcessing.ReadValue(checkSql, new SqlParameter[] { new SqlParameter("@MaPhieu", maPhieu) });
+            if (Convert.ToInt32(exist) > 0)
+            {
+                MessageBox.Show(string.Format("Mã phiếu '{0}' đã tồn tại trong hệ thống! Vui lòng chọn mã khác.", maPhieu), "Trùng mã", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtMaPhieu.Focus();
+                return;
+            }
+
             // Kiểm tra ràng buộc
             if (cboNhaCungCap.SelectedValue == null)
             {
@@ -560,7 +677,7 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
             int maNvLap = SessionContext.MaTaiKhoan > 0 ? SessionContext.MaTaiKhoan : maNvTra;
             DateTime ngayTra = dtpNgayTra.Value;
             string ghiChu = txtGhiChu.Text.Trim();
-            string maPhieu = SinhMaPhieuTuDong();
+            // maPhieu đã được lấy và xác thực từ txtMaPhieu ở đầu hàm
 
             string msgXacNhan = trangThai == "NHAP"
                 ? "Bạn có muốn lưu tạm phiếu trả hàng nhập này không?"

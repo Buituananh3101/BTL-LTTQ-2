@@ -40,9 +40,16 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             colXoa.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             colSoLuong.DefaultCellStyle.Format = "N0";
+            colSoLuong.DefaultCellStyle.BackColor = Color.FromArgb(254, 252, 232);
+            colSoLuong.ToolTipText = "Nhập số lượng trực tiếp tại đây (chỉ số nguyên, nhấn Enter hoặc click ra ngoài để xác nhận)";
             colDonGia.DefaultCellStyle.Format = "N0";
             colGiamGia.DefaultCellStyle.Format = "N0";
             colThanhTien.DefaultCellStyle.Format = "N0";
+
+            dgvChiTietHang.EditMode = DataGridViewEditMode.EditOnEnter;
+            dgvChiTietHang.EditingControlShowing += dgvChiTietHang_EditingControlShowing;
+            dgvChiTietHang.CellEndEdit += dgvChiTietHang_CellEndEdit;
+            dgvChiTietHang.Leave += (s, e) => { if (dgvChiTietHang.IsCurrentCellInEditMode) dgvChiTietHang.EndEdit(); };
 
             // Hỗ trợ phím Enter khi chọn hàng và nhập số lượng, đơn giá
             cboHangHoa.KeyDown += (s, ev) =>
@@ -302,6 +309,74 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             }
         }
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Enter && dgvChiTietHang.IsCurrentCellInEditMode)
+            {
+                dgvChiTietHang.EndEdit();
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void dgvChiTietHang_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        {
+            if (e.Control is TextBox txt)
+            {
+                txt.KeyPress -= TxtSoLuongDgv_KeyPress;
+                txt.KeyDown -= TxtSoLuongDgv_KeyDown;
+
+                string colName = dgvChiTietHang.CurrentCell != null ? dgvChiTietHang.Columns[dgvChiTietHang.CurrentCell.ColumnIndex].Name : "";
+                if (colName == "colSoLuong")
+                {
+                    txt.KeyPress += TxtSoLuongDgv_KeyPress;
+                    txt.KeyDown += TxtSoLuongDgv_KeyDown;
+                }
+            }
+        }
+
+        private void TxtSoLuongDgv_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Chỉ cho phép nhập số nguyên
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void TxtSoLuongDgv_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                dgvChiTietHang.EndEdit();
+            }
+        }
+
+        private void dgvChiTietHang_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                string colName = dgvChiTietHang.Columns[e.ColumnIndex].Name;
+                if (colName == "colSoLuong")
+                {
+                    DataGridViewRow row = dgvChiTietHang.Rows[e.RowIndex];
+                    int sl = 1;
+                    if (row.Cells["colSoLuong"].Value != null)
+                    {
+                        string slStr = row.Cells["colSoLuong"].Value.ToString().Replace(",", "").Replace(".", "").Trim();
+                        if (int.TryParse(slStr, out int pSl) && pSl > 0)
+                        {
+                            sl = pSl;
+                        }
+                    }
+                    row.Cells["colSoLuong"].Value = sl;
+                    CapNhatThanhTienDong(e.RowIndex);
+                    TinhTongThanhToan();
+                }
+            }
+        }
+
         private void dgvChiTietHang_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (isCalculating) return;
@@ -321,12 +396,18 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             if (rowIndex < 0 || rowIndex >= dgvChiTietHang.Rows.Count) return;
 
             DataGridViewRow row = dgvChiTietHang.Rows[rowIndex];
-            decimal sl = 0;
+            int sl = 1;
             decimal dg = 0;
             decimal gg = 0;
 
             if (row.Cells["colSoLuong"].Value != null)
-                decimal.TryParse(row.Cells["colSoLuong"].Value.ToString(), out sl);
+            {
+                string slStr = row.Cells["colSoLuong"].Value.ToString().Replace(",", "").Replace(".", "").Trim();
+                if (int.TryParse(slStr, out int pSl) && pSl > 0)
+                {
+                    sl = pSl;
+                }
+            }
 
             if (row.Cells["colDonGia"].Value != null)
                 decimal.TryParse(row.Cells["colDonGia"].Value.ToString().Replace(",", "").Replace(".", ""), out dg);
@@ -334,7 +415,6 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             if (row.Cells["colGiamGia"].Value != null)
                 decimal.TryParse(row.Cells["colGiamGia"].Value.ToString().Replace(",", "").Replace(".", ""), out gg);
 
-            if (sl < 0) sl = 0;
             if (dg < 0) dg = 0;
             if (gg < 0) gg = 0;
 
@@ -434,6 +514,11 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 
         private void LuuPhieuNhap(string trangThai)
         {
+            if (dgvChiTietHang.IsCurrentCellInEditMode)
+            {
+                dgvChiTietHang.EndEdit();
+            }
+
             // 1. Kiểm tra tính hợp lệ
             if (cboNhaCungCap.SelectedValue == null)
             {

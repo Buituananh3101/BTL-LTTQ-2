@@ -241,3 +241,19 @@
   3. **Tái thiết kế Form Thêm phiếu chuyển kho (`frmThemPhieuChuyenKho`)**:
      - Chuyển toàn bộ bố cục sang Right Menu Layout theo khuôn mẫu `frmThemPhieuKiemKho`: Form Size Lớn `ClientSize = (1182, 803)`.
      - Bố cục 2 khối: Khối bảng hàng hóa chuyển trung tâm ở bên trái (rộng 842px) cho phép chọn hàng, sửa trực tiếp SL chuyển với màu nền `#FEFCE8`, cột Xóa hiển thị rõ ràng; Khối Right Menu bên phải (rộng 340px) chứa thông tin Người lập, Ngày lập, Mã phiếu, Kho gửi, Kho nhận, Ghi chú, tổng hợp Số mặt hàng/Tổng SL/Tổng giá trị, đáy chứa 3 nút theo thứ tự chuẩn `Bỏ qua` ➜ `Lưu tạm` ➜ `Lưu`.
+
+- **2026-10-25 (Phiên 46)** – Khắc phục lỗi Hiện cột Chuyển kho, Chuẩn hóa TextBox Mã phiếu tự chọn có check trùng, Mở rộng chiều rộng và Tối ưu cơ chế nhập Số lượng nguyên trên DataGridView của 4 form thêm mới:
+  1. **Khắc phục lỗi Hiện cột Chuyển kho (`frmHienCotChuyenKho`)**:
+     - Sửa lỗi sai tên cột `"chkTongSlChuyen"`, `"chkTongSlNhan"`, `"chkTongGiaTri"` thành tên cột chính xác `"colTongSlChuyen"`, `"colTongSlNhan"`, `"colTongGiaTri"`, khắc phục triệt để tình trạng bỏ chọn nhưng các cột không bị ẩn trên DataGridView.
+  2. **Chuẩn hóa ô TextBox Mã phiếu tự chọn có kiểm tra trùng mã trên 4 Form tạo phiếu**:
+     - Áp dụng trên: `frmThemPhieuKiemKho`, `frmThemPhieuChuyenKho`, `frmThemPhieuNhap`, `frmThemPhieuTraHang`.
+     - Thay thế toàn bộ Label hiển thị mã phiếu tĩnh sang `TextBox` (`txtMaPhieu`) được điền sẵn mã gợi ý tự động (PKKxxxxxx, CKxxxxxx, PNxxxxxx, THNxxxxxx).
+     - Cho phép người dùng chỉnh sửa hoặc tự đặt mã tùy ý.
+     - Khi lưu (hoặc lưu tạm), hệ thống tự động kiểm tra rỗng và truy vấn CSDL kiểm tra chống trùng mã (`COUNT(1) ... WHERE MaPhieu = @MaPhieu`), nếu trùng sẽ đưa ra cảnh báo và focus về ô nhập mã.
+  3. **Tăng chiều rộng 4 Form tạo phiếu (`ClientSize = (1400, 803)`)**:
+     - Nâng chiều rộng form từ 1182px lên 1400px (nhỏ hơn form cha 1782px), giúp không gian DataGridView mở rộng thêm hơn 218px, các cột Tên hàng, Đơn giá, Thành tiền/Chênh lệch và Xóa hiển thị rộng rãi, rõ ràng, không bị co bẹp.
+  4. **Tối ưu trải nghiệm nhập Số lượng trực tiếp trên DataGridView**:
+     - Thống nhất màu nền nhận diện ô nhập liệu `#FEFCE8` và HeaderText có nhãn `(nhập)` rõ ràng: "Số lượng (nhập)", "SL thực tế (nhập)", "SL chuyển (nhập)", "SL trả (nhập)".
+     - Bật `EditMode = EditOnEnter` click 1 lần cho phép nhập ngay.
+     - Xử lý phím Enter (`ProcessCmdKey` & `EditingControlShowing.KeyDown`) và kích chuột ra ngoài (`Leave`, `CellEndEdit`, `btnLuu.Click`): gọi `dgv.EndEdit()` và commit BindingContext, khắc phục triệt để lỗi khi bảng chỉ có 1 mặt hàng nhấn Enter hoặc click ra ngoài form không nhận số lượng mới.
+     - Ràng buộc kiểu dữ liệu: Chặn gõ chữ cái, dấu chấm, dấu phẩy, dấu âm qua `KeyPress` (`char.IsDigit`), chỉ cho phép nhập số nguyên dương (đối với kiểm kho là số nguyên $\ge 0$).
