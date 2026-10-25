@@ -1,6 +1,6 @@
 ﻿# Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-25 – Khắc phục triệt để lỗi nút đè thanh phân trang frmBaoCaoTonKho và Mở rộng khoảng cách bộ lọc bên trái đồng bộ theo frmDanhSachHangHoa (Phiên 38)
+**Cập nhật lần cuối**: 2026-10-25 – Dàn đều bộ lọc Danh sách hàng hóa, Ẩn cột Ghi chú Kiểm kho & Chuyển kho, Đưa Tổng thực tế & Chênh lệch về trước Trạng thái và Chuẩn hóa báo đỏ in đậm chênh lệch kiểm kê (Phiên 40)
 
 ---
 
@@ -49,6 +49,46 @@
 
 ## Nhật ký phiên (Session Logs)
 
+- **Phiên 40 (2026-10-25) – Dàn đều bộ lọc Danh sách hàng hóa, Ẩn cột Ghi chú Kiểm kho & Chuyển kho, Đưa Tổng thực tế & Chênh lệch về trước Trạng thái và Chuẩn hóa báo đỏ in đậm chênh lệch kiểm kê**:
+  - **Nhu cầu**: Người dùng yêu cầu: (1) Form Danh sách hàng hóa: chỉnh lại khoảng cách giữa các filter cho rộng hơn, không để thừa không gian ở dưới mà các filter lại sát vào nhau; (2) Form Kiểm kho và Chuyển kho: ẩn cột ghi chú mặc định, khi người dùng tích chọn cột ghi chú trong form Hiện cột mới hiện ra; đưa cột Tổng thực tế và Tổng chênh lệch của form Kiểm kho về cuối dgv, phía trước cột Trạng thái; (3) Khi Kiểm kho: lệch tăng và lệch giảm nếu tổng lại về 0 (hoặc bù trừ về 0) thì trong form chi tiết kiểm kho vẫn phải báo đỏ thể hiện bất thường chỉ cần có mặt hàng bị chênh lệch trong phiếu; các trường thông tin Tổng lệch tăng, tổng lệch giảm, tổng chênh lệch khi có báo đỏ bất thường thì in đậm như trong dgv.
+  - **Kết quả thực hiện**:
+    1. **Dàn đều và mở rộng khoảng cách bộ lọc `frmDanhSachHangHoa`**:
+       - Bố trí lại toàn bộ 7 cụm bộ lọc trên `grpBoLoc` (chiều cao 717px) với khoảng cách thoáng đãng ~39px giữa mỗi cụm: Nhóm hàng (Top 25/51) ➜ Đơn vị tính (Top 115/141) ➜ Tồn kho (Top 205/231) ➜ Nhà cung cấp (Top 295/321) ➜ Vị trí (Top 385/411) ➜ Trạng thái (Top 475/501) ➜ Cụm thời gian tạo `grpThoiGianTao` (Top 565/593, đáy 701px, cách viền dưới 16px) tuân thủ tuyệt đối Điều luật 16.
+    2. **Ẩn cột Ghi chú & Đưa cột Tổng thực tế / Chênh lệch về trước Trạng thái**:
+       - Form Kiểm kho (`frmKiemKho`): Đặt `colGhiChu.Visible = false`, thứ tự cột dgv: `colChon`, `colMaPhieu`, `colThoiGian`, `colSlLechTang`, `colSlLechGiam`, `colNgayCanBang`, `colSlThucTe`, `colGhiChu`, `colTongThucTe`, `colTongChenhLech`, `colTrangThai`. Cột Tổng thực tế và Tổng chênh lệch nằm ở cuối dgv, ngay trước Trạng thái. Đồng bộ thứ tự cột xuất CSV và Excel HTML.
+       - Form Chuyển kho (`frmChuyenKho`): Đặt `colGhiChu.Visible = false`.
+       - Popup Hiện cột (`frmHienCotKiemKho`, `frmHienCotChuyenKho`): Đặt mặc định `chkGhiChu.Checked = false`, tích chọn sẽ lập tức hiển thị lại cột trên dgv.
+    3. **Chuẩn hóa cảnh báo bất thường báo đỏ in đậm khi Kiểm kho**:
+       - Tại `frmChiTietKiemKho.cs` và `frmThemPhieuKiemKho.cs`: Cập nhật điều kiện xác định chênh lệch `bool coChenhLech = (coLechTang || coLechGiam || tongChenhLech != 0 || tongGiaTriChenhLech != 0)`. Chỉ cần có bất kỳ mặt hàng nào lệch trong phiếu (dù số lượng lệch bù trừ về 0 hay tiền bù trừ về 0), trường `Tổng chênh lệch` (`lblTongChenhLechVal`) bắt buộc đổi sang màu Đỏ (`Color.Red`) và in đậm (`FontStyle.Bold`).
+       - Các trường `Tổng lệch tăng` (`lblTongLechTangVal`), `Tổng lệch giảm` (`lblTongLechGiamVal`) khi có chênh lệch cũng đổi sang màu Đỏ và in đậm (`FontStyle.Bold`) đồng bộ với DataGridView.
+       - Đồng bộ logic CellFormatting trên danh sách `frmKiemKho` để cột `Tổng chênh lệch` báo đỏ in đậm khi có mặt hàng lệch.
+    4. **Kiểm tra chất lượng**:
+       - Chạy `tools/KiemTraMaHoa.ps1`: **152/152 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+       - Đồng bộ tài liệu `docs/specs/kiem-kho.md` và `docs/specs/chuyen-kho.md`.
+
+- **Phiên 39 (2026-10-25) – Bỏ chức năng Đơn vị tính khỏi MenuStrip Hàng hóa, Tích hợp Filter Đơn vị tính và Form Quản lý Đơn vị tính con theo khuôn mẫu Nhóm hàng và Vị trí**:
+  - **Nhu cầu**: Người dùng yêu cầu trong menuStrip chức năng Hàng hóa, bỏ chức năng Đơn vị tính; thêm 1 filter Đơn vị tính vào form Danh sách hàng hóa và có nút thêm đơn vị tính ở bên cạnh (bố cục và logic, form thêm Đơn vị tính giống như 2 filter Nhóm hàng và Vị trí).
+  - **Kết quả thực hiện**:
+    1. **Loại bỏ Đơn vị tính khỏi MenuStrip rmMain**:
+       - Gỡ bỏ hoàn toàn mnuDonViTinh và 	oolStripSeparator3 khỏi mnuDanhMuc (menu Hàng hóa) trên rmMain.Designer.cs.
+       - Xóa bỏ phương thức xử lý sự kiện mnuDonViTinh_Click trong rmMain.cs.
+    2. **Tích hợp Filter Đơn vị tính vào rmDanhSachHangHoa**:
+       - Thêm nhãn lblDonViTinh, ComboBox cboDonViTinh (rộng 284) và nút thêm nhanh tnThemDonViTinhNhanh (size 29x29, text +, viền xám phẳng).
+       - Bố trí vị trí cân xứng, đều đặn giữa các bộ lọc: Nhóm hàng (Top 30/56) ➜ Đơn vị tính (Top 96/122) ➜ Tồn kho (Top 162/188) ➜ NCC (Top 228/254) ➜ Vị trí (Top 294/320) ➜ Trạng thái (Top 360/386) ➜ Cụm thời gian tạo grpThoiGianTao (Top 436/464) ở đáy tuân thủ tuyệt đối Điều luật 16.
+       - Tích hợp logic tìm kiếm không dấu ComboboxHelper.CaiDatTimKiem với giá trị mặc định -- Tất cả đơn vị tính --.
+       - Bổ sung điều kiện lọc AND h.MaDVT = @MaDVT vào hàm LayCauTrucQuery().
+    3. **Tạo Form Quản lý Đơn vị tính con (rmDonViTinh trong GUI/Forms/DanhSachHangHoa/)**:
+       - Kích thước form 1082 x 553, StartPosition = CenterParent, font Segoe UI, 9.5pt đồng bộ 100% với rmNhomHang và rmViTri.
+       - Panel Header: Tiêu đề "Đơn vị tính", ô tìm kiếm tức thời theo tên ĐVT, nút "Nhập file", nút "Xuất file" (CSV / Excel HTML Table UTF-8 BOM).
+       - Panel Trái: Ô nhập tên ĐVT, nút "Thêm", "Sửa", "Hủy".
+       - DataGridView: Hiển thị danh sách gồm Mã ĐVT (ẩn), Tên đơn vị tính (Fill), Số mặt hàng đang sử dụng (MiddleRight, format N0).
+       - Logic nghiệp vụ: Click chọn dòng để sửa, double click để xóa (kiểm tra toàn vẹn dữ liệu, chặn xóa nếu đang có hàng hóa liên kết), kiểm tra chống trùng tên khi thêm/sửa, nạp lại ComboBox tự động sau khi đóng form.
+    4. **Kiểm tra biên dịch & mã hóa**:
+       - Đăng ký đầy đủ 3 file mới vào BTL-LTTQ-2.csproj.
+       - Chạy 	ools/KiemTraMaHoa.ps1: **154/154 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+       - Đồng bộ tài liệu docs/specs/danh-sach-hang-hoa.md và docs/quyet-dinh.md.
 - **Phiên 38 (2026-10-25) – Khắc phục lỗi nút đè thanh phân trang frmBaoCaoTonKho và Chuẩn hóa khoảng cách bộ lọc bên trái theo frmDanhSachHangHoa**:
   - **Nhu cầu**: Người dùng phản hồi (1) Trong form báo cáo tồn kho đang tồn tại 1 nút không rõ chức năng bị đè dưới label tổng số hàng; (2) Khoảng cách giữa các filter trong các form bị quá chật, yêu cầu chỉnh lại rộng hơn, lấy khoảng cách các filter trong form Danh sách hàng hóa làm mẫu.
   - **Kết quả thực hiện**:

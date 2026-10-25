@@ -153,7 +153,22 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                     e.CellStyle.ForeColor = Color.FromArgb(100, 116, 139);
                 }
             }
-            if ((colName == "colTongChenhLech" || colName == "colSlLechTang" || colName == "colSlLechGiam") && e.Value != null)
+            if (colName == "colTongChenhLech" && e.RowIndex >= 0 && e.RowIndex < dgvKiemKho.Rows.Count)
+            {
+                DataRowView drv = dgvKiemKho.Rows[e.RowIndex].DataBoundItem as DataRowView;
+                if (drv != null)
+                {
+                    decimal slTang = drv["SlLechTang"] != DBNull.Value ? Convert.ToDecimal(drv["SlLechTang"]) : 0;
+                    decimal slGiam = drv["SlLechGiam"] != DBNull.Value ? Convert.ToDecimal(drv["SlLechGiam"]) : 0;
+                    decimal giaTri = drv["TongGiaTriChenhLech"] != DBNull.Value ? Convert.ToDecimal(drv["TongGiaTriChenhLech"]) : 0;
+                    if (slTang > 0 || slGiam > 0 || giaTri != 0)
+                    {
+                        e.CellStyle.ForeColor = Color.Red;
+                        e.CellStyle.Font = new Font(dgvKiemKho.Font, FontStyle.Bold);
+                    }
+                }
+            }
+            else if ((colName == "colSlLechTang" || colName == "colSlLechGiam") && e.Value != null)
             {
                 if (decimal.TryParse(e.Value.ToString(), out decimal val) && val != 0)
                 {
@@ -617,13 +632,13 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             sb.AppendLine("<tr>");
             sb.AppendLine("<th>Mã kiểm kho</th>");
             sb.AppendLine("<th>Thời gian</th>");
-            sb.AppendLine("<th>Tổng thực tế</th>");
-            sb.AppendLine("<th>Tổng chênh lệch</th>");
-            sb.AppendLine("<th>SL lệch tăng</th>");
-            sb.AppendLine("<th>SL lệch giảm</th>");
-            sb.AppendLine("<th>Ngày cân bằng</th>");
-            sb.AppendLine("<th>SL thực tế</th>");
-            sb.AppendLine("<th>Ghi chú</th>");
+            sb.AppendLine("<th>SL l\u1ec7ch t\u0103ng</th>");
+            sb.AppendLine("<th>SL l\u1ec7ch gi\u1ea3m</th>");
+            sb.AppendLine("<th>Ng\u00e0y c\u00e2n b\u1eb1ng</th>");
+            sb.AppendLine("<th>SL th\u1ef1c t\u1ebf</th>");
+            sb.AppendLine("<th>Ghi ch\u00fa</th>");
+            sb.AppendLine("<th>T\u1ed5ng th\u1ef1c t\u1ebf</th>");
+            sb.AppendLine("<th>T\u1ed5ng ch\u00eanh l\u1ec7ch</th>");
             sb.AppendLine("<th>Trạng thái</th>");
             sb.AppendLine("</tr>");
 
@@ -632,13 +647,13 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                 sb.AppendLine("<tr>");
                 sb.AppendLine($"<td class=\"center\">{r["MaPhieu"]}</td>");
                 sb.AppendLine($"<td class=\"center\">{r["ThoiGian"]}</td>");
-                sb.AppendLine($"<td class=\"num\">{Convert.ToDecimal(r["TongGiaTriThucTe"]):N0}</td>");
-                sb.AppendLine($"<td class=\"num\">{Convert.ToDecimal(r["TongGiaTriChenhLech"]):N0}</td>");
                 sb.AppendLine($"<td class=\"num\">{Convert.ToDecimal(r["SlLechTang"]):N0}</td>");
                 sb.AppendLine($"<td class=\"num\">{Convert.ToDecimal(r["SlLechGiam"]):N0}</td>");
                 sb.AppendLine($"<td class=\"center\">{r["NgayCanBang"]}</td>");
                 sb.AppendLine($"<td class=\"num\">{Convert.ToDecimal(r["TongSlThucTe"]):N0}</td>");
                 sb.AppendLine($"<td>{r["GhiChu"]}</td>");
+                sb.AppendLine($"<td class=\"num\">{Convert.ToDecimal(r["TongGiaTriThucTe"]):N0}</td>");
+                sb.AppendLine($"<td class=\"num\">{Convert.ToDecimal(r["TongGiaTriChenhLech"]):N0}</td>");
                 sb.AppendLine($"<td class=\"center\">{r["TenTrangThai"]}</td>");
                 sb.AppendLine("</tr>");
             }

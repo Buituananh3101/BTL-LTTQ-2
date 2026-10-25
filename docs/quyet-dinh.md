@@ -215,3 +215,4 @@
   4. **Kiểm tra biên dịch & Xác nhận**:
      - Chạy `tools/KiemTraMaHoa.ps1`: **150/150 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
      - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+- **2026-10-25 (Phiên 39)** – Chuyển chức năng Đơn vị tính từ MenuStrip riêng biệt thành Filter trực tiếp trong Danh sách hàng hóa: Loại bỏ mục "Đơn vị tính" khỏi menu Hàng hóa trên frmMain; thêm filter ComboBox Đơn vị tính kèm nút "+" mở form popup quản lý đơn vị tính frmDonViTinh (trong GUI/Forms/DanhSachHangHoa/) đồng bộ 100% bố cục và logic (Thêm/Sửa/Xóa có ràng buộc/Tìm kiếm/Xuất nhập file CSV) theo khuôn mẫu frmNhomHang và frmViTri.

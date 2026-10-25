@@ -411,13 +411,13 @@
             this.colChon,
             this.colMaPhieu,
             this.colThoiGian,
-            this.colTongThucTe,
-            this.colTongChenhLech,
             this.colSlLechTang,
             this.colSlLechGiam,
             this.colNgayCanBang,
             this.colSlThucTe,
             this.colGhiChu,
+            this.colTongThucTe,
+            this.colTongChenhLech,
             this.colTrangThai,
             this.colMaPhieuKiemKe});
             this.dgvKiemKho.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -522,6 +522,7 @@
             this.colGhiChu.MinimumWidth = 120;
             this.colGhiChu.Name = "colGhiChu";
             this.colGhiChu.ReadOnly = true;
+            this.colGhiChu.Visible = false;
             // 
             // colTrangThai
             // 

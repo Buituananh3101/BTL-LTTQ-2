@@ -39,6 +39,7 @@
             this.pnlBoLoc = new System.Windows.Forms.Panel();
             this.grpBoLoc = new System.Windows.Forms.GroupBox();
             this.btnThemViTriNhanh = new System.Windows.Forms.Button();
+            this.btnThemDonViTinhNhanh = new System.Windows.Forms.Button();
             this.btnThemNhomNhanh = new System.Windows.Forms.Button();
             this.grpThoiGianTao = new System.Windows.Forms.GroupBox();
             this.dtpTuNgay = new System.Windows.Forms.DateTimePicker();
@@ -56,6 +57,8 @@
             this.cboNhaCungCap = new System.Windows.Forms.ComboBox();
             this.lblNhomHang = new System.Windows.Forms.Label();
             this.cboNhomHang = new System.Windows.Forms.ComboBox();
+            this.lblDonViTinh = new System.Windows.Forms.Label();
+            this.cboDonViTinh = new System.Windows.Forms.ComboBox();
             this.splitterBoLoc = new System.Windows.Forms.Splitter();
             this.pnlPhanTrang = new System.Windows.Forms.Panel();
             this.lblTongSoHang = new System.Windows.Forms.Label();
@@ -208,6 +211,7 @@
             // grpBoLoc
             // 
             this.grpBoLoc.Controls.Add(this.btnThemViTriNhanh);
+            this.grpBoLoc.Controls.Add(this.btnThemDonViTinhNhanh);
             this.grpBoLoc.Controls.Add(this.btnThemNhomNhanh);
             this.grpBoLoc.Controls.Add(this.grpThoiGianTao);
             this.grpBoLoc.Controls.Add(this.lblTrangThai);
@@ -221,6 +225,8 @@
             this.grpBoLoc.Controls.Add(this.cboNhaCungCap);
             this.grpBoLoc.Controls.Add(this.lblNhomHang);
             this.grpBoLoc.Controls.Add(this.cboNhomHang);
+            this.grpBoLoc.Controls.Add(this.lblDonViTinh);
+            this.grpBoLoc.Controls.Add(this.cboDonViTinh);
             this.grpBoLoc.Location = new System.Drawing.Point(12, 9);
             this.grpBoLoc.Name = "grpBoLoc";
             this.grpBoLoc.Size = new System.Drawing.Size(360, 717);
@@ -231,7 +237,7 @@
             // 
             this.btnThemViTriNhanh.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
             this.btnThemViTriNhanh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnThemViTriNhanh.Location = new System.Drawing.Point(308, 335);
+            this.btnThemViTriNhanh.Location = new System.Drawing.Point(308, 409);
             this.btnThemViTriNhanh.Name = "btnThemViTriNhanh";
             this.btnThemViTriNhanh.Size = new System.Drawing.Size(29, 29);
             this.btnThemViTriNhanh.TabIndex = 12;
@@ -239,11 +245,23 @@
             this.btnThemViTriNhanh.UseVisualStyleBackColor = true;
             this.btnThemViTriNhanh.Click += new System.EventHandler(this.btnThemViTri_Click);
             // 
+            // btnThemDonViTinhNhanh
+            // 
+            this.btnThemDonViTinhNhanh.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.btnThemDonViTinhNhanh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnThemDonViTinhNhanh.Location = new System.Drawing.Point(308, 139);
+            this.btnThemDonViTinhNhanh.Name = "btnThemDonViTinhNhanh";
+            this.btnThemDonViTinhNhanh.Size = new System.Drawing.Size(29, 29);
+            this.btnThemDonViTinhNhanh.TabIndex = 13;
+            this.btnThemDonViTinhNhanh.Text = "+";
+            this.btnThemDonViTinhNhanh.UseVisualStyleBackColor = true;
+            this.btnThemDonViTinhNhanh.Click += new System.EventHandler(this.btnThemDonViTinh_Click);
+            // 
             // btnThemNhomNhanh
             // 
             this.btnThemNhomNhanh.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
             this.btnThemNhomNhanh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnThemNhomNhanh.Location = new System.Drawing.Point(308, 76);
+            this.btnThemNhomNhanh.Location = new System.Drawing.Point(308, 49);
             this.btnThemNhomNhanh.Name = "btnThemNhomNhanh";
             this.btnThemNhomNhanh.Size = new System.Drawing.Size(29, 29);
             this.btnThemNhomNhanh.TabIndex = 12;
@@ -257,7 +275,7 @@
             this.grpThoiGianTao.Controls.Add(this.dtpDenNgay);
             this.grpThoiGianTao.Controls.Add(this.lblTuNgay);
             this.grpThoiGianTao.Controls.Add(this.lblDenNgay);
-            this.grpThoiGianTao.Location = new System.Drawing.Point(18, 513);
+            this.grpThoiGianTao.Location = new System.Drawing.Point(18, 593);
             this.grpThoiGianTao.Name = "grpThoiGianTao";
             this.grpThoiGianTao.Size = new System.Drawing.Size(322, 108);
             this.grpThoiGianTao.TabIndex = 11;
@@ -302,7 +320,7 @@
             // lblTrangThai
             // 
             this.lblTrangThai.AutoSize = true;
-            this.lblTrangThai.Location = new System.Drawing.Point(14, 387);
+            this.lblTrangThai.Location = new System.Drawing.Point(18, 475);
             this.lblTrangThai.Name = "lblTrangThai";
             this.lblTrangThai.Size = new System.Drawing.Size(66, 17);
             this.lblTrangThai.TabIndex = 6;
@@ -311,7 +329,7 @@
             // lblViTri
             // 
             this.lblViTri.AutoSize = true;
-            this.lblViTri.Location = new System.Drawing.Point(14, 301);
+            this.lblViTri.Location = new System.Drawing.Point(18, 385);
             this.lblViTri.Name = "lblViTri";
             this.lblViTri.Size = new System.Drawing.Size(35, 17);
             this.lblViTri.TabIndex = 6;
@@ -320,7 +338,7 @@
             // lblThoiGianTao
             // 
             this.lblThoiGianTao.AutoSize = true;
-            this.lblThoiGianTao.Location = new System.Drawing.Point(14, 477);
+            this.lblThoiGianTao.Location = new System.Drawing.Point(18, 565);
             this.lblThoiGianTao.Name = "lblThoiGianTao";
             this.lblThoiGianTao.Size = new System.Drawing.Size(85, 17);
             this.lblThoiGianTao.TabIndex = 6;
@@ -329,7 +347,7 @@
             // lblTieuChiTon
             // 
             this.lblTieuChiTon.AutoSize = true;
-            this.lblTieuChiTon.Location = new System.Drawing.Point(14, 126);
+            this.lblTieuChiTon.Location = new System.Drawing.Point(18, 205);
             this.lblTieuChiTon.Name = "lblTieuChiTon";
             this.lblTieuChiTon.Size = new System.Drawing.Size(55, 17);
             this.lblTieuChiTon.TabIndex = 6;
@@ -338,7 +356,7 @@
             // cboTrangThai
             // 
             this.cboTrangThai.FormattingEnabled = true;
-            this.cboTrangThai.Location = new System.Drawing.Point(18, 421);
+            this.cboTrangThai.Location = new System.Drawing.Point(18, 501);
             this.cboTrangThai.Name = "cboTrangThai";
             this.cboTrangThai.Size = new System.Drawing.Size(322, 25);
             this.cboTrangThai.TabIndex = 5;
@@ -346,7 +364,7 @@
             // cboViTri
             // 
             this.cboViTri.FormattingEnabled = true;
-            this.cboViTri.Location = new System.Drawing.Point(18, 335);
+            this.cboViTri.Location = new System.Drawing.Point(18, 411);
             this.cboViTri.Name = "cboViTri";
             this.cboViTri.Size = new System.Drawing.Size(284, 25);
             this.cboViTri.TabIndex = 5;
@@ -354,7 +372,7 @@
             // cboTieuChiTon
             // 
             this.cboTieuChiTon.FormattingEnabled = true;
-            this.cboTieuChiTon.Location = new System.Drawing.Point(18, 160);
+            this.cboTieuChiTon.Location = new System.Drawing.Point(18, 231);
             this.cboTieuChiTon.Name = "cboTieuChiTon";
             this.cboTieuChiTon.Size = new System.Drawing.Size(322, 25);
             this.cboTieuChiTon.TabIndex = 5;
@@ -362,7 +380,7 @@
             // lblNhaCungCap
             // 
             this.lblNhaCungCap.AutoSize = true;
-            this.lblNhaCungCap.Location = new System.Drawing.Point(14, 215);
+            this.lblNhaCungCap.Location = new System.Drawing.Point(18, 295);
             this.lblNhaCungCap.Name = "lblNhaCungCap";
             this.lblNhaCungCap.Size = new System.Drawing.Size(89, 17);
             this.lblNhaCungCap.TabIndex = 4;
@@ -371,7 +389,7 @@
             // cboNhaCungCap
             // 
             this.cboNhaCungCap.FormattingEnabled = true;
-            this.cboNhaCungCap.Location = new System.Drawing.Point(18, 249);
+            this.cboNhaCungCap.Location = new System.Drawing.Point(18, 321);
             this.cboNhaCungCap.Name = "cboNhaCungCap";
             this.cboNhaCungCap.Size = new System.Drawing.Size(322, 25);
             this.cboNhaCungCap.TabIndex = 3;
@@ -379,7 +397,7 @@
             // lblNhomHang
             // 
             this.lblNhomHang.AutoSize = true;
-            this.lblNhomHang.Location = new System.Drawing.Point(14, 42);
+            this.lblNhomHang.Location = new System.Drawing.Point(18, 25);
             this.lblNhomHang.Name = "lblNhomHang";
             this.lblNhomHang.Size = new System.Drawing.Size(77, 17);
             this.lblNhomHang.TabIndex = 2;
@@ -388,10 +406,27 @@
             // cboNhomHang
             // 
             this.cboNhomHang.FormattingEnabled = true;
-            this.cboNhomHang.Location = new System.Drawing.Point(18, 76);
+            this.cboNhomHang.Location = new System.Drawing.Point(18, 51);
             this.cboNhomHang.Name = "cboNhomHang";
             this.cboNhomHang.Size = new System.Drawing.Size(284, 25);
             this.cboNhomHang.TabIndex = 1;
+            // 
+            // lblDonViTinh
+            // 
+            this.lblDonViTinh.AutoSize = true;
+            this.lblDonViTinh.Location = new System.Drawing.Point(18, 115);
+            this.lblDonViTinh.Name = "lblDonViTinh";
+            this.lblDonViTinh.Size = new System.Drawing.Size(70, 17);
+            this.lblDonViTinh.TabIndex = 2;
+            this.lblDonViTinh.Text = "Đơn vị tính";
+            // 
+            // cboDonViTinh
+            // 
+            this.cboDonViTinh.FormattingEnabled = true;
+            this.cboDonViTinh.Location = new System.Drawing.Point(18, 141);
+            this.cboDonViTinh.Name = "cboDonViTinh";
+            this.cboDonViTinh.Size = new System.Drawing.Size(284, 25);
+            this.cboDonViTinh.TabIndex = 2;
             // 
             // splitterBoLoc
             // 
@@ -555,5 +590,8 @@
         private System.Windows.Forms.Splitter splitterBoLoc;
         private System.Windows.Forms.Button btnThemNhomNhanh;
         private System.Windows.Forms.Button btnThemViTriNhanh;
+        private System.Windows.Forms.Button btnThemDonViTinhNhanh;
+        private System.Windows.Forms.Label lblDonViTinh;
+        private System.Windows.Forms.ComboBox cboDonViTinh;
     }
 }

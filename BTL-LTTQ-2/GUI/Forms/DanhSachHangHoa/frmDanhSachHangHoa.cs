@@ -256,6 +256,9 @@ namespace BTL_LTTQ_2.GUI.Forms
             // 1. Nhóm hàng
             NapDanhSachNhomHang(locDuLieu);
 
+            // 2. Đơn vị tính
+            NapDanhSachDonViTinh(locDuLieu);
+
             // 2. Tiêu chí tồn
             List<string> listTieuChiTon = new List<string> {
                 "-- Tất cả tồn kho --",
@@ -332,6 +335,13 @@ namespace BTL_LTTQ_2.GUI.Forms
                 {
                     whereSql.Append(" AND h.MaNhom = @MaNhom ");
                     parameters.Add(new SqlParameter("@MaNhom", maNhom));
+                }
+
+                // Lọc đơn vị tính
+                if (cboDonViTinh.SelectedValue != null && int.TryParse(cboDonViTinh.SelectedValue.ToString(), out int maDVT) && maDVT > 0)
+                {
+                    whereSql.Append(" AND h.MaDVT = @MaDVT ");
+                    parameters.Add(new SqlParameter("@MaDVT", maDVT));
                 }
 
                 // Lọc nhà cung cấp (hàng từng nhập từ NCC này)
@@ -788,6 +798,53 @@ namespace BTL_LTTQ_2.GUI.Forms
             }
         }
 
+        // Bấm nút dấu cộng bên cạnh đơn vị tính để mở frmDonViTinh
+        private void btnThemDonViTinh_Click(object sender, EventArgs e)
+        {
+            using (frmDonViTinh frm = new frmDonViTinh())
+            {
+                frm.StartPosition = FormStartPosition.CenterParent;
+                frm.ShowDialog(this);
+                NapDanhSachDonViTinh();
+            }
+        }
+
+        public void NapDanhSachDonViTinh(Action locDuLieu = null)
+        {
+            try
+            {
+                object selectedVal = cboDonViTinh.SelectedValue;
+                DataTable dtDvt = DataProcessing.ReadData("SELECT MaDVT, TenDVT FROM DonViTinh ORDER BY TenDVT");
+                DataRow drAllDvt = dtDvt.NewRow();
+                drAllDvt["MaDVT"] = 0;
+                drAllDvt["TenDVT"] = "-- Tất cả đơn vị tính --";
+                dtDvt.Rows.InsertAt(drAllDvt, 0);
+
+                Action action = locDuLieu ?? (() =>
+                {
+                    if (isLoaded)
+                    {
+                        trangHienTai = 1;
+                        HienThiDanhSach();
+                    }
+                });
+
+                ComboboxHelper.CaiDatTimKiem(cboDonViTinh, dtDvt, "TenDVT", "MaDVT", action);
+
+                if (selectedVal != null && int.TryParse(selectedVal.ToString(), out int val) && val > 0)
+                {
+                    cboDonViTinh.SelectedValue = val;
+                }
+                else
+                {
+                    cboDonViTinh.SelectedIndex = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi tải danh mục đơn vị tính: " + ex.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
         // Bấm nút dấu cộng bên cạnh nhóm hàng để mở frmNhomHang
         private void btnThemNhomHang_Click(object sender, EventArgs e)
         {

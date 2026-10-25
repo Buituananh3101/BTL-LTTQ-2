@@ -562,6 +562,7 @@
             this.colGhiChu.MinimumWidth = 150;
             this.colGhiChu.Name = "colGhiChu";
             this.colGhiChu.ReadOnly = true;
+            this.colGhiChu.Visible = false;
             // 
             // colTrangThai
             // 

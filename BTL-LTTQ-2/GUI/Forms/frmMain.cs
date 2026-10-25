@@ -41,7 +41,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             tssThoiGian.Text = "Thời gian: " + DateTime.Now.ToString("dd/MM/yyyy HH:mm");
         }
 
-        private void menuDanhSachHangHoa_Click(object sender, EventArgs e)
+        private void mnuDanhSachHangHoa_Click(object sender, EventArgs e)
         {
             // Kiểm tra xem form danh sách hàng hóa đã mở chưa, nếu đã mở thì kích hoạt (Active) lên trước
             foreach (Form form in this.MdiChildren)
@@ -202,23 +202,6 @@ namespace BTL_LTTQ_2.GUI.Forms
                     }
                 }
             }
-        }
-
-        private void mnuDonViTinh_Click(object sender, EventArgs e)
-        {
-            // Kiểm tra xem form danh sách đơn vị tính đã mở chưa, nếu đã mở thì kích hoạt (Active) lên trước
-            foreach (Form form in this.MdiChildren)
-            {
-                if (form is BTL_LTTQ_2.GUI.Forms.DonViTinh.frmDonViTinh)
-                {
-                    form.Activate();
-                    return;
-                }
-            }
-
-            BTL_LTTQ_2.GUI.Forms.DonViTinh.frmDonViTinh frm = new BTL_LTTQ_2.GUI.Forms.DonViTinh.frmDonViTinh();
-            frm.MdiParent = this;
-            frm.Show();
         }
 
         private void mnuBaoCaoTonKho_Click(object sender, EventArgs e)

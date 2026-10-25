@@ -43,14 +43,13 @@
 ## 3. Quy chuẩn Giao diện & Bộ lọc
 
 ### 3.1. Cột lọc bên trái (Sidebar Filter):
-1. **Nhóm hàng**: Multi-select Tag Dropdown + ô tìm kiếm dính đỉnh + Tạo mới, Sửa và Xóa trực tiếp từ dropdown (icon ✎ khi hover).
-2. **Tồn kho**: Custom Single Select hệ thống (Tất cả / Còn hàng / Hết hàng / Dưới định mức tồn).
-3. **Dự kiến hết hàng**: Hôm nay, 3 ngày tới, 7 ngày tới, Trong tháng, > 30 ngày.
-4. **Nhà cung cấp**: Multi-select tag dropdown theo NCC đã từng nhập.
-5. **Loại hàng**: Hàng hóa / Dịch vụ / Combo đóng gói.
-6. **Vị trí**: Dropdown đa chọn kèm ô tìm kiếm nhanh `.kiot-ms-search`.
-7. **Thời gian tạo**: Hôm nay, Hôm qua, 7 ngày, 30 ngày hoặc tùy chọn ngày (Dual Calendar).
-
+1. **Nhóm hàng**: ComboBox tìm kiếm tiếng Việt không dấu (`ComboboxHelper.CaiDatTimKiem`) + Nút `+` mở form popup quản lý nhóm hàng (`frmNhomHang`).
+2. **Đơn vị tính**: ComboBox tìm kiếm tiếng Việt không dấu (`ComboboxHelper.CaiDatTimKiem`) + Nút `+` mở form popup quản lý đơn vị tính (`frmDonViTinh`) đồng bộ bố cục và logic theo `frmNhomHang` và `frmViTri`.
+3. **Tồn kho**: ComboBox tùy chọn mức tồn (Tất cả / Còn hàng / Hết hàng / Dưới định mức tồn).
+4. **Nhà cung cấp**: ComboBox tìm kiếm tiếng Việt không dấu theo NCC đã từng nhập hàng.
+5. **Vị trí**: ComboBox tìm kiếm tiếng Việt không dấu + Nút `+` mở form popup quản lý vị trí (`frmViTri`).
+6. **Trạng thái**: ComboBox chọn trạng thái kinh doanh (Tất cả / Đang kinh doanh / Ngừng kinh doanh).
+7. **Thời gian tạo**: Cụm `grpThoiGianTao` chứa 2 `DateTimePicker` (Từ ngày - Đến ngày) **ở vị trí đáy** tuân thủ tuyệt đối Điều luật 16.
 ### 3.2. Cột Checkbox & Ẩn hiện cột:
 - **Cột CheckBox lựa chọn (colChon)**: Cột cố định đầu tiên (35px) phục vụ chọn từng dòng hoặc chọn tất cả qua Header CheckBox. Click trực tiếp hoặc bấm phím Space để đảo trạng thái chọn tức thì mà không ảnh hưởng trạng thái chỉ đọc của các cột dữ liệu. Cung cấp API LayDanhSachMaHangDaChon() để phục vụ các tác vụ hàng loạt. Tự động loại trừ khi xuất file Excel/CSV.
 - **Sắp xếp 3 trạng thái & Ẩn hiện cột**:

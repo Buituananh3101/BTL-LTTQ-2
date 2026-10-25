@@ -164,8 +164,8 @@
             // chkGhiChu
             // 
             this.chkGhiChu.AutoSize = true;
-            this.chkGhiChu.Checked = true;
-            this.chkGhiChu.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkGhiChu.Checked = false;
+            this.chkGhiChu.CheckState = System.Windows.Forms.CheckState.Unchecked;
             this.chkGhiChu.Cursor = System.Windows.Forms.Cursors.Hand;
             this.chkGhiChu.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkGhiChu.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));

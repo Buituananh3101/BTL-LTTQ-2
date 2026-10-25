@@ -262,10 +262,45 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                 lblTongChenhLechVal.Text = $"{tongChenhLech:N0}  |  {tongGiaTriChenhLech:N0} đ";
 
                 // Chỉ tô đỏ khi có chênh lệch hoặc bất thường (cả lệch tăng và lệch giảm khi != 0 đều tô đỏ)
+                bool coLechTang = (tongLechTang > 0 || tongGiaTriLechTang > 0);
+                bool coLechGiam = (tongLechGiam > 0 || tongGiaTriLechGiam > 0);
+                bool coChenhLech = (coLechTang || coLechGiam || tongChenhLech != 0 || tongGiaTriChenhLech != 0);
+
                 lblTongThucTeVal.ForeColor = SystemColors.ControlText;
-                lblTongLechTangVal.ForeColor = tongLechTang > 0 ? Color.Red : SystemColors.ControlText;
-                lblTongLechGiamVal.ForeColor = tongLechGiam > 0 ? Color.Red : SystemColors.ControlText;
-                lblTongChenhLechVal.ForeColor = tongChenhLech != 0 ? Color.Red : SystemColors.ControlText;
+                lblTongThucTeVal.Font = new Font(lblTongThucTeVal.Font, FontStyle.Regular);
+
+                if (coLechTang)
+                {
+                    lblTongLechTangVal.ForeColor = Color.Red;
+                    lblTongLechTangVal.Font = new Font(lblTongLechTangVal.Font, FontStyle.Bold);
+                }
+                else
+                {
+                    lblTongLechTangVal.ForeColor = SystemColors.ControlText;
+                    lblTongLechTangVal.Font = new Font(lblTongLechTangVal.Font, FontStyle.Regular);
+                }
+
+                if (coLechGiam)
+                {
+                    lblTongLechGiamVal.ForeColor = Color.Red;
+                    lblTongLechGiamVal.Font = new Font(lblTongLechGiamVal.Font, FontStyle.Bold);
+                }
+                else
+                {
+                    lblTongLechGiamVal.ForeColor = SystemColors.ControlText;
+                    lblTongLechGiamVal.Font = new Font(lblTongLechGiamVal.Font, FontStyle.Regular);
+                }
+
+                if (coChenhLech)
+                {
+                    lblTongChenhLechVal.ForeColor = Color.Red;
+                    lblTongChenhLechVal.Font = new Font(lblTongChenhLechVal.Font, FontStyle.Bold);
+                }
+                else
+                {
+                    lblTongChenhLechVal.ForeColor = SystemColors.ControlText;
+                    lblTongChenhLechVal.Font = new Font(lblTongChenhLechVal.Font, FontStyle.Regular);
+                }
             }
             catch (Exception ex)
             {
