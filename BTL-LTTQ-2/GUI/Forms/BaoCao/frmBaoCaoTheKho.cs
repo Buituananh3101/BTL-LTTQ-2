@@ -19,10 +19,64 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
         private bool dangNapDuLieu = false;
         private DataTable dtTheKhoHienThi;
 
+        private Timer searchDebounceTimer;
+
         public frmBaoCaoTheKho()
         {
             InitializeComponent();
             btnQuayLai.Visible = false;
+            KhoiTaoDebounceTimer();
+            if (txtTimKiem != null)
+            {
+                txtTimKiem.KeyDown += txtTimKiem_KeyDown;
+            }
+        }
+
+        private void KhoiTaoDebounceTimer()
+        {
+            searchDebounceTimer = new Timer();
+            searchDebounceTimer.Interval = 300;
+            searchDebounceTimer.Tick += (s, e) =>
+            {
+                searchDebounceTimer.Stop();
+                if (!dangNapDuLieu)
+                {
+                    TaiDuLieuTheKho();
+                }
+            };
+        }
+
+        private void txtTimKiem_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                searchDebounceTimer?.Stop();
+                if (!dangNapDuLieu)
+                {
+                    TaiDuLieuTheKho();
+                }
+            }
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Escape && moTuTonKho)
+            {
+                QuayLaiBaoCaoTonKho();
+                return true;
+            }
+
+            if (keyData == Keys.F3)
+            {
+                if (txtTimKiem != null && txtTimKiem.CanFocus)
+                {
+                    txtTimKiem.Focus();
+                    txtTimKiem.SelectAll();
+                    return true;
+                }
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         public frmBaoCaoTheKho(int maHang, int maKho = 0, bool moTuTonKho = false) : this()
@@ -273,9 +327,10 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                     }
                 }
 
-                cboKho.DataSource = dtComboKho;
-                cboKho.DisplayMember = "TenKho";
-                cboKho.ValueMember = "MaKho";
+                ComboboxHelper.CaiDatTimKiem(cboKho, dtComboKho, "TenKho", "MaKho", () =>
+                {
+                    TaiDuLieuTheKho();
+                });
 
                 if (SessionContext.MaKhoHienTai > 0)
                 {
@@ -559,12 +614,15 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                                 break;
                         }
 
-                        // Lọc từ khóa tìm kiếm
+                        // Lọc từ khóa tìm kiếm (hỗ trợ cả tiếng Việt có dấu và không dấu)
                         if (!string.IsNullOrWhiteSpace(tuKhoa))
                         {
+                            string tuKhoaKhongDau = ComboboxHelper.BoDauTiengViet(tuKhoa);
                             bool match = maHienThi.IndexOf(tuKhoa, StringComparison.OrdinalIgnoreCase) >= 0 ||
                                          doiTac.IndexOf(tuKhoa, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                         ghiChu.IndexOf(tuKhoa, StringComparison.OrdinalIgnoreCase) >= 0;
+                                         ghiChu.IndexOf(tuKhoa, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                         ComboboxHelper.BoDauTiengViet(doiTac).IndexOf(tuKhoaKhongDau, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                         ComboboxHelper.BoDauTiengViet(ghiChu).IndexOf(tuKhoaKhongDau, StringComparison.OrdinalIgnoreCase) >= 0;
                             if (!match) continue;
                         }
 
@@ -681,7 +739,8 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
 
         private void txtTimKiem_TextChanged(object sender, EventArgs e)
         {
-            TaiDuLieuTheKho();
+            searchDebounceTimer?.Stop();
+            searchDebounceTimer?.Start();
         }
 
         private void btnXuatFile_Click(object sender, EventArgs e)
@@ -761,12 +820,12 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
             frmHienCotBaoCao frm = new frmHienCotBaoCao(dgvTheKho);
             frm.StartPosition = FormStartPosition.Manual;
 
-            // TÃ­nh toáº¡ Ä‘á»™ hiá»ƒn thá»‹ ngay phÃ­a dÆ°á»›i nÃºt btnHienCot (cÄƒn tháº³ng mÃ©p pháº£i nÃºt)
+            // Tính toạ \u0111\u1ED9 hi\u1EC3n th\u1ECB ngay ph\u00EDa d\u01B0\u1EDBi n\u00FAt btnHienCot (c\u0103n th\u1EB3ng m\u00E9p ph\u1EA3i n\u00FAt)
             Point btnPos = btnHienCot.PointToScreen(Point.Empty);
             int posX = btnPos.X + btnHienCot.Width - frm.Width;
             int posY = btnPos.Y + btnHienCot.Height + 2;
 
-            // Báº£o Ä‘áº£m form khÃ´ng bá»‹ trÃ n ra ngoÃ i mÃ n hÃ¬nh lÃ m viá»‡c
+            // B\u1EA3o \u0111\u1EA3m form kh\u00F4ng b\u1ECB tr\u00E0n ra ngo\u00E0i m\u00E0n h\u00ECnh l\u00E0m vi\u1EC7c
             Rectangle workingArea = Screen.FromControl(btnHienCot).WorkingArea;
             if (posX + frm.Width > workingArea.Right)
             {
@@ -832,16 +891,6 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                     }
                 }
             }
-        }
-
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-            if (keyData == Keys.Escape && moTuTonKho)
-            {
-                QuayLaiBaoCaoTonKho();
-                return true;
-            }
-            return base.ProcessCmdKey(ref msg, keyData);
         }
     }
 }

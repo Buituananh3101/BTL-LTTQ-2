@@ -25,9 +25,59 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
         private bool isUpdatingCheckAll = false;
         private bool isHeaderHovered = false;
 
+        private Timer searchDebounceTimer;
+
         public frmNhaCungCap()
         {
             InitializeComponent();
+            KhoiTaoDebounceTimer();
+            if (txtTimKiem != null)
+            {
+                txtTimKiem.KeyDown += txtTimKiem_KeyDown;
+            }
+        }
+
+        private void KhoiTaoDebounceTimer()
+        {
+            searchDebounceTimer = new Timer();
+            searchDebounceTimer.Interval = 300;
+            searchDebounceTimer.Tick += (s, e) =>
+            {
+                searchDebounceTimer.Stop();
+                if (isLoaded)
+                {
+                    trangHienTai = 1;
+                    HienThiDanhSach();
+                }
+            };
+        }
+
+        private void txtTimKiem_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                searchDebounceTimer?.Stop();
+                if (isLoaded)
+                {
+                    trangHienTai = 1;
+                    HienThiDanhSach();
+                }
+            }
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.F3)
+            {
+                if (txtTimKiem != null && txtTimKiem.CanFocus)
+                {
+                    txtTimKiem.Focus();
+                    txtTimKiem.SelectAll();
+                    return true;
+                }
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         private void frmNhaCungCap_Load(object sender, EventArgs e)
@@ -456,8 +506,8 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
 
         private void txtTimKiem_TextChanged(object sender, EventArgs e)
         {
-            trangHienTai = 1;
-            HienThiDanhSach();
+            searchDebounceTimer?.Stop();
+            searchDebounceTimer?.Start();
         }
 
         private void BoLoc_SelectedIndexChanged(object sender, EventArgs e)

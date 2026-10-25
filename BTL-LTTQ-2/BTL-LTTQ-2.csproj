@@ -86,6 +86,9 @@
     <Compile Include="GUI\Forms\frmMain.Designer.cs">
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="GUI\Forms\BaoCao\frmBaoCaoTonKho.resx">
+      <DependentUpon>frmBaoCaoTonKho.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\BaoCao\frmHienCotBaoCao.resx">
       <DependentUpon>frmHienCotBaoCao.cs</DependentUpon>
     </EmbeddedResource>

@@ -90,6 +90,15 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             lblMaPhieuVal.Text = SinhMaPhieuTuDong();
             dtpThoiDiemChot.Value = DateTime.Now;
 
+            nudSoLuongThucTe.KeyDown += (s, ev) =>
+            {
+                if (ev.KeyCode == Keys.Enter)
+                {
+                    ev.SuppressKeyPress = true;
+                    btnThemHang_Click(null, null);
+                }
+            };
+
             NapDanhSachKho();
             NapDanhSachNhanVien();
             NapDanhSachHangHoa();
@@ -189,9 +198,10 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                 SqlParameter[] p = { new SqlParameter("@MaKho", maKho) };
                 dtDanhSachHang = DataProcessing.ReadData(sql, p);
 
-                cboHangHoa.DisplayMember = "HienThi";
-                cboHangHoa.ValueMember = "MaHang";
-                cboHangHoa.DataSource = dtDanhSachHang;
+                ComboboxHelper.CaiDatTimKiem(cboHangHoa, dtDanhSachHang, "HienThi", "MaHang", () =>
+                {
+                    cboHangHoa_SelectedIndexChanged(null, null);
+                });
 
                 cboHangHoa_SelectedIndexChanged(null, null);
             }

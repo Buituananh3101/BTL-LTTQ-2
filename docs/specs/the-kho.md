@@ -1,4 +1,4 @@
-# Đặc tả Chức năng: Báo cáo Thẻ kho (`frmBaoCaoTheKho`)
+﻿# Đặc tả Chức năng: Báo cáo Thẻ kho (`frmBaoCaoTheKho`)
 
 > **Mã chức năng**: `BaoCao_TheKho`  
 > **Form C#**: `GUI/Forms/BaoCao/frmBaoCaoTheKho.cs`  
@@ -38,14 +38,16 @@ Số liệu Thẻ kho được truy vấn từ View CSDL **`vw_BienDongKho`** (h
   - Hỗ trợ constructor có tham số `frmBaoCaoTheKho(int maHang, int maKho = 0, bool moTuTonKho = false)` và phương thức `ChonMatHangVaKho(maHang, maKho, moTuTonKho = false)` mở trực tiếp từ Báo cáo tồn kho.
   - Khi `moTuTonKho = true`: Nút `Quay lại` (`btnQuayLai`) hiển thị ở thanh tiêu đề bên cạnh "Báo cáo thẻ kho". Khi bấm `Quay lại`, nhấn phím `Escape` hoặc đóng form (dấu [X]), hệ thống tự động đóng Thẻ kho và kích hoạt lại `frmBaoCaoTonKho` (`Activate()`) đưa người dùng về ngay dòng hàng và trang đang xem dở.
 - **Phân vùng giao diện**:
-  - `pnlTop` (Cao 135px):
-    - `grpTop`: Tiêu đề "Báo cáo thẻ kho", nút `Quay lại` (`btnQuayLai` - chỉ hiển thị theo ngữ cảnh), ô tìm kiếm nhanh chứng từ/đối tác, nút `Xuất file`, `Hiện cột`, `?`.
-    - `pnlBannerHangHoa`: Banner hiển thị tên sản phẩm, mã SKU, ĐVT, nhóm hàng, vị trí, giá vốn cùng 4 thẻ KPI Thẻ kho (Tồn đầu kỳ, Tổng nhập trong kỳ, Tổng xuất trong kỳ, Tồn cuối kỳ).
-  - `pnlBoLoc` (Rộng 360px bên trái):
-    - `cboHangHoa`: ComboBox chọn mặt hàng (tích hợp `ComboboxHelper.CaiDatTimKiem`).
-    - `cboKho`: ComboBox chọn kho (Tất cả / Kho cụ thể).
-    - `cboLoaiChungTu`: ComboBox lọc loại chứng từ phát sinh.
-    - `grpThoiGianTao`: Cụm 2 DateTimePicker Short đặt ở vị trí đáy theo Điều luật 16.
+  - `pnlTop` (Cao 150px):
+    - `grpTop` (Cao 60px): Tiêu đề "Báo cáo thẻ kho", nút `Quay lại` (`btnQuayLai` - chỉ hiển thị theo ngữ cảnh), ô tìm kiếm nhanh chứng từ/đối tác (tách biệt `lblTimKiem` tại (385, 25) và `txtTimKiem` tại (465, 21) chuẩn `frmDanhSachHangHoa`), nút `Xuất file`, `Hiện cột`, `?`.
+    - `pnlBannerHangHoa` (Cao 90px): Chứa 5 panel con (thông tin hàng hóa và 4 thẻ KPI: Tồn đầu kỳ, Tổng nhập trong kỳ, Tổng xuất trong kỳ, Tồn cuối kỳ) với chiều cao 72px vừa khít panel cha, cách đều mép trên và dưới 9px.
+  - `pnlBoLoc` (Rộng 387px bên trái chuẩn theo `frmDanhSachHangHoa`):
+    - `grpBoLoc` (Rộng 360px, viền đỉnh `splitterBoLoc`):
+      - `cboHangHoa`: ComboBox chọn mặt hàng (tích hợp `ComboboxHelper.CaiDatTimKiem`).
+      - `cboKho`: ComboBox chọn kho (Tất cả / Kho cụ thể).
+      - `cboLoaiChungTu`: ComboBox lọc loại chứng từ phát sinh.
+      - `lblThoiGianTao`: Nhãn "Thời gian phát sinh" tại (14, 477).
+      - `grpThoiGianTao`: Cụm 2 DateTimePicker Short tại đáy (18, 513) theo Điều luật 16.
   - `dgvTheKho` (Dock = Fill):
     - Bảng hiển thị danh sách dòng thẻ kho: Dòng Tồn đầu kỳ (highlight màu nền nhẹ, font chữ thường), các dòng phát sinh chứng từ (STT, Thời gian, Mã chứng từ, Loại giao dịch, Đối tác / Diễn giải, Chi nhánh kho, SL Nhập, SL Xuất, Tồn lũy kế, Ghi chú), dòng Tồn cuối kỳ (highlight màu nền nhẹ, font chữ thường). Toàn bộ thuộc tính hiển thị font chữ thường đồng bộ theo mẫu Trả hàng nhập (không in đậm tùy tiện).
     - Tồn lũy kế âm được tô đỏ đậm (Điều luật 15a).

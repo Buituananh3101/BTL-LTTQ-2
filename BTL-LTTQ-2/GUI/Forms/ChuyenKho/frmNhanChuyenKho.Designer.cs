@@ -146,7 +146,7 @@
             this.colSoLuongNhan.DataPropertyName = "SoLuongNhan";
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
             dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(204)))));
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular);
             dataGridViewCellStyle2.Format = "N0";
             this.colSoLuongNhan.DefaultCellStyle = dataGridViewCellStyle2;
             this.colSoLuongNhan.HeaderText = "SL thực nhận";

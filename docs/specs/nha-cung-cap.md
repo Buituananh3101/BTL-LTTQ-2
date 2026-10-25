@@ -1,4 +1,4 @@
-# Đặc tả Chức năng: Quản lý Nhà cung cấp (Supplier Management - Windows Forms)
+﻿# Đặc tả Chức năng: Quản lý Nhà cung cấp (Supplier Management - Windows Forms)
 
 > **Mục tiêu**: Quản lý danh mục Nhà cung cấp chuẩn giao diện & nghiệp vụ hệ thống kho hàng nội bộ. Tìm kiếm tức thì, lọc đa tiêu chí bằng ComboBox, phân trang SQL Server, mở form MDI, form phụ thêm/sửa NCC bọc Transaction, tạo nhanh nhóm NCC, nhập file danh sách NCC từ Excel/CSV và xuất dữ liệu ra file CSV/Excel UTF-8 BOM.
 

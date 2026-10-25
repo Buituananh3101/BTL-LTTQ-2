@@ -1,0 +1,22 @@
+﻿# EditorConfig to strictly enforce UTF-8 with BOM and CRLF across the entire solution
+root = true
+
+[*]
+charset = utf-8-bom
+end_of_line = crlf
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = false
+insert_final_newline = true
+
+[*.{cs,csx}]
+charset = utf-8-bom
+end_of_line = crlf
+
+[*.{resx,xml,config,manifest,csproj,slnx,sln}]
+charset = utf-8-bom
+end_of_line = crlf
+
+[*.{sql,md}]
+charset = utf-8-bom
+end_of_line = crlf

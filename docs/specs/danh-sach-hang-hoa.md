@@ -1,4 +1,4 @@
-# Đặc tả Chức năng: Quản lý Hàng hóa (Product Catalog)
+﻿# Đặc tả Chức năng: Quản lý Hàng hóa (Product Catalog)
 
 > **Mục tiêu**: **Khuôn mẫu chuẩn cho toàn bộ màn hình Danh mục (CRUD)** trong hệ thống. Lọc sidebar, phân trang AJAX, modal JSON, bảo toàn dữ liệu, nhập/xuất Excel chuẩn chuyên nghiệp.
 

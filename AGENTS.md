@@ -1,4 +1,4 @@
-# AGENTS.md – Quy chuẩn vận hành cho AI Assistant
+﻿# AGENTS.md – Quy chuẩn vận hành cho AI Assistant
 ## Dự án: BTL-LTTQ-2 (Quản lý kho hàng nội bộ - Windows Forms)
 
 ## 1. Mô tả dự án & Công nghệ
@@ -19,15 +19,16 @@
 ---
 
 ## 3. Quy trình cuối phiên (Khi người dùng nói "kết thúc phiên" / "chốt" / "xong")
-1. **Kiểm tra biên dịch**: Chạy build kiểm tra dự án bằng lệnh `msbuild` hoặc công cụ tương ứng, bảo đảm **0 Error**.
-2. **Đồng bộ đặc tả chức năng**: Nếu có sửa logic, đổi luồng, thêm/bớt trường hoặc controls của chức năng X, BẮT BUỘC cập nhật lại file `docs/specs/<chức-năng>.md` tương ứng trước khi kết thúc phiên.
-3. **Cập nhật `PROGRESS.md`**:
+1. **Kiểm tra mã hóa & rà soát lỗi font (BẮT BUỘC)**: Chạy lệnh tự động `powershell -ExecutionPolicy Bypass -File tools/KiemTraMaHoa.ps1`. Bảo đảm **100% file có UTF-8 with BOM và 0 lỗi Mojibake**. Nếu phát sinh bất kỳ lỗi font chữ nào, BẮT BUỘC phải xử lý triệt để trước khi chuyển bước tiếp theo.
+2. **Kiểm tra biên dịch**: Chạy build kiểm tra dự án bằng lệnh `msbuild` hoặc công cụ tương ứng, bảo đảm **0 Error, 0 Warning**.
+3. **Đồng bộ đặc tả chức năng**: Nếu có sửa logic, đổi luồng, thêm/bớt trường hoặc controls của chức năng X, BẮT BUỘC cập nhật lại file `docs/specs/<chức-năng>.md` tương ứng trước khi kết thúc phiên.
+4. **Cập nhật `PROGRESS.md`**:
    - Chuyển việc đã làm từ "Đang làm" sang "Đã xong".
    - Cập nhật mục "Đang làm" và "Việc kế tiếp".
    - Thêm dòng vào "Nhật ký phiên" (ngày – tóm tắt 2–4 dòng).
-4. **Cập nhật quyết định**: Nếu có quyết định kiến trúc/nghiệp vụ mới, ghi thêm dòng vào `docs/quyet-dinh.md`.
-5. **Cập nhật tài liệu luật**: Nếu tạo mới Form, UserControl, Helper, cấu trúc CSDL thì cập nhật file tương ứng trong `.agent/rules/`.
-6. **Đề xuất Git commit**: Đưa ra gợi ý thông điệp commit ngắn gọn, chuẩn mực để người dùng tự commit.
+5. **Cập nhật quyết định**: Nếu có quyết định kiến trúc/nghiệp vụ mới, ghi thêm dòng vào `docs/quyet-dinh.md`.
+6. **Cập nhật tài liệu luật**: Nếu tạo mới Form, UserControl, Helper, cấu trúc CSDL thì cập nhật file tương ứng trong `.agent/rules/`.
+7. **Đề xuất Git commit**: Đưa ra gợi ý thông điệp commit ngắn gọn, chuẩn mực để người dùng tự commit.
 
 ---
 
@@ -71,7 +72,12 @@
       + Tiêu đề cột DataGridView: `Segoe UI, 9.5pt, Bold`.
       + Chênh lệch kiểm kho (khác 0), cảnh báo tồn kho $\le$ 0, nợ cần trả quá hạn/tồn âm: Màu **ĐỎ** (`Color.Red`, font Bold) theo Điều luật 15a.
       + Màu trạng thái 3 nhóm (Xanh lá, Vàng amber, Xám nhạt) theo Điều luật 15b và 19a (nhãn text thường, không khung badge).
-    - Mọi chuỗi SQL tiếng Việt bắt buộc có tiền tố `N'...'` và tất cả các file code `.cs`/`.Designer.cs` phải lưu dưới định dạng UTF-8 with BOM để tránh lỗi font chữ / mojibake.
+    - **Quy chuẩn mã hóa Unicode cố định duy nhất (Cấm tuyệt đối mọi định dạng khác)**:
+      + Toàn bộ 100% file mã nguồn và tài liệu (`.cs`, `.Designer.cs`, `.resx`, `.sql`, `.config`, `.md`, `.json`, `.ps1`) BẮT BUỘC cố định duy nhất một chuẩn mã hóa: **UTF-8 with BOM (Byte Order Mark: `0xEF, 0xBB, 0xBF`)** và ngắt dòng `CRLF` (Windows).
+      + Cố định trình biên dịch C# qua thẻ `<CodePage>65001</CodePage>` trong file dự án `BTL-LTTQ-2.csproj`.
+      + Cố định môi trường IDE và trình soạn thảo qua file cấu hình `.editorconfig` (`charset = utf-8-bom`, `end_of_line = crlf`) và `.gitattributes`.
+      + Nghiêm cấm tuyệt đối việc sử dụng các công cụ, lệnh PowerShell (như `Out-File` mặc định) hay trình sửa file làm mất BOM hoặc đọc/ghi nhầm sang Windows-1252/ANSI sinh ra ký tự rác (lỗi mã hóa font chữ). Bắt buộc chạy `tools/KiemTraMaHoa.ps1` để tự động xác nhận 0 lỗi font trước khi kết thúc phiên.
+      + Mọi chuỗi SQL tiếng Việt bắt buộc có tiền tố `N'...'` (ví dụ `N'Chưa rõ'`) để CSDL SQL Server lưu trữ Unicode chính xác 100%.
 19. **Quy chuẩn vị trí & thứ tự nút chức năng nhỏ trên form và hiển thị nhãn trạng thái**:
     - (a) **Hiển thị nhãn trạng thái chứng từ**: Nhãn đánh dấu trạng thái phiếu hiển thị dưới dạng dòng chữ có màu theo bảng màu 3 nhóm chuẩn (Điều luật 15b) lấy khuôn mẫu từ `frmChiTietPhieuNhap`, tuyệt đối không làm thành khung/badge có viền, nền màu hay đệm (Padding/BackColor) như ảnh 1. Các form khác đang sai phải sửa lại như mẫu (ngoại trừ form mẫu hệ thống `frmDanhSachHangHoa`).
     - (b) **Vị trí và thứ tự các nút chức năng nhỏ**: Thống nhất toàn bộ các nút chức năng nhỏ thao tác của form nghiệp vụ/nhập liệu được đặt ở CUỐI (đáy) form lấy khuôn mẫu từ `frmThemPhieuNhap`, tuyệt đối không để lên đầu/header form như ảnh 2. Thứ tự các nút từ trái qua phải chốt cố định toàn hệ thống là: `Bỏ qua` ➜ `Lưu tạm` (nếu form có hỗ trợ lưu nháp) ➜ `Lưu` (form danh mục không có lưu tạm thì thứ tự là `Bỏ qua` ➜ `Lưu`).

@@ -181,9 +181,10 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                 SqlParameter[] p = { new SqlParameter("@MaKho", maKho) };
                 dtDanhSachHang = DataProcessing.ReadData(sql, p);
 
-                cboHangHoa.DisplayMember = "HienThi";
-                cboHangHoa.ValueMember = "MaHang";
-                cboHangHoa.DataSource = dtDanhSachHang;
+                ComboboxHelper.CaiDatTimKiem(cboHangHoa, dtDanhSachHang, "HienThi", "MaHang", () =>
+                {
+                    cboHangHoa_SelectedIndexChanged(null, null);
+                });
 
                 cboHangHoa_SelectedIndexChanged(null, null);
             }

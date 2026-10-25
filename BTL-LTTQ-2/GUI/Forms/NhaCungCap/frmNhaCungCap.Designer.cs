@@ -157,7 +157,7 @@
             // lblTimKiem
             // 
             this.lblTimKiem.AutoSize = true;
-            this.lblTimKiem.Location = new System.Drawing.Point(385, 26);
+            this.lblTimKiem.Location = new System.Drawing.Point(385, 25);
             this.lblTimKiem.Name = "lblTimKiem";
             this.lblTimKiem.Size = new System.Drawing.Size(60, 17);
             this.lblTimKiem.TabIndex = 1;
@@ -165,9 +165,9 @@
             // 
             // txtTimKiem
             // 
-            this.txtTimKiem.Location = new System.Drawing.Point(465, 22);
+            this.txtTimKiem.Location = new System.Drawing.Point(465, 21);
             this.txtTimKiem.Name = "txtTimKiem";
-            this.txtTimKiem.Size = new System.Drawing.Size(540, 24);
+            this.txtTimKiem.Size = new System.Drawing.Size(602, 24);
             this.txtTimKiem.TabIndex = 0;
             this.txtTimKiem.TextChanged += new System.EventHandler(this.txtTimKiem_TextChanged);
             // 
@@ -207,7 +207,7 @@
             this.grpThoiGianTao.Controls.Add(this.dtpDenNgay);
             this.grpThoiGianTao.Controls.Add(this.lblTuNgay);
             this.grpThoiGianTao.Controls.Add(this.lblDenNgay);
-            this.grpThoiGianTao.Location = new System.Drawing.Point(18, 404);
+            this.grpThoiGianTao.Location = new System.Drawing.Point(18, 513);
             this.grpThoiGianTao.Name = "grpThoiGianTao";
             this.grpThoiGianTao.Size = new System.Drawing.Size(322, 108);
             this.grpThoiGianTao.TabIndex = 9;
@@ -252,7 +252,7 @@
             // lblThoiGianTao
             // 
             this.lblThoiGianTao.AutoSize = true;
-            this.lblThoiGianTao.Location = new System.Drawing.Point(14, 370);
+            this.lblThoiGianTao.Location = new System.Drawing.Point(14, 477);
             this.lblThoiGianTao.Name = "lblThoiGianTao";
             this.lblThoiGianTao.Size = new System.Drawing.Size(85, 17);
             this.lblThoiGianTao.TabIndex = 8;
@@ -262,7 +262,7 @@
             // 
             this.cboTrangThai.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboTrangThai.FormattingEnabled = true;
-            this.cboTrangThai.Location = new System.Drawing.Point(18, 318);
+            this.cboTrangThai.Location = new System.Drawing.Point(18, 400);
             this.cboTrangThai.Name = "cboTrangThai";
             this.cboTrangThai.Size = new System.Drawing.Size(322, 25);
             this.cboTrangThai.TabIndex = 7;
@@ -271,7 +271,7 @@
             // lblTrangThai
             // 
             this.lblTrangThai.AutoSize = true;
-            this.lblTrangThai.Location = new System.Drawing.Point(14, 284);
+            this.lblTrangThai.Location = new System.Drawing.Point(14, 366);
             this.lblTrangThai.Name = "lblTrangThai";
             this.lblTrangThai.Size = new System.Drawing.Size(66, 17);
             this.lblTrangThai.TabIndex = 6;
@@ -281,7 +281,7 @@
             // 
             this.cboNoHienTai.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboNoHienTai.FormattingEnabled = true;
-            this.cboNoHienTai.Location = new System.Drawing.Point(18, 234);
+            this.cboNoHienTai.Location = new System.Drawing.Point(18, 292);
             this.cboNoHienTai.Name = "cboNoHienTai";
             this.cboNoHienTai.Size = new System.Drawing.Size(322, 25);
             this.cboNoHienTai.TabIndex = 5;
@@ -290,7 +290,7 @@
             // lblNoHienTai
             // 
             this.lblNoHienTai.AutoSize = true;
-            this.lblNoHienTai.Location = new System.Drawing.Point(14, 200);
+            this.lblNoHienTai.Location = new System.Drawing.Point(14, 258);
             this.lblNoHienTai.Name = "lblNoHienTai";
             this.lblNoHienTai.Size = new System.Drawing.Size(72, 17);
             this.lblNoHienTai.TabIndex = 4;
@@ -300,7 +300,7 @@
             // 
             this.cboMucTongMua.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboMucTongMua.FormattingEnabled = true;
-            this.cboMucTongMua.Location = new System.Drawing.Point(18, 150);
+            this.cboMucTongMua.Location = new System.Drawing.Point(18, 184);
             this.cboMucTongMua.Name = "cboMucTongMua";
             this.cboMucTongMua.Size = new System.Drawing.Size(322, 25);
             this.cboMucTongMua.TabIndex = 3;
@@ -309,7 +309,7 @@
             // lblMucTongMua
             // 
             this.lblMucTongMua.AutoSize = true;
-            this.lblMucTongMua.Location = new System.Drawing.Point(14, 116);
+            this.lblMucTongMua.Location = new System.Drawing.Point(14, 150);
             this.lblMucTongMua.Name = "lblMucTongMua";
             this.lblMucTongMua.Size = new System.Drawing.Size(67, 17);
             this.lblMucTongMua.TabIndex = 2;
@@ -320,10 +320,10 @@
             this.btnThemNhomNCC.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnThemNhomNCC.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.btnThemNhomNCC.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnThemNhomNCC.Location = new System.Drawing.Point(311, 66);
+            this.btnThemNhomNCC.Location = new System.Drawing.Point(308, 76);
             this.btnThemNhomNCC.Margin = new System.Windows.Forms.Padding(0);
             this.btnThemNhomNCC.Name = "btnThemNhomNCC";
-            this.btnThemNhomNCC.Size = new System.Drawing.Size(25, 25);
+            this.btnThemNhomNCC.Size = new System.Drawing.Size(29, 29);
             this.btnThemNhomNCC.TabIndex = 2;
             this.btnThemNhomNCC.Text = "+";
             this.btnThemNhomNCC.UseVisualStyleBackColor = true;
@@ -333,16 +333,16 @@
             // 
             // this.cboNhomNCC.DropDownStyle managed by ComboboxHelper
             this.cboNhomNCC.FormattingEnabled = true;
-            this.cboNhomNCC.Location = new System.Drawing.Point(18, 66);
+            this.cboNhomNCC.Location = new System.Drawing.Point(18, 76);
             this.cboNhomNCC.Name = "cboNhomNCC";
-            this.cboNhomNCC.Size = new System.Drawing.Size(287, 25);
+            this.cboNhomNCC.Size = new System.Drawing.Size(284, 25);
             this.cboNhomNCC.TabIndex = 1;
             // this.cboNhomNCC.SelectedIndexChanged managed by ComboboxHelper
             // 
             // lblNhomNCC
             // 
             this.lblNhomNCC.AutoSize = true;
-            this.lblNhomNCC.Location = new System.Drawing.Point(14, 32);
+            this.lblNhomNCC.Location = new System.Drawing.Point(14, 42);
             this.lblNhomNCC.Name = "lblNhomNCC";
             this.lblNhomNCC.Size = new System.Drawing.Size(126, 17);
             this.lblNhomNCC.TabIndex = 0;

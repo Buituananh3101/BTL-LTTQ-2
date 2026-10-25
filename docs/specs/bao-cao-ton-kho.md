@@ -1,4 +1,4 @@
-# Đặc tả Chức năng: Báo cáo Tồn kho (`frmBaoCaoTonKho`)
+﻿# Đặc tả Chức năng: Báo cáo Tồn kho (`frmBaoCaoTonKho`)
 
 > **Mã chức năng**: `BaoCao_TonKho`  
 > **Form C#**: `GUI/Forms/BaoCao/frmBaoCaoTonKho.cs`  
@@ -50,8 +50,8 @@ $15. **Xuất file**:
 
 - **Tỉ lệ & Kích thước form**: Kế thừa chuẩn `frmDanhSachHangHoa` (`ClientSize = (1782, 853)`, `FixedSingle`, `MaximizeBox = false`, `CenterScreen`).
 - **Phân vùng giao diện**:
-  - `pnlTop` (Cao 125px): Gồm `grpTop` (Tiêu đề, ô tìm kiếm nhanh, nút `Xuất file`, `Hiện cột`, `?`) và `pnlKpi` (4 thẻ chỉ số tổng quan).
-  - `pnlBoLoc` (Rộng 360px bên trái): Gồm các ComboBox tiêu chí và cụm thời gian ở đáy.
+  - `pnlTop` (Cao 150px): Gồm `grpTop` (Cao 60px, tách biệt `lblTimKiem` tại (385, 25) và `txtTimKiem` tại (465, 21) chuẩn `frmDanhSachHangHoa`, nút `Xuất file`, `Hiện cột`, `?`) và `pnlKpi` (Cao 90px, chứa 4 thẻ chỉ số tổng quan cao 72px vừa khít panel cha, cách đều mép trên và dưới 9px).
+  - `pnlBoLoc` (Rộng 387px bên trái chuẩn theo `frmDanhSachHangHoa`): Gồm `grpBoLoc` (Rộng 360px, viền đỉnh `splitterBoLoc`), các ComboBox tiêu chí và cụm `lblThoiGianTao` + `grpThoiGianTao` ở đáy (18, 513) theo Điều luật 16.
   - `dgvBaoCaoTonKho` (Dock = Fill): DataGridView đệm đôi, xen kẽ màu, căn lề chuẩn số lượng/tiền tệ `N0`. Cột trạng thái kinh doanh dùng font chữ thường theo chuẩn Trả hàng nhập (Xanh lá: Đang kinh doanh, Xám: Ngừng kinh doanh). Cảnh báo tồn kho <= 0 tô đỏ in đậm theo Điều luật 15a.
   - `pnlPhanTrang` (Đáy 42px): Thống kê tổng số hàng, chọn số dòng mỗi trang (10, 20, 50, 100), điều hướng trang trước/sau.
 

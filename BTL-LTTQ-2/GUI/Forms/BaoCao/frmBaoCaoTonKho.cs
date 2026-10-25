@@ -19,9 +19,59 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
         private int tongSoTrang = 1;
         private bool dangNapDuLieu = false;
 
+        private Timer searchDebounceTimer;
+
         public frmBaoCaoTonKho()
         {
             InitializeComponent();
+            KhoiTaoDebounceTimer();
+            if (txtTimKiem != null)
+            {
+                txtTimKiem.KeyDown += txtTimKiem_KeyDown;
+            }
+        }
+
+        private void KhoiTaoDebounceTimer()
+        {
+            searchDebounceTimer = new Timer();
+            searchDebounceTimer.Interval = 300;
+            searchDebounceTimer.Tick += (s, e) =>
+            {
+                searchDebounceTimer.Stop();
+                if (!dangNapDuLieu)
+                {
+                    trangHienTai = 1;
+                    TaiDuLieu();
+                }
+            };
+        }
+
+        private void txtTimKiem_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                searchDebounceTimer?.Stop();
+                if (!dangNapDuLieu)
+                {
+                    trangHienTai = 1;
+                    TaiDuLieu();
+                }
+            }
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.F3)
+            {
+                if (txtTimKiem != null && txtTimKiem.CanFocus)
+                {
+                    txtTimKiem.Focus();
+                    txtTimKiem.SelectAll();
+                    return true;
+                }
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         private void frmBaoCaoTonKho_Load(object sender, EventArgs e)
@@ -38,6 +88,7 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
             KhoiTaoCacCotLuoi();
             KhoiTaoBoLoc();
             TaiDuLieu();
+            lblTongSoHang.BringToFront();
         }
 
         protected override void OnActivated(EventArgs e)
@@ -256,9 +307,11 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                     }
                 }
 
-                cboKho.DataSource = dtComboKho;
-                cboKho.DisplayMember = "TenKho";
-                cboKho.ValueMember = "MaKho";
+                ComboboxHelper.CaiDatTimKiem(cboKho, dtComboKho, "TenKho", "MaKho", () =>
+                {
+                    trangHienTai = 1;
+                    TaiDuLieu();
+                });
 
                 if (SessionContext.MaKhoHienTai > 0)
                 {
@@ -589,12 +642,13 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
         {
             trangHienTai = 1;
             TaiDuLieu();
+            lblTongSoHang.BringToFront();
         }
 
         private void txtTimKiem_TextChanged(object sender, EventArgs e)
         {
-            trangHienTai = 1;
-            TaiDuLieu();
+            searchDebounceTimer?.Stop();
+            searchDebounceTimer?.Start();
         }
 
         private void cboSoDongMoiTrang_SelectedIndexChanged(object sender, EventArgs e)
@@ -747,12 +801,12 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
             frmHienCotBaoCao frm = new frmHienCotBaoCao(dgvBaoCaoTonKho);
             frm.StartPosition = FormStartPosition.Manual;
 
-            // TÃ­nh toáº¡ Ä‘á»™ hiá»ƒn thá»‹ ngay phÃ­a dÆ°á»›i nÃºt btnHienCot (cÄƒn tháº³ng mÃ©p pháº£i nÃºt)
+            // Tính toạ \u0111\u1ED9 hi\u1EC3n th\u1ECB ngay ph\u00EDa d\u01B0\u1EDBi n\u00FAt btnHienCot (c\u0103n th\u1EB3ng m\u00E9p ph\u1EA3i n\u00FAt)
             Point btnPos = btnHienCot.PointToScreen(Point.Empty);
             int posX = btnPos.X + btnHienCot.Width - frm.Width;
             int posY = btnPos.Y + btnHienCot.Height + 2;
 
-            // Báº£o Ä‘áº£m form khÃ´ng bá»‹ trÃ n ra ngoÃ i mÃ n hÃ¬nh lÃ m viá»‡c
+            // B\u1EA3o \u0111\u1EA3m form kh\u00F4ng b\u1ECB tr\u00E0n ra ngo\u00E0i m\u00E0n h\u00ECnh l\u00E0m vi\u1EC7c
             Rectangle workingArea = Screen.FromControl(btnHienCot).WorkingArea;
             if (posX + frm.Width > workingArea.Right)
             {

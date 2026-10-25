@@ -162,7 +162,7 @@
             // 
             this.txtTimKiem.Location = new System.Drawing.Point(465, 21);
             this.txtTimKiem.Name = "txtTimKiem";
-            this.txtTimKiem.Size = new System.Drawing.Size(602, 29);
+            this.txtTimKiem.Size = new System.Drawing.Size(602, 24);
             this.txtTimKiem.TabIndex = 0;
             this.txtTimKiem.TextChanged += new System.EventHandler(this.txtTimKiem_TextChanged);
             // 
@@ -201,16 +201,16 @@
             // 
             // this.cboNguoiNhap.DropDownStyle managed by ComboboxHelper
             this.cboNguoiNhap.FormattingEnabled = true;
-            this.cboNguoiNhap.Location = new System.Drawing.Point(24, 240);
+            this.cboNguoiNhap.Location = new System.Drawing.Point(18, 400);
             this.cboNguoiNhap.Name = "cboNguoiNhap";
-            this.cboNguoiNhap.Size = new System.Drawing.Size(340, 29);
+            this.cboNguoiNhap.Size = new System.Drawing.Size(322, 25);
             this.cboNguoiNhap.TabIndex = 9;
             // managed by ComboboxHelper
             // 
             // lblNguoiNhap
             // 
             this.lblNguoiNhap.AutoSize = true;
-            this.lblNguoiNhap.Location = new System.Drawing.Point(20, 216);
+            this.lblNguoiNhap.Location = new System.Drawing.Point(14, 366);
             this.lblNguoiNhap.Name = "lblNguoiNhap";
             this.lblNguoiNhap.Size = new System.Drawing.Size(95, 21);
             this.lblNguoiNhap.TabIndex = 8;
@@ -220,16 +220,16 @@
             // 
             // this.cboNguoiTao.DropDownStyle managed by ComboboxHelper
             this.cboNguoiTao.FormattingEnabled = true;
-            this.cboNguoiTao.Location = new System.Drawing.Point(24, 176);
+            this.cboNguoiTao.Location = new System.Drawing.Point(18, 292);
             this.cboNguoiTao.Name = "cboNguoiTao";
-            this.cboNguoiTao.Size = new System.Drawing.Size(340, 29);
+            this.cboNguoiTao.Size = new System.Drawing.Size(322, 25);
             this.cboNguoiTao.TabIndex = 7;
             // managed by ComboboxHelper
             // 
             // lblNguoiTao
             // 
             this.lblNguoiTao.AutoSize = true;
-            this.lblNguoiTao.Location = new System.Drawing.Point(20, 152);
+            this.lblNguoiTao.Location = new System.Drawing.Point(14, 258);
             this.lblNguoiTao.Name = "lblNguoiTao";
             this.lblNguoiTao.Size = new System.Drawing.Size(81, 21);
             this.lblNguoiTao.TabIndex = 6;
@@ -239,16 +239,16 @@
             // 
             // this.cboNhaCungCap.DropDownStyle managed by ComboboxHelper
             this.cboNhaCungCap.FormattingEnabled = true;
-            this.cboNhaCungCap.Location = new System.Drawing.Point(24, 112);
+            this.cboNhaCungCap.Location = new System.Drawing.Point(18, 184);
             this.cboNhaCungCap.Name = "cboNhaCungCap";
-            this.cboNhaCungCap.Size = new System.Drawing.Size(340, 29);
+            this.cboNhaCungCap.Size = new System.Drawing.Size(322, 25);
             this.cboNhaCungCap.TabIndex = 5;
             // managed by ComboboxHelper
             // 
             // lblNhaCungCap
             // 
             this.lblNhaCungCap.AutoSize = true;
-            this.lblNhaCungCap.Location = new System.Drawing.Point(20, 88);
+            this.lblNhaCungCap.Location = new System.Drawing.Point(14, 150);
             this.lblNhaCungCap.Name = "lblNhaCungCap";
             this.lblNhaCungCap.Size = new System.Drawing.Size(105, 21);
             this.lblNhaCungCap.TabIndex = 4;
@@ -260,9 +260,9 @@
             this.grpThoiGianTao.Controls.Add(this.dtpDenNgay);
             this.grpThoiGianTao.Controls.Add(this.lblTuNgay);
             this.grpThoiGianTao.Controls.Add(this.lblDenNgay);
-            this.grpThoiGianTao.Location = new System.Drawing.Point(24, 304);
+            this.grpThoiGianTao.Location = new System.Drawing.Point(18, 513);
             this.grpThoiGianTao.Name = "grpThoiGianTao";
-            this.grpThoiGianTao.Size = new System.Drawing.Size(340, 108);
+            this.grpThoiGianTao.Size = new System.Drawing.Size(322, 108);
             this.grpThoiGianTao.TabIndex = 3;
             this.grpThoiGianTao.TabStop = false;
             // 
@@ -305,7 +305,7 @@
             // lblThoiGianTao
             // 
             this.lblThoiGianTao.AutoSize = true;
-            this.lblThoiGianTao.Location = new System.Drawing.Point(20, 280);
+            this.lblThoiGianTao.Location = new System.Drawing.Point(14, 477);
             this.lblThoiGianTao.Name = "lblThoiGianTao";
             this.lblThoiGianTao.Size = new System.Drawing.Size(74, 21);
             this.lblThoiGianTao.TabIndex = 2;
@@ -315,16 +315,16 @@
             // 
             this.cboTrangThai.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboTrangThai.FormattingEnabled = true;
-            this.cboTrangThai.Location = new System.Drawing.Point(24, 48);
+            this.cboTrangThai.Location = new System.Drawing.Point(18, 76);
             this.cboTrangThai.Name = "cboTrangThai";
-            this.cboTrangThai.Size = new System.Drawing.Size(340, 29);
+            this.cboTrangThai.Size = new System.Drawing.Size(322, 25);
             this.cboTrangThai.TabIndex = 1;
             this.cboTrangThai.SelectedIndexChanged += new System.EventHandler(this.BoLoc_SelectedIndexChanged);
             // 
             // lblTrangThai
             // 
             this.lblTrangThai.AutoSize = true;
-            this.lblTrangThai.Location = new System.Drawing.Point(20, 24);
+            this.lblTrangThai.Location = new System.Drawing.Point(14, 42);
             this.lblTrangThai.Name = "lblTrangThai";
             this.lblTrangThai.Size = new System.Drawing.Size(79, 21);
             this.lblTrangThai.TabIndex = 0;
@@ -332,9 +332,11 @@
             // 
             // splitterBoLoc
             // 
+            this.splitterBoLoc.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.splitterBoLoc.Dock = System.Windows.Forms.DockStyle.Top;
             this.splitterBoLoc.Location = new System.Drawing.Point(0, 0);
             this.splitterBoLoc.Name = "splitterBoLoc";
-            this.splitterBoLoc.Size = new System.Drawing.Size(3, 769);
+            this.splitterBoLoc.Size = new System.Drawing.Size(387, 1);
             this.splitterBoLoc.TabIndex = 0;
             this.splitterBoLoc.TabStop = false;
             // 

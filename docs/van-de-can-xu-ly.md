@@ -1,4 +1,4 @@
-# Danh sách Vấn đề & Kế hoạch Triển khai (Backlog)
+﻿# Danh sách Vấn đề & Kế hoạch Triển khai (Backlog)
 ## Hệ Thống Quản Lý Kho Hàng BTL-LTTQ-2 (Windows Forms)
 
 > **Quy tắc vận hành**:

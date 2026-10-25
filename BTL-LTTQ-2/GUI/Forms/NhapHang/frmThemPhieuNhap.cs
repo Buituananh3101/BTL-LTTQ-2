@@ -1,5 +1,4 @@
 ﻿using BTL_LTTQ_2.Classes;
-
 using System;
 using System.Data;
 using System.Data.SqlClient;
@@ -85,18 +84,15 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 
         private void NapDanhSachNhaCungCap()
         {
-            cboNhaCungCap.Items.Clear();
             try
             {
                 string sql = "SELECT MaDonViCapHang, TenDonVi FROM DonViCapHang ORDER BY TenDonVi ASC";
                 DataTable dt = DataProcessing.ReadData(sql);
-                foreach (DataRow row in dt.Rows)
-                {
-                    int id = Convert.ToInt32(row["MaDonViCapHang"]);
-                    string ten = row["TenDonVi"].ToString();
-                    cboNhaCungCap.Items.Add(new ComboBoxItem(ten, id));
-                }
-                if (cboNhaCungCap.Items.Count > 0)
+                cboNhaCungCap.DisplayMember = "TenDonVi";
+                cboNhaCungCap.ValueMember = "MaDonViCapHang";
+                cboNhaCungCap.DataSource = dt;
+
+                if (dt.Rows.Count > 0)
                 {
                     cboNhaCungCap.SelectedIndex = 0;
                 }
@@ -109,27 +105,21 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 
         private void NapDanhSachKho()
         {
-            cboKho.Items.Clear();
             try
             {
                 string sql = "SELECT MaKho, TenKho FROM Kho WHERE TrangThai = 'HOAT_DONG' OR TrangThai = 'ACTIVE' ORDER BY TenKho ASC";
                 DataTable dt = DataProcessing.ReadData(sql);
-                int selectedIndex = 0;
-                int idx = 0;
-                foreach (DataRow row in dt.Rows)
+                cboKho.DisplayMember = "TenKho";
+                cboKho.ValueMember = "MaKho";
+                cboKho.DataSource = dt;
+
+                if (SessionContext.MaKhoHienTai > 0)
                 {
-                    int id = Convert.ToInt32(row["MaKho"]);
-                    string ten = row["TenKho"].ToString();
-                    cboKho.Items.Add(new ComboBoxItem(ten, id));
-                    if (id == SessionContext.MaKhoHienTai)
-                    {
-                        selectedIndex = idx;
-                    }
-                    idx++;
+                    cboKho.SelectedValue = SessionContext.MaKhoHienTai;
                 }
-                if (cboKho.Items.Count > 0)
+                else if (dt.Rows.Count > 0)
                 {
-                    cboKho.SelectedIndex = selectedIndex;
+                    cboKho.SelectedIndex = 0;
                 }
             }
             catch (Exception ex)
@@ -140,18 +130,19 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 
         private void NapDanhSachNhanVien()
         {
-            cboNguoiNhap.Items.Clear();
             try
             {
                 string sql = "SELECT MaNV, HoTen FROM NhanVien ORDER BY HoTen ASC";
                 DataTable dt = DataProcessing.ReadData(sql);
-                foreach (DataRow row in dt.Rows)
+                cboNguoiNhap.DisplayMember = "HoTen";
+                cboNguoiNhap.ValueMember = "MaNV";
+                cboNguoiNhap.DataSource = dt;
+
+                if (SessionContext.MaTaiKhoan > 0)
                 {
-                    int id = Convert.ToInt32(row["MaNV"]);
-                    string ten = row["HoTen"].ToString();
-                    cboNguoiNhap.Items.Add(new ComboBoxItem(ten, id));
+                    cboNguoiNhap.SelectedValue = SessionContext.MaTaiKhoan;
                 }
-                if (cboNguoiNhap.Items.Count > 0)
+                else if (dt.Rows.Count > 0)
                 {
                     cboNguoiNhap.SelectedIndex = 0;
                 }
@@ -164,32 +155,30 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 
         private void NapDanhSachHangHoa()
         {
-            cboHangHoa.Items.Clear();
             try
             {
                 string sql = @"
-                    SELECT h.MaHang, h.MaHangNoiBo, h.TenHang, ISNULL(d.TenDvt, N'Cái') AS TenDvt, ISNULL(h.GiaVon, 0) AS GiaNhap
+                    SELECT 
+                        h.MaHang, 
+                        h.MaHangNoiBo, 
+                        h.TenHang, 
+                        ISNULL(d.TenDvt, N'Cái') AS TenDvt, 
+                        ISNULL(h.GiaVon, 0) AS GiaNhap,
+                        N'[' + h.MaHangNoiBo + N'] ' + h.TenHang + N' (' + ISNULL(d.TenDvt, N'Cái') + N') [Giá vốn: ' + CAST(CAST(ISNULL(h.GiaVon, 0) AS INT) AS NVARCHAR(15)) + N']' AS HienThi
                     FROM HangHoa h
                     LEFT JOIN DonViTinh d ON h.MaDvt = d.MaDvt
                     WHERE ISNULL(h.TrangThai, '') NOT IN ('NGUNG_BAN', 'NGUNG_KINH_DOANH', 'DA_XOA')
                     ORDER BY h.TenHang ASC";
                 dtHangHoaSource = DataProcessing.ReadData(sql);
-                foreach (DataRow row in dtHangHoaSource.Rows)
-                {
-                    int maHang = Convert.ToInt32(row["MaHang"]);
-                    string sku = row["MaHangNoiBo"] != DBNull.Value ? row["MaHangNoiBo"].ToString() : "";
-                    string ten = row["TenHang"].ToString();
-                    string dvt = row["TenDvt"].ToString();
-                    decimal giaNhap = row["GiaNhap"] != DBNull.Value ? Convert.ToDecimal(row["GiaNhap"]) : 0m;
 
-                    string displayText = string.IsNullOrEmpty(sku) 
-                        ? $"{ten} ({dvt}) [Giá vốn: {giaNhap:N0}]" 
-                        : $"{sku} - {ten} ({dvt}) [Giá vốn: {giaNhap:N0}]";
-                    cboHangHoa.Items.Add(new HangHoaItem(displayText, maHang, sku, ten, dvt, giaNhap));
-                }
-                if (cboHangHoa.Items.Count > 0)
+                ComboboxHelper.CaiDatTimKiem(cboHangHoa, dtHangHoaSource, "HienThi", "MaHang", () =>
                 {
-                    cboHangHoa.SelectedIndex = 0;
+                    cboHangHoa_SelectedIndexChanged(null, null);
+                });
+
+                if (dtHangHoaSource.Rows.Count > 0)
+                {
+                    cboHangHoa_SelectedIndexChanged(null, null);
                 }
             }
             catch (Exception ex)
@@ -215,21 +204,36 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 
         private void cboHangHoa_SelectedIndexChanged(object sender, EventArgs e)
         {
-            HangHoaItem item = cboHangHoa.SelectedItem as HangHoaItem;
-            if (item != null)
+            if (cboHangHoa.SelectedValue != null && int.TryParse(cboHangHoa.SelectedValue.ToString(), out int maHang))
             {
-                txtDonGiaNhap.Text = item.GiaNhap.ToString("N0");
+                if (dtHangHoaSource != null)
+                {
+                    DataRow[] rows = dtHangHoaSource.Select($"MaHang = {maHang}");
+                    if (rows.Length > 0)
+                    {
+                        decimal giaNhap = Convert.ToDecimal(rows[0]["GiaNhap"]);
+                        txtDonGiaNhap.Text = giaNhap.ToString("N0");
+                    }
+                }
             }
         }
 
         private void btnThemHang_Click(object sender, EventArgs e)
         {
-            HangHoaItem item = cboHangHoa.SelectedItem as HangHoaItem;
-            if (item == null)
+            if (cboHangHoa.SelectedValue == null || !int.TryParse(cboHangHoa.SelectedValue.ToString(), out int maHang))
             {
                 MessageBox.Show("Vui lòng chọn một mặt hàng!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+
+            if (dtHangHoaSource == null) return;
+            DataRow[] rows = dtHangHoaSource.Select($"MaHang = {maHang}");
+            if (rows.Length == 0) return;
+
+            DataRow rowItem = rows[0];
+            string sku = rowItem["MaHangNoiBo"] != DBNull.Value ? rowItem["MaHangNoiBo"].ToString() : "";
+            string ten = rowItem["TenHang"].ToString();
+            string dvt = rowItem["TenDvt"].ToString();
 
             decimal soLuong = txtSoLuongNhap.Value;
             if (soLuong <= 0)
@@ -248,7 +252,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             // Kiểm tra xem hàng này đã có trong lưới chưa
             foreach (DataGridViewRow row in dgvChiTietHang.Rows)
             {
-                if (Convert.ToInt32(row.Cells["colMaHang"].Value) == item.MaHang)
+                if (Convert.ToInt32(row.Cells["colMaHang"].Value) == maHang)
                 {
                     // Đã có -> cộng dồn số lượng
                     decimal currentQty = Convert.ToDecimal(row.Cells["colSoLuong"].Value);
@@ -264,10 +268,10 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             int newIdx = dgvChiTietHang.Rows.Add();
             DataGridViewRow newRow = dgvChiTietHang.Rows[newIdx];
             newRow.Cells["colStt"].Value = newIdx + 1;
-            newRow.Cells["colMaHang"].Value = item.MaHang;
-            newRow.Cells["colMaHangNoiBo"].Value = item.MaHangNoiBo;
-            newRow.Cells["colTenHang"].Value = item.TenHang;
-            newRow.Cells["colDonViTinh"].Value = item.DonViTinh;
+            newRow.Cells["colMaHang"].Value = maHang;
+            newRow.Cells["colMaHangNoiBo"].Value = sku;
+            newRow.Cells["colTenHang"].Value = ten;
+            newRow.Cells["colDonViTinh"].Value = dvt;
             newRow.Cells["colSoLuong"].Value = soLuong;
             newRow.Cells["colDonGia"].Value = donGia;
             newRow.Cells["colGiamGia"].Value = 0m;
@@ -420,21 +424,21 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
         private void LuuPhieuNhap(string trangThai)
         {
             // 1. Kiểm tra tính hợp lệ
-            if (cboNhaCungCap.SelectedItem == null)
+            if (cboNhaCungCap.SelectedValue == null)
             {
                 MessageBox.Show("Vui lòng chọn nhà cung cấp!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cboNhaCungCap.Focus();
                 return;
             }
 
-            if (cboKho.SelectedItem == null)
+            if (cboKho.SelectedValue == null)
             {
                 MessageBox.Show("Vui lòng chọn kho nhập!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cboKho.Focus();
                 return;
             }
 
-            if (cboNguoiNhap.SelectedItem == null)
+            if (cboNguoiNhap.SelectedValue == null)
             {
                 MessageBox.Show("Vui lòng chọn người nhập!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cboNguoiNhap.Focus();
@@ -465,9 +469,9 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                 return;
             }
 
-            int maNcc = Convert.ToInt32((cboNhaCungCap.SelectedItem as ComboBoxItem).Value);
-            int maKho = Convert.ToInt32((cboKho.SelectedItem as ComboBoxItem).Value);
-            int maNvNhap = Convert.ToInt32((cboNguoiNhap.SelectedItem as ComboBoxItem).Value);
+            int maNcc = Convert.ToInt32(cboNhaCungCap.SelectedValue);
+            int maKho = Convert.ToInt32(cboKho.SelectedValue);
+            int maNvNhap = Convert.ToInt32(cboNguoiNhap.SelectedValue);
             int maNvLap = SessionContext.MaTaiKhoan > 0 ? SessionContext.MaTaiKhoan : maNvNhap;
             DateTime ngayNhap = dtpNgayNhap.Value;
             string soHoaDon = txtSoHoaDon.Text.Trim();
@@ -535,7 +539,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 
                     foreach (DataGridViewRow row in dgvChiTietHang.Rows)
                     {
-                        int maHang = Convert.ToInt32(row.Cells["colMaHang"].Value);
+                        int maHangItem = Convert.ToInt32(row.Cells["colMaHang"].Value);
                         decimal soLuong = Convert.ToDecimal(row.Cells["colSoLuong"].Value);
                         decimal donGia = Convert.ToDecimal(row.Cells["colDonGia"].Value);
                         decimal giamGia = Convert.ToDecimal(row.Cells["colGiamGia"].Value);
@@ -543,7 +547,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 
                         SqlCommand cmdCt = new SqlCommand(insertCtSql, conn, trans);
                         cmdCt.Parameters.AddWithValue("@MaPhieuNhap", maPhieuNhap);
-                        cmdCt.Parameters.AddWithValue("@MaHang", maHang);
+                        cmdCt.Parameters.AddWithValue("@MaHang", maHangItem);
                         cmdCt.Parameters.AddWithValue("@SoLuong", soLuong);
                         cmdCt.Parameters.AddWithValue("@DonGiaNhap", donGia);
                         cmdCt.Parameters.AddWithValue("@GiamGia", giamGia);
@@ -580,42 +584,6 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
         private void btnBoQua_Click(object sender, EventArgs e)
         {
             this.Close();
-        }
-
-        private class ComboBoxItem
-        {
-            public string Text { get; }
-            public object Value { get; }
-
-            public ComboBoxItem(string text, object value)
-            {
-                Text = text;
-                Value = value;
-            }
-
-            public override string ToString() => Text;
-        }
-
-        private class HangHoaItem
-        {
-            public string DisplayText { get; }
-            public int MaHang { get; }
-            public string MaHangNoiBo { get; }
-            public string TenHang { get; }
-            public string DonViTinh { get; }
-            public decimal GiaNhap { get; }
-
-            public HangHoaItem(string displayText, int maHang, string maHangNoiBo, string tenHang, string donViTinh, decimal giaNhap)
-            {
-                DisplayText = displayText;
-                MaHang = maHang;
-                MaHangNoiBo = maHangNoiBo;
-                TenHang = tenHang;
-                DonViTinh = donViTinh;
-                GiaNhap = giaNhap;
-            }
-
-            public override string ToString() => DisplayText;
         }
     }
 }

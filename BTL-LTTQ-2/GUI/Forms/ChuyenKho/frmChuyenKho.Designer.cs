@@ -94,7 +94,7 @@
             this.grpTop.Controls.Add(this.txtTimKiem);
             this.grpTop.Location = new System.Drawing.Point(0, 3);
             this.grpTop.Name = "grpTop";
-            this.grpTop.Size = new System.Drawing.Size(1782, 65);
+            this.grpTop.Size = new System.Drawing.Size(1782, 60);
             this.grpTop.TabIndex = 0;
             this.grpTop.TabStop = false;
             // 
@@ -155,28 +155,29 @@
             // lblTimKiem
             // 
             this.lblTimKiem.AutoSize = true;
-            this.lblTimKiem.Location = new System.Drawing.Point(190, 26);
+            this.lblTimKiem.Location = new System.Drawing.Point(385, 25);
             this.lblTimKiem.Name = "lblTimKiem";
-            this.lblTimKiem.Size = new System.Drawing.Size(63, 17);
+            this.lblTimKiem.Size = new System.Drawing.Size(60, 17);
             this.lblTimKiem.TabIndex = 1;
-            this.lblTimKiem.Text = "Tìm kiếm:";
+            this.lblTimKiem.Text = "Tìm kiếm";
             // 
             // txtTimKiem
             // 
-            this.txtTimKiem.Location = new System.Drawing.Point(260, 22);
+            this.txtTimKiem.Location = new System.Drawing.Point(465, 21);
             this.txtTimKiem.Name = "txtTimKiem";
-            this.txtTimKiem.Size = new System.Drawing.Size(350, 24);
+            this.txtTimKiem.Size = new System.Drawing.Size(602, 24);
             this.txtTimKiem.TabIndex = 2;
             this.txtTimKiem.TextChanged += new System.EventHandler(this.txtTimKiem_TextChanged);
             // 
             // pnlBoLoc
             // 
             this.pnlBoLoc.Controls.Add(this.grpBoLoc);
+            this.pnlBoLoc.Controls.Add(this.splitterBoLoc);
             this.pnlBoLoc.Dock = System.Windows.Forms.DockStyle.Left;
             this.pnlBoLoc.Location = new System.Drawing.Point(0, 84);
             this.pnlBoLoc.Name = "pnlBoLoc";
-            this.pnlBoLoc.Padding = new System.Windows.Forms.Padding(12, 0, 0, 10);
-            this.pnlBoLoc.Size = new System.Drawing.Size(360, 769);
+
+            this.pnlBoLoc.Size = new System.Drawing.Size(387, 769);
             this.pnlBoLoc.TabIndex = 1;
             // 
             // grpBoLoc
@@ -191,18 +192,18 @@
             this.grpBoLoc.Controls.Add(this.cboNguoiTao);
             this.grpBoLoc.Controls.Add(this.lblThoiGianTao);
             this.grpBoLoc.Controls.Add(this.grpThoiGianTao);
-            this.grpBoLoc.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpBoLoc.Location = new System.Drawing.Point(12, 0);
+
+            this.grpBoLoc.Location = new System.Drawing.Point(12, 9);
             this.grpBoLoc.Name = "grpBoLoc";
-            this.grpBoLoc.Size = new System.Drawing.Size(348, 759);
+            this.grpBoLoc.Size = new System.Drawing.Size(360, 717);
             this.grpBoLoc.TabIndex = 0;
             this.grpBoLoc.TabStop = false;
-            this.grpBoLoc.Text = "Bộ lọc tìm kiếm";
+
             // 
             // lblTrangThai
             // 
             this.lblTrangThai.AutoSize = true;
-            this.lblTrangThai.Location = new System.Drawing.Point(9, 27);
+            this.lblTrangThai.Location = new System.Drawing.Point(14, 42);
             this.lblTrangThai.Name = "lblTrangThai";
             this.lblTrangThai.Size = new System.Drawing.Size(69, 17);
             this.lblTrangThai.TabIndex = 0;
@@ -212,16 +213,16 @@
             // 
             this.cboTrangThai.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboTrangThai.FormattingEnabled = true;
-            this.cboTrangThai.Location = new System.Drawing.Point(13, 50);
+            this.cboTrangThai.Location = new System.Drawing.Point(18, 76);
             this.cboTrangThai.Name = "cboTrangThai";
-            this.cboTrangThai.Size = new System.Drawing.Size(322, 24);
+            this.cboTrangThai.Size = new System.Drawing.Size(322, 25);
             this.cboTrangThai.TabIndex = 1;
             this.cboTrangThai.SelectedIndexChanged += new System.EventHandler(this.BoLoc_ThayDoi);
             // 
             // lblHuongChuyen
             // 
             this.lblHuongChuyen.AutoSize = true;
-            this.lblHuongChuyen.Location = new System.Drawing.Point(9, 87);
+            this.lblHuongChuyen.Location = new System.Drawing.Point(14, 150);
             this.lblHuongChuyen.Name = "lblHuongChuyen";
             this.lblHuongChuyen.Size = new System.Drawing.Size(95, 17);
             this.lblHuongChuyen.TabIndex = 2;
@@ -231,16 +232,16 @@
             // 
             this.cboHuongChuyen.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboHuongChuyen.FormattingEnabled = true;
-            this.cboHuongChuyen.Location = new System.Drawing.Point(13, 110);
+            this.cboHuongChuyen.Location = new System.Drawing.Point(18, 184);
             this.cboHuongChuyen.Name = "cboHuongChuyen";
-            this.cboHuongChuyen.Size = new System.Drawing.Size(322, 24);
+            this.cboHuongChuyen.Size = new System.Drawing.Size(322, 25);
             this.cboHuongChuyen.TabIndex = 3;
             this.cboHuongChuyen.SelectedIndexChanged += new System.EventHandler(this.BoLoc_ThayDoi);
             // 
             // lblKhoDoiUng
             // 
             this.lblKhoDoiUng.AutoSize = true;
-            this.lblKhoDoiUng.Location = new System.Drawing.Point(9, 147);
+            this.lblKhoDoiUng.Location = new System.Drawing.Point(14, 258);
             this.lblKhoDoiUng.Name = "lblKhoDoiUng";
             this.lblKhoDoiUng.Size = new System.Drawing.Size(83, 17);
             this.lblKhoDoiUng.TabIndex = 4;
@@ -249,16 +250,16 @@
             // cboKhoDoiUng
             // 
             this.cboKhoDoiUng.FormattingEnabled = true;
-            this.cboKhoDoiUng.Location = new System.Drawing.Point(13, 170);
+            this.cboKhoDoiUng.Location = new System.Drawing.Point(18, 292);
             this.cboKhoDoiUng.Name = "cboKhoDoiUng";
-            this.cboKhoDoiUng.Size = new System.Drawing.Size(322, 24);
+            this.cboKhoDoiUng.Size = new System.Drawing.Size(322, 25);
             this.cboKhoDoiUng.TabIndex = 5;
             this.cboKhoDoiUng.SelectedIndexChanged += new System.EventHandler(this.BoLoc_ThayDoi);
             // 
             // lblNguoiTao
             // 
             this.lblNguoiTao.AutoSize = true;
-            this.lblNguoiTao.Location = new System.Drawing.Point(9, 207);
+            this.lblNguoiTao.Location = new System.Drawing.Point(14, 366);
             this.lblNguoiTao.Name = "lblNguoiTao";
             this.lblNguoiTao.Size = new System.Drawing.Size(70, 17);
             this.lblNguoiTao.TabIndex = 6;
@@ -267,16 +268,16 @@
             // cboNguoiTao
             // 
             this.cboNguoiTao.FormattingEnabled = true;
-            this.cboNguoiTao.Location = new System.Drawing.Point(13, 230);
+            this.cboNguoiTao.Location = new System.Drawing.Point(18, 400);
             this.cboNguoiTao.Name = "cboNguoiTao";
-            this.cboNguoiTao.Size = new System.Drawing.Size(322, 24);
+            this.cboNguoiTao.Size = new System.Drawing.Size(322, 25);
             this.cboNguoiTao.TabIndex = 7;
             this.cboNguoiTao.SelectedIndexChanged += new System.EventHandler(this.BoLoc_ThayDoi);
             // 
             // lblThoiGianTao
             // 
             this.lblThoiGianTao.AutoSize = true;
-            this.lblThoiGianTao.Location = new System.Drawing.Point(9, 267);
+            this.lblThoiGianTao.Location = new System.Drawing.Point(14, 477);
             this.lblThoiGianTao.Name = "lblThoiGianTao";
             this.lblThoiGianTao.Size = new System.Drawing.Size(86, 17);
             this.lblThoiGianTao.TabIndex = 8;
@@ -288,9 +289,9 @@
             this.grpThoiGianTao.Controls.Add(this.dtpDenNgay);
             this.grpThoiGianTao.Controls.Add(this.lblTuNgay);
             this.grpThoiGianTao.Controls.Add(this.lblDenNgay);
-            this.grpThoiGianTao.Location = new System.Drawing.Point(13, 290);
+            this.grpThoiGianTao.Location = new System.Drawing.Point(18, 513);
             this.grpThoiGianTao.Name = "grpThoiGianTao";
-            this.grpThoiGianTao.Size = new System.Drawing.Size(322, 100);
+            this.grpThoiGianTao.Size = new System.Drawing.Size(322, 108);
             this.grpThoiGianTao.TabIndex = 9;
             this.grpThoiGianTao.TabStop = false;
             // 
@@ -332,10 +333,12 @@
             // 
             // splitterBoLoc
             // 
-            this.splitterBoLoc.Location = new System.Drawing.Point(360, 84);
+            this.splitterBoLoc.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.splitterBoLoc.Dock = System.Windows.Forms.DockStyle.Top;
+            this.splitterBoLoc.Location = new System.Drawing.Point(0, 0);
             this.splitterBoLoc.Name = "splitterBoLoc";
-            this.splitterBoLoc.Size = new System.Drawing.Size(6, 769);
-            this.splitterBoLoc.TabIndex = 2;
+            this.splitterBoLoc.Size = new System.Drawing.Size(387, 1);
+            this.splitterBoLoc.TabIndex = 0;
             this.splitterBoLoc.TabStop = false;
             // 
             // pnlPhanTrang
@@ -347,9 +350,9 @@
             this.pnlPhanTrang.Controls.Add(this.lblTrangHienTai);
             this.pnlPhanTrang.Controls.Add(this.btnTrangSau);
             this.pnlPhanTrang.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlPhanTrang.Location = new System.Drawing.Point(366, 809);
+            this.pnlPhanTrang.Location = new System.Drawing.Point(387, 811);
             this.pnlPhanTrang.Name = "pnlPhanTrang";
-            this.pnlPhanTrang.Size = new System.Drawing.Size(1416, 44);
+            this.pnlPhanTrang.Size = new System.Drawing.Size(1395, 42);
             this.pnlPhanTrang.TabIndex = 4;
             // 
             // lblTongSoPhieu
@@ -440,14 +443,14 @@
             this.colTrangThai,
             this.colMaPhieuChuyen});
             this.dgvChuyenKho.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvChuyenKho.Location = new System.Drawing.Point(366, 84);
+            this.dgvChuyenKho.Location = new System.Drawing.Point(387, 84);
             this.dgvChuyenKho.Name = "dgvChuyenKho";
             this.dgvChuyenKho.ReadOnly = true;
             this.dgvChuyenKho.RowHeadersVisible = false;
             this.dgvChuyenKho.RowHeadersWidth = 51;
             this.dgvChuyenKho.RowTemplate.Height = 28;
             this.dgvChuyenKho.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvChuyenKho.Size = new System.Drawing.Size(1416, 725);
+            this.dgvChuyenKho.Size = new System.Drawing.Size(1395, 727);
             this.dgvChuyenKho.TabIndex = 3;
             this.dgvChuyenKho.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvChuyenKho_CellDoubleClick);
             this.dgvChuyenKho.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvChuyenKho_CellFormatting);
@@ -586,7 +589,7 @@
             this.ClientSize = new System.Drawing.Size(1782, 853);
             this.Controls.Add(this.dgvChuyenKho);
             this.Controls.Add(this.pnlPhanTrang);
-            this.Controls.Add(this.splitterBoLoc);
+
             this.Controls.Add(this.pnlBoLoc);
             this.Controls.Add(this.pnlTop);
             this.Font = new System.Drawing.Font("Segoe UI", 9.5F);

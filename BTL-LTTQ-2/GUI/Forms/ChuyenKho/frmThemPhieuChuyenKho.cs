@@ -488,8 +488,8 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                         cmdP.Parameters.AddWithValue("@MaPhieu", maPhieu);
                         cmdP.Parameters.AddWithValue("@MaKhoNguon", maKhoNguon);
                         cmdP.Parameters.AddWithValue("@MaKhoDich", maKhoDich);
-                        cmdP.Parameters.AddWithValue("@MaNVLap", (object)SessionContext.MaNV ?? 1);
-                        cmdP.Parameters.AddWithValue("@MaNVXuat", trangThaiMoi == "DA_XUAT" ? ((object)SessionContext.MaNV ?? 1) : DBNull.Value);
+                        cmdP.Parameters.AddWithValue("@MaNVLap", SessionContext.MaNV.HasValue ? (object)SessionContext.MaNV.Value : 1);
+                        cmdP.Parameters.AddWithValue("@MaNVXuat", trangThaiMoi == "DA_XUAT" ? (SessionContext.MaNV.HasValue ? (object)SessionContext.MaNV.Value : 1) : DBNull.Value);
                         cmdP.Parameters.AddWithValue("@NgayLap", dtpNgayChuyen.Value);
                         cmdP.Parameters.AddWithValue("@ThoiDiemXuat", trangThaiMoi == "DA_XUAT" ? (object)DateTime.Now : DBNull.Value);
                         cmdP.Parameters.AddWithValue("@TrangThai", trangThaiMoi);
@@ -529,7 +529,7 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                                      VALUES (@MaTaiKhoan, GETDATE(), @ThaoTac, 'CHUYEN_KHO', @MaDoiTuong, @NoiDung)";
                     using (SqlCommand cmdLog = new SqlCommand(sqlLog, conn, trans))
                     {
-                        cmdLog.Parameters.AddWithValue("@MaTaiKhoan", SessionContext.MaTaiKhoan);
+                        cmdLog.Parameters.AddWithValue("@MaTaiKhoan", SessionContext.MaTaiKhoan > 0 ? SessionContext.MaTaiKhoan : 1);
                         cmdLog.Parameters.AddWithValue("@ThaoTac", hanhDong);
                         cmdLog.Parameters.AddWithValue("@MaDoiTuong", maPhieu);
                         cmdLog.Parameters.AddWithValue("@NoiDung", noiDung);

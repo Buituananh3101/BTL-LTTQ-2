@@ -18,9 +18,59 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
         private int tongSoDong = 0;
         private bool dangNapDuLieu = false;
 
+        private Timer searchDebounceTimer;
+
         public frmChuyenKho()
         {
             InitializeComponent();
+            KhoiTaoDebounceTimer();
+            if (txtTimKiem != null)
+            {
+                txtTimKiem.KeyDown += txtTimKiem_KeyDown;
+            }
+        }
+
+        private void KhoiTaoDebounceTimer()
+        {
+            searchDebounceTimer = new Timer();
+            searchDebounceTimer.Interval = 300;
+            searchDebounceTimer.Tick += (s, e) =>
+            {
+                searchDebounceTimer.Stop();
+                if (!dangNapDuLieu)
+                {
+                    trangHienTai = 1;
+                    TaiDuLieu();
+                }
+            };
+        }
+
+        private void txtTimKiem_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                searchDebounceTimer?.Stop();
+                if (!dangNapDuLieu)
+                {
+                    trangHienTai = 1;
+                    TaiDuLieu();
+                }
+            }
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.F3)
+            {
+                if (txtTimKiem != null && txtTimKiem.CanFocus)
+                {
+                    txtTimKiem.Focus();
+                    txtTimKiem.SelectAll();
+                    return true;
+                }
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         private void frmChuyenKho_Load(object sender, EventArgs e)
@@ -481,8 +531,8 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
 
         private void txtTimKiem_TextChanged(object sender, EventArgs e)
         {
-            trangHienTai = 1;
-            TaiDuLieu();
+            searchDebounceTimer?.Stop();
+            searchDebounceTimer?.Start();
         }
 
         private void BoLoc_ThayDoi(object sender, EventArgs e)

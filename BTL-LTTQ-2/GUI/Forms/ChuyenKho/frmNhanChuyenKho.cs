@@ -27,6 +27,41 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
         private void frmNhanChuyenKho_Load(object sender, EventArgs e)
         {
             lblThongTinPhieu.Text = string.Format("Mã phiếu: {0} | Kho gửi: {1} ➜ Kho nhận: {2}", this.maPhieu, this.tenKhoNguon, this.tenKhoDich);
+
+            try
+            {
+                string sqlCheck = "SELECT MaKhoDich, TrangThai FROM PhieuChuyenKho WHERE MaPhieuChuyen = @MaPhieuChuyen";
+                DataTable dtP = DataProcessing.ReadData(sqlCheck, new SqlParameter[] {
+                    new SqlParameter("@MaPhieuChuyen", this.maPhieuChuyen)
+                });
+
+                if (dtP != null && dtP.Rows.Count > 0)
+                {
+                    string tt = dtP.Rows[0]["TrangThai"].ToString();
+                    int maKD = Convert.ToInt32(dtP.Rows[0]["MaKhoDich"]);
+
+                    if (tt != "DA_XUAT")
+                    {
+                        MessageBox.Show("Phiếu chuyển kho này không ở trạng thái Đang chuyển hàng (DA_XUAT)!\nKhông thể thực hiện nhận hàng.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        this.DialogResult = DialogResult.Cancel;
+                        this.Close();
+                        return;
+                    }
+
+                    if (!SessionContext.IsAdmin && SessionContext.MaKhoHienTai != maKD)
+                    {
+                        MessageBox.Show(string.Format("Tài khoản hiện tại đang ở kho khác, không thuộc kho nhận hàng '{0}'!\nKhông có quyền nhận hàng.", this.tenKhoDich), "Cảnh báo quyền", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        this.DialogResult = DialogResult.Cancel;
+                        this.Close();
+                        return;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi kiểm tra thông tin phiếu chuyển: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
             TaiDanhSachHangNhan();
         }
 
@@ -218,7 +253,7 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
 
                     using (SqlCommand cmdPhieu = new SqlCommand(sqlUpdatePhieu, conn, trans))
                     {
-                        cmdPhieu.Parameters.AddWithValue("@MaNVNhan", (object)SessionContext.MaNV ?? DBNull.Value);
+                        cmdPhieu.Parameters.AddWithValue("@MaNVNhan", SessionContext.MaNV.HasValue ? (object)SessionContext.MaNV.Value : 1);
                         cmdPhieu.Parameters.AddWithValue("@TongSoLuongNhan", tongNhan);
                         cmdPhieu.Parameters.AddWithValue("@GhiChuNhan", string.IsNullOrWhiteSpace(txtGhiChuNhan.Text) ? (object)DBNull.Value : txtGhiChuNhan.Text.Trim());
                         cmdPhieu.Parameters.AddWithValue("@MaPhieuChuyen", this.maPhieuChuyen);
@@ -230,7 +265,7 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                                      VALUES (@MaTaiKhoan, GETDATE(), 'NHAN_HANG', 'CHUYEN_KHO', @MaDoiTuong, @NoiDung)";
                     using (SqlCommand cmdLog = new SqlCommand(sqlLog, conn, trans))
                     {
-                        cmdLog.Parameters.AddWithValue("@MaTaiKhoan", SessionContext.MaTaiKhoan);
+                        cmdLog.Parameters.AddWithValue("@MaTaiKhoan", SessionContext.MaTaiKhoan > 0 ? SessionContext.MaTaiKhoan : 1);
                         cmdLog.Parameters.AddWithValue("@MaDoiTuong", this.maPhieu);
                         cmdLog.Parameters.AddWithValue("@NoiDung", string.Format("Xác nhận nhận {0:N0}/{1:N0} sản phẩm từ phiếu chuyển kho {2} vào {3}", tongNhan, tongChuyen, this.maPhieu, this.tenKhoDich));
                         cmdLog.ExecuteNonQuery();

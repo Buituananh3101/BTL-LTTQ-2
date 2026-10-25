@@ -41,10 +41,7 @@
             this.lblDienThoai = new System.Windows.Forms.Label();
             this.grpGhiChu = new System.Windows.Forms.GroupBox();
             this.lblTieuDeGhiChu = new System.Windows.Forms.Label();
-            this.cboTrangThai = new System.Windows.Forms.ComboBox();
-            this.lblTrangThai = new System.Windows.Forms.Label();
             this.txtGhiChu = new System.Windows.Forms.TextBox();
-            this.lblGhiChu = new System.Windows.Forms.Label();
             this.grpCongNo = new System.Windows.Forms.GroupBox();
             this.lblTieuDeCongNo = new System.Windows.Forms.Label();
             this.lblNoHienTaiVal = new System.Windows.Forms.Label();
@@ -53,6 +50,7 @@
             this.lblTongMuaTieuDe = new System.Windows.Forms.Label();
             this.pnlBottom = new System.Windows.Forms.Panel();
             this.pnlBottomDivider = new System.Windows.Forms.Panel();
+            this.btnXoa = new System.Windows.Forms.Button();
             this.btnBoQua = new System.Windows.Forms.Button();
             this.btnLuu = new System.Windows.Forms.Button();
             this.pnlTop.SuspendLayout();
@@ -271,10 +269,7 @@
             // grpGhiChu
             // 
             this.grpGhiChu.Controls.Add(this.lblTieuDeGhiChu);
-            this.grpGhiChu.Controls.Add(this.cboTrangThai);
-            this.grpGhiChu.Controls.Add(this.lblTrangThai);
             this.grpGhiChu.Controls.Add(this.txtGhiChu);
-            this.grpGhiChu.Controls.Add(this.lblGhiChu);
             this.grpGhiChu.Location = new System.Drawing.Point(30, 415);
             this.grpGhiChu.Name = "grpGhiChu";
             this.grpGhiChu.Size = new System.Drawing.Size(900, 115);
@@ -287,45 +282,18 @@
             this.lblTieuDeGhiChu.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblTieuDeGhiChu.Location = new System.Drawing.Point(10, 16);
             this.lblTieuDeGhiChu.Name = "lblTieuDeGhiChu";
-            this.lblTieuDeGhiChu.Size = new System.Drawing.Size(137, 17);
+            this.lblTieuDeGhiChu.Size = new System.Drawing.Size(56, 17);
             this.lblTieuDeGhiChu.TabIndex = 0;
-            this.lblTieuDeGhiChu.Text = "Trạng thái && Ghi chú";
-            // 
-            // cboTrangThai
-            // 
-            this.cboTrangThai.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboTrangThai.FormattingEnabled = true;
-            this.cboTrangThai.Location = new System.Drawing.Point(20, 68);
-            this.cboTrangThai.Name = "cboTrangThai";
-            this.cboTrangThai.Size = new System.Drawing.Size(265, 25);
-            this.cboTrangThai.TabIndex = 0;
-            // 
-            // lblTrangThai
-            // 
-            this.lblTrangThai.AutoSize = true;
-            this.lblTrangThai.Location = new System.Drawing.Point(20, 45);
-            this.lblTrangThai.Name = "lblTrangThai";
-            this.lblTrangThai.Size = new System.Drawing.Size(66, 17);
-            this.lblTrangThai.TabIndex = 0;
-            this.lblTrangThai.Text = "Trạng thái";
+            this.lblTieuDeGhiChu.Text = "Ghi chú";
             // 
             // txtGhiChu
             // 
-            this.txtGhiChu.Location = new System.Drawing.Point(315, 45);
+            this.txtGhiChu.Location = new System.Drawing.Point(20, 42);
             this.txtGhiChu.Multiline = true;
             this.txtGhiChu.Name = "txtGhiChu";
             this.txtGhiChu.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtGhiChu.Size = new System.Drawing.Size(560, 59);
-            this.txtGhiChu.TabIndex = 1;
-            // 
-            // lblGhiChu
-            // 
-            this.lblGhiChu.AutoSize = true;
-            this.lblGhiChu.Location = new System.Drawing.Point(312, 20);
-            this.lblGhiChu.Name = "lblGhiChu";
-            this.lblGhiChu.Size = new System.Drawing.Size(51, 17);
-            this.lblGhiChu.TabIndex = 0;
-            this.lblGhiChu.Text = "Ghi chú";
+            this.txtGhiChu.Size = new System.Drawing.Size(855, 60);
+            this.txtGhiChu.TabIndex = 0;
             // 
             // grpCongNo
             // 
@@ -391,6 +359,7 @@
             // 
             this.pnlBottom.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
             this.pnlBottom.Controls.Add(this.pnlBottomDivider);
+            this.pnlBottom.Controls.Add(this.btnXoa);
             this.pnlBottom.Controls.Add(this.btnBoQua);
             this.pnlBottom.Controls.Add(this.btnLuu);
             this.pnlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -407,6 +376,17 @@
             this.pnlBottomDivider.Name = "pnlBottomDivider";
             this.pnlBottomDivider.Size = new System.Drawing.Size(960, 1);
             this.pnlBottomDivider.TabIndex = 2;
+            // 
+            // btnXoa
+            // 
+            this.btnXoa.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnXoa.Location = new System.Drawing.Point(30, 14);
+            this.btnXoa.Name = "btnXoa";
+            this.btnXoa.Size = new System.Drawing.Size(140, 32);
+            this.btnXoa.TabIndex = 2;
+            this.btnXoa.Text = "Xóa";
+            this.btnXoa.UseVisualStyleBackColor = true;
+            this.btnXoa.Click += new System.EventHandler(this.btnXoa_Click);
             // 
             // btnBoQua
             // 
@@ -436,7 +416,6 @@
             this.AcceptButton = this.btnLuu;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-
             this.CancelButton = this.btnBoQua;
             this.ClientSize = new System.Drawing.Size(960, 705);
             this.Controls.Add(this.pnlBottom);
@@ -494,10 +473,7 @@
         private System.Windows.Forms.Label lblKhuVuc;
         private System.Windows.Forms.GroupBox grpGhiChu;
         private System.Windows.Forms.Label lblTieuDeGhiChu;
-        private System.Windows.Forms.ComboBox cboTrangThai;
-        private System.Windows.Forms.Label lblTrangThai;
         private System.Windows.Forms.TextBox txtGhiChu;
-        private System.Windows.Forms.Label lblGhiChu;
         private System.Windows.Forms.GroupBox grpCongNo;
         private System.Windows.Forms.Label lblTieuDeCongNo;
         private System.Windows.Forms.Label lblTongMuaTieuDe;
@@ -506,6 +482,7 @@
         private System.Windows.Forms.Label lblNoHienTaiVal;
         private System.Windows.Forms.Panel pnlBottom;
         private System.Windows.Forms.Panel pnlBottomDivider;
+        private System.Windows.Forms.Button btnXoa;
         private System.Windows.Forms.Button btnBoQua;
         private System.Windows.Forms.Button btnLuu;
     }

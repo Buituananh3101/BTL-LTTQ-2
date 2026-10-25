@@ -1,4 +1,4 @@
-# Đặc tả Chức năng: Quản lý Đơn vị tính (Unit of Measure Management - Windows Forms)
+﻿# Đặc tả Chức năng: Quản lý Đơn vị tính (Unit of Measure Management - Windows Forms)
 
 > **Mục tiêu**: Quản lý danh mục Đơn vị tính chuẩn giao diện & nghiệp vụ hệ thống kho hàng nội bộ. Hỗ trợ tìm kiếm tức thì, lọc tình trạng sử dụng, thống kê số lượng mặt hàng đang áp dụng từng đơn vị tính, bảo vệ ràng buộc toàn vẹn dữ liệu (không xóa ĐVT đang có hàng hóa liên kết), mở form MDI, thêm mới/chỉnh sửa đơn vị tính, tạo nhanh ĐVT từ màn hình thêm hàng hóa và xuất danh sách ra file CSV/Excel UTF-8 BOM.
 

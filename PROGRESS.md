@@ -1,13 +1,13 @@
 ﻿# Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-25 – Chuẩn hóa toàn bộ Form Hiện cột theo mẫu frmDanhSachHangHoa và Cơ chế Co giãn Cột DataGridView Lấp đầy Bảng (Phiên 35)
+**Cập nhật lần cuối**: 2026-10-25 – Khắc phục triệt để lỗi nút đè thanh phân trang frmBaoCaoTonKho và Mở rộng khoảng cách bộ lọc bên trái đồng bộ theo frmDanhSachHangHoa (Phiên 38)
 
 ---
 
 ## Đang làm
-- [x] Cập nhật Điều luật 15 và 18 trong `AGENTS.md` và `.agent/rules/03-giao-dien-layout.md`: Lấy font và màu chữ của `frmDanhSachHangHoa` làm chuẩn duy nhất toàn hệ thống; ban hành quy chuẩn phân tầng kích thước form (Chức năng lớn và 3 cỡ chức năng nhỏ: Lớn/Vừa/Nhỏ).
-- [x] Quét và loại bỏ 100% việc in đậm (`FontStyle.Bold`) tùy tiện và tô màu (`ForeColor`) tùy tiện trên tất cả các controls/nhãn trong các phân hệ: Trả hàng nhập, Nhập hàng, Kiểm kho, Chuyển kho, Nhà cung cấp, Đơn vị tính, Báo cáo.
-- [x] Bảo đảm 100% file mã nguồn lưu định dạng **UTF-8 with BOM** (Điều luật 18).
+- [x] Khắc phục triệt để lỗi nút lạ/viền đè dưới nhãn tổng số hàng (`lblTongSoHang`) trên Báo cáo tồn kho (`frmBaoCaoTonKho`): Gỡ bỏ `BackColor = Color.White` trên `pnlPhanTrang` và `pnlBoLoc`, đưa thanh phân trang về nền chuẩn WinForms, đồng bộ 100% tọa độ các nút phân trang (`btnTrangTruoc`, `btnTrangSau`, `cboSoDongMoiTrang`, `lblSoDongMoiTrang`, `lblTrangHienTai`) theo `frmDanhSachHangHoa` (khắc phục lỗi nút `btnTrangSau` bị tràn ra ngoài biên 1416 > 1395), gọi `lblTongSoHang.BringToFront()` trong `frmBaoCaoTonKho_Load`.
+- [x] Mở rộng và chuẩn hóa khoảng cách giữa các bộ lọc bên trái (`grpBoLoc`) trên toàn bộ 8 form danh sách theo mẫu chuẩn `frmDanhSachHangHoa` (`frmBaoCaoTonKho`, `frmBaoCaoTheKho`, `frmNhapHang`, `frmTraHangNhap`, `frmChuyenKho`, `frmKiemKho`, `frmNhaCungCap`, `frmDonViTinh`): Phân bổ thoáng đãng, ComboBox cách Label 34px, cụm thời gian tạo `grpThoiGianTao` cố định ở đáy theo Điều luật 16.
+- [x] Kiểm tra mã hóa tự động `tools/KiemTraMaHoa.ps1`: 151/151 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake.
 - [x] Kiểm tra biên dịch mã nguồn C# bằng MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
 - [ ] Tiện ích băm mật khẩu `Classes/PasswordHelper.cs` (SHA-256).
 - [ ] Thiết kế và hoàn thiện Form Đăng nhập (`frmDangNhap`) hỗ trợ chọn chi nhánh kho làm việc.
@@ -48,6 +48,52 @@
 ---
 
 ## Nhật ký phiên (Session Logs)
+
+- **Phiên 38 (2026-10-25) – Khắc phục lỗi nút đè thanh phân trang frmBaoCaoTonKho và Chuẩn hóa khoảng cách bộ lọc bên trái theo frmDanhSachHangHoa**:
+  - **Nhu cầu**: Người dùng phản hồi (1) Trong form báo cáo tồn kho đang tồn tại 1 nút không rõ chức năng bị đè dưới label tổng số hàng; (2) Khoảng cách giữa các filter trong các form bị quá chật, yêu cầu chỉnh lại rộng hơn, lấy khoảng cách các filter trong form Danh sách hàng hóa làm mẫu.
+  - **Kết quả thực hiện**:
+    1. **Khắc phục lỗi thanh phân trang `frmBaoCaoTonKho`**: Gỡ bỏ `BackColor = Color.White` trên `pnlPhanTrang` và `pnlBoLoc` để đồng bộ nền hệ thống WinForms chuẩn `frmDanhSachHangHoa`. Căn chỉnh lại toàn bộ cụm controls phân trang bên phải theo đúng tọa độ chuẩn `frmDanhSachHangHoa`: `lblSoDongMoiTrang (951, 12)`, `cboSoDongMoiTrang (1035, 7)`, `btnTrangTruoc (1118, 6)`, `lblTrangHienTai (1211, 11)`, `btnTrangSau (1309, 6)` (khắc phục lỗi `btnTrangSau` bị tràn viền 1416 > 1395). Bổ sung `lblTongSoHang.BringToFront()` trong `frmBaoCaoTonKho_Load`.
+    2. **Chuẩn hóa khoảng cách các bộ lọc bên trái (`grpBoLoc`) trên 8 form**: Lấy bước nhảy và khoảng cách chuẩn từ `frmDanhSachHangHoa` làm khuôn mẫu (Label đặt cách nhau đều đặn, ComboBox đặt tại `Label.Y + 34`, khoảng cách từ đáy ComboBox đến Label tiếp theo thoáng đãng ~27-40px, cụm thời gian `grpThoiGianTao` cố định ở đáy theo Điều luật 16). Áp dụng đồng bộ cho cả 8 form: `frmBaoCaoTonKho`, `frmBaoCaoTheKho`, `frmNhapHang`, `frmTraHangNhap`, `frmChuyenKho`, `frmKiemKho`, `frmNhaCungCap`, `frmDonViTinh`.
+    3. **Kiểm tra chất lượng**: Chạy `tools/KiemTraMaHoa.ps1` xác nhận 151/151 file UTF-8 with BOM, 0 lỗi Mojibake; MSBuild Rebuild thành công 0 Warning, 0 Error.
+
+- **Phiên 37 (2026-10-25) – Khắc phục lỗi giao diện 2 chức năng Báo cáo (Báo cáo thẻ kho & Báo cáo tồn kho), Chuẩn hóa bộ lọc bên trái và mở rộng chiều cao card KPI vừa vặn panel cha**:
+  - **Nhu cầu**: Người dùng phản hồi:
+    1. Lỗi giao diện trong 2 chức năng báo cáo cần sửa lại (lỗi chữ "Tìm kiếm" bị ô nhập liệu đè lên chữ; vùng bộ lọc bên trái bị sai kích thước khiến combobox và groupbox thời gian đâm thủng viền phải gây méo mó, biến dạng).
+    2. Mở rộng các panel con chứa báo cáo tổng quan ở phần đầu form sao cho vừa với phần panel cha về chiều cao (vẫn phải có khoảng cách với phần viền nhưng vừa đủ, như khoảng cách của các panel con với phần viền trên của panel cha hiện tại).
+  - **Kết quả thực hiện**:
+    1. **Khắc phục lỗi ô tìm kiếm bị đè chữ**:
+       - Tại `frmBaoCaoTheKho.Designer.cs` & `frmBaoCaoTonKho.Designer.cs`: Tách biệt `lblTimKiem` (Location `(385, 25)`) và `txtTimKiem` (Location `(465, 21)`), đồng bộ 100% tọa độ với khuôn mẫu hệ thống `frmDanhSachHangHoa`.
+    2. **Mở rộng chiều cao các panel con KPI vừa khít panel cha**:
+       - Panel cha `pnlBannerHangHoa` và `pnlKpi` có `Height = 90`. Các panel con có khoảng cách với viền trên `Top = 9`. Để khoảng cách với viền dưới bằng viền trên (9px), tăng chiều cao các panel con từ 52/56px lên chuẩn `72px` ($90 - 9 - 9 = 72$).
+       - `frmBaoCaoTheKho`: Cập nhật 5 panel con (`pnlThongTinHang`, `pnlCardTonDau`, `pnlCardNhapKy`, `pnlCardXuatKy`, `pnlCardTonCuoi`) lên chiều cao 72px; căn chỉnh nhãn tiêu đề (Top 10) và giá trị số (Top 38/42) cân đối, thoáng đẹp.
+       - `frmBaoCaoTonKho`: Cập nhật 4 panel con (`pnlCardSku`, `pnlCardSoLuong`, `pnlCardGiaTri`, `pnlCardCanLuuY`) lên chiều cao 72px; căn chỉnh nhãn tiêu đề (Top 10) và giá trị số (Top 38).
+    3. **Chuẩn hóa vùng bộ lọc bên trái & Cụm thời gian ở đáy theo Điều luật 16**:
+       - Đồng bộ vùng bộ lọc với `frmDanhSachHangHoa`: `pnlBoLoc` (Width 387px), `grpBoLoc` (Width 360px), bổ sung `splitterBoLoc` đỉnh (Height 1).
+       - Đưa cụm thời gian phát sinh / tạo hàng (`lblThoiGianTao` và `grpThoiGianTao`) xuống **VỊ TRÍ CUỐI CÙNG (ở đáy)** của vùng bộ lọc (Location `(18, 513)`), chuẩn hóa bỏ Text của GroupBox theo Điều luật 16.
+       - Căn chỉnh lại `pnlPhanTrang` và DataGridView (`dgvTheKho`, `dgvBaoCaoTonKho`) khít mép phải bộ lọc (`Location X = 387`, `Width = 1395`).
+    4. **Kiểm tra biên dịch, mã hóa & Đồng bộ tài liệu**:
+       - Đồng bộ đặc tả chức năng `docs/specs/the-kho.md` và `docs/specs/bao-cao-ton-kho.md`.
+       - Chạy `tools/KiemTraMaHoa.ps1`: **150/150 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+
+- **Phiên 36 (2026-10-25) – Rà soát toàn bộ Form, Khắc phục triệt để lỗi font chữ (Mojibake) và Thiết lập cơ chế kiểm soát mã hóa cố định UTF-8 BOM**:
+  - **Nhu cầu**: Người dùng phản hồi trên giao diện form Chi tiết chuyển kho (`frmChiTietChuyenKho`) xuất hiện tình trạng lỗi font chữ / biến dạng ký tự tiếng Việt (như nhãn trạng thái bị vỡ ký tự, mũi tên lộ trình bị lỗi, tên người nhận hiển thị ký tự lạ, ghi chú và các nút chức năng bị biến dạng). Yêu cầu rà soát toàn bộ tất cả các form và đảm bảo rằng không bao giờ bị lỗi font chữ nữa; bổ sung rule và cơ chế cố định duy nhất 1 chuẩn Unicode để giữ form không bao giờ lỗi font khi chạy các phiên sửa.
+  - **Kết quả thực hiện**:
+    1. **Khắc phục 100% mã nguồn bị lỗi**:
+       - Khôi phục chuẩn tiếng Việt UTF-8 cho toàn bộ các chuỗi trong `frmChiTietChuyenKho.cs`: nhãn trạng thái ("Đang chuyển", "Đã nhận", "Phiếu tạm", "Đã hủy"), mũi tên lộ trình ("Kho gửi ➜ Kho nhận"), tên người nhận ("Chưa rõ"), ghi chú ("(trống)"), nút hành động ("Nhận hàng", "Chuyển hàng"), đơn vị tiền tệ ("VNĐ"), và toàn bộ các hộp thoại `MessageBox`.
+       - Làm sạch các comment bị lỗi mã hóa trong `frmBaoCaoTheKho.cs`, `frmBaoCaoTonKho.cs`, và mục 5 trong `.agent/rules/05-co-so-du-lieu.md`.
+    2. **Cố định bảng mã trình biên dịch & Editor**:
+       - Xác nhận thuộc tính `<CodePage>65001</CodePage>` trong `BTL-LTTQ-2.csproj` ép trình biên dịch C# (`csc.exe`) xử lý toàn bộ mã nguồn theo chuẩn UTF-8.
+       - Tạo file `.editorconfig` ở thư mục gốc: ép cứng `charset = utf-8-bom` và `end_of_line = crlf` cho Visual Studio, VS Code và mọi trình soạn thảo.
+       - Cập nhật `.gitattributes`: ép `working-tree-encoding=UTF-8` và `eol=crlf`.
+    3. **Xây dựng công cụ kiểm tra tự động độc lập**:
+       - Viết script `tools/KiemTraMaHoa.ps1`: tự động quét 150 file toàn dự án, tự động bổ sung UTF-8 BOM cho các file thiếu, phát hiện 0 lỗi Mojibake.
+    4. **Cập nhật Quy chuẩn Vận hành**:
+       - Cập nhật `AGENTS.md` (Quy trình cuối phiên & Điều luật 18): bắt buộc chạy `tools/KiemTraMaHoa.ps1` trước khi chốt phiên, quy định chuẩn mã hóa cố định duy nhất **UTF-8 with BOM (`0xEF, 0xBB, 0xBF`)**.
+       - Đồng bộ `.agent/rules/01-phong-cach-code.md` (Mục 4) và `.agent/rules/03-giao-dien-layout.md` (Mục 6.6).
+    5. **Kiểm tra biên dịch & Xác nhận**:
+       - Chạy `tools/KiemTraMaHoa.ps1`: **150/150 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
 
 - **Phiên 35 (2026-10-25) – Chuẩn hóa toàn bộ Form  Hiển thị cột theo mẫu rmHienCot của Danh mục hàng hóa và Cơ chế Co giãn Cột DataGridView Lấp đầy Bảng**:
   - **Nhu cầu**: Người dùng phản hồi:

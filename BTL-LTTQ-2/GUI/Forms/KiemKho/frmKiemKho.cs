@@ -19,10 +19,60 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
         private bool isInitializing = true;
         private DataTable dtDanhSachPhieu;
 
+        private Timer searchDebounceTimer;
+
         public frmKiemKho()
         {
             InitializeComponent();
             CauHinhDataGridView();
+            KhoiTaoDebounceTimer();
+            if (txtTimKiem != null)
+            {
+                txtTimKiem.KeyDown += txtTimKiem_KeyDown;
+            }
+        }
+
+        private void KhoiTaoDebounceTimer()
+        {
+            searchDebounceTimer = new Timer();
+            searchDebounceTimer.Interval = 300;
+            searchDebounceTimer.Tick += (s, e) =>
+            {
+                searchDebounceTimer.Stop();
+                if (!isInitializing)
+                {
+                    trangHienTai = 1;
+                    TaiDuLieu();
+                }
+            };
+        }
+
+        private void txtTimKiem_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                searchDebounceTimer?.Stop();
+                if (!isInitializing)
+                {
+                    trangHienTai = 1;
+                    TaiDuLieu();
+                }
+            }
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.F3)
+            {
+                if (txtTimKiem != null && txtTimKiem.CanFocus)
+                {
+                    txtTimKiem.Focus();
+                    txtTimKiem.SelectAll();
+                    return true;
+                }
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         private void CauHinhDataGridView()
@@ -192,9 +242,11 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                     WHERE TrangThai = 'HOAT_DONG' OR TrangThai = 'ACTIVE' OR TrangThai IS NULL";
 
                 DataTable dt = DataProcessing.ReadData(sql);
-                cboKho.DisplayMember = "TenKho";
-                cboKho.ValueMember = "MaKho";
-                cboKho.DataSource = dt;
+                ComboboxHelper.CaiDatTimKiem(cboKho, dt, "TenKho", "MaKho", () =>
+                {
+                    trangHienTai = 1;
+                    TaiDuLieu();
+                });
                 cboKho.SelectedIndex = 0;
             }
             catch (Exception ex)
@@ -364,7 +416,8 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
 
         private void txtTimKiem_TextChanged(object sender, EventArgs e)
         {
-            BoLoc_ThayDoi(sender, e);
+            searchDebounceTimer?.Stop();
+            searchDebounceTimer?.Start();
         }
 
         #endregion

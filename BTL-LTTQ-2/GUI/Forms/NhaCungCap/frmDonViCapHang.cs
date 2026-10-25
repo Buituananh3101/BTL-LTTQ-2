@@ -10,6 +10,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
     public partial class frmDonViCapHang : Form
     {
         private int maDonViCapHangHienTai = 0; // 0: Thêm mới, > 0: Chỉnh sửa
+        private string trangThaiHienTai = "HOAT_DONG";
 
         public frmDonViCapHang()
         {
@@ -44,6 +45,11 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
 
         private void frmDonViCapHang_Load(object sender, EventArgs e)
         {
+            if (btnXoa != null)
+            {
+                btnXoa.Cursor = Cursors.Hand;
+            }
+
             NapCombobox();
 
             if (maDonViCapHangHienTai > 0)
@@ -61,6 +67,8 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                 grpCongNo.Visible = false;
                 this.ClientSize = new Size(960, 610);
                 SinhMaNccGoiY();
+                trangThaiHienTai = "HOAT_DONG";
+                CapNhatGiaoDienNutXoa();
             }
         }
 
@@ -97,12 +105,6 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
             {
                 MessageBox.Show("Lỗi tải danh mục nhóm nhà cung cấp: " + ex.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-
-            // 2. Trạng thái
-            cboTrangThai.Items.Clear();
-            cboTrangThai.Items.Add(new ComboboxItem("Đang hoạt động", "HOAT_DONG"));
-            cboTrangThai.Items.Add(new ComboboxItem("Ngừng hoạt động", "NGUNG_GIAO_DICH"));
-            cboTrangThai.SelectedIndex = 0;
         }
 
         private void SinhMaNccGoiY()
@@ -157,21 +159,15 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                         cboNhomNcc.SelectedValue = maNhom;
                     }
 
-                    // Chọn trạng thái
-                    string trangThai = r["TrangThai"] != DBNull.Value ? r["TrangThai"].ToString() : "HOAT_DONG";
-                    if (trangThai == "NGUNG_GIAO_DICH" || trangThai == "NGUNG_HOAT_DONG")
-                    {
-                        cboTrangThai.SelectedIndex = 1;
-                    }
-                    else
-                    {
-                        cboTrangThai.SelectedIndex = 0;
-                    }
+                    // Lưu trạng thái hiện tại
+                    trangThaiHienTai = r["TrangThai"] != DBNull.Value ? r["TrangThai"].ToString() : "HOAT_DONG";
 
                     // Hiển thị công nợ & tổng mua
                     decimal tongMua = r["TongMua"] != DBNull.Value && decimal.TryParse(r["TongMua"].ToString(), out decimal tm) ? tm : 0;
                     lblTongMuaVal.Text = $"{tongMua:N0} đ";
                     lblNoHienTaiVal.Text = $"{tongMua:N0} đ"; // Khi chưa có sổ quỹ, nợ = tổng mua
+
+                    CapNhatGiaoDienNutXoa();
                 }
             }
             catch (Exception ex)
@@ -182,7 +178,232 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
 
         #endregion
 
-        #region Xử lý Sự kiện & Lưu dữ liệu
+        #region Xử lý Xóa / Cho hoạt động lại nhà cung cấp
+
+        private void CapNhatGiaoDienNutXoa()
+        {
+            if (btnXoa == null) return;
+
+            if (maDonViCapHangHienTai <= 0)
+            {
+                btnXoa.Visible = false;
+                return;
+            }
+
+            btnXoa.Visible = true;
+            btnXoa.UseVisualStyleBackColor = true;
+            btnXoa.ForeColor = SystemColors.ControlText;
+            if (btnLuu != null) btnXoa.Font = btnLuu.Font;
+
+            if (trangThaiHienTai == "NGUNG_HOAT_DONG" || trangThaiHienTai == "NGUNG_GIAO_DICH")
+            {
+                btnXoa.Text = "Cho hoạt động lại";
+            }
+            else
+            {
+                btnXoa.Text = "Xóa";
+            }
+        }
+
+        private void btnXoa_Click(object sender, EventArgs e)
+        {
+            ThucHienThaoTacXoaHoacHoatDongLai();
+        }
+
+        private void ThucHienThaoTacXoaHoacHoatDongLai()
+        {
+            if (trangThaiHienTai == "NGUNG_HOAT_DONG" || trangThaiHienTai == "NGUNG_GIAO_DICH")
+            {
+                KichHoatHoatDongLai();
+            }
+            else
+            {
+                XoaNhaCungCap();
+            }
+        }
+
+        private void KichHoatHoatDongLai()
+        {
+            if (maDonViCapHangHienTai <= 0) return;
+
+            DialogResult dialog = MessageBox.Show(
+                $"Bạn có chắc chắn muốn kích hoạt hoạt động trở lại cho nhà cung cấp '{txtTenDonVi.Text}' ({txtMaNcc.Text}) không?",
+                "Kích hoạt hoạt động lại",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question,
+                MessageBoxDefaultButton.Button1);
+
+            if (dialog != DialogResult.Yes) return;
+
+            try
+            {
+                DataProcessing.ChangeDataTransaction((conn, trans) =>
+                {
+                    string sqlUpdate = "UPDATE DonViCapHang SET TrangThai = 'HOAT_DONG' WHERE MaDonViCapHang = @MaDonViCapHang;";
+                    using (SqlCommand cmd = new SqlCommand(sqlUpdate, conn, trans))
+                    {
+                        cmd.Parameters.AddWithValue("@MaDonViCapHang", maDonViCapHangHienTai);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    GhiNhatKyThaoTac(conn, trans, "HOAT_DONG_LAI", $"Kích hoạt hoạt động trở lại cho nhà cung cấp '{txtTenDonVi.Text}' ({txtMaNcc.Text})");
+                });
+
+                MessageBox.Show(
+                    $"Đã kích hoạt hoạt động trở lại cho nhà cung cấp '{txtTenDonVi.Text}' thành công!",
+                    "Thông báo",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi kích hoạt hoạt động lại nhà cung cấp: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void XoaNhaCungCap()
+        {
+            if (maDonViCapHangHienTai <= 0)
+            {
+                MessageBox.Show("Nhà cung cấp này chưa được lưu vào hệ thống nên không thể xóa!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            try
+            {
+                // 1. Kiểm tra ràng buộc chứng từ kho & giao dịch
+                string sqlKiemTra = @"
+                    SELECT 
+                        (SELECT COUNT(1) FROM PhieuNhap WHERE MaDonViCapHang = @MaDonViCapHang) AS DemPhieuNhap,
+                        (SELECT COUNT(1) FROM PhieuTraHangNhap WHERE MaDonViCapHang = @MaDonViCapHang) AS DemPhieuTra,
+                        (SELECT COUNT(DISTINCT ctpn.MaHang) 
+                         FROM ChiTietPhieuNhap ctpn 
+                         JOIN PhieuNhap pn ON ctpn.MaPhieuNhap = pn.MaPhieuNhap 
+                         WHERE pn.MaDonViCapHang = @MaDonViCapHang) AS DemMatHang;";
+
+                DataTable dtCheck = DataProcessing.ReadData(sqlKiemTra, new SqlParameter[] { new SqlParameter("@MaDonViCapHang", maDonViCapHangHienTai) });
+                if (dtCheck != null && dtCheck.Rows.Count > 0)
+                {
+                    DataRow r = dtCheck.Rows[0];
+                    int demNhap = Convert.ToInt32(r["DemPhieuNhap"]);
+                    int demTra = Convert.ToInt32(r["DemPhieuTra"]);
+                    int demHang = Convert.ToInt32(r["DemMatHang"]);
+
+                    int tongGiaoDich = demNhap + demTra + demHang;
+                    if (tongGiaoDich > 0)
+                    {
+                        string lyDo = "";
+                        if (demNhap > 0) lyDo += $"\n- {demNhap} phiếu nhập hàng";
+                        if (demTra > 0) lyDo += $"\n- {demTra} phiếu trả hàng nhập";
+                        if (demHang > 0) lyDo += $"\n- {demHang} mặt hàng liên quan";
+
+                        if (trangThaiHienTai == "NGUNG_HOAT_DONG" || trangThaiHienTai == "NGUNG_GIAO_DICH")
+                        {
+                            MessageBox.Show(
+                                $"Không thể xóa nhà cung cấp '{txtTenDonVi.Text}' ({txtMaNcc.Text}) vì đã phát sinh chứng từ giao dịch trong hệ thống:{lyDo}\n\nQuy chuẩn quản lý kho không cho phép xóa dữ liệu đã có lịch sử giao dịch nhằm bảo toàn tính toàn vẹn sổ sách.\n\nNhà cung cấp này hiện tại đã ở trạng thái 'Ngừng hoạt động'.",
+                                "Không thể xóa nhà cung cấp",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Warning);
+                            return;
+                        }
+
+                        DialogResult hoiChuyen = MessageBox.Show(
+                            $"Không thể xóa nhà cung cấp '{txtTenDonVi.Text}' ({txtMaNcc.Text}) vì đã phát sinh chứng từ giao dịch trong hệ thống:{lyDo}\n\nQuy chuẩn quản lý kho không cho phép xóa dữ liệu đã có lịch sử giao dịch nhằm bảo toàn tính toàn vẹn sổ sách.\n\nBạn có muốn chuyển trạng thái nhà cung cấp này sang 'Ngừng hoạt động' không?",
+                            "Không thể xóa nhà cung cấp - Chuyển sang Ngừng hoạt động",
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Question,
+                            MessageBoxDefaultButton.Button1);
+
+                        if (hoiChuyen == DialogResult.Yes)
+                        {
+                            DataProcessing.ChangeDataTransaction((conn, trans) =>
+                            {
+                                string sqlUpdateTrangThai = "UPDATE DonViCapHang SET TrangThai = 'NGUNG_HOAT_DONG' WHERE MaDonViCapHang = @MaDonViCapHang;";
+                                using (SqlCommand cmd = new SqlCommand(sqlUpdateTrangThai, conn, trans))
+                                {
+                                    cmd.Parameters.AddWithValue("@MaDonViCapHang", maDonViCapHangHienTai);
+                                    cmd.ExecuteNonQuery();
+                                }
+
+                                GhiNhatKyThaoTac(conn, trans, "NGUNG_HOAT_DONG", $"Chuyển trạng thái nhà cung cấp '{txtTenDonVi.Text}' ({txtMaNcc.Text}) sang Ngừng hoạt động");
+                            });
+
+                            MessageBox.Show(
+                                $"Đã chuyển trạng thái nhà cung cấp '{txtTenDonVi.Text}' sang 'Ngừng hoạt động' thành công!",
+                                "Thông báo",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Information);
+
+                            this.DialogResult = DialogResult.OK;
+                            this.Close();
+                        }
+
+                        return;
+                    }
+                }
+
+                // 2. Nếu chưa từng phát sinh giao dịch: Hỏi xác nhận xóa vĩnh viễn
+                DialogResult dialog = MessageBox.Show(
+                    $"Bạn có chắc chắn muốn xóa vĩnh viễn nhà cung cấp '{txtTenDonVi.Text}' (Mã: {txtMaNcc.Text}) khỏi cơ sở dữ liệu không?\n\nLưu ý: Toàn bộ thông tin liên quan sẽ bị xóa và không thể khôi phục!",
+                    "Xác nhận xóa nhà cung cấp",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question,
+                    MessageBoxDefaultButton.Button2);
+
+                if (dialog != DialogResult.Yes) return;
+
+                // 3. Thực hiện xóa trong Transaction ADO.NET
+                DataProcessing.ChangeDataTransaction((conn, trans) =>
+                {
+                    using (SqlCommand cmd = new SqlCommand("DELETE FROM DonViCapHang WHERE MaDonViCapHang = @MaDonViCapHang;", conn, trans))
+                    {
+                        cmd.Parameters.AddWithValue("@MaDonViCapHang", maDonViCapHangHienTai);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    GhiNhatKyThaoTac(conn, trans, "XOA", $"Xóa vĩnh viễn nhà cung cấp '{txtTenDonVi.Text}' ({txtMaNcc.Text})");
+                });
+
+                MessageBox.Show($"Đã xóa thành công nhà cung cấp '{txtTenDonVi.Text}'!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi xóa nhà cung cấp: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void GhiNhatKyThaoTac(SqlConnection conn, SqlTransaction trans, string thaoTac, string noiDung)
+        {
+            try
+            {
+                string sqlLog = @"
+                    INSERT INTO NhatKyThaoTac (MaTaiKhoan, ThoiDiem, ThaoTac, LoaiDoiTuong, MaDoiTuong, NoiDung)
+                    VALUES (@MaTaiKhoan, GETDATE(), @ThaoTac, @LoaiDoiTuong, @MaDoiTuong, @NoiDung);";
+
+                using (SqlCommand cmd = new SqlCommand(sqlLog, conn, trans))
+                {
+                    cmd.Parameters.AddWithValue("@MaTaiKhoan", SessionContext.MaTaiKhoan > 0 ? SessionContext.MaTaiKhoan : 1);
+                    cmd.Parameters.AddWithValue("@ThaoTac", thaoTac);
+                    cmd.Parameters.AddWithValue("@LoaiDoiTuong", "DonViCapHang");
+                    cmd.Parameters.AddWithValue("@MaDoiTuong", string.IsNullOrWhiteSpace(txtMaNcc.Text) ? maDonViCapHangHienTai.ToString() : txtMaNcc.Text.Trim());
+                    cmd.Parameters.AddWithValue("@NoiDung", noiDung);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch
+            {
+                // Bỏ qua lỗi ghi nhật ký để không làm ảnh hưởng đến giao dịch nghiệp vụ chính
+            }
+        }
+
+        #endregion
+
+        #region Xử lý Lưu dữ liệu
 
         private void btnLuu_Click(object sender, EventArgs e)
         {
@@ -226,12 +447,8 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                     valMaNhom = maNhom;
                 }
 
-                // Trạng thái
-                string trangThai = "HOAT_DONG";
-                if (cboTrangThai.SelectedItem is ComboboxItem item)
-                {
-                    trangThai = item.Value.ToString();
-                }
+                // Trạng thái: giữ nguyên trạng thái hiện tại nếu chỉnh sửa, hoặc mặc định 'HOAT_DONG' nếu tạo mới
+                string trangThai = maDonViCapHangHienTai == 0 ? "HOAT_DONG" : trangThaiHienTai;
 
                 // Bọc Transaction an toàn
                 DataProcessing.ChangeDataTransaction((conn, trans) =>
@@ -263,6 +480,8 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                             cmd.Parameters.AddWithValue("@TrangThai", trangThai);
                             cmd.ExecuteNonQuery();
                         }
+
+                        GhiNhatKyThaoTac(conn, trans, "THEM_MOI", $"Thêm mới nhà cung cấp '{tenDonVi}' ({maNcc})");
                     }
                     else
                     {
@@ -296,6 +515,8 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                             cmd.Parameters.AddWithValue("@MaDonViCapHang", maDonViCapHangHienTai);
                             cmd.ExecuteNonQuery();
                         }
+
+                        GhiNhatKyThaoTac(conn, trans, "CAP_NHAT", $"Cập nhật thông tin nhà cung cấp '{tenDonVi}' ({maNcc})");
                     }
                 });
 
@@ -314,27 +535,6 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
         {
             this.DialogResult = DialogResult.Cancel;
             this.Close();
-        }
-
-        #endregion
-
-        #region Lớp tiện ích ComboboxItem
-
-        private class ComboboxItem
-        {
-            public string Text { get; set; }
-            public object Value { get; set; }
-
-            public ComboboxItem(string text, object value)
-            {
-                Text = text;
-                Value = value;
-            }
-
-            public override string ToString()
-            {
-                return Text;
-            }
         }
 
         #endregion

@@ -1,4 +1,4 @@
-# Sổ Quyết định Kỹ thuật & Nghiệp vụ (Architecture & Business Decisions)
+﻿# Sổ Quyết định Kỹ thuật & Nghiệp vụ (Architecture & Business Decisions)
 ## Hệ Thống Quản Lý Kho Hàng BTL-LTTQ-2 (Windows Forms C#)
 
 > **Mục đích**: Ghi lại mọi quyết định kiến trúc, công nghệ và nghiệp vụ đã được thống nhất để các phiên làm việc tiếp theo không hỏi lại hoặc làm mâu thuẫn với các quyết định trước. Mỗi dòng ghi theo định dạng: `[Ngày] – [Quyết định] – [Lý do]`.
@@ -191,3 +191,27 @@
        + Cột checkbox chọn dòng (`colChon`) và hình ảnh giữ `AutoSizeMode = None` với kích thước cố định.
        + Chuẩn hóa sự kiện `btnHienCot_Click` trên tất cả các form: kiểm tra `Application.OpenForms` chống mở trùng, căn vị trí hiển thị ngay dưới mép phải nút `btnHienCot` và bảo đảm không tràn ra ngoài màn hình làm việc.
   3. **Biên dịch & Định dạng**: 100% file mã nguồn lưu định dạng **UTF-8 with BOM** (Điều luật 18). Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+
+
+- **2026-10-25 (Phiên 36) – Rà soát toàn bộ các Form, Khắc phục triệt để lỗi font chữ (Mojibake) và Thiết lập cơ chế kiểm soát mã hóa cố định UTF-8 BOM**:
+  1. **Bối cảnh & Yêu cầu**: Người dùng phản hồi trên giao diện form Chi tiết chuyển kho (`frmChiTietChuyenKho`) xuất hiện tình trạng lỗi font chữ / biến dạng ký tự tiếng Việt (như nhãn trạng thái bị vỡ ký tự, lộ trình bị lỗi, tên người nhận hiển thị ký tự lạ, ghi chú và các nút chức năng bị biến dạng). Yêu cầu rà soát toàn bộ tất cả các form và bảo đảm không bao giờ bị lỗi font chữ nữa; bổ sung rule và cơ chế cố định duy nhất 1 chuẩn Unicode để giữ form không bao giờ lỗi font khi chạy các phiên sửa.
+  2. **Nguyên nhân cốt lõi**:
+     - Trong phiên chỉnh sửa trước đó, file `frmChiTietChuyenKho.cs` đã bị can thiệp bởi công cụ/trình soạn thảo với bảng mã mặc định Windows-1252 (ANSI) thay vì UTF-8, khiến các chuỗi tiếng Việt có dấu bị giải mã sai thành các ký tự kép (Mojibake) và lưu lại vào mã nguồn.
+     - C# Compiler (.NET Framework 4.7.2) và PowerShell trên Windows mặc định xử lý file không có BOM theo bảng mã hệ thống Windows ANSI (CP1252) nếu không được cố định.
+  3. **Giải pháp thực hiện triệt để**:
+     - **Khắc phục 100% mã nguồn bị lỗi**:
+       + Khôi phục hoàn toàn tiếng Việt chuẩn có dấu UTF-8 cho `frmChiTietChuyenKho.cs`: nhãn trạng thái ("Đang chuyển", "Đã nhận", "Phiếu tạm", "Đã hủy"), lộ trình ("Kho gửi ➜ Kho nhận"), tên người nhận mặc định ("Chưa rõ"), ghi chú ("(trống)"), nút hành động ("Nhận hàng", "Chuyển hàng"), đơn vị tiền ("VNĐ"), và toàn bộ các thông báo `MessageBox`.
+       + Làm sạch các dòng comment bị lỗi mã hóa trong `frmBaoCaoTheKho.cs` và `frmBaoCaoTonKho.cs`.
+     - **Cố định bảng mã trình biên dịch C#**:
+       + Đảm bảo file dự án `BTL-LTTQ-2.csproj` chứa thuộc tính `<CodePage>65001</CodePage>` để ép Roslyn compiler (`csc.exe`) xử lý toàn bộ mã nguồn theo chuẩn UTF-8.
+     - **Cố định môi trường IDE & Trình soạn thảo**:
+       + Tạo mới file `.editorconfig` ở thư mục gốc dự án: ép cứng `charset = utf-8-bom` và `end_of_line = crlf` cho mọi file mã nguồn và tài liệu.
+       + Cập nhật `.gitattributes`: ép `working-tree-encoding=UTF-8` và `eol=crlf`.
+     - **Xây dựng công cụ kiểm tra tự động độc lập**:
+       + Tạo script `tools/KiemTraMaHoa.ps1`: quét toàn bộ 150 file mã nguồn trong dự án; tự động thêm UTF-8 BOM cho các file thiếu; phát hiện và chặn đứng mọi ký tự Mojibake; trả về exit code 1 nếu có lỗi.
+     - **Cập nhật Quy chuẩn Agent (`AGENTS.md` & `.agent/rules/`)**:
+       + Cập nhật Quy trình cuối phiên: BẮT BUỘC chạy `tools/KiemTraMaHoa.ps1` và bảo đảm **0 Mojibake, 100% UTF-8 with BOM** trước khi kết thúc phiên.
+       + Cập nhật Điều luật 18: Cố định duy nhất 1 chuẩn **UTF-8 with BOM (`0xEF, 0xBB, 0xBF`)** cho toàn bộ file mã nguồn.
+  4. **Kiểm tra biên dịch & Xác nhận**:
+     - Chạy `tools/KiemTraMaHoa.ps1`: **150/150 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+     - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.

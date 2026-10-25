@@ -71,7 +71,7 @@
             this.pnlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlTop.Location = new System.Drawing.Point(0, 0);
             this.pnlTop.Name = "pnlTop";
-            this.pnlTop.Size = new System.Drawing.Size(1782, 68);
+            this.pnlTop.Size = new System.Drawing.Size(1782, 84);
             this.pnlTop.TabIndex = 0;
             // 
             // grpTop
@@ -138,17 +138,17 @@
             // lblTimKiem
             // 
             this.lblTimKiem.AutoSize = true;
-            this.lblTimKiem.Location = new System.Drawing.Point(380, 25);
+            this.lblTimKiem.Location = new System.Drawing.Point(385, 25);
             this.lblTimKiem.Name = "lblTimKiem";
-            this.lblTimKiem.Size = new System.Drawing.Size(63, 17);
+            this.lblTimKiem.Size = new System.Drawing.Size(60, 17);
             this.lblTimKiem.TabIndex = 1;
             this.lblTimKiem.Text = "Tìm kiếm";
             // 
             // txtTimKiem
             // 
-            this.txtTimKiem.Location = new System.Drawing.Point(455, 22);
+            this.txtTimKiem.Location = new System.Drawing.Point(465, 21);
             this.txtTimKiem.Name = "txtTimKiem";
-            this.txtTimKiem.Size = new System.Drawing.Size(550, 24);
+            this.txtTimKiem.Size = new System.Drawing.Size(602, 24);
             this.txtTimKiem.TabIndex = 2;
             this.txtTimKiem.TextChanged += new System.EventHandler(this.txtTimKiem_TextChanged);
             // 
@@ -165,11 +165,12 @@
             // pnlBoLoc
             // 
             this.pnlBoLoc.Controls.Add(this.grpBoLoc);
+            this.pnlBoLoc.Controls.Add(this.splitterBoLoc);
             this.pnlBoLoc.Dock = System.Windows.Forms.DockStyle.Left;
-            this.pnlBoLoc.Location = new System.Drawing.Point(0, 68);
+            this.pnlBoLoc.Location = new System.Drawing.Point(0, 84);
             this.pnlBoLoc.Name = "pnlBoLoc";
-            this.pnlBoLoc.Padding = new System.Windows.Forms.Padding(0, 0, 8, 0);
-            this.pnlBoLoc.Size = new System.Drawing.Size(370, 785);
+
+            this.pnlBoLoc.Size = new System.Drawing.Size(387, 769);
             this.pnlBoLoc.TabIndex = 1;
             // 
             // grpBoLoc
@@ -180,11 +181,11 @@
             this.grpBoLoc.Controls.Add(this.lblSapXep);
             this.grpBoLoc.Controls.Add(this.cboTrangThai);
             this.grpBoLoc.Controls.Add(this.lblTrangThai);
-            this.grpBoLoc.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpBoLoc.Location = new System.Drawing.Point(0, 0);
+
+            this.grpBoLoc.Location = new System.Drawing.Point(12, 9);
             this.grpBoLoc.Name = "grpBoLoc";
-            this.grpBoLoc.Size = new System.Drawing.Size(362, 785);
-            this.grpBoLoc.TabIndex = 0;
+            this.grpBoLoc.Size = new System.Drawing.Size(360, 717);
+            this.grpBoLoc.TabIndex = 1;
             this.grpBoLoc.TabStop = false;
             // 
             // grpThoiGianTao
@@ -193,9 +194,9 @@
             this.grpThoiGianTao.Controls.Add(this.lblDenNgay);
             this.grpThoiGianTao.Controls.Add(this.lblTuNgay);
             this.grpThoiGianTao.Controls.Add(this.dtpTuNgay);
-            this.grpThoiGianTao.Location = new System.Drawing.Point(18, 204);
+            this.grpThoiGianTao.Location = new System.Drawing.Point(18, 396);
             this.grpThoiGianTao.Name = "grpThoiGianTao";
-            this.grpThoiGianTao.Size = new System.Drawing.Size(326, 108);
+            this.grpThoiGianTao.Size = new System.Drawing.Size(322, 108);
             this.grpThoiGianTao.TabIndex = 5;
             this.grpThoiGianTao.TabStop = false;
             // 
@@ -240,7 +241,7 @@
             // lblThoiGianTao
             // 
             this.lblThoiGianTao.AutoSize = true;
-            this.lblThoiGianTao.Location = new System.Drawing.Point(14, 180);
+            this.lblThoiGianTao.Location = new System.Drawing.Point(14, 360);
             this.lblThoiGianTao.Name = "lblThoiGianTao";
             this.lblThoiGianTao.Size = new System.Drawing.Size(85, 17);
             this.lblThoiGianTao.TabIndex = 4;
@@ -250,16 +251,16 @@
             // 
             this.cboSapXep.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSapXep.FormattingEnabled = true;
-            this.cboSapXep.Location = new System.Drawing.Point(18, 126);
+            this.cboSapXep.Location = new System.Drawing.Point(18, 244);
             this.cboSapXep.Name = "cboSapXep";
-            this.cboSapXep.Size = new System.Drawing.Size(326, 25);
+            this.cboSapXep.Size = new System.Drawing.Size(322, 25);
             this.cboSapXep.TabIndex = 3;
             this.cboSapXep.SelectedIndexChanged += new System.EventHandler(this.BoLoc_SelectedIndexChanged);
             // 
             // lblSapXep
             // 
             this.lblSapXep.AutoSize = true;
-            this.lblSapXep.Location = new System.Drawing.Point(14, 102);
+            this.lblSapXep.Location = new System.Drawing.Point(14, 210);
             this.lblSapXep.Name = "lblSapXep";
             this.lblSapXep.Size = new System.Drawing.Size(81, 17);
             this.lblSapXep.TabIndex = 2;
@@ -269,16 +270,16 @@
             // 
             this.cboTrangThai.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboTrangThai.FormattingEnabled = true;
-            this.cboTrangThai.Location = new System.Drawing.Point(18, 52);
+            this.cboTrangThai.Location = new System.Drawing.Point(18, 94);
             this.cboTrangThai.Name = "cboTrangThai";
-            this.cboTrangThai.Size = new System.Drawing.Size(326, 25);
+            this.cboTrangThai.Size = new System.Drawing.Size(322, 25);
             this.cboTrangThai.TabIndex = 1;
             this.cboTrangThai.SelectedIndexChanged += new System.EventHandler(this.BoLoc_SelectedIndexChanged);
             // 
             // lblTrangThai
             // 
             this.lblTrangThai.AutoSize = true;
-            this.lblTrangThai.Location = new System.Drawing.Point(14, 28);
+            this.lblTrangThai.Location = new System.Drawing.Point(14, 60);
             this.lblTrangThai.Name = "lblTrangThai";
             this.lblTrangThai.Size = new System.Drawing.Size(117, 17);
             this.lblTrangThai.TabIndex = 0;
@@ -286,10 +287,12 @@
             // 
             // splitterBoLoc
             // 
-            this.splitterBoLoc.Location = new System.Drawing.Point(370, 68);
+            this.splitterBoLoc.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.splitterBoLoc.Dock = System.Windows.Forms.DockStyle.Top;
+            this.splitterBoLoc.Location = new System.Drawing.Point(0, 0);
             this.splitterBoLoc.Name = "splitterBoLoc";
-            this.splitterBoLoc.Size = new System.Drawing.Size(4, 785);
-            this.splitterBoLoc.TabIndex = 2;
+            this.splitterBoLoc.Size = new System.Drawing.Size(387, 1);
+            this.splitterBoLoc.TabIndex = 0;
             this.splitterBoLoc.TabStop = false;
             // 
             // pnlPhanTrang
@@ -301,9 +304,9 @@
             this.pnlPhanTrang.Controls.Add(this.lblTrangHienTai);
             this.pnlPhanTrang.Controls.Add(this.btnTrangSau);
             this.pnlPhanTrang.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlPhanTrang.Location = new System.Drawing.Point(374, 801);
+            this.pnlPhanTrang.Location = new System.Drawing.Point(387, 811);
             this.pnlPhanTrang.Name = "pnlPhanTrang";
-            this.pnlPhanTrang.Size = new System.Drawing.Size(1408, 52);
+            this.pnlPhanTrang.Size = new System.Drawing.Size(1395, 42);
             this.pnlPhanTrang.TabIndex = 4;
             // 
             // lblTongSoDvt
@@ -404,14 +407,14 @@
             this.dgvDonViTinh.DefaultCellStyle = dataGridViewCellStyle3;
             this.dgvDonViTinh.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvDonViTinh.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
-            this.dgvDonViTinh.Location = new System.Drawing.Point(374, 68);
+            this.dgvDonViTinh.Location = new System.Drawing.Point(387, 84);
             this.dgvDonViTinh.MultiSelect = false;
             this.dgvDonViTinh.Name = "dgvDonViTinh";
             this.dgvDonViTinh.RowHeadersVisible = false;
             this.dgvDonViTinh.RowHeadersWidth = 51;
             this.dgvDonViTinh.RowTemplate.Height = 32;
             this.dgvDonViTinh.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvDonViTinh.Size = new System.Drawing.Size(1408, 733);
+            this.dgvDonViTinh.Size = new System.Drawing.Size(1395, 727);
             this.dgvDonViTinh.TabIndex = 3;
             this.dgvDonViTinh.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvDonViTinh_CellDoubleClick);
             this.dgvDonViTinh.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvDonViTinh_CellFormatting);
@@ -493,7 +496,7 @@
             this.ClientSize = new System.Drawing.Size(1782, 853);
             this.Controls.Add(this.dgvDonViTinh);
             this.Controls.Add(this.pnlPhanTrang);
-            this.Controls.Add(this.splitterBoLoc);
+
             this.Controls.Add(this.pnlBoLoc);
             this.Controls.Add(this.pnlTop);
             this.Font = new System.Drawing.Font("Segoe UI", 9.5F);

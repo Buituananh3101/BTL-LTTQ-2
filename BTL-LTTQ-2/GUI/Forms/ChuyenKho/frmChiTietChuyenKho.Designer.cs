@@ -568,10 +568,10 @@
             // 
             // btnNhanHang
             // 
-            this.btnNhanHang.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnNhanHang.Location = new System.Drawing.Point(372, 12);
+            // btnNhanHang
+            this.btnNhanHang.Location = new System.Drawing.Point(235, 12);
             this.btnNhanHang.Name = "btnNhanHang";
-            this.btnNhanHang.Size = new System.Drawing.Size(110, 32);
+            this.btnNhanHang.Size = new System.Drawing.Size(120, 32);
             this.btnNhanHang.TabIndex = 0;
             this.btnNhanHang.Text = "Nhận hàng";
             this.btnNhanHang.UseVisualStyleBackColor = true;
@@ -592,8 +592,8 @@
             // 
             // btnXuatFile
             // 
-            this.btnXuatFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnXuatFile.Location = new System.Drawing.Point(128, 12);
+            // btnXuatFile
+            this.btnXuatFile.Location = new System.Drawing.Point(125, 12);
             this.btnXuatFile.Name = "btnXuatFile";
             this.btnXuatFile.Size = new System.Drawing.Size(100, 32);
             this.btnXuatFile.TabIndex = 2;
@@ -603,11 +603,11 @@
             // 
             // btnHoanThanh
             // 
-            this.btnHoanThanh.Location = new System.Drawing.Point(247, 12);
+            this.btnHoanThanh.Location = new System.Drawing.Point(235, 12);
             this.btnHoanThanh.Name = "btnHoanThanh";
-            this.btnHoanThanh.Size = new System.Drawing.Size(110, 32);
+            this.btnHoanThanh.Size = new System.Drawing.Size(120, 32);
             this.btnHoanThanh.TabIndex = 4;
-            this.btnHoanThanh.Text = "Hoàn thành";
+            this.btnHoanThanh.Text = "Chuyển hàng";
             this.btnHoanThanh.UseVisualStyleBackColor = true;
             this.btnHoanThanh.Visible = false;
             this.btnHoanThanh.Click += new System.EventHandler(this.btnHoanThanh_Click);

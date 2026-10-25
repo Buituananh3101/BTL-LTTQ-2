@@ -1,4 +1,4 @@
-# 01. Phong cách code & Quy ước lập trình WinForms
+﻿# 01. Phong cách code & Quy ước lập trình WinForms
 
 ## 1. Ngôn ngữ & Quy ước đặt tên
 
@@ -135,3 +135,13 @@ catch (Exception ex)
     MessageBox.Show("Đã xảy ra lỗi: " + ex.Message, "Thông báo lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
 }
 ```
+
+
+---
+
+## 4. Tiêu chuẩn Mã hóa Tệp tin & Phòng chống Lỗi Font (Mojibake)
+
+- **Chuẩn mã hóa duy nhất toàn dự án**: 100% file mã nguồn (`.cs`, `.Designer.cs`, `.resx`, `.sql`, `.config`, `.md`, `.json`, `.ps1`) bắt buộc phải lưu dưới định dạng **UTF-8 with BOM (Byte Order Mark: `0xEF, 0xBB, 0xBF`)** và ngắt dòng kiểu Windows `CRLF`.
+- **Cấu hình C# Compiler**: Thuộc tính `<CodePage>65001</CodePage>` trong `BTL-LTTQ-2.csproj` bảo đảm Roslyn compiler (`csc.exe`) xử lý toàn bộ chuỗi ký tự theo UTF-8.
+- **Cấu hình Editor & Git**: File `.editorconfig` (`charset = utf-8-bom`, `end_of_line = crlf`) và `.gitattributes` bảo đảm mọi trình soạn thảo (Visual Studio, VS Code...) không làm thay đổi hay mất BOM.
+- **Công cụ kiểm tra tự động**: Chạy `powershell -ExecutionPolicy Bypass -File tools/KiemTraMaHoa.ps1` vào cuối mỗi phiên để tự động quét 100% tệp tin, bảo đảm không có file nào thiếu BOM và 0 lỗi Mojibake.

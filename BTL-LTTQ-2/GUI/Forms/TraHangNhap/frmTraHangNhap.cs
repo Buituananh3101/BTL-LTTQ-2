@@ -29,6 +29,10 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
             InitializeComponent();
             DinhDangLuoi();
             KhoiTaoDebounceTimer();
+            if (txtTimKiem != null)
+            {
+                txtTimKiem.KeyDown += txtTimKiem_KeyDown;
+            }
         }
 
         private void KhoiTaoDebounceTimer()
@@ -44,6 +48,34 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                     HienThiDanhSach();
                 }
             };
+        }
+
+        private void txtTimKiem_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                searchDebounceTimer?.Stop();
+                if (isLoaded)
+                {
+                    trangHienTai = 1;
+                    HienThiDanhSach();
+                }
+            }
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.F3)
+            {
+                if (txtTimKiem != null && txtTimKiem.CanFocus)
+                {
+                    txtTimKiem.Focus();
+                    txtTimKiem.SelectAll();
+                    return true;
+                }
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         private void DinhDangLuoi()

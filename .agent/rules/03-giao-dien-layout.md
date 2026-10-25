@@ -1,4 +1,4 @@
-# 03. Giao diện, Layout & Thành phần WinForms
+﻿# 03. Giao diện, Layout & Thành phần WinForms
 
 ## 1. Mô hình Giao diện MDI chuẩn (`frmMain`)
 
@@ -195,3 +195,10 @@ Phân hệ **Danh mục Hàng hóa** (`frmDanhSachHangHoa` & `frmHangHoa`) đã 
     2. `Lưu tạm`: Lưu chứng từ ở trạng thái nháp/tạm (`NHAP`), không làm biến động sổ sách tồn kho (nếu form có hỗ trợ lưu tạm).
     3. `Lưu`: Lưu và xác nhận hoàn tất nghiệp vụ (cập nhật tồn kho / cân bằng kho / lưu dữ liệu chính thức).
   - Đối với form danh mục không có lưu tạm (ví dụ `frmHangHoa`, `frmDonViCapHang`, `frmNhomNhaCungCap`), thứ tự từ trái qua phải là: `Bỏ qua` ➜ `Lưu`.
+
+
+### 6.6. Tiêu chuẩn mã hóa Unicode & Cố định Bảng mã chống lỗi font (Mojibake)
+- **Chuẩn mã hóa duy nhất toàn dự án**: 100% file mã nguồn (`.cs`, `.Designer.cs`, `.resx`, `.sql`, `.config`, `.md`, `.json`, `.ps1`) bắt buộc phải lưu dưới định dạng **UTF-8 with BOM (Byte Order Mark: `0xEF, 0xBB, 0xBF`)** và ngắt dòng kiểu Windows `CRLF`.
+- **Cố định bảng mã trình biên dịch**: Cấu hình `<CodePage>65001</CodePage>` trong `BTL-LTTQ-2.csproj`.
+- **Cấu hình môi trường phát triển**: `.editorconfig` (`charset = utf-8-bom`, `end_of_line = crlf`) và `.gitattributes`.
+- **Quy trình kiểm tra bắt buộc**: Chạy `powershell -ExecutionPolicy Bypass -File tools/KiemTraMaHoa.ps1` ở cuối mọi phiên làm việc, cam kết 0 lỗi Mojibake và 100% file có BOM.
