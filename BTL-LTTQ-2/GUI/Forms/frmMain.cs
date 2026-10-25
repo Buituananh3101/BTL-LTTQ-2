@@ -36,9 +36,73 @@ namespace BTL_LTTQ_2.GUI.Forms
             this.Text = "Quản Lý Kho Phú Quốc - [" + SessionContext.TenKhoHienTai + "]";
 
             // Thiết lập thông tin trạng thái ở góc trái dưới
-            tssNguoiDung.Text = "Người dùng: " + SessionContext.HoTen + " (" + SessionContext.TenDangNhap + ")";
+            tssNguoiDung.Text = "Người dùng: " + SessionContext.HoTen + " (" + SessionContext.TenVaiTro + ")";
             tssKho.Text = "Kho: " + SessionContext.TenKhoHienTai;
             tssThoiGian.Text = "Thời gian: " + DateTime.Now.ToString("dd/MM/yyyy HH:mm");
+
+            // Phân quyền hiển thị và thao tác trên Menu theo vai trò tài khoản
+            PhanQuyenMenu();
+        }
+
+        /// <summary>
+        /// Phân quyền các mục MenuStrip theo 3 vai trò:
+        /// 1. Quản lý (Quản lý mọi kho hàng, toàn quyền chức năng)
+        /// 2. Thủ kho (Quản lý 1 kho duy nhất, toàn quyền nghiệp vụ kho, không được đổi kho)
+        /// 3. Nhân viên kho (Tác nghiệp tại kho được phân công, không được đổi kho, ẩn danh mục quản lý)
+        /// </summary>
+        private void PhanQuyenMenu()
+        {
+            if (SessionContext.IsAdmin)
+            {
+                // Vai trò 1: Quản lý - Toàn quyền mọi chức năng và mọi kho
+                mnuDoiKho.Visible = true;
+                mnuDoiKho.Enabled = true;
+
+                mnuKiemKho.Visible = true;
+                mnuChuyenKho.Visible = true;
+                mnuDanhSachHangHoa.Visible = true;
+                mnuNhaCungCap.Visible = true;
+                mnuNhapHang.Visible = true;
+                mnuTraHangNhap.Visible = true;
+                mnuBaoCaoTonKho.Visible = true;
+                mnuBaoCaoTheKho.Visible = true;
+            }
+            else if (SessionContext.IsThuKho)
+            {
+                // Vai trò 2: Thủ kho (Quản lý 1 kho duy nhất)
+                // Khóa chức năng đổi kho vì thủ kho chỉ quản lý 1 kho cố định được phân công
+                mnuDoiKho.Visible = false;
+                mnuDoiKho.Enabled = false;
+
+                // Toàn quyền các nghiệp vụ quản lý kho của mình
+                mnuKiemKho.Visible = true;
+                mnuChuyenKho.Visible = true;
+                mnuDanhSachHangHoa.Visible = true;
+                mnuNhaCungCap.Visible = true;
+                mnuNhapHang.Visible = true;
+                mnuTraHangNhap.Visible = true;
+                mnuBaoCaoTonKho.Visible = true;
+                mnuBaoCaoTheKho.Visible = true;
+            }
+            else
+            {
+                // Vai trò 3: Nhân viên kho
+                // Không được đổi kho
+                mnuDoiKho.Visible = false;
+                mnuDoiKho.Enabled = false;
+
+                // Các chức năng tác nghiệp kho
+                mnuKiemKho.Visible = true;
+                mnuChuyenKho.Visible = true;
+                mnuDanhSachHangHoa.Visible = true;
+                mnuNhapHang.Visible = true;
+                mnuTraHangNhap.Visible = true;
+                mnuBaoCaoTonKho.Visible = true;
+
+                // Ẩn các chức năng quản lý danh mục nhạy cảm và thẻ kho sổ sách
+                mnuNhaCungCap.Visible = false;
+                mnuBaoCaoTheKho.Visible = false;
+            }
         }
 
         private void mnuDanhSachHangHoa_Click(object sender, EventArgs e)
@@ -63,6 +127,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             DialogResult result = MessageBox.Show("Bạn có muốn đăng xuất khỏi hệ thống?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result == DialogResult.Yes)
             {
+                SessionContext.IsDangXuat = true;
                 this.Close();
             }
         }
@@ -72,6 +137,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             DialogResult result = MessageBox.Show("Bạn có chắc chắn muốn thoát chương trình?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result == DialogResult.Yes)
             {
+                SessionContext.IsDangXuat = false;
                 Application.Exit();
             }
         }

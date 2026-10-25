@@ -257,3 +257,18 @@
      - Bật `EditMode = EditOnEnter` click 1 lần cho phép nhập ngay.
      - Xử lý phím Enter (`ProcessCmdKey` & `EditingControlShowing.KeyDown`) và kích chuột ra ngoài (`Leave`, `CellEndEdit`, `btnLuu.Click`): gọi `dgv.EndEdit()` và commit BindingContext, khắc phục triệt để lỗi khi bảng chỉ có 1 mặt hàng nhấn Enter hoặc click ra ngoài form không nhận số lượng mới.
      - Ràng buộc kiểu dữ liệu: Chặn gõ chữ cái, dấu chấm, dấu phẩy, dấu âm qua `KeyPress` (`char.IsDigit`), chỉ cho phép nhập số nguyên dương (đối với kiểm kho là số nguyên $\ge 0$).
+
+- **2026-10-25 (Phiên 47)** – Xây dựng Form Đăng nhập hệ thống, Tiện ích băm mật khẩu SHA-256 an toàn và Phân quyền thao tác theo 3 vai trò chuẩn:
+  1. **Xây dựng Form Đăng nhập (`frmDangNhap`) khởi động ứng dụng**:
+     - Form Size Nhỏ (`ClientSize = (444, 321)`), `FixedDialog`, `CenterScreen`.
+     - Nhập Tên đăng nhập (`txtTenDangNhap`), Mật khẩu (`txtMatKhau`, checkbox hiện mật khẩu `chkHienMatKhau`), lựa chọn Kho làm việc (`cboKhoLamViec`), nút "Đăng nhập" (`AcceptButton`) và "Thoát" (`CancelButton`).
+     - Tự động nhận diện vai trò tài khoản khi nhập tên đăng nhập để nạp danh sách kho tương ứng.
+  2. **Tiện ích băm mật khẩu SHA-256 thuần an toàn (`Classes/PasswordHelper.cs`)**:
+     - Cung cấp `HashPassword(plainPassword)` băm một chiều SHA-256 sang chuỗi hex 64 ký tự chữ thường và `VerifyPassword(plainPassword, hashedPassword)` đối soát an toàn, bảo vệ mật khẩu 100%, không lưu hoặc so sánh dạng plain-text.
+  3. **Phân quyền thao tác và phạm vi kho chuẩn hóa theo 3 vai trò**:
+     - *Quản lý (`MaVaiTro = 1` - tài khoản `quanly`)*: Quản lý mọi kho hàng trong hệ thống (toàn quyền truy cập tất cả các kho, được chọn chế độ "Tất cả kho" hoặc kho chi nhánh bất kỳ, được phép sử dụng chức năng "Đổi kho" `frmDoiKho`); toàn quyền truy cập tất cả các menu và chức năng.
+     - *Thủ kho (`MaVaiTro = 2` - tài khoản `thukho`)*: Quản lý 1 chi nhánh kho duy nhất được phân công trong `TaiKhoanKho` (khóa ComboBox cố định kho đó, ẩn/khóa menu "Đổi kho"); toàn quyền các nghiệp vụ quản lý kho của mình: Kiểm kho, Chuyển kho, Hàng hóa, Nhà cung cấp, Nhập hàng, Trả hàng nhập, Báo cáo tồn & Thẻ kho.
+     - *Nhân viên kho (`MaVaiTro = 3` - tài khoản `nvkho`)*: Thao tác tác nghiệp tại kho được phân công (ẩn menu "Đổi kho"); thực hiện các thao tác: Kiểm kho, Chuyển kho, Nhập hàng, Trả hàng nhập, xem Danh sách hàng hóa, xem Báo cáo tồn kho; ẩn các mục quản lý Nhà cung cấp và Thẻ kho sổ sách.
+  4. **Cơ chế vòng lặp phiên làm việc và Đăng xuất (`Program.cs` & `frmMain.cs`)**:
+     - `Program.cs` chạy vòng lặp yêu cầu đăng nhập trước khi vào `frmMain`.
+     - Khi người dùng chọn "Đăng xuất" trên menu Hệ thống của `frmMain`, ứng dụng xóa sạch phiên làm việc trong `SessionContext` và quay trở lại ngay màn hình Đăng nhập `frmDangNhap`. Khi chọn "Thoát" hoặc đóng cửa sổ, ứng dụng kết thúc hoàn toàn.

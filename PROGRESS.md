@@ -1,22 +1,15 @@
 ﻿# Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-25 – Khắc phục lỗi Hiện cột Chuyển kho, Chuẩn hóa TextBox Mã phiếu tự chọn có check trùng, Mở rộng chiều rộng và Tối ưu cơ chế nhập Số lượng nguyên trên DataGridView của 4 form thêm mới (Phiên 46)
-
+**Cập nhật lần cuối**: 2026-10-25 – Xây dựng Form Đăng nhập hệ thống, Tiện ích băm mật khẩu SHA-256 an toàn và Phân quyền thao tác theo 3 vai trò chuẩn (Phiên 47)
 ---
 
 ## Đang làm
-- [x] Khắc phục lỗi bỏ chọn trong Hiện cột nhưng không ẩn ở chức năng Chuyển kho (frmHienCotChuyenKho).
-- [x] Chuẩn hóa ô TextBox mã phiếu tự điền + cho phép sửa tự chọn + check trùng mã khi lưu trên 4 form thêm mới (Kiểm kho, Chuyển kho, Nhập hàng, Trả hàng nhập).
-- [x] Tăng chiều rộng 4 form thêm mới lên ClientSize = (1400, 803) để hiển thị thông tin rộng rãi, không bị che khuất.
-- [x] Chuẩn hóa ô nhập số lượng trong DataGridView của 4 form thêm mới: nền #FEFCE8, HeaderText có nhãn (nhập), ấn Enter hoặc click ra ngoài nhận ngay số lượng mới, chỉ cho phép số nguyên dương.
-- [x] Kiểm kho (`frmThemPhieuKiemKho`): Chuyển sang form Size Lớn (`1182, 803`), phân bổ cột hiển thị trọn vẹn nút Xóa dòng, làm rõ khả năng nhập SL thực tế trực tiếp trên dgv (`colSoLuongThucTe` nền `#FEFCE8`, HeaderText `SL thực tế (nhập)`, `EditMode = EditOnEnter`).
-- [x] Kiểm kho (`frmKiemKho`, `frmChiTietKiemKho`): Bỏ trạng thái "Đã hủy" khỏi filter trạng thái; khóa nút Xóa khi phiếu đã cân bằng; cho phép xóa vĩnh viễn phiếu tạm khỏi CSDL.
-- [x] Chuyển kho (`frmThemPhieuChuyenKho`): Thiết kế lại sang Right Menu Layout theo khuôn mẫu `frmThemPhieuKiemKho` (form Size Lớn, DataGridView trung tâm rộng rãi bên trái, Right Menu bên phải với các nút thao tác `Bỏ qua` ➜ `Lưu tạm` ➜ `Lưu` ở đáy).
-- [x] Kiểm tra mã hóa tự động `tools/KiemTraMaHoa.ps1`: 100% file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake.
-- [x] Kiểm tra biên dịch mã nguồn C# bằng MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
-- [ ] Tiện ích băm mật khẩu `Classes/PasswordHelper.cs` (SHA-256).
-- [ ] Thiết kế và hoàn thiện Form Đăng nhập (`frmDangNhap`) hỗ trợ chọn chi nhánh kho làm việc.
-- [ ] Chuyển sang phân hệ Xác thực & Phân quyền (`frmDangNhap`, tiện ích mã hóa mật khẩu `PasswordHelper.cs` SHA-256, liên kết phân quyền trên `frmMain`).
+- [x] Tien ich bam mat khau Classes/PasswordHelper.cs (SHA-256).
+- [x] Thiet ke va hoan thien Form Dang nhap (frmDangNhap) ho tro chon chi nhanh kho lam viec.
+- [x] Hoan thien phan he Xac thuc & Phan quyen (frmDangNhap, PasswordHelper.cs SHA-256, phan quyen menu frmMain).
+- [x] Cau hinh vong lap dang nhap va luong Dang xuat tren Program.cs va frmMain.cs.
+- [x] Kiem tra ma hoa tu dong tools/KiemTraMaHoa.ps1: 100% file dat chuan UTF-8 with BOM, 0 loi Mojibake.
+- [x] Kiem tra bien dich ma nguon C# bang MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
 ## Việc kế tiếp
 1. **Xác thực & Phân quyền**: Hoàn tất `frmDangNhap` hỗ trợ chọn chi nhánh kho, tiện ích SHA-256 `PasswordHelper`, tích hợp phân quyền MenuStrip và StatusStrip trên `frmMain`.
 2. **Quản lý Danh mục Cơ bản (Kế thừa khuôn mẫu Danh sách Hàng hóa)**:
@@ -36,7 +29,7 @@
 | 1 | **Khởi tạo Kiến trúc & CSDL** | Solution WinForms .NET 4.7.2, `DataProcessing.cs`, CSDL `QuanLyKhoPhuQuocLTW` | Hoàn thành 100% |
 | 2 | **Quy chuẩn Vận hành AI** | Thư mục `.agent/rules/`, `AGENTS.md`, `PROGRESS.md`, `docs/` | Hoàn thành 100% |
 | 3 | **Giao diện Khung MDI** | `frmMain` MDI Container, MenuStrip 5 phân hệ, StatusStrip trạng thái | Hoàn thành 100% |
-| 4 | **Xác thực & Phân quyền** | `SessionContext`, SHA-256 `PasswordHelper`, `frmDangNhap`, phân quyền menu | Đang thực hiện |
+| 4 | **Xác thực & Phân quyền** | SessionContext, SHA-256 PasswordHelper, rmDangNhap, phân quyền menu theo 3 vai trò | Hoàn thành 100% |
 | 5 | **Danh mục Hàng hóa** | `frmDanhSachHangHoa` & `frmHangHoa` (**Khuôn mẫu Thiết kế chuẩn UI/UX toàn hệ thống**) | Hoàn thành 100% |
 | 6 | **Danh mục Nhà cung cấp** | `frmNhaCungCap`, `frmDonViCapHang`, `frmNhomNhaCungCap`, `frmHienCotNcc`, `frmNhapNhaCungCapFile` | Hoàn thành 100% |
 | 7 | **Phiếu Nhập hàng** | `frmNhapHang`, `frmThemPhieuNhap`, `frmChiTietPhieuNhap`, `frmHienCotNhapHang` | Hoàn thành 100% |
@@ -51,6 +44,35 @@
 ---
 
 ## Nhật ký phiên (Session Logs)
+
+- **Phiên 47 (2026-10-25) – Xây dựng Form Đăng nhập hệ thống, Tiện ích băm mật khẩu SHA-256 an toàn và Phân quyền thao tác theo 3 vai trò chuẩn**:
+  - **Nhu cầu**: Người dùng yêu cầu:
+    1. Kiểm tra 1 lượt classes và các file liên quan có thể có chứa hàm băm của mật khẩu. Nếu tồn tại, gọi hàm hash đó; nếu chưa, cho phép tạo class `PasswordHelper.cs`.
+    2. Tạo form đăng nhập cho hệ thống, khi bắt đầu chạy chương trình yêu cầu đăng nhập với tài khoản và mật khẩu để phân quyền thao tác được phép.
+    3. Hỗ trợ 3 vai trò người dùng chuẩn:
+       - *Quản lý*: Quản lý mọi kho hàng trong hệ thống.
+       - *Thủ kho*: Quản lý 1 kho duy nhất được phân công.
+       - *Nhân viên kho*: Thao tác nghiệp vụ tại kho.
+  - **Kết quả thực hiện**:
+    1. **Kiểm tra và xây dựng tiện ích băm mật khẩu SHA-256 (`Classes/PasswordHelper.cs`)**:
+       - Quét toàn bộ codebase xác nhận chưa có hàm băm mật khẩu.
+       - Tạo mới `Classes/PasswordHelper.cs` cung cấp `HashPassword(string plainPassword)` (SHA-256 chữ thường) và `VerifyPassword(string plainPassword, string hashedPassword)`.
+    2. **Xây dựng Form Đăng nhập (`frmDangNhap`) chuẩn WinForms**:
+       - Kích thước form Size Nhỏ `ClientSize = (444, 321)`, `FixedDialog`, `CenterScreen`.
+       - Gồm các control: Tiêu đề hệ thống, Tên đăng nhập (`txtTenDangNhap`), Mật khẩu (`txtMatKhau`), CheckBox Hiện mật khẩu (`chkHienMatKhau`), ComboBox Kho làm việc (`cboKhoLamViec`), nút Đăng nhập (`btnDangNhap`) và Thoát (`btnThoat`).
+       - Tự động nhận diện vai trò tài khoản khi nhập tên đăng nhập để nạp danh sách kho tương ứng.
+    3. **Phân quyền thao tác và phạm vi kho chuẩn hóa theo 3 vai trò**:
+       - *Quản lý (`MaVaiTro = 1`)*: Toàn quyền truy cập tất cả các phân hệ và menu; quản lý mọi kho hàng; được chọn "Tất cả kho" hoặc kho chi nhánh bất kỳ khi đăng nhập và có quyền đổi kho (`frmDoiKho`).
+       - *Thủ kho (`MaVaiTro = 2`)*: Quản lý 1 kho duy nhất được phân công (cố định ComboBox kho khi đăng nhập, ẩn/khóa menu "Đổi kho"); toàn quyền các nghiệp vụ kho của mình (Kiểm kho, Chuyển kho, Hàng hóa, Nhà cung cấp, Nhập hàng, Trả hàng nhập, Báo cáo tồn kho & Thẻ kho).
+       - *Nhân viên kho (`MaVaiTro = 3`)*: Thao tác tại kho được phân công (ẩn menu "Đổi kho"); thực hiện Kiểm kho, Chuyển kho, Nhập hàng, Trả hàng nhập, xem Danh sách hàng hóa, xem Báo cáo tồn kho; ẩn các mục quản lý đối tác (Nhà cung cấp) và Thẻ kho sổ sách.
+    4. **Cơ chế khởi động chương trình và Đăng xuất linh hoạt**:
+       - Tại `Program.cs`: Bọc vòng lặp `while (true)` yêu cầu đăng nhập trước khi hiển thị `frmMain`.
+       - Tại `frmMain.cs`: Khi người dùng nhấn "Đăng xuất" trên menu Hệ thống, hệ thống xóa sạch phiên làm việc `SessionContext.XoaPhien()`, đóng `frmMain` và quay lại màn hình `frmDangNhap` ngay lập tức.
+    5. **Đồng bộ CSDL & Dữ liệu mẫu**:
+       - Cập nhật script `docs/database_update.sql` và `docs/DuLieuMau.sql`: Đồng bộ 3 vai trò chuẩn trong `VaiTro`, 3 nhân viên trong `NhanVien`, 3 tài khoản demo (`quanly`, `thukho`, `nvkho` mật khẩu mặc định `123456`), và phân quyền kho trong `TaiKhoanKho`.
+    6. **Kiểm tra chất lượng**:
+       - Chạy `tools/KiemTraMaHoa.ps1`: **158/158 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
 
 - **Phiên 46 (2026-10-25) – Khắc phục lỗi Hiện cột Chuyển kho, Chuẩn hóa TextBox Mã phiếu tự chọn có check trùng, Mở rộng chiều rộng và Tối ưu cơ chế nhập Số lượng nguyên trên DataGridView của 4 form thêm mới**:
   - **Nhu cầu**: Người dùng yêu cầu qua 4 ảnh:
@@ -80,6 +102,35 @@
 - **Phiên 45 (2026-10-25) – Bỏ trường trạng thái tĩnh trên các form thêm mới, Tối ưu giao diện & nghiệp vụ Kiểm kho, Tái thiết kế Form Thêm phiếu chuyển kho sang Right Menu Layout**:
   - **Nhu cầu**: Người dùng yêu cầu qua 4 ảnh:
     1. Bỏ trường trạng thái trong các phiếu thêm (ảnh 3) (Chuyển kho, Nhập hàng, Trả hàng nhập, Kiểm kho). Trạng thái sẽ được quyết định và hiển thị lên dgv sau khi người dùng ấn Lưu tạm hay Lưu.
+
+- **Phiên 47 (2026-10-25) – Xây dựng Form Đăng nhập hệ thống, Tiện ích băm mật khẩu SHA-256 an toàn và Phân quyền thao tác theo 3 vai trò chuẩn**:
+  - **Nhu cầu**: Người dùng yêu cầu:
+    1. Kiểm tra 1 lượt classes và các file liên quan có thể có chứa hàm băm của mật khẩu. Nếu tồn tại, gọi hàm hash đó; nếu chưa, cho phép tạo class `PasswordHelper.cs`.
+    2. Tạo form đăng nhập cho hệ thống, khi bắt đầu chạy chương trình yêu cầu đăng nhập với tài khoản và mật khẩu để phân quyền thao tác được phép.
+    3. Hỗ trợ 3 vai trò người dùng chuẩn:
+       - *Quản lý*: Quản lý mọi kho hàng trong hệ thống.
+       - *Thủ kho*: Quản lý 1 kho duy nhất được phân công.
+       - *Nhân viên kho*: Thao tác nghiệp vụ tại kho.
+  - **Kết quả thực hiện**:
+    1. **Kiểm tra và xây dựng tiện ích băm mật khẩu SHA-256 (`Classes/PasswordHelper.cs`)**:
+       - Quét toàn bộ codebase xác nhận chưa có hàm băm mật khẩu.
+       - Tạo mới `Classes/PasswordHelper.cs` cung cấp `HashPassword(string plainPassword)` (SHA-256 chữ thường) và `VerifyPassword(string plainPassword, string hashedPassword)`.
+    2. **Xây dựng Form Đăng nhập (`frmDangNhap`) chuẩn WinForms**:
+       - Kích thước form Size Nhỏ `ClientSize = (444, 321)`, `FixedDialog`, `CenterScreen`.
+       - Gồm các control: Tiêu đề hệ thống, Tên đăng nhập (`txtTenDangNhap`), Mật khẩu (`txtMatKhau`), CheckBox Hiện mật khẩu (`chkHienMatKhau`), ComboBox Kho làm việc (`cboKhoLamViec`), nút Đăng nhập (`btnDangNhap`) và Thoát (`btnThoat`).
+       - Tự động nhận diện vai trò tài khoản khi nhập tên đăng nhập để nạp danh sách kho tương ứng.
+    3. **Phân quyền thao tác và phạm vi kho chuẩn hóa theo 3 vai trò**:
+       - *Quản lý (`MaVaiTro = 1`)*: Toàn quyền truy cập tất cả các phân hệ và menu; quản lý mọi kho hàng; được chọn "Tất cả kho" hoặc kho chi nhánh bất kỳ khi đăng nhập và có quyền đổi kho (`frmDoiKho`).
+       - *Thủ kho (`MaVaiTro = 2`)*: Quản lý 1 kho duy nhất được phân công (cố định ComboBox kho khi đăng nhập, ẩn/khóa menu "Đổi kho"); toàn quyền các nghiệp vụ kho của mình (Kiểm kho, Chuyển kho, Hàng hóa, Nhà cung cấp, Nhập hàng, Trả hàng nhập, Báo cáo tồn kho & Thẻ kho).
+       - *Nhân viên kho (`MaVaiTro = 3`)*: Thao tác tại kho được phân công (ẩn menu "Đổi kho"); thực hiện Kiểm kho, Chuyển kho, Nhập hàng, Trả hàng nhập, xem Danh sách hàng hóa, xem Báo cáo tồn kho; ẩn các mục quản lý đối tác (Nhà cung cấp) và Thẻ kho sổ sách.
+    4. **Cơ chế khởi động chương trình và Đăng xuất linh hoạt**:
+       - Tại `Program.cs`: Bọc vòng lặp `while (true)` yêu cầu đăng nhập trước khi hiển thị `frmMain`.
+       - Tại `frmMain.cs`: Khi người dùng nhấn "Đăng xuất" trên menu Hệ thống, hệ thống xóa sạch phiên làm việc `SessionContext.XoaPhien()`, đóng `frmMain` và quay lại màn hình `frmDangNhap` ngay lập tức.
+    5. **Đồng bộ CSDL & Dữ liệu mẫu**:
+       - Cập nhật script `docs/database_update.sql` và `docs/DuLieuMau.sql`: Đồng bộ 3 vai trò chuẩn trong `VaiTro`, 3 nhân viên trong `NhanVien`, 3 tài khoản demo (`quanly`, `thukho`, `nvkho` mật khẩu mặc định `123456`), và phân quyền kho trong `TaiKhoanKho`.
+    6. **Kiểm tra chất lượng**:
+       - Chạy `tools/KiemTraMaHoa.ps1`: **158/158 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
     2. Chức năng Kiểm kho (ảnh 1 & ảnh 4):
        - Ảnh 1: Phần xóa hàng khỏi bảng đang bị che mất do thiếu không gian -> Chuyển sang form Size Lớn (1182, 803) để chứa đầy đủ thông tin. Phần số lượng thực tế cho phép nhập trực tiếp từ dgv cần thể hiện rõ ràng, phân biệt rõ có cho nhập vào hay không.
        - Ảnh 4: Trong filter trạng thái bỏ chọn trạng thái "Đã hủy" (kiểm kho không có trạng thái Đã hủy). Khi đã cân bằng thì không cho xóa, khi là phiếu tạm thì xóa hẳn khỏi CSDL.
@@ -115,6 +166,35 @@
        - Chuyển kho: Chỉ hiển thị phiếu khi kho đang làm việc là kho gửi hoặc kho nhận, khi thêm phiếu comboBox kho gửi chỉ hiển thị tên kho đang làm việc, không cho phép sửa đổi (trừ khi ở Tất cả kho).
        - Danh sách hàng hóa: Số lượng tồn kho hiển thị theo đúng số lượng tồn của kho đang làm việc.
        - Nhập hàng: Thêm cột Kho trong dgv hiển thị tên kho (mặc định ẩn, bật/tắt qua Hiện cột). Khi thêm phiếu comboBox chọn kho chỉ hiển thị tên kho đang làm việc, không cho phép sửa đổi (trừ khi ở Tất cả kho).
+
+- **Phiên 47 (2026-10-25) – Xây dựng Form Đăng nhập hệ thống, Tiện ích băm mật khẩu SHA-256 an toàn và Phân quyền thao tác theo 3 vai trò chuẩn**:
+  - **Nhu cầu**: Người dùng yêu cầu:
+    1. Kiểm tra 1 lượt classes và các file liên quan có thể có chứa hàm băm của mật khẩu. Nếu tồn tại, gọi hàm hash đó; nếu chưa, cho phép tạo class `PasswordHelper.cs`.
+    2. Tạo form đăng nhập cho hệ thống, khi bắt đầu chạy chương trình yêu cầu đăng nhập với tài khoản và mật khẩu để phân quyền thao tác được phép.
+    3. Hỗ trợ 3 vai trò người dùng chuẩn:
+       - *Quản lý*: Quản lý mọi kho hàng trong hệ thống.
+       - *Thủ kho*: Quản lý 1 kho duy nhất được phân công.
+       - *Nhân viên kho*: Thao tác nghiệp vụ tại kho.
+  - **Kết quả thực hiện**:
+    1. **Kiểm tra và xây dựng tiện ích băm mật khẩu SHA-256 (`Classes/PasswordHelper.cs`)**:
+       - Quét toàn bộ codebase xác nhận chưa có hàm băm mật khẩu.
+       - Tạo mới `Classes/PasswordHelper.cs` cung cấp `HashPassword(string plainPassword)` (SHA-256 chữ thường) và `VerifyPassword(string plainPassword, string hashedPassword)`.
+    2. **Xây dựng Form Đăng nhập (`frmDangNhap`) chuẩn WinForms**:
+       - Kích thước form Size Nhỏ `ClientSize = (444, 321)`, `FixedDialog`, `CenterScreen`.
+       - Gồm các control: Tiêu đề hệ thống, Tên đăng nhập (`txtTenDangNhap`), Mật khẩu (`txtMatKhau`), CheckBox Hiện mật khẩu (`chkHienMatKhau`), ComboBox Kho làm việc (`cboKhoLamViec`), nút Đăng nhập (`btnDangNhap`) và Thoát (`btnThoat`).
+       - Tự động nhận diện vai trò tài khoản khi nhập tên đăng nhập để nạp danh sách kho tương ứng.
+    3. **Phân quyền thao tác và phạm vi kho chuẩn hóa theo 3 vai trò**:
+       - *Quản lý (`MaVaiTro = 1`)*: Toàn quyền truy cập tất cả các phân hệ và menu; quản lý mọi kho hàng; được chọn "Tất cả kho" hoặc kho chi nhánh bất kỳ khi đăng nhập và có quyền đổi kho (`frmDoiKho`).
+       - *Thủ kho (`MaVaiTro = 2`)*: Quản lý 1 kho duy nhất được phân công (cố định ComboBox kho khi đăng nhập, ẩn/khóa menu "Đổi kho"); toàn quyền các nghiệp vụ kho của mình (Kiểm kho, Chuyển kho, Hàng hóa, Nhà cung cấp, Nhập hàng, Trả hàng nhập, Báo cáo tồn kho & Thẻ kho).
+       - *Nhân viên kho (`MaVaiTro = 3`)*: Thao tác tại kho được phân công (ẩn menu "Đổi kho"); thực hiện Kiểm kho, Chuyển kho, Nhập hàng, Trả hàng nhập, xem Danh sách hàng hóa, xem Báo cáo tồn kho; ẩn các mục quản lý đối tác (Nhà cung cấp) và Thẻ kho sổ sách.
+    4. **Cơ chế khởi động chương trình và Đăng xuất linh hoạt**:
+       - Tại `Program.cs`: Bọc vòng lặp `while (true)` yêu cầu đăng nhập trước khi hiển thị `frmMain`.
+       - Tại `frmMain.cs`: Khi người dùng nhấn "Đăng xuất" trên menu Hệ thống, hệ thống xóa sạch phiên làm việc `SessionContext.XoaPhien()`, đóng `frmMain` và quay lại màn hình `frmDangNhap` ngay lập tức.
+    5. **Đồng bộ CSDL & Dữ liệu mẫu**:
+       - Cập nhật script `docs/database_update.sql` và `docs/DuLieuMau.sql`: Đồng bộ 3 vai trò chuẩn trong `VaiTro`, 3 nhân viên trong `NhanVien`, 3 tài khoản demo (`quanly`, `thukho`, `nvkho` mật khẩu mặc định `123456`), và phân quyền kho trong `TaiKhoanKho`.
+    6. **Kiểm tra chất lượng**:
+       - Chạy `tools/KiemTraMaHoa.ps1`: **158/158 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
        - Trả hàng nhập: Thêm cột Kho trong dgv hiển thị tên kho (mặc định ẩn, bật/tắt qua Hiện cột). Khi thêm phiếu comboBox chọn kho chỉ hiển thị tên kho đang làm việc, không cho phép sửa đổi (trừ khi ở Tất cả kho).
        - Báo cáo tồn kho & Thẻ kho: Chỉ hiển thị dữ liệu báo cáo của đúng kho đang làm việc, ẩn cột Chi nhánh kho (thay tên cột thành Kho) trong dgv, khi người dùng chọn hiển thị trong Hiện cột mới hiển thị lên.
   - **Kết quả thực hiện**:
@@ -222,6 +302,35 @@
 
 - **Phiên 40 (2026-10-25) – Dàn đều bộ lọc Danh sách hàng hóa, Ẩn cột Ghi chú Kiểm kho & Chuyển kho, Đưa Tổng thực tế & Chênh lệch về trước Trạng thái và Chuẩn hóa báo đỏ in đậm chênh lệch kiểm kê**:
   - **Nhu cầu**: Người dùng yêu cầu: (1) Form Danh sách hàng hóa: chỉnh lại khoảng cách giữa các filter cho rộng hơn, không để thừa không gian ở dưới mà các filter lại sát vào nhau; (2) Form Kiểm kho và Chuyển kho: ẩn cột ghi chú mặc định, khi người dùng tích chọn cột ghi chú trong form Hiện cột mới hiện ra; đưa cột Tổng thực tế và Tổng chênh lệch của form Kiểm kho về cuối dgv, phía trước cột Trạng thái; (3) Khi Kiểm kho: lệch tăng và lệch giảm nếu tổng lại về 0 (hoặc bù trừ về 0) thì trong form chi tiết kiểm kho vẫn phải báo đỏ thể hiện bất thường chỉ cần có mặt hàng bị chênh lệch trong phiếu; các trường thông tin Tổng lệch tăng, tổng lệch giảm, tổng chênh lệch khi có báo đỏ bất thường thì in đậm như trong dgv.
+
+- **Phiên 47 (2026-10-25) – Xây dựng Form Đăng nhập hệ thống, Tiện ích băm mật khẩu SHA-256 an toàn và Phân quyền thao tác theo 3 vai trò chuẩn**:
+  - **Nhu cầu**: Người dùng yêu cầu:
+    1. Kiểm tra 1 lượt classes và các file liên quan có thể có chứa hàm băm của mật khẩu. Nếu tồn tại, gọi hàm hash đó; nếu chưa, cho phép tạo class `PasswordHelper.cs`.
+    2. Tạo form đăng nhập cho hệ thống, khi bắt đầu chạy chương trình yêu cầu đăng nhập với tài khoản và mật khẩu để phân quyền thao tác được phép.
+    3. Hỗ trợ 3 vai trò người dùng chuẩn:
+       - *Quản lý*: Quản lý mọi kho hàng trong hệ thống.
+       - *Thủ kho*: Quản lý 1 kho duy nhất được phân công.
+       - *Nhân viên kho*: Thao tác nghiệp vụ tại kho.
+  - **Kết quả thực hiện**:
+    1. **Kiểm tra và xây dựng tiện ích băm mật khẩu SHA-256 (`Classes/PasswordHelper.cs`)**:
+       - Quét toàn bộ codebase xác nhận chưa có hàm băm mật khẩu.
+       - Tạo mới `Classes/PasswordHelper.cs` cung cấp `HashPassword(string plainPassword)` (SHA-256 chữ thường) và `VerifyPassword(string plainPassword, string hashedPassword)`.
+    2. **Xây dựng Form Đăng nhập (`frmDangNhap`) chuẩn WinForms**:
+       - Kích thước form Size Nhỏ `ClientSize = (444, 321)`, `FixedDialog`, `CenterScreen`.
+       - Gồm các control: Tiêu đề hệ thống, Tên đăng nhập (`txtTenDangNhap`), Mật khẩu (`txtMatKhau`), CheckBox Hiện mật khẩu (`chkHienMatKhau`), ComboBox Kho làm việc (`cboKhoLamViec`), nút Đăng nhập (`btnDangNhap`) và Thoát (`btnThoat`).
+       - Tự động nhận diện vai trò tài khoản khi nhập tên đăng nhập để nạp danh sách kho tương ứng.
+    3. **Phân quyền thao tác và phạm vi kho chuẩn hóa theo 3 vai trò**:
+       - *Quản lý (`MaVaiTro = 1`)*: Toàn quyền truy cập tất cả các phân hệ và menu; quản lý mọi kho hàng; được chọn "Tất cả kho" hoặc kho chi nhánh bất kỳ khi đăng nhập và có quyền đổi kho (`frmDoiKho`).
+       - *Thủ kho (`MaVaiTro = 2`)*: Quản lý 1 kho duy nhất được phân công (cố định ComboBox kho khi đăng nhập, ẩn/khóa menu "Đổi kho"); toàn quyền các nghiệp vụ kho của mình (Kiểm kho, Chuyển kho, Hàng hóa, Nhà cung cấp, Nhập hàng, Trả hàng nhập, Báo cáo tồn kho & Thẻ kho).
+       - *Nhân viên kho (`MaVaiTro = 3`)*: Thao tác tại kho được phân công (ẩn menu "Đổi kho"); thực hiện Kiểm kho, Chuyển kho, Nhập hàng, Trả hàng nhập, xem Danh sách hàng hóa, xem Báo cáo tồn kho; ẩn các mục quản lý đối tác (Nhà cung cấp) và Thẻ kho sổ sách.
+    4. **Cơ chế khởi động chương trình và Đăng xuất linh hoạt**:
+       - Tại `Program.cs`: Bọc vòng lặp `while (true)` yêu cầu đăng nhập trước khi hiển thị `frmMain`.
+       - Tại `frmMain.cs`: Khi người dùng nhấn "Đăng xuất" trên menu Hệ thống, hệ thống xóa sạch phiên làm việc `SessionContext.XoaPhien()`, đóng `frmMain` và quay lại màn hình `frmDangNhap` ngay lập tức.
+    5. **Đồng bộ CSDL & Dữ liệu mẫu**:
+       - Cập nhật script `docs/database_update.sql` và `docs/DuLieuMau.sql`: Đồng bộ 3 vai trò chuẩn trong `VaiTro`, 3 nhân viên trong `NhanVien`, 3 tài khoản demo (`quanly`, `thukho`, `nvkho` mật khẩu mặc định `123456`), và phân quyền kho trong `TaiKhoanKho`.
+    6. **Kiểm tra chất lượng**:
+       - Chạy `tools/KiemTraMaHoa.ps1`: **158/158 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
   - **Kết quả thực hiện**:
     1. **Dàn đều và mở rộng khoảng cách bộ lọc `frmDanhSachHangHoa`**:
        - Bố trí lại toàn bộ 7 cụm bộ lọc trên `grpBoLoc` (chiều cao 717px) với khoảng cách thoáng đãng ~39px giữa mỗi cụm: Nhóm hàng (Top 25/51) ➜ Đơn vị tính (Top 115/141) ➜ Tồn kho (Top 205/231) ➜ Nhà cung cấp (Top 295/321) ➜ Vị trí (Top 385/411) ➜ Trạng thái (Top 475/501) ➜ Cụm thời gian tạo `grpThoiGianTao` (Top 565/593, đáy 701px, cách viền dưới 16px) tuân thủ tuyệt đối Điều luật 16.
@@ -289,6 +398,35 @@
 
 - **Phiên 36 (2026-10-25) – Rà soát toàn bộ Form, Khắc phục triệt để lỗi font chữ (Mojibake) và Thiết lập cơ chế kiểm soát mã hóa cố định UTF-8 BOM**:
   - **Nhu cầu**: Người dùng phản hồi trên giao diện form Chi tiết chuyển kho (`frmChiTietChuyenKho`) xuất hiện tình trạng lỗi font chữ / biến dạng ký tự tiếng Việt (như nhãn trạng thái bị vỡ ký tự, mũi tên lộ trình bị lỗi, tên người nhận hiển thị ký tự lạ, ghi chú và các nút chức năng bị biến dạng). Yêu cầu rà soát toàn bộ tất cả các form và đảm bảo rằng không bao giờ bị lỗi font chữ nữa; bổ sung rule và cơ chế cố định duy nhất 1 chuẩn Unicode để giữ form không bao giờ lỗi font khi chạy các phiên sửa.
+
+- **Phiên 47 (2026-10-25) – Xây dựng Form Đăng nhập hệ thống, Tiện ích băm mật khẩu SHA-256 an toàn và Phân quyền thao tác theo 3 vai trò chuẩn**:
+  - **Nhu cầu**: Người dùng yêu cầu:
+    1. Kiểm tra 1 lượt classes và các file liên quan có thể có chứa hàm băm của mật khẩu. Nếu tồn tại, gọi hàm hash đó; nếu chưa, cho phép tạo class `PasswordHelper.cs`.
+    2. Tạo form đăng nhập cho hệ thống, khi bắt đầu chạy chương trình yêu cầu đăng nhập với tài khoản và mật khẩu để phân quyền thao tác được phép.
+    3. Hỗ trợ 3 vai trò người dùng chuẩn:
+       - *Quản lý*: Quản lý mọi kho hàng trong hệ thống.
+       - *Thủ kho*: Quản lý 1 kho duy nhất được phân công.
+       - *Nhân viên kho*: Thao tác nghiệp vụ tại kho.
+  - **Kết quả thực hiện**:
+    1. **Kiểm tra và xây dựng tiện ích băm mật khẩu SHA-256 (`Classes/PasswordHelper.cs`)**:
+       - Quét toàn bộ codebase xác nhận chưa có hàm băm mật khẩu.
+       - Tạo mới `Classes/PasswordHelper.cs` cung cấp `HashPassword(string plainPassword)` (SHA-256 chữ thường) và `VerifyPassword(string plainPassword, string hashedPassword)`.
+    2. **Xây dựng Form Đăng nhập (`frmDangNhap`) chuẩn WinForms**:
+       - Kích thước form Size Nhỏ `ClientSize = (444, 321)`, `FixedDialog`, `CenterScreen`.
+       - Gồm các control: Tiêu đề hệ thống, Tên đăng nhập (`txtTenDangNhap`), Mật khẩu (`txtMatKhau`), CheckBox Hiện mật khẩu (`chkHienMatKhau`), ComboBox Kho làm việc (`cboKhoLamViec`), nút Đăng nhập (`btnDangNhap`) và Thoát (`btnThoat`).
+       - Tự động nhận diện vai trò tài khoản khi nhập tên đăng nhập để nạp danh sách kho tương ứng.
+    3. **Phân quyền thao tác và phạm vi kho chuẩn hóa theo 3 vai trò**:
+       - *Quản lý (`MaVaiTro = 1`)*: Toàn quyền truy cập tất cả các phân hệ và menu; quản lý mọi kho hàng; được chọn "Tất cả kho" hoặc kho chi nhánh bất kỳ khi đăng nhập và có quyền đổi kho (`frmDoiKho`).
+       - *Thủ kho (`MaVaiTro = 2`)*: Quản lý 1 kho duy nhất được phân công (cố định ComboBox kho khi đăng nhập, ẩn/khóa menu "Đổi kho"); toàn quyền các nghiệp vụ kho của mình (Kiểm kho, Chuyển kho, Hàng hóa, Nhà cung cấp, Nhập hàng, Trả hàng nhập, Báo cáo tồn kho & Thẻ kho).
+       - *Nhân viên kho (`MaVaiTro = 3`)*: Thao tác tại kho được phân công (ẩn menu "Đổi kho"); thực hiện Kiểm kho, Chuyển kho, Nhập hàng, Trả hàng nhập, xem Danh sách hàng hóa, xem Báo cáo tồn kho; ẩn các mục quản lý đối tác (Nhà cung cấp) và Thẻ kho sổ sách.
+    4. **Cơ chế khởi động chương trình và Đăng xuất linh hoạt**:
+       - Tại `Program.cs`: Bọc vòng lặp `while (true)` yêu cầu đăng nhập trước khi hiển thị `frmMain`.
+       - Tại `frmMain.cs`: Khi người dùng nhấn "Đăng xuất" trên menu Hệ thống, hệ thống xóa sạch phiên làm việc `SessionContext.XoaPhien()`, đóng `frmMain` và quay lại màn hình `frmDangNhap` ngay lập tức.
+    5. **Đồng bộ CSDL & Dữ liệu mẫu**:
+       - Cập nhật script `docs/database_update.sql` và `docs/DuLieuMau.sql`: Đồng bộ 3 vai trò chuẩn trong `VaiTro`, 3 nhân viên trong `NhanVien`, 3 tài khoản demo (`quanly`, `thukho`, `nvkho` mật khẩu mặc định `123456`), và phân quyền kho trong `TaiKhoanKho`.
+    6. **Kiểm tra chất lượng**:
+       - Chạy `tools/KiemTraMaHoa.ps1`: **158/158 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
   - **Kết quả thực hiện**:
     1. **Khắc phục 100% mã nguồn bị lỗi**:
        - Khôi phục chuẩn tiếng Việt UTF-8 cho toàn bộ các chuỗi trong `frmChiTietChuyenKho.cs`: nhãn trạng thái ("Đang chuyển", "Đã nhận", "Phiếu tạm", "Đã hủy"), mũi tên lộ trình ("Kho gửi ➜ Kho nhận"), tên người nhận ("Chưa rõ"), ghi chú ("(trống)"), nút hành động ("Nhận hàng", "Chuyển hàng"), đơn vị tiền tệ ("VNĐ"), và toàn bộ các hộp thoại `MessageBox`.
@@ -329,6 +467,35 @@
 
 - **Phiên 34 (2026-10-24) – Chuẩn hóa toàn bộ Font chữ & Màu chữ theo `frmDanhSachHangHoa` và Ban hành Quy chuẩn Kích thước Form**:
   - **Nhu cầu**: Người dùng phản hồi trên các form (chi tiết chứng từ, thêm mới, báo cáo...), các nhãn và trường dữ liệu (Tổng tiền hàng, NCC cần trả, Mã phiếu...) bị tự ý in đậm (`FontStyle.Bold`) và chọn màu chữ (`ForeColor`) mỗi trường một kiểu cọc cạch như ảnh 2. Yêu cầu:
+
+- **Phiên 47 (2026-10-25) – Xây dựng Form Đăng nhập hệ thống, Tiện ích băm mật khẩu SHA-256 an toàn và Phân quyền thao tác theo 3 vai trò chuẩn**:
+  - **Nhu cầu**: Người dùng yêu cầu:
+    1. Kiểm tra 1 lượt classes và các file liên quan có thể có chứa hàm băm của mật khẩu. Nếu tồn tại, gọi hàm hash đó; nếu chưa, cho phép tạo class `PasswordHelper.cs`.
+    2. Tạo form đăng nhập cho hệ thống, khi bắt đầu chạy chương trình yêu cầu đăng nhập với tài khoản và mật khẩu để phân quyền thao tác được phép.
+    3. Hỗ trợ 3 vai trò người dùng chuẩn:
+       - *Quản lý*: Quản lý mọi kho hàng trong hệ thống.
+       - *Thủ kho*: Quản lý 1 kho duy nhất được phân công.
+       - *Nhân viên kho*: Thao tác nghiệp vụ tại kho.
+  - **Kết quả thực hiện**:
+    1. **Kiểm tra và xây dựng tiện ích băm mật khẩu SHA-256 (`Classes/PasswordHelper.cs`)**:
+       - Quét toàn bộ codebase xác nhận chưa có hàm băm mật khẩu.
+       - Tạo mới `Classes/PasswordHelper.cs` cung cấp `HashPassword(string plainPassword)` (SHA-256 chữ thường) và `VerifyPassword(string plainPassword, string hashedPassword)`.
+    2. **Xây dựng Form Đăng nhập (`frmDangNhap`) chuẩn WinForms**:
+       - Kích thước form Size Nhỏ `ClientSize = (444, 321)`, `FixedDialog`, `CenterScreen`.
+       - Gồm các control: Tiêu đề hệ thống, Tên đăng nhập (`txtTenDangNhap`), Mật khẩu (`txtMatKhau`), CheckBox Hiện mật khẩu (`chkHienMatKhau`), ComboBox Kho làm việc (`cboKhoLamViec`), nút Đăng nhập (`btnDangNhap`) và Thoát (`btnThoat`).
+       - Tự động nhận diện vai trò tài khoản khi nhập tên đăng nhập để nạp danh sách kho tương ứng.
+    3. **Phân quyền thao tác và phạm vi kho chuẩn hóa theo 3 vai trò**:
+       - *Quản lý (`MaVaiTro = 1`)*: Toàn quyền truy cập tất cả các phân hệ và menu; quản lý mọi kho hàng; được chọn "Tất cả kho" hoặc kho chi nhánh bất kỳ khi đăng nhập và có quyền đổi kho (`frmDoiKho`).
+       - *Thủ kho (`MaVaiTro = 2`)*: Quản lý 1 kho duy nhất được phân công (cố định ComboBox kho khi đăng nhập, ẩn/khóa menu "Đổi kho"); toàn quyền các nghiệp vụ kho của mình (Kiểm kho, Chuyển kho, Hàng hóa, Nhà cung cấp, Nhập hàng, Trả hàng nhập, Báo cáo tồn kho & Thẻ kho).
+       - *Nhân viên kho (`MaVaiTro = 3`)*: Thao tác tại kho được phân công (ẩn menu "Đổi kho"); thực hiện Kiểm kho, Chuyển kho, Nhập hàng, Trả hàng nhập, xem Danh sách hàng hóa, xem Báo cáo tồn kho; ẩn các mục quản lý đối tác (Nhà cung cấp) và Thẻ kho sổ sách.
+    4. **Cơ chế khởi động chương trình và Đăng xuất linh hoạt**:
+       - Tại `Program.cs`: Bọc vòng lặp `while (true)` yêu cầu đăng nhập trước khi hiển thị `frmMain`.
+       - Tại `frmMain.cs`: Khi người dùng nhấn "Đăng xuất" trên menu Hệ thống, hệ thống xóa sạch phiên làm việc `SessionContext.XoaPhien()`, đóng `frmMain` và quay lại màn hình `frmDangNhap` ngay lập tức.
+    5. **Đồng bộ CSDL & Dữ liệu mẫu**:
+       - Cập nhật script `docs/database_update.sql` và `docs/DuLieuMau.sql`: Đồng bộ 3 vai trò chuẩn trong `VaiTro`, 3 nhân viên trong `NhanVien`, 3 tài khoản demo (`quanly`, `thukho`, `nvkho` mật khẩu mặc định `123456`), và phân quyền kho trong `TaiKhoanKho`.
+    6. **Kiểm tra chất lượng**:
+       - Chạy `tools/KiemTraMaHoa.ps1`: **158/158 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
     1. Đưa TẤT CẢ các form về đúng một chuẩn duy nhất theo form mẫu `frmDanhSachHangHoa` (Font thường `Regular 9.5pt`, màu chữ mặc định hệ thống `SystemColors.ControlText`).
     2. Thêm vào Rule: Chuẩn font chữ, màu chữ bắt buộc tuân thủ tuyệt đối; ban hành quy chuẩn phân tầng kích thước form (Chức năng lớn chuẩn `frmDanhSachHangHoa`: `1782 x 853`, chức năng nhỏ hơn phân làm 3 cỡ: Size Lớn theo `frmHangHoa`: `1182 x 803`, Size Vừa theo `frmDonViCapHang`: `960 x 705`, Size Nhỏ theo `frmDoiKho`: `356 x 136`).
   - **Kết quả thực hiện**:
@@ -460,6 +627,35 @@
 
 - **Phiên 26 (2026-10-24) – Thiết kế và hiện thực trọn vẹn 2 phân hệ Chuyển kho liên chi nhánh và Đổi kho làm việc**:
   - **Nhu cầu**: Thiết kế form cho 2 chức năng: Chuyển kho (ghi nhận các phiếu chuyển hàng giữa các kho với nhau, kèm các form phụ trợ liên quan) và Đổi kho (modal nhỏ chọn kho làm việc theo ảnh mẫu), tuân thủ nghiêm ngặt nghiệp vụ kho, phân quyền và design system chuẩn WinForms.
+
+- **Phiên 47 (2026-10-25) – Xây dựng Form Đăng nhập hệ thống, Tiện ích băm mật khẩu SHA-256 an toàn và Phân quyền thao tác theo 3 vai trò chuẩn**:
+  - **Nhu cầu**: Người dùng yêu cầu:
+    1. Kiểm tra 1 lượt classes và các file liên quan có thể có chứa hàm băm của mật khẩu. Nếu tồn tại, gọi hàm hash đó; nếu chưa, cho phép tạo class `PasswordHelper.cs`.
+    2. Tạo form đăng nhập cho hệ thống, khi bắt đầu chạy chương trình yêu cầu đăng nhập với tài khoản và mật khẩu để phân quyền thao tác được phép.
+    3. Hỗ trợ 3 vai trò người dùng chuẩn:
+       - *Quản lý*: Quản lý mọi kho hàng trong hệ thống.
+       - *Thủ kho*: Quản lý 1 kho duy nhất được phân công.
+       - *Nhân viên kho*: Thao tác nghiệp vụ tại kho.
+  - **Kết quả thực hiện**:
+    1. **Kiểm tra và xây dựng tiện ích băm mật khẩu SHA-256 (`Classes/PasswordHelper.cs`)**:
+       - Quét toàn bộ codebase xác nhận chưa có hàm băm mật khẩu.
+       - Tạo mới `Classes/PasswordHelper.cs` cung cấp `HashPassword(string plainPassword)` (SHA-256 chữ thường) và `VerifyPassword(string plainPassword, string hashedPassword)`.
+    2. **Xây dựng Form Đăng nhập (`frmDangNhap`) chuẩn WinForms**:
+       - Kích thước form Size Nhỏ `ClientSize = (444, 321)`, `FixedDialog`, `CenterScreen`.
+       - Gồm các control: Tiêu đề hệ thống, Tên đăng nhập (`txtTenDangNhap`), Mật khẩu (`txtMatKhau`), CheckBox Hiện mật khẩu (`chkHienMatKhau`), ComboBox Kho làm việc (`cboKhoLamViec`), nút Đăng nhập (`btnDangNhap`) và Thoát (`btnThoat`).
+       - Tự động nhận diện vai trò tài khoản khi nhập tên đăng nhập để nạp danh sách kho tương ứng.
+    3. **Phân quyền thao tác và phạm vi kho chuẩn hóa theo 3 vai trò**:
+       - *Quản lý (`MaVaiTro = 1`)*: Toàn quyền truy cập tất cả các phân hệ và menu; quản lý mọi kho hàng; được chọn "Tất cả kho" hoặc kho chi nhánh bất kỳ khi đăng nhập và có quyền đổi kho (`frmDoiKho`).
+       - *Thủ kho (`MaVaiTro = 2`)*: Quản lý 1 kho duy nhất được phân công (cố định ComboBox kho khi đăng nhập, ẩn/khóa menu "Đổi kho"); toàn quyền các nghiệp vụ kho của mình (Kiểm kho, Chuyển kho, Hàng hóa, Nhà cung cấp, Nhập hàng, Trả hàng nhập, Báo cáo tồn kho & Thẻ kho).
+       - *Nhân viên kho (`MaVaiTro = 3`)*: Thao tác tại kho được phân công (ẩn menu "Đổi kho"); thực hiện Kiểm kho, Chuyển kho, Nhập hàng, Trả hàng nhập, xem Danh sách hàng hóa, xem Báo cáo tồn kho; ẩn các mục quản lý đối tác (Nhà cung cấp) và Thẻ kho sổ sách.
+    4. **Cơ chế khởi động chương trình và Đăng xuất linh hoạt**:
+       - Tại `Program.cs`: Bọc vòng lặp `while (true)` yêu cầu đăng nhập trước khi hiển thị `frmMain`.
+       - Tại `frmMain.cs`: Khi người dùng nhấn "Đăng xuất" trên menu Hệ thống, hệ thống xóa sạch phiên làm việc `SessionContext.XoaPhien()`, đóng `frmMain` và quay lại màn hình `frmDangNhap` ngay lập tức.
+    5. **Đồng bộ CSDL & Dữ liệu mẫu**:
+       - Cập nhật script `docs/database_update.sql` và `docs/DuLieuMau.sql`: Đồng bộ 3 vai trò chuẩn trong `VaiTro`, 3 nhân viên trong `NhanVien`, 3 tài khoản demo (`quanly`, `thukho`, `nvkho` mật khẩu mặc định `123456`), và phân quyền kho trong `TaiKhoanKho`.
+    6. **Kiểm tra chất lượng**:
+       - Chạy `tools/KiemTraMaHoa.ps1`: **158/158 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
   - **Kết quả thực hiện**:
     1. **Form modal Đổi kho làm việc (`GUI/Forms/DoiKho/frmDoiKho`)**:
        - Khớp 100% giao diện ảnh mẫu (`media_1792806433137_dfddc08d.png`): Kích thước nhỏ gọn `430x170`, `FixedDialog`, tiêu đề "Chọn kho làm việc".
@@ -469,6 +665,35 @@
        - `frmChuyenKho`: Màn hình danh sách chuẩn tỉ lệ `1782x853` FixedSingle, bộ lọc bên trái 100% ComboBox, cụm thời gian ở đáy theo Điều luật 16, DataGridView phân trang, lọc theo trạng thái (`DA_XUAT`, `DA_NHAN`, `NHAP`, `HUY`), hỗ trợ tìm kiếm tiếng Việt không dấu.
        - `frmThemPhieuChuyenKho`: Lập phiếu chuyển kho mới; chọn kho nguồn và kho đích (chặn chọn trùng kho); chọn hàng hóa nạp tồn sổ sách tức thời từ `vw_TonKhoHienTai`; chặn xuất chuyển vượt quá tồn thực tế (Luật 6); hỗ trợ phím tắt và thao tác mượt mà; các nút đáy sắp xếp chuẩn `Bỏ qua` ➜ `Lưu tạm` (`NHAP`) ➜ `Lưu` (`DA_XUAT`).
        - `frmChiTietChuyenKho`: Màn hình Master-Detail xem và cập nhật phiếu chuyển; hiển thị nhãn trạng thái dòng chữ màu (Điều luật 15b, 19a); nút "Nhận hàng" cho kho đích; nút "Xóa" tuân thủ Điều luật 15d & Luật 5 (chỉ xóa phiếu nháp, vô hiệu hóa khi phiếu đã hoàn tất/đã xuất); nút "Xuất file" CSV định dạng UTF-8 BOM.
+
+- **Phiên 47 (2026-10-25) – Xây dựng Form Đăng nhập hệ thống, Tiện ích băm mật khẩu SHA-256 an toàn và Phân quyền thao tác theo 3 vai trò chuẩn**:
+  - **Nhu cầu**: Người dùng yêu cầu:
+    1. Kiểm tra 1 lượt classes và các file liên quan có thể có chứa hàm băm của mật khẩu. Nếu tồn tại, gọi hàm hash đó; nếu chưa, cho phép tạo class `PasswordHelper.cs`.
+    2. Tạo form đăng nhập cho hệ thống, khi bắt đầu chạy chương trình yêu cầu đăng nhập với tài khoản và mật khẩu để phân quyền thao tác được phép.
+    3. Hỗ trợ 3 vai trò người dùng chuẩn:
+       - *Quản lý*: Quản lý mọi kho hàng trong hệ thống.
+       - *Thủ kho*: Quản lý 1 kho duy nhất được phân công.
+       - *Nhân viên kho*: Thao tác nghiệp vụ tại kho.
+  - **Kết quả thực hiện**:
+    1. **Kiểm tra và xây dựng tiện ích băm mật khẩu SHA-256 (`Classes/PasswordHelper.cs`)**:
+       - Quét toàn bộ codebase xác nhận chưa có hàm băm mật khẩu.
+       - Tạo mới `Classes/PasswordHelper.cs` cung cấp `HashPassword(string plainPassword)` (SHA-256 chữ thường) và `VerifyPassword(string plainPassword, string hashedPassword)`.
+    2. **Xây dựng Form Đăng nhập (`frmDangNhap`) chuẩn WinForms**:
+       - Kích thước form Size Nhỏ `ClientSize = (444, 321)`, `FixedDialog`, `CenterScreen`.
+       - Gồm các control: Tiêu đề hệ thống, Tên đăng nhập (`txtTenDangNhap`), Mật khẩu (`txtMatKhau`), CheckBox Hiện mật khẩu (`chkHienMatKhau`), ComboBox Kho làm việc (`cboKhoLamViec`), nút Đăng nhập (`btnDangNhap`) và Thoát (`btnThoat`).
+       - Tự động nhận diện vai trò tài khoản khi nhập tên đăng nhập để nạp danh sách kho tương ứng.
+    3. **Phân quyền thao tác và phạm vi kho chuẩn hóa theo 3 vai trò**:
+       - *Quản lý (`MaVaiTro = 1`)*: Toàn quyền truy cập tất cả các phân hệ và menu; quản lý mọi kho hàng; được chọn "Tất cả kho" hoặc kho chi nhánh bất kỳ khi đăng nhập và có quyền đổi kho (`frmDoiKho`).
+       - *Thủ kho (`MaVaiTro = 2`)*: Quản lý 1 kho duy nhất được phân công (cố định ComboBox kho khi đăng nhập, ẩn/khóa menu "Đổi kho"); toàn quyền các nghiệp vụ kho của mình (Kiểm kho, Chuyển kho, Hàng hóa, Nhà cung cấp, Nhập hàng, Trả hàng nhập, Báo cáo tồn kho & Thẻ kho).
+       - *Nhân viên kho (`MaVaiTro = 3`)*: Thao tác tại kho được phân công (ẩn menu "Đổi kho"); thực hiện Kiểm kho, Chuyển kho, Nhập hàng, Trả hàng nhập, xem Danh sách hàng hóa, xem Báo cáo tồn kho; ẩn các mục quản lý đối tác (Nhà cung cấp) và Thẻ kho sổ sách.
+    4. **Cơ chế khởi động chương trình và Đăng xuất linh hoạt**:
+       - Tại `Program.cs`: Bọc vòng lặp `while (true)` yêu cầu đăng nhập trước khi hiển thị `frmMain`.
+       - Tại `frmMain.cs`: Khi người dùng nhấn "Đăng xuất" trên menu Hệ thống, hệ thống xóa sạch phiên làm việc `SessionContext.XoaPhien()`, đóng `frmMain` và quay lại màn hình `frmDangNhap` ngay lập tức.
+    5. **Đồng bộ CSDL & Dữ liệu mẫu**:
+       - Cập nhật script `docs/database_update.sql` và `docs/DuLieuMau.sql`: Đồng bộ 3 vai trò chuẩn trong `VaiTro`, 3 nhân viên trong `NhanVien`, 3 tài khoản demo (`quanly`, `thukho`, `nvkho` mật khẩu mặc định `123456`), và phân quyền kho trong `TaiKhoanKho`.
+    6. **Kiểm tra chất lượng**:
+       - Chạy `tools/KiemTraMaHoa.ps1`: **158/158 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
        - `frmNhanChuyenKho`: Modal xác nhận nhận hàng tại chi nhánh đích; cho phép kiểm đếm và ghi nhận số lượng nhận thực tế `SoLuongNhan <= SoLuongChuyen`; phát hiện hao hụt (tô đỏ) và bắt buộc nhập lý do vào `GhiChuNhan`; khi xác nhận cập nhật trạng thái `DA_NHAN` và tự động cộng tồn kho đích qua View `vw_TonKhoHienTai`.
        - `frmHienCotChuyenKho`: Popup không viền tùy biến ẩn/hiện 10 cột dữ liệu bảng chuyển kho.
        - `frmNhapChuyenKhoFile`: Nạp danh sách hàng hóa chuyển từ file CSV, tải file mẫu CSV có dữ liệu thực tế, kiểm tra mã hàng và tồn kho gửi.
@@ -541,6 +766,35 @@
 - **Phiên 22 (2026-10-24) – Chuẩn hóa hiển thị nhãn trạng thái dòng chữ màu (bỏ khung badge) và thống nhất thứ tự nút Bỏ qua - Lưu tạm - Lưu (Ban hành Điều luật 19)**:
   - **Nhu cầu**:
     1. Phần ghi đánh dấu các trạng thái phiếu không làm thành 1 phần có khung như ảnh 1 mà chỉ là dòng chữ có màu của trạng thái như trong mẫu `frmChiTietPhieuNhap` (không sửa vào `frmDanhSachHangHoa`).
+
+- **Phiên 47 (2026-10-25) – Xây dựng Form Đăng nhập hệ thống, Tiện ích băm mật khẩu SHA-256 an toàn và Phân quyền thao tác theo 3 vai trò chuẩn**:
+  - **Nhu cầu**: Người dùng yêu cầu:
+    1. Kiểm tra 1 lượt classes và các file liên quan có thể có chứa hàm băm của mật khẩu. Nếu tồn tại, gọi hàm hash đó; nếu chưa, cho phép tạo class `PasswordHelper.cs`.
+    2. Tạo form đăng nhập cho hệ thống, khi bắt đầu chạy chương trình yêu cầu đăng nhập với tài khoản và mật khẩu để phân quyền thao tác được phép.
+    3. Hỗ trợ 3 vai trò người dùng chuẩn:
+       - *Quản lý*: Quản lý mọi kho hàng trong hệ thống.
+       - *Thủ kho*: Quản lý 1 kho duy nhất được phân công.
+       - *Nhân viên kho*: Thao tác nghiệp vụ tại kho.
+  - **Kết quả thực hiện**:
+    1. **Kiểm tra và xây dựng tiện ích băm mật khẩu SHA-256 (`Classes/PasswordHelper.cs`)**:
+       - Quét toàn bộ codebase xác nhận chưa có hàm băm mật khẩu.
+       - Tạo mới `Classes/PasswordHelper.cs` cung cấp `HashPassword(string plainPassword)` (SHA-256 chữ thường) và `VerifyPassword(string plainPassword, string hashedPassword)`.
+    2. **Xây dựng Form Đăng nhập (`frmDangNhap`) chuẩn WinForms**:
+       - Kích thước form Size Nhỏ `ClientSize = (444, 321)`, `FixedDialog`, `CenterScreen`.
+       - Gồm các control: Tiêu đề hệ thống, Tên đăng nhập (`txtTenDangNhap`), Mật khẩu (`txtMatKhau`), CheckBox Hiện mật khẩu (`chkHienMatKhau`), ComboBox Kho làm việc (`cboKhoLamViec`), nút Đăng nhập (`btnDangNhap`) và Thoát (`btnThoat`).
+       - Tự động nhận diện vai trò tài khoản khi nhập tên đăng nhập để nạp danh sách kho tương ứng.
+    3. **Phân quyền thao tác và phạm vi kho chuẩn hóa theo 3 vai trò**:
+       - *Quản lý (`MaVaiTro = 1`)*: Toàn quyền truy cập tất cả các phân hệ và menu; quản lý mọi kho hàng; được chọn "Tất cả kho" hoặc kho chi nhánh bất kỳ khi đăng nhập và có quyền đổi kho (`frmDoiKho`).
+       - *Thủ kho (`MaVaiTro = 2`)*: Quản lý 1 kho duy nhất được phân công (cố định ComboBox kho khi đăng nhập, ẩn/khóa menu "Đổi kho"); toàn quyền các nghiệp vụ kho của mình (Kiểm kho, Chuyển kho, Hàng hóa, Nhà cung cấp, Nhập hàng, Trả hàng nhập, Báo cáo tồn kho & Thẻ kho).
+       - *Nhân viên kho (`MaVaiTro = 3`)*: Thao tác tại kho được phân công (ẩn menu "Đổi kho"); thực hiện Kiểm kho, Chuyển kho, Nhập hàng, Trả hàng nhập, xem Danh sách hàng hóa, xem Báo cáo tồn kho; ẩn các mục quản lý đối tác (Nhà cung cấp) và Thẻ kho sổ sách.
+    4. **Cơ chế khởi động chương trình và Đăng xuất linh hoạt**:
+       - Tại `Program.cs`: Bọc vòng lặp `while (true)` yêu cầu đăng nhập trước khi hiển thị `frmMain`.
+       - Tại `frmMain.cs`: Khi người dùng nhấn "Đăng xuất" trên menu Hệ thống, hệ thống xóa sạch phiên làm việc `SessionContext.XoaPhien()`, đóng `frmMain` và quay lại màn hình `frmDangNhap` ngay lập tức.
+    5. **Đồng bộ CSDL & Dữ liệu mẫu**:
+       - Cập nhật script `docs/database_update.sql` và `docs/DuLieuMau.sql`: Đồng bộ 3 vai trò chuẩn trong `VaiTro`, 3 nhân viên trong `NhanVien`, 3 tài khoản demo (`quanly`, `thukho`, `nvkho` mật khẩu mặc định `123456`), và phân quyền kho trong `TaiKhoanKho`.
+    6. **Kiểm tra chất lượng**:
+       - Chạy `tools/KiemTraMaHoa.ps1`: **158/158 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
     2. Thống nhất toàn bộ các nút chức năng nhỏ được để ở cuối form (mẫu như `frmThemPhieuNhap`), không để lên đầu như ảnh 2.
     3. Chốt thứ tự các nút là `Bỏ qua`, `Lưu tạm` và `Lưu` cho toàn bộ các form (thêm vào rule).
   - **Kết quả thực hiện**:
@@ -550,6 +804,35 @@
     2. **Thống nhất vị trí & thứ tự nút chức năng nhỏ ở cuối form (Điều luật 19b)**:
        - `frmThemPhieuKiemKho`:
          + Xóa bỏ các nút `[Nhập file]`, `[Lưu tạm]`, `[Cân bằng kho]`, `[Đóng]` khỏi vùng trên (`pnlTop`), vùng trên chỉ còn nhãn tiêu đề form "Thêm phiếu kiểm kho" theo chuẩn `frmThemPhieuNhap`.
+
+- **Phiên 47 (2026-10-25) – Xây dựng Form Đăng nhập hệ thống, Tiện ích băm mật khẩu SHA-256 an toàn và Phân quyền thao tác theo 3 vai trò chuẩn**:
+  - **Nhu cầu**: Người dùng yêu cầu:
+    1. Kiểm tra 1 lượt classes và các file liên quan có thể có chứa hàm băm của mật khẩu. Nếu tồn tại, gọi hàm hash đó; nếu chưa, cho phép tạo class `PasswordHelper.cs`.
+    2. Tạo form đăng nhập cho hệ thống, khi bắt đầu chạy chương trình yêu cầu đăng nhập với tài khoản và mật khẩu để phân quyền thao tác được phép.
+    3. Hỗ trợ 3 vai trò người dùng chuẩn:
+       - *Quản lý*: Quản lý mọi kho hàng trong hệ thống.
+       - *Thủ kho*: Quản lý 1 kho duy nhất được phân công.
+       - *Nhân viên kho*: Thao tác nghiệp vụ tại kho.
+  - **Kết quả thực hiện**:
+    1. **Kiểm tra và xây dựng tiện ích băm mật khẩu SHA-256 (`Classes/PasswordHelper.cs`)**:
+       - Quét toàn bộ codebase xác nhận chưa có hàm băm mật khẩu.
+       - Tạo mới `Classes/PasswordHelper.cs` cung cấp `HashPassword(string plainPassword)` (SHA-256 chữ thường) và `VerifyPassword(string plainPassword, string hashedPassword)`.
+    2. **Xây dựng Form Đăng nhập (`frmDangNhap`) chuẩn WinForms**:
+       - Kích thước form Size Nhỏ `ClientSize = (444, 321)`, `FixedDialog`, `CenterScreen`.
+       - Gồm các control: Tiêu đề hệ thống, Tên đăng nhập (`txtTenDangNhap`), Mật khẩu (`txtMatKhau`), CheckBox Hiện mật khẩu (`chkHienMatKhau`), ComboBox Kho làm việc (`cboKhoLamViec`), nút Đăng nhập (`btnDangNhap`) và Thoát (`btnThoat`).
+       - Tự động nhận diện vai trò tài khoản khi nhập tên đăng nhập để nạp danh sách kho tương ứng.
+    3. **Phân quyền thao tác và phạm vi kho chuẩn hóa theo 3 vai trò**:
+       - *Quản lý (`MaVaiTro = 1`)*: Toàn quyền truy cập tất cả các phân hệ và menu; quản lý mọi kho hàng; được chọn "Tất cả kho" hoặc kho chi nhánh bất kỳ khi đăng nhập và có quyền đổi kho (`frmDoiKho`).
+       - *Thủ kho (`MaVaiTro = 2`)*: Quản lý 1 kho duy nhất được phân công (cố định ComboBox kho khi đăng nhập, ẩn/khóa menu "Đổi kho"); toàn quyền các nghiệp vụ kho của mình (Kiểm kho, Chuyển kho, Hàng hóa, Nhà cung cấp, Nhập hàng, Trả hàng nhập, Báo cáo tồn kho & Thẻ kho).
+       - *Nhân viên kho (`MaVaiTro = 3`)*: Thao tác tại kho được phân công (ẩn menu "Đổi kho"); thực hiện Kiểm kho, Chuyển kho, Nhập hàng, Trả hàng nhập, xem Danh sách hàng hóa, xem Báo cáo tồn kho; ẩn các mục quản lý đối tác (Nhà cung cấp) và Thẻ kho sổ sách.
+    4. **Cơ chế khởi động chương trình và Đăng xuất linh hoạt**:
+       - Tại `Program.cs`: Bọc vòng lặp `while (true)` yêu cầu đăng nhập trước khi hiển thị `frmMain`.
+       - Tại `frmMain.cs`: Khi người dùng nhấn "Đăng xuất" trên menu Hệ thống, hệ thống xóa sạch phiên làm việc `SessionContext.XoaPhien()`, đóng `frmMain` và quay lại màn hình `frmDangNhap` ngay lập tức.
+    5. **Đồng bộ CSDL & Dữ liệu mẫu**:
+       - Cập nhật script `docs/database_update.sql` và `docs/DuLieuMau.sql`: Đồng bộ 3 vai trò chuẩn trong `VaiTro`, 3 nhân viên trong `NhanVien`, 3 tài khoản demo (`quanly`, `thukho`, `nvkho` mật khẩu mặc định `123456`), và phân quyền kho trong `TaiKhoanKho`.
+    6. **Kiểm tra chất lượng**:
+       - Chạy `tools/KiemTraMaHoa.ps1`: **158/158 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
          + Chuyển nút `Nhập file` sang thanh chọn hàng nhanh `pnlThemHang` (bên cạnh nút "Nạp tất cả hàng trong kho").
          + Thiết lập thanh nút chức năng đáy `pnlActions` (Dock = Bottom) với đúng thứ tự chốt: `Bỏ qua` (`btnBoQua`) ➜ `Lưu tạm` (`btnLuuTam`) ➜ `Lưu` (`btnCanBangKho`). Gán `CancelButton = btnBoQua`.
        - `frmThemPhieuTraHang`: Đổi thứ tự nút đáy từ `Lưu tạm`, `Trả hàng`, `Bỏ qua` sang đúng thứ tự chuẩn: `Bỏ qua` (`btnBoQua`) ➜ `Lưu tạm` (`btnLuuTam`) ➜ `Lưu` (`btnXacNhanTra`).
@@ -634,6 +917,35 @@
     1. **Tạo 5 Form mới trong `GUI/Forms/KiemKho/`**:
        - `frmKiemKho`: Danh sách MDI child, thanh công cụ (`+ Kiểm kho`, `Xuất file`, `Hiện cột`), GroupBox bộ lọc bên trái 100% ComboBox (`cboTrangThai`, `cboNguoiTao` hỗ trợ tìm kiếm text qua `ComboboxHelper.CaiDatTimKiem`, `cboKho`), cụm thời gian chuẩn `grpThoiGianTao` (2 DateTimePicker Short), phân trang đáy.
        - `frmThemPhieuKiemKho`: Mở từ nút `+ Kiểm kho`, master panel thông tin phiếu, detail panel chọn hàng nhanh từ danh mục hàng hóa của kho, nạp toàn bộ hàng trong kho, sửa trực tiếp trên ô lưới `SoLuongThucTe`, tự tính chênh lệch và giá trị lệch realtime. Có nút `Nhập file` ở trên, nút `Lưu tạm (F9)` và `Cân bằng kho (F10)`. Luồng cân bằng kho sinh `PhieuDieuChinh` `DA_DUYET` và các dòng `ChiTietPhieuDieuChinh`, cập nhật sổ sách tức thời qua `vw_TonKhoHienTai` và khóa vĩnh viễn phiếu.
+
+- **Phiên 47 (2026-10-25) – Xây dựng Form Đăng nhập hệ thống, Tiện ích băm mật khẩu SHA-256 an toàn và Phân quyền thao tác theo 3 vai trò chuẩn**:
+  - **Nhu cầu**: Người dùng yêu cầu:
+    1. Kiểm tra 1 lượt classes và các file liên quan có thể có chứa hàm băm của mật khẩu. Nếu tồn tại, gọi hàm hash đó; nếu chưa, cho phép tạo class `PasswordHelper.cs`.
+    2. Tạo form đăng nhập cho hệ thống, khi bắt đầu chạy chương trình yêu cầu đăng nhập với tài khoản và mật khẩu để phân quyền thao tác được phép.
+    3. Hỗ trợ 3 vai trò người dùng chuẩn:
+       - *Quản lý*: Quản lý mọi kho hàng trong hệ thống.
+       - *Thủ kho*: Quản lý 1 kho duy nhất được phân công.
+       - *Nhân viên kho*: Thao tác nghiệp vụ tại kho.
+  - **Kết quả thực hiện**:
+    1. **Kiểm tra và xây dựng tiện ích băm mật khẩu SHA-256 (`Classes/PasswordHelper.cs`)**:
+       - Quét toàn bộ codebase xác nhận chưa có hàm băm mật khẩu.
+       - Tạo mới `Classes/PasswordHelper.cs` cung cấp `HashPassword(string plainPassword)` (SHA-256 chữ thường) và `VerifyPassword(string plainPassword, string hashedPassword)`.
+    2. **Xây dựng Form Đăng nhập (`frmDangNhap`) chuẩn WinForms**:
+       - Kích thước form Size Nhỏ `ClientSize = (444, 321)`, `FixedDialog`, `CenterScreen`.
+       - Gồm các control: Tiêu đề hệ thống, Tên đăng nhập (`txtTenDangNhap`), Mật khẩu (`txtMatKhau`), CheckBox Hiện mật khẩu (`chkHienMatKhau`), ComboBox Kho làm việc (`cboKhoLamViec`), nút Đăng nhập (`btnDangNhap`) và Thoát (`btnThoat`).
+       - Tự động nhận diện vai trò tài khoản khi nhập tên đăng nhập để nạp danh sách kho tương ứng.
+    3. **Phân quyền thao tác và phạm vi kho chuẩn hóa theo 3 vai trò**:
+       - *Quản lý (`MaVaiTro = 1`)*: Toàn quyền truy cập tất cả các phân hệ và menu; quản lý mọi kho hàng; được chọn "Tất cả kho" hoặc kho chi nhánh bất kỳ khi đăng nhập và có quyền đổi kho (`frmDoiKho`).
+       - *Thủ kho (`MaVaiTro = 2`)*: Quản lý 1 kho duy nhất được phân công (cố định ComboBox kho khi đăng nhập, ẩn/khóa menu "Đổi kho"); toàn quyền các nghiệp vụ kho của mình (Kiểm kho, Chuyển kho, Hàng hóa, Nhà cung cấp, Nhập hàng, Trả hàng nhập, Báo cáo tồn kho & Thẻ kho).
+       - *Nhân viên kho (`MaVaiTro = 3`)*: Thao tác tại kho được phân công (ẩn menu "Đổi kho"); thực hiện Kiểm kho, Chuyển kho, Nhập hàng, Trả hàng nhập, xem Danh sách hàng hóa, xem Báo cáo tồn kho; ẩn các mục quản lý đối tác (Nhà cung cấp) và Thẻ kho sổ sách.
+    4. **Cơ chế khởi động chương trình và Đăng xuất linh hoạt**:
+       - Tại `Program.cs`: Bọc vòng lặp `while (true)` yêu cầu đăng nhập trước khi hiển thị `frmMain`.
+       - Tại `frmMain.cs`: Khi người dùng nhấn "Đăng xuất" trên menu Hệ thống, hệ thống xóa sạch phiên làm việc `SessionContext.XoaPhien()`, đóng `frmMain` và quay lại màn hình `frmDangNhap` ngay lập tức.
+    5. **Đồng bộ CSDL & Dữ liệu mẫu**:
+       - Cập nhật script `docs/database_update.sql` và `docs/DuLieuMau.sql`: Đồng bộ 3 vai trò chuẩn trong `VaiTro`, 3 nhân viên trong `NhanVien`, 3 tài khoản demo (`quanly`, `thukho`, `nvkho` mật khẩu mặc định `123456`), và phân quyền kho trong `TaiKhoanKho`.
+    6. **Kiểm tra chất lượng**:
+       - Chạy `tools/KiemTraMaHoa.ps1`: **158/158 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
        - `frmChiTietKiemKho`: Form chi tiết khi nhấn đúp vào 1 phiếu kiểm kho (chuẩn bố cục ảnh 3). Hiển thị đầy đủ thông tin Header (Mã phiếu, Badge trạng thái, Người tạo/Ngày tạo, Người cân bằng/Ngày cân bằng, Tên kho), bảng chi tiết dòng hàng (Mã hàng, Tên hàng, ĐVT, Tồn kho, Thực tế, SL lệch, Đơn giá, Giá trị lệch), vùng ghi chú và vùng tổng kết 4 chỉ số (Tổng thực tế, Tổng lệch tăng, Tổng lệch giảm, Tổng chênh lệch). Ở thanh dưới chỉ giữ lại 2 nút: **Xóa** (khóa không cho xóa phiếu đã cân bằng theo Luật 6, cho phép xóa phiếu tạm `NHAP` kèm xác nhận) và **Xuất file** (kèm nút Đóng).
        - `frmNhapKiemKhoFile`: Form nhập file kiểm kê hỗ trợ .xlsx, .xls, .csv, có nút tải file mẫu Excel (.xls) và file mẫu CSV (.csv) kèm dữ liệu mẫu thực tế từ DB; validate từng dòng và nạp danh sách hợp lệ vào `frmThemPhieuKiemKho`.
        - `frmHienCotKiemKho`: Form tùy chọn ẩn/hiện cột bảng kiểm kho.
@@ -643,6 +955,35 @@
     5. **Kiểm tra biên dịch**: Chạy build MSBuild thành công **0 Warning(s), 0 Error(s)**.
   - **Nhu cầu**: 
     1. Vẫn tồn tại lỗi khi truy vấn database: `Invalid column name 'MaPhieuNhap'` khi xem chi tiết phiếu trả hàng nhập trong `frmTraHangNhap`. Cho phép dùng query SELECT để kiểm tra cấu trúc schema thực tế và quét chuẩn hóa toàn bộ code.
+
+- **Phiên 47 (2026-10-25) – Xây dựng Form Đăng nhập hệ thống, Tiện ích băm mật khẩu SHA-256 an toàn và Phân quyền thao tác theo 3 vai trò chuẩn**:
+  - **Nhu cầu**: Người dùng yêu cầu:
+    1. Kiểm tra 1 lượt classes và các file liên quan có thể có chứa hàm băm của mật khẩu. Nếu tồn tại, gọi hàm hash đó; nếu chưa, cho phép tạo class `PasswordHelper.cs`.
+    2. Tạo form đăng nhập cho hệ thống, khi bắt đầu chạy chương trình yêu cầu đăng nhập với tài khoản và mật khẩu để phân quyền thao tác được phép.
+    3. Hỗ trợ 3 vai trò người dùng chuẩn:
+       - *Quản lý*: Quản lý mọi kho hàng trong hệ thống.
+       - *Thủ kho*: Quản lý 1 kho duy nhất được phân công.
+       - *Nhân viên kho*: Thao tác nghiệp vụ tại kho.
+  - **Kết quả thực hiện**:
+    1. **Kiểm tra và xây dựng tiện ích băm mật khẩu SHA-256 (`Classes/PasswordHelper.cs`)**:
+       - Quét toàn bộ codebase xác nhận chưa có hàm băm mật khẩu.
+       - Tạo mới `Classes/PasswordHelper.cs` cung cấp `HashPassword(string plainPassword)` (SHA-256 chữ thường) và `VerifyPassword(string plainPassword, string hashedPassword)`.
+    2. **Xây dựng Form Đăng nhập (`frmDangNhap`) chuẩn WinForms**:
+       - Kích thước form Size Nhỏ `ClientSize = (444, 321)`, `FixedDialog`, `CenterScreen`.
+       - Gồm các control: Tiêu đề hệ thống, Tên đăng nhập (`txtTenDangNhap`), Mật khẩu (`txtMatKhau`), CheckBox Hiện mật khẩu (`chkHienMatKhau`), ComboBox Kho làm việc (`cboKhoLamViec`), nút Đăng nhập (`btnDangNhap`) và Thoát (`btnThoat`).
+       - Tự động nhận diện vai trò tài khoản khi nhập tên đăng nhập để nạp danh sách kho tương ứng.
+    3. **Phân quyền thao tác và phạm vi kho chuẩn hóa theo 3 vai trò**:
+       - *Quản lý (`MaVaiTro = 1`)*: Toàn quyền truy cập tất cả các phân hệ và menu; quản lý mọi kho hàng; được chọn "Tất cả kho" hoặc kho chi nhánh bất kỳ khi đăng nhập và có quyền đổi kho (`frmDoiKho`).
+       - *Thủ kho (`MaVaiTro = 2`)*: Quản lý 1 kho duy nhất được phân công (cố định ComboBox kho khi đăng nhập, ẩn/khóa menu "Đổi kho"); toàn quyền các nghiệp vụ kho của mình (Kiểm kho, Chuyển kho, Hàng hóa, Nhà cung cấp, Nhập hàng, Trả hàng nhập, Báo cáo tồn kho & Thẻ kho).
+       - *Nhân viên kho (`MaVaiTro = 3`)*: Thao tác tại kho được phân công (ẩn menu "Đổi kho"); thực hiện Kiểm kho, Chuyển kho, Nhập hàng, Trả hàng nhập, xem Danh sách hàng hóa, xem Báo cáo tồn kho; ẩn các mục quản lý đối tác (Nhà cung cấp) và Thẻ kho sổ sách.
+    4. **Cơ chế khởi động chương trình và Đăng xuất linh hoạt**:
+       - Tại `Program.cs`: Bọc vòng lặp `while (true)` yêu cầu đăng nhập trước khi hiển thị `frmMain`.
+       - Tại `frmMain.cs`: Khi người dùng nhấn "Đăng xuất" trên menu Hệ thống, hệ thống xóa sạch phiên làm việc `SessionContext.XoaPhien()`, đóng `frmMain` và quay lại màn hình `frmDangNhap` ngay lập tức.
+    5. **Đồng bộ CSDL & Dữ liệu mẫu**:
+       - Cập nhật script `docs/database_update.sql` và `docs/DuLieuMau.sql`: Đồng bộ 3 vai trò chuẩn trong `VaiTro`, 3 nhân viên trong `NhanVien`, 3 tài khoản demo (`quanly`, `thukho`, `nvkho` mật khẩu mặc định `123456`), và phân quyền kho trong `TaiKhoanKho`.
+    6. **Kiểm tra chất lượng**:
+       - Chạy `tools/KiemTraMaHoa.ps1`: **158/158 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
     2. Thêm rule mới vào agent: Khi tạo truy vấn mới tới database, nếu chưa rõ về thuộc tính/tên cột/giá trị cho phép thì phải xin cấp quyền truy vấn SELECT để kiểm tra, nghiêm cấm sửa database khi chưa được phép và tuyệt đối không được đoán bừa.
     3. Chuẩn hóa tất cả các bộ lọc ComboBox nhiều giá trị ở mọi form danh sách (trừ frmDanhSachHangHoa làm chuẩn) sang hỗ trợ nhập text và lọc hiển thị linh hoạt theo mẫu của `frmDanhSachHangHoa`.
   - **Kết quả thực hiện**:
@@ -674,6 +1015,35 @@
        - Chuẩn hóa ghi log `NhatKyThaoTac` với các cột chuẩn: `(MaTaiKhoan, ThoiDiem, ThaoTac, LoaiDoiTuong, MaDoiTuong, NoiDung)`.
     3. **`frmChiTietTraHangNhap.cs`**:
        - Sửa truy vấn thông tin chi tiết: Bổ sung kết nối sang bảng `NhanVien` (`nvLap`, `nvTra`) để lấy tên người lập và người trả phiếu.
+
+- **Phiên 47 (2026-10-25) – Xây dựng Form Đăng nhập hệ thống, Tiện ích băm mật khẩu SHA-256 an toàn và Phân quyền thao tác theo 3 vai trò chuẩn**:
+  - **Nhu cầu**: Người dùng yêu cầu:
+    1. Kiểm tra 1 lượt classes và các file liên quan có thể có chứa hàm băm của mật khẩu. Nếu tồn tại, gọi hàm hash đó; nếu chưa, cho phép tạo class `PasswordHelper.cs`.
+    2. Tạo form đăng nhập cho hệ thống, khi bắt đầu chạy chương trình yêu cầu đăng nhập với tài khoản và mật khẩu để phân quyền thao tác được phép.
+    3. Hỗ trợ 3 vai trò người dùng chuẩn:
+       - *Quản lý*: Quản lý mọi kho hàng trong hệ thống.
+       - *Thủ kho*: Quản lý 1 kho duy nhất được phân công.
+       - *Nhân viên kho*: Thao tác nghiệp vụ tại kho.
+  - **Kết quả thực hiện**:
+    1. **Kiểm tra và xây dựng tiện ích băm mật khẩu SHA-256 (`Classes/PasswordHelper.cs`)**:
+       - Quét toàn bộ codebase xác nhận chưa có hàm băm mật khẩu.
+       - Tạo mới `Classes/PasswordHelper.cs` cung cấp `HashPassword(string plainPassword)` (SHA-256 chữ thường) và `VerifyPassword(string plainPassword, string hashedPassword)`.
+    2. **Xây dựng Form Đăng nhập (`frmDangNhap`) chuẩn WinForms**:
+       - Kích thước form Size Nhỏ `ClientSize = (444, 321)`, `FixedDialog`, `CenterScreen`.
+       - Gồm các control: Tiêu đề hệ thống, Tên đăng nhập (`txtTenDangNhap`), Mật khẩu (`txtMatKhau`), CheckBox Hiện mật khẩu (`chkHienMatKhau`), ComboBox Kho làm việc (`cboKhoLamViec`), nút Đăng nhập (`btnDangNhap`) và Thoát (`btnThoat`).
+       - Tự động nhận diện vai trò tài khoản khi nhập tên đăng nhập để nạp danh sách kho tương ứng.
+    3. **Phân quyền thao tác và phạm vi kho chuẩn hóa theo 3 vai trò**:
+       - *Quản lý (`MaVaiTro = 1`)*: Toàn quyền truy cập tất cả các phân hệ và menu; quản lý mọi kho hàng; được chọn "Tất cả kho" hoặc kho chi nhánh bất kỳ khi đăng nhập và có quyền đổi kho (`frmDoiKho`).
+       - *Thủ kho (`MaVaiTro = 2`)*: Quản lý 1 kho duy nhất được phân công (cố định ComboBox kho khi đăng nhập, ẩn/khóa menu "Đổi kho"); toàn quyền các nghiệp vụ kho của mình (Kiểm kho, Chuyển kho, Hàng hóa, Nhà cung cấp, Nhập hàng, Trả hàng nhập, Báo cáo tồn kho & Thẻ kho).
+       - *Nhân viên kho (`MaVaiTro = 3`)*: Thao tác tại kho được phân công (ẩn menu "Đổi kho"); thực hiện Kiểm kho, Chuyển kho, Nhập hàng, Trả hàng nhập, xem Danh sách hàng hóa, xem Báo cáo tồn kho; ẩn các mục quản lý đối tác (Nhà cung cấp) và Thẻ kho sổ sách.
+    4. **Cơ chế khởi động chương trình và Đăng xuất linh hoạt**:
+       - Tại `Program.cs`: Bọc vòng lặp `while (true)` yêu cầu đăng nhập trước khi hiển thị `frmMain`.
+       - Tại `frmMain.cs`: Khi người dùng nhấn "Đăng xuất" trên menu Hệ thống, hệ thống xóa sạch phiên làm việc `SessionContext.XoaPhien()`, đóng `frmMain` và quay lại màn hình `frmDangNhap` ngay lập tức.
+    5. **Đồng bộ CSDL & Dữ liệu mẫu**:
+       - Cập nhật script `docs/database_update.sql` và `docs/DuLieuMau.sql`: Đồng bộ 3 vai trò chuẩn trong `VaiTro`, 3 nhân viên trong `NhanVien`, 3 tài khoản demo (`quanly`, `thukho`, `nvkho` mật khẩu mặc định `123456`), và phân quyền kho trong `TaiKhoanKho`.
+    6. **Kiểm tra chất lượng**:
+       - Chạy `tools/KiemTraMaHoa.ps1`: **158/158 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
        - Chuẩn hóa ghi log xóa/hủy vào bảng `NhatKyThaoTac`.
     4. **Kiểm tra biên dịch**: Chạy build MSBuild thành công **0 Warning, 0 Error**.
 

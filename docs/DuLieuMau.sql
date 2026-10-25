@@ -102,11 +102,11 @@ IF NOT EXISTS (SELECT 1 FROM TaiKhoan WHERE TenDangNhap = 'thukho')
 ELSE
     UPDATE TaiKhoan SET MatKhauHash = @PassHash, TrangThai = N'HOAT_DONG', MaVaiTro = ISNULL(@vt2, 2) WHERE TenDangNhap = 'thukho';
 
-IF NOT EXISTS (SELECT 1 FROM TaiKhoan WHERE TenDangNhap = 'banhang')
+IF NOT EXISTS (SELECT 1 FROM TaiKhoan WHERE TenDangNhap = 'nvkho')
     INSERT INTO TaiKhoan (MaNV, MaVaiTro, TenDangNhap, MatKhauHash, TrangThai)
-    VALUES (ISNULL(@nv3, 3), ISNULL(@vt3, 3), 'banhang', @PassHash, N'HOAT_DONG');
+    VALUES (ISNULL(@nv3, 3), 3, 'nvkho', @PassHash, N'HOAT_DONG');
 ELSE
-    UPDATE TaiKhoan SET MatKhauHash = @PassHash, TrangThai = N'HOAT_DONG', MaVaiTro = ISNULL(@vt3, 3) WHERE TenDangNhap = 'banhang';
+    UPDATE TaiKhoan SET MatKhauHash = @PassHash, TrangThai = N'HOAT_DONG', MaVaiTro = ISNULL(@vt3, 3) WHERE TenDangNhap = 'nvkho';
 
 PRINT N'   [3/10] Đã đồng bộ bảng TaiKhoan (quanly, thukho, banhang / 123456).';
 
