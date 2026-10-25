@@ -13,7 +13,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
     public partial class frmKiemKho : Form
     {
         private int trangHienTai = 1;
-        private int soDongMoiTrang = 15;
+        private int soDongMoiTrang = 20;
         private int tongSoTrang = 1;
         private int tongSoBanGhi = 0;
         private bool isInitializing = true;
@@ -187,7 +187,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             dtpDenNgay.Value = DateTime.Now;
 
             // Nạp ComboBox phân trang
-            cboSoDongMoiTrang.SelectedItem = "15";
+            cboSoDongMoiTrang.SelectedItem = "20";
 
             // Nạp các bộ lọc ComboBox
             NapBoLocTrangThai();
@@ -209,7 +209,6 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             dt.Rows.Add("", "-- Tất cả trạng thái --");
             dt.Rows.Add("DA_DIEU_CHINH", "Đã cân bằng");
             dt.Rows.Add("NHAP", "Phiếu tạm");
-            dt.Rows.Add("HUY", "Đã hủy");
 
             cboTrangThai.DisplayMember = "TenTrangThai";
             cboTrangThai.ValueMember = "MaTrangThai";

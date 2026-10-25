@@ -356,7 +356,6 @@
             this.cboSoDongMoiTrang.FormattingEnabled = true;
             this.cboSoDongMoiTrang.Items.AddRange(new object[] {
             "10",
-            "15",
             "20",
             "50",
             "100"});
