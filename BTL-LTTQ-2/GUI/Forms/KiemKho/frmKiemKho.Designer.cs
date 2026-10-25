@@ -101,7 +101,7 @@
             this.lblTieuDe.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblTieuDe.Location = new System.Drawing.Point(12, 23);
             this.lblTieuDe.Name = "lblTieuDe";
-            this.lblTieuDe.Size = new System.Drawing.Size(129, 21);
+            this.lblTieuDe.Size = new System.Drawing.Size(158, 28);
             this.lblTieuDe.TabIndex = 0;
             this.lblTieuDe.Text = "Phiếu kiểm kho";
             // 
@@ -154,7 +154,7 @@
             this.lblTimKiem.AutoSize = true;
             this.lblTimKiem.Location = new System.Drawing.Point(385, 25);
             this.lblTimKiem.Name = "lblTimKiem";
-            this.lblTimKiem.Size = new System.Drawing.Size(60, 17);
+            this.lblTimKiem.Size = new System.Drawing.Size(74, 21);
             this.lblTimKiem.TabIndex = 1;
             this.lblTimKiem.Text = "Tìm kiếm";
             // 
@@ -162,7 +162,7 @@
             // 
             this.txtTimKiem.Location = new System.Drawing.Point(465, 21);
             this.txtTimKiem.Name = "txtTimKiem";
-            this.txtTimKiem.Size = new System.Drawing.Size(602, 24);
+            this.txtTimKiem.Size = new System.Drawing.Size(602, 29);
             this.txtTimKiem.TabIndex = 2;
             this.txtTimKiem.TextChanged += new System.EventHandler(this.txtTimKiem_TextChanged);
             // 
@@ -193,26 +193,26 @@
             // lblNguoiTao
             // 
             this.lblNguoiTao.AutoSize = true;
-            this.lblNguoiTao.Location = new System.Drawing.Point(17, 58);
+            this.lblNguoiTao.Location = new System.Drawing.Point(21, 48);
             this.lblNguoiTao.Name = "lblNguoiTao";
-            this.lblNguoiTao.Size = new System.Drawing.Size(71, 17);
+            this.lblNguoiTao.Size = new System.Drawing.Size(83, 21);
             this.lblNguoiTao.TabIndex = 2;
             this.lblNguoiTao.Text = "Người tạo:";
             // 
             // cboNguoiTao
             // 
             this.cboNguoiTao.FormattingEnabled = true;
-            this.cboNguoiTao.Location = new System.Drawing.Point(21, 92);
+            this.cboNguoiTao.Location = new System.Drawing.Point(21, 82);
             this.cboNguoiTao.Name = "cboNguoiTao";
-            this.cboNguoiTao.Size = new System.Drawing.Size(322, 25);
+            this.cboNguoiTao.Size = new System.Drawing.Size(322, 29);
             this.cboNguoiTao.TabIndex = 3;
             // 
             // lblTrangThai
             // 
             this.lblTrangThai.AutoSize = true;
-            this.lblTrangThai.Location = new System.Drawing.Point(17, 189);
+            this.lblTrangThai.Location = new System.Drawing.Point(21, 157);
             this.lblTrangThai.Name = "lblTrangThai";
-            this.lblTrangThai.Size = new System.Drawing.Size(69, 17);
+            this.lblTrangThai.Size = new System.Drawing.Size(82, 21);
             this.lblTrangThai.TabIndex = 0;
             this.lblTrangThai.Text = "Trạng thái:";
             // 
@@ -220,18 +220,18 @@
             // 
             this.cboTrangThai.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboTrangThai.FormattingEnabled = true;
-            this.cboTrangThai.Location = new System.Drawing.Point(21, 223);
+            this.cboTrangThai.Location = new System.Drawing.Point(21, 191);
             this.cboTrangThai.Name = "cboTrangThai";
-            this.cboTrangThai.Size = new System.Drawing.Size(322, 25);
+            this.cboTrangThai.Size = new System.Drawing.Size(322, 29);
             this.cboTrangThai.TabIndex = 1;
             this.cboTrangThai.SelectedIndexChanged += new System.EventHandler(this.BoLoc_ThayDoi);
             // 
             // lblThoiGianTao
             // 
             this.lblThoiGianTao.AutoSize = true;
-            this.lblThoiGianTao.Location = new System.Drawing.Point(18, 357);
+            this.lblThoiGianTao.Location = new System.Drawing.Point(21, 270);
             this.lblThoiGianTao.Name = "lblThoiGianTao";
-            this.lblThoiGianTao.Size = new System.Drawing.Size(88, 17);
+            this.lblThoiGianTao.Size = new System.Drawing.Size(104, 21);
             this.lblThoiGianTao.TabIndex = 6;
             this.lblThoiGianTao.Text = "Thời gian tạo:";
             // 
@@ -241,7 +241,7 @@
             this.grpThoiGianTao.Controls.Add(this.dtpDenNgay);
             this.grpThoiGianTao.Controls.Add(this.lblTuNgay);
             this.grpThoiGianTao.Controls.Add(this.lblDenNgay);
-            this.grpThoiGianTao.Location = new System.Drawing.Point(22, 393);
+            this.grpThoiGianTao.Location = new System.Drawing.Point(21, 306);
             this.grpThoiGianTao.Name = "grpThoiGianTao";
             this.grpThoiGianTao.Size = new System.Drawing.Size(322, 108);
             this.grpThoiGianTao.TabIndex = 7;
@@ -252,7 +252,7 @@
             this.dtpTuNgay.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.dtpTuNgay.Location = new System.Drawing.Point(60, 22);
             this.dtpTuNgay.Name = "dtpTuNgay";
-            this.dtpTuNgay.Size = new System.Drawing.Size(248, 24);
+            this.dtpTuNgay.Size = new System.Drawing.Size(248, 29);
             this.dtpTuNgay.TabIndex = 1;
             this.dtpTuNgay.ValueChanged += new System.EventHandler(this.BoLoc_ThayDoi);
             // 
@@ -261,7 +261,7 @@
             this.dtpDenNgay.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.dtpDenNgay.Location = new System.Drawing.Point(60, 58);
             this.dtpDenNgay.Name = "dtpDenNgay";
-            this.dtpDenNgay.Size = new System.Drawing.Size(248, 24);
+            this.dtpDenNgay.Size = new System.Drawing.Size(248, 29);
             this.dtpDenNgay.TabIndex = 3;
             this.dtpDenNgay.ValueChanged += new System.EventHandler(this.BoLoc_ThayDoi);
             // 
@@ -270,7 +270,7 @@
             this.lblTuNgay.AutoSize = true;
             this.lblTuNgay.Location = new System.Drawing.Point(10, 26);
             this.lblTuNgay.Name = "lblTuNgay";
-            this.lblTuNgay.Size = new System.Drawing.Size(26, 17);
+            this.lblTuNgay.Size = new System.Drawing.Size(30, 21);
             this.lblTuNgay.TabIndex = 0;
             this.lblTuNgay.Text = "Từ:";
             // 
@@ -279,7 +279,7 @@
             this.lblDenNgay.AutoSize = true;
             this.lblDenNgay.Location = new System.Drawing.Point(10, 62);
             this.lblDenNgay.Name = "lblDenNgay";
-            this.lblDenNgay.Size = new System.Drawing.Size(34, 17);
+            this.lblDenNgay.Size = new System.Drawing.Size(41, 21);
             this.lblDenNgay.TabIndex = 2;
             this.lblDenNgay.Text = "Đến:";
             // 
@@ -323,7 +323,7 @@
             this.lblSoDongMoiTrang.AutoSize = true;
             this.lblSoDongMoiTrang.Location = new System.Drawing.Point(932, 13);
             this.lblSoDongMoiTrang.Name = "lblSoDongMoiTrang";
-            this.lblSoDongMoiTrang.Size = new System.Drawing.Size(61, 17);
+            this.lblSoDongMoiTrang.Size = new System.Drawing.Size(71, 21);
             this.lblSoDongMoiTrang.TabIndex = 6;
             this.lblSoDongMoiTrang.Text = "Số dòng:";
             // 
@@ -339,7 +339,7 @@
             "100"});
             this.cboSoDongMoiTrang.Location = new System.Drawing.Point(1008, 10);
             this.cboSoDongMoiTrang.Name = "cboSoDongMoiTrang";
-            this.cboSoDongMoiTrang.Size = new System.Drawing.Size(70, 25);
+            this.cboSoDongMoiTrang.Size = new System.Drawing.Size(70, 29);
             this.cboSoDongMoiTrang.TabIndex = 7;
             this.cboSoDongMoiTrang.SelectedIndexChanged += new System.EventHandler(this.cboSoDongMoiTrang_SelectedIndexChanged);
             // 
@@ -360,7 +360,7 @@
             this.lblTrangHienTai.AutoSize = true;
             this.lblTrangHienTai.Location = new System.Drawing.Point(1214, 13);
             this.lblTrangHienTai.Name = "lblTrangHienTai";
-            this.lblTrangHienTai.Size = new System.Drawing.Size(72, 17);
+            this.lblTrangHienTai.Size = new System.Drawing.Size(85, 21);
             this.lblTrangHienTai.TabIndex = 9;
             this.lblTrangHienTai.Text = "Trang 1 / 1";
             // 
@@ -380,7 +380,7 @@
             this.lblTongSoPhieu.AutoSize = true;
             this.lblTongSoPhieu.Location = new System.Drawing.Point(22, 12);
             this.lblTongSoPhieu.Name = "lblTongSoPhieu";
-            this.lblTongSoPhieu.Size = new System.Drawing.Size(137, 17);
+            this.lblTongSoPhieu.Size = new System.Drawing.Size(162, 21);
             this.lblTongSoPhieu.TabIndex = 0;
             this.lblTongSoPhieu.Text = "Tổng số: 0 phiếu kiểm";
             // 
@@ -530,7 +530,7 @@
             // 
             // frmKiemKho
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1782, 853);
             this.Controls.Add(this.dgvKiemKho);
