@@ -86,7 +86,7 @@
 
 ### 3.3. Màn hình Thêm mới `frmThemPhieuKiemKho`
 - **Kích thước form**: Size Lớn `ClientSize = (1182, 803)` theo Điều luật 15e.
-- **Thanh tiêu đề trên (`pnlTopLeft`)**: Tiêu đề "Thêm phiếu kiểm kho", nút `Nhập file` ở góc phải, thanh chọn hàng nhanh gồm `cboHangHoa`, `nudSoLuongThucTe`, nút `+ Thêm`, nút `Hiện cột` (mở popup `frmHienCotHangKiem`).
+- **Thanh tiêu đề trên (`pnlTopLeft`)**: Tiêu đề "Thêm phiếu kiểm kho", nút `Nhập file` ở góc phải, thanh chọn hàng nhanh gồm `cboHangHoa`, nút `+ Thêm`, nút `Nhập file`, nút `Hiện cột` (mở popup `frmHienCotHangKiem`). Đã bỏ ô nhập SL thực tế phía trên do người dùng nhập trực tiếp trên lưới.
 - **Right Panel (`pnlRight`)**: Chứa thông tin Người kiểm, Ngày kiểm, Mã phiếu (không hiển thị trường trạng thái; trạng thái được quyết định khi người dùng ấn Lưu tạm hoặc Lưu), Kho kiểm, Ghi chú, tóm tắt kết quả (Số dòng kiểm, Tổng thực tế, Tổng lệch tăng, Tổng lệch giảm, Tổng chênh lệch). Ở đáy là thanh nút chuẩn: `Bỏ qua` ➜ `Lưu tạm` ➜ `Lưu`.
 - **Lưới kiểm kê `dgvHangKiem`**:
   - Thao tác xóa dòng: Bỏ cột nút Xóa trên lưới; thay thế bằng thao tác nhấn đúp chuột (`Double click`) vào dòng mặt hàng để xóa, hiển thị hộp thoại xác nhận Yes/No trước khi xóa.

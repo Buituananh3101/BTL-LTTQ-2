@@ -46,8 +46,6 @@
             this.pnlTop = new System.Windows.Forms.Panel();
             this.grpChonHang = new System.Windows.Forms.GroupBox();
             this.btnThemHang = new System.Windows.Forms.Button();
-            this.nudSoLuongThucTe = new System.Windows.Forms.NumericUpDown();
-            this.lblSlThucTe = new System.Windows.Forms.Label();
             this.cboHangHoa = new System.Windows.Forms.ComboBox();
             this.lblChonHang = new System.Windows.Forms.Label();
             this.btnHienCot = new System.Windows.Forms.Button();
@@ -63,12 +61,18 @@
             this.colSlChenhLech = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colDonGia = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colGiaTriChenhLech = new System.Windows.Forms.DataGridViewTextBoxColumn();
-                        this.pnlRight.SuspendLayout();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.lblSoDongMoiTrang = new System.Windows.Forms.Label();
+            this.cboSoDongMoiTrang = new System.Windows.Forms.ComboBox();
+            this.btnTrangTruoc = new System.Windows.Forms.Button();
+            this.lblTrangHienTai = new System.Windows.Forms.Label();
+            this.btnTrangSau = new System.Windows.Forms.Button();
+            this.pnlRight.SuspendLayout();
             this.grpThongTinPhieu.SuspendLayout();
             this.pnlTop.SuspendLayout();
             this.grpChonHang.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudSoLuongThucTe)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvHangKiem)).BeginInit();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlRight
@@ -364,8 +368,6 @@
             // grpChonHang
             // 
             this.grpChonHang.Controls.Add(this.btnThemHang);
-            this.grpChonHang.Controls.Add(this.nudSoLuongThucTe);
-            this.grpChonHang.Controls.Add(this.lblSlThucTe);
             this.grpChonHang.Controls.Add(this.cboHangHoa);
             this.grpChonHang.Controls.Add(this.lblChonHang);
             this.grpChonHang.Controls.Add(this.btnHienCot);
@@ -382,36 +384,11 @@
             this.btnThemHang.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnThemHang.Location = new System.Drawing.Point(834, 76);
             this.btnThemHang.Name = "btnThemHang";
-            this.btnThemHang.Size = new System.Drawing.Size(95, 30);
+            this.btnThemHang.Size = new System.Drawing.Size(100, 34);
             this.btnThemHang.TabIndex = 23;
             this.btnThemHang.Text = "+ Thêm";
             this.btnThemHang.UseVisualStyleBackColor = true;
             this.btnThemHang.Click += new System.EventHandler(this.btnThemHang_Click);
-            // 
-            // nudSoLuongThucTe
-            // 
-            this.nudSoLuongThucTe.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudSoLuongThucTe.Location = new System.Drawing.Point(1077, 28);
-            this.nudSoLuongThucTe.Maximum = new decimal(new int[] {
-            1000000,
-            0,
-            0,
-            0});
-            this.nudSoLuongThucTe.Name = "nudSoLuongThucTe";
-            this.nudSoLuongThucTe.Size = new System.Drawing.Size(80, 29);
-            this.nudSoLuongThucTe.TabIndex = 22;
-            this.nudSoLuongThucTe.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.nudSoLuongThucTe.ThousandsSeparator = true;
-            // 
-            // lblSlThucTe
-            // 
-            this.lblSlThucTe.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSlThucTe.AutoSize = true;
-            this.lblSlThucTe.Location = new System.Drawing.Point(952, 32);
-            this.lblSlThucTe.Name = "lblSlThucTe";
-            this.lblSlThucTe.Size = new System.Drawing.Size(81, 21);
-            this.lblSlThucTe.TabIndex = 21;
-            this.lblSlThucTe.Text = "SL thực tế:";
             // 
             // cboHangHoa
             // 
@@ -437,7 +414,7 @@
             this.btnHienCot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnHienCot.Location = new System.Drawing.Point(1062, 76);
             this.btnHienCot.Name = "btnHienCot";
-            this.btnHienCot.Size = new System.Drawing.Size(95, 30);
+            this.btnHienCot.Size = new System.Drawing.Size(100, 34);
             this.btnHienCot.TabIndex = 24;
             this.btnHienCot.Text = "Hiện cột";
             this.btnHienCot.UseVisualStyleBackColor = true;
@@ -448,7 +425,7 @@
             this.btnNhapFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnNhapFile.Location = new System.Drawing.Point(946, 76);
             this.btnNhapFile.Name = "btnNhapFile";
-            this.btnNhapFile.Size = new System.Drawing.Size(95, 30);
+            this.btnNhapFile.Size = new System.Drawing.Size(100, 34);
             this.btnNhapFile.TabIndex = 18;
             this.btnNhapFile.Text = "Nhập file";
             this.btnNhapFile.UseVisualStyleBackColor = true;
@@ -470,7 +447,6 @@
             this.dgvHangKiem.AllowUserToDeleteRows = false;
             this.dgvHangKiem.BackgroundColor = System.Drawing.Color.White;
             this.dgvHangKiem.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.dgvHangKiem.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             this.dgvHangKiem.ColumnHeadersHeight = 36;
             this.dgvHangKiem.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colStt,
@@ -564,7 +540,6 @@
             this.colDonGia.MinimumWidth = 6;
             this.colDonGia.Name = "colDonGia";
             this.colDonGia.ReadOnly = true;
-            this.colDonGia.Width = 100;
             // 
             // colGiaTriChenhLech
             // 
@@ -575,11 +550,80 @@
             this.colGiaTriChenhLech.ReadOnly = true;
             this.colGiaTriChenhLech.Width = 125;
             // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.lblSoDongMoiTrang);
+            this.panel1.Controls.Add(this.cboSoDongMoiTrang);
+            this.panel1.Controls.Add(this.btnTrangTruoc);
+            this.panel1.Controls.Add(this.lblTrangHienTai);
+            this.panel1.Controls.Add(this.btnTrangSau);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel1.Location = new System.Drawing.Point(0, 757);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(1182, 46);
+            this.panel1.TabIndex = 4;
+            // 
+            // lblSoDongMoiTrang
+            // 
+            this.lblSoDongMoiTrang.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSoDongMoiTrang.AutoSize = true;
+            this.lblSoDongMoiTrang.Location = new System.Drawing.Point(297, 12);
+            this.lblSoDongMoiTrang.Name = "lblSoDongMoiTrang";
+            this.lblSoDongMoiTrang.Size = new System.Drawing.Size(71, 21);
+            this.lblSoDongMoiTrang.TabIndex = 6;
+            this.lblSoDongMoiTrang.Text = "Số dòng:";
+            // 
+            // cboSoDongMoiTrang
+            // 
+            this.cboSoDongMoiTrang.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboSoDongMoiTrang.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboSoDongMoiTrang.FormattingEnabled = true;
+            this.cboSoDongMoiTrang.Items.AddRange(new object[] {
+            "10",
+            "20",
+            "50",
+            "100"});
+            this.cboSoDongMoiTrang.Location = new System.Drawing.Point(373, 8);
+            this.cboSoDongMoiTrang.Name = "cboSoDongMoiTrang";
+            this.cboSoDongMoiTrang.Size = new System.Drawing.Size(70, 29);
+            this.cboSoDongMoiTrang.TabIndex = 7;
+            // 
+            // btnTrangTruoc
+            // 
+            this.btnTrangTruoc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnTrangTruoc.Location = new System.Drawing.Point(15, 7);
+            this.btnTrangTruoc.Name = "btnTrangTruoc";
+            this.btnTrangTruoc.Size = new System.Drawing.Size(80, 31);
+            this.btnTrangTruoc.TabIndex = 8;
+            this.btnTrangTruoc.Text = "◀ Trước";
+            this.btnTrangTruoc.UseVisualStyleBackColor = true;
+            // 
+            // lblTrangHienTai
+            // 
+            this.lblTrangHienTai.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblTrangHienTai.AutoSize = true;
+            this.lblTrangHienTai.Location = new System.Drawing.Point(106, 12);
+            this.lblTrangHienTai.Name = "lblTrangHienTai";
+            this.lblTrangHienTai.Size = new System.Drawing.Size(85, 21);
+            this.lblTrangHienTai.TabIndex = 9;
+            this.lblTrangHienTai.Text = "Trang 1 / 1";
+            // 
+            // btnTrangSau
+            // 
+            this.btnTrangSau.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnTrangSau.Location = new System.Drawing.Point(201, 7);
+            this.btnTrangSau.Name = "btnTrangSau";
+            this.btnTrangSau.Size = new System.Drawing.Size(80, 31);
+            this.btnTrangSau.TabIndex = 10;
+            this.btnTrangSau.Text = "Sau ▶";
+            this.btnTrangSau.UseVisualStyleBackColor = true;
+            // 
             // frmThemPhieuKiemKho
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1582, 803);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.dgvHangKiem);
             this.Controls.Add(this.pnlTop);
             this.Controls.Add(this.pnlRight);
@@ -598,8 +642,9 @@
             this.pnlTop.ResumeLayout(false);
             this.grpChonHang.ResumeLayout(false);
             this.grpChonHang.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudSoLuongThucTe)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvHangKiem)).EndInit();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -635,8 +680,6 @@
         private System.Windows.Forms.Label lblNguoiKiem;
         private System.Windows.Forms.GroupBox grpChonHang;
         private System.Windows.Forms.Button btnThemHang;
-        private System.Windows.Forms.NumericUpDown nudSoLuongThucTe;
-        private System.Windows.Forms.Label lblSlThucTe;
         private System.Windows.Forms.ComboBox cboHangHoa;
         private System.Windows.Forms.Label lblChonHang;
         private System.Windows.Forms.Button btnNhapFile;
@@ -652,5 +695,11 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colDonGia;
         private System.Windows.Forms.DataGridViewTextBoxColumn colGiaTriChenhLech;
         private System.Windows.Forms.Button btnHienCot;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Label lblSoDongMoiTrang;
+        private System.Windows.Forms.ComboBox cboSoDongMoiTrang;
+        private System.Windows.Forms.Button btnTrangTruoc;
+        private System.Windows.Forms.Label lblTrangHienTai;
+        private System.Windows.Forms.Button btnTrangSau;
     }
 }

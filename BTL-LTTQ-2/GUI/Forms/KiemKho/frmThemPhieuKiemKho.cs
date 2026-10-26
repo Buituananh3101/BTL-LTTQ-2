@@ -105,14 +105,6 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             txtMaPhieu.Text = SinhMaPhieuTuDong();
             dtpThoiDiemChot.Value = DateTime.Now;
 
-            nudSoLuongThucTe.KeyDown += (s, ev) =>
-            {
-                if (ev.KeyCode == Keys.Enter)
-                {
-                    ev.SuppressKeyPress = true;
-                    btnThemHang_Click(null, null);
-                }
-            };
 
             NapDanhSachKho();
             NapDanhSachNhanVien();
@@ -325,18 +317,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
 
         private void cboHangHoa_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cboHangHoa.SelectedValue != null && int.TryParse(cboHangHoa.SelectedValue.ToString(), out int maHang))
-            {
-                if (dtDanhSachHang != null)
-                {
-                    DataRow[] rows = dtDanhSachHang.Select($"MaHang = {maHang}");
-                    if (rows.Length > 0)
-                    {
-                        decimal ton = Convert.ToDecimal(rows[0]["TonKho"]);
-                        nudSoLuongThucTe.Value = ton >= 0 ? ton : 0;
-                    }
-                }
-            }
+            // Không cần cập nhật nudSoLuongThucTe nữa do người dùng nhập SL thực tế trực tiếp trên bảng
         }
 
         #region Thao Tác Thêm & Xóa Dòng Hàng
@@ -358,7 +339,6 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             if (rows.Length == 0) return;
 
             DataRow rowHang = rows[0];
-            decimal slThucTe = nudSoLuongThucTe.Value;
             decimal tonKho = Convert.ToDecimal(rowHang["TonKho"]);
             decimal donGia = Convert.ToDecimal(rowHang["DonGia"]);
 
@@ -366,11 +346,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             DataRow[] daCo = dtHangKiem.Select($"MaHang = {maHang}");
             if (daCo.Length > 0)
             {
-                // Cập nhật số lượng thực tế
-                daCo[0]["SoLuongThucTe"] = slThucTe;
-                decimal slLech = slThucTe - tonKho;
-                daCo[0]["SlChenhLech"] = slLech;
-                daCo[0]["GiaTriChenhLech"] = slLech * donGia;
+                MessageBox.Show($"Mặt hàng '{rowHang["TenHang"]}' đã có trong phiếu kiểm kê!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
@@ -382,15 +358,14 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                 rMoi["TenHang"] = rowHang["TenHang"];
                 rMoi["TenDVT"] = rowHang["TenDVT"];
                 rMoi["TonKho"] = tonKho;
-                rMoi["SoLuongThucTe"] = slThucTe;
-                decimal slLech = slThucTe - tonKho;
-                rMoi["SlChenhLech"] = slLech;
+                rMoi["SoLuongThucTe"] = tonKho; // Mặc định khớp tồn sổ sách, người dùng chỉnh sửa trực tiếp trên lưới
+                rMoi["SlChenhLech"] = 0;
                 rMoi["DonGia"] = donGia;
-                rMoi["GiaTriChenhLech"] = slLech * donGia;
+                rMoi["GiaTriChenhLech"] = 0;
                 dtHangKiem.Rows.Add(rMoi);
-            }
 
-            TinhToanTongKet();
+                TinhToanTongKet();
+            }
 
             // Cuộn đến dòng hàng vừa thêm / sửa
             foreach (DataGridViewRow dgvRow in dgvHangKiem.Rows)
