@@ -63,8 +63,7 @@
             this.colSlChenhLech = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colDonGia = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colGiaTriChenhLech = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colXoaDong = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.pnlRight.SuspendLayout();
+                        this.pnlRight.SuspendLayout();
             this.grpThongTinPhieu.SuspendLayout();
             this.pnlTop.SuspendLayout();
             this.grpChonHang.SuspendLayout();
@@ -481,8 +480,7 @@
             this.colSoLuongThucTe,
             this.colSlChenhLech,
             this.colDonGia,
-            this.colGiaTriChenhLech,
-            this.colXoaDong});
+            this.colGiaTriChenhLech});
             this.dgvHangKiem.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvHangKiem.Location = new System.Drawing.Point(0, 150);
             this.dgvHangKiem.Name = "dgvHangKiem";
@@ -492,7 +490,7 @@
             this.dgvHangKiem.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dgvHangKiem.Size = new System.Drawing.Size(1182, 653);
             this.dgvHangKiem.TabIndex = 3;
-            this.dgvHangKiem.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvHangKiem_CellContentClick);
+            this.dgvHangKiem.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvHangKiem_CellDoubleClick);
             this.dgvHangKiem.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvHangKiem_CellEndEdit);
             // 
             // colStt
@@ -575,15 +573,6 @@
             this.colGiaTriChenhLech.ReadOnly = true;
             this.colGiaTriChenhLech.Width = 125;
             // 
-            // colXoaDong
-            // 
-            this.colXoaDong.HeaderText = "Xóa";
-            this.colXoaDong.MinimumWidth = 6;
-            this.colXoaDong.Name = "colXoaDong";
-            this.colXoaDong.Text = "X";
-            this.colXoaDong.UseColumnTextForButtonValue = true;
-            this.colXoaDong.Width = 45;
-            // 
             // frmThemPhieuKiemKho
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
@@ -660,7 +649,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colSlChenhLech;
         private System.Windows.Forms.DataGridViewTextBoxColumn colDonGia;
         private System.Windows.Forms.DataGridViewTextBoxColumn colGiaTriChenhLech;
-        private System.Windows.Forms.DataGridViewButtonColumn colXoaDong;
         private System.Windows.Forms.Button btnHienCot;
     }
 }

@@ -426,10 +426,27 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             frm.Show(this);
         }
 
-        private void dgvHangKiem_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void dgvHangKiem_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0 && e.ColumnIndex == colXoaDong.Index)
+            if (e.RowIndex < 0 || e.RowIndex >= dgvHangKiem.Rows.Count) return;
+
+            string tenHang = dgvHangKiem.Rows[e.RowIndex].Cells["colTenHang"].Value?.ToString();
+            string maHang = dgvHangKiem.Rows[e.RowIndex].Cells["colMaHangNoiBo"].Value?.ToString();
+            string tenHienThi = !string.IsNullOrWhiteSpace(tenHang) ? $"'{tenHang}' ({maHang})" : "mặt hàng này";
+
+            DialogResult dr = MessageBox.Show(
+                $"Bạn có chắc chắn muốn xóa {tenHienThi} khỏi phiếu kiểm kê?",
+                "Xác nhận xóa",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (dr == DialogResult.Yes)
             {
+                if (dgvHangKiem.IsCurrentCellInEditMode)
+                {
+                    dgvHangKiem.CancelEdit();
+                }
+
                 if (dgvHangKiem.Rows[e.RowIndex].DataBoundItem is DataRowView drv)
                 {
                     drv.Row.Delete();
@@ -439,6 +456,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                 {
                     dtHangKiem.Rows.RemoveAt(e.RowIndex);
                 }
+
                 DanhSoLaiStt();
                 TinhToanTongKet();
             }

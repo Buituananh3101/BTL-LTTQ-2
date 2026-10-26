@@ -18,6 +18,7 @@
         private void InitializeComponent()
         {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyleDefault = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -32,6 +33,7 @@
             this.txtTimKiem = new System.Windows.Forms.TextBox();
             this.pnlBoLoc = new System.Windows.Forms.Panel();
             this.dgvNguoiDung = new System.Windows.Forms.DataGridView();
+            this.colChon = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.colMaTaiKhoan = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colTenDangNhap = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colMatKhau = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -173,15 +175,17 @@
             this.dgvNguoiDung.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle12.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(245)))), ((int)(((byte)(249)))));
-            dataGridViewCellStyle12.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            dataGridViewCellStyle12.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             dataGridViewCellStyle12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
             dataGridViewCellStyle12.Padding = new System.Windows.Forms.Padding(0, 4, 0, 4);
             dataGridViewCellStyle12.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(245)))), ((int)(((byte)(249)))));
             dataGridViewCellStyle12.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
             dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dgvNguoiDung.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle12;
-            this.dgvNguoiDung.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvNguoiDung.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
+            this.dgvNguoiDung.ColumnHeadersHeight = 38;
             this.dgvNguoiDung.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colChon,
             this.colMaTaiKhoan,
             this.colTenDangNhap,
             this.colMatKhau,
@@ -191,20 +195,34 @@
             this.colKhoPhuTrach,
             this.colNgayTao,
             this.colTrangThai});
+            dataGridViewCellStyleDefault.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(231)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyleDefault.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(41)))), ((int)(((byte)(59)))));
+            this.dgvNguoiDung.DefaultCellStyle = dataGridViewCellStyleDefault;
             this.dgvNguoiDung.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvNguoiDung.EnableHeadersVisualStyles = false;
             this.dgvNguoiDung.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.dgvNguoiDung.Location = new System.Drawing.Point(387, 84);
             this.dgvNguoiDung.MultiSelect = false;
             this.dgvNguoiDung.Name = "dgvNguoiDung";
-            this.dgvNguoiDung.ReadOnly = true;
             this.dgvNguoiDung.RowHeadersVisible = false;
             this.dgvNguoiDung.RowHeadersWidth = 51;
-            this.dgvNguoiDung.RowTemplate.Height = 32;
+            this.dgvNguoiDung.RowTemplate.Height = 36;
             this.dgvNguoiDung.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvNguoiDung.Size = new System.Drawing.Size(1395, 727);
             this.dgvNguoiDung.TabIndex = 2;
             this.dgvNguoiDung.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvNguoiDung_CellDoubleClick);
+            // 
+            // colChon
+            // 
+            this.colChon.DataPropertyName = "Chon";
+            this.colChon.FalseValue = false;
+            this.colChon.HeaderText = "";
+            this.colChon.MinimumWidth = 6;
+            this.colChon.Name = "colChon";
+            this.colChon.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.colChon.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.colChon.TrueValue = true;
+            this.colChon.Width = 40;
             // 
             // colMaTaiKhoan
             // 
@@ -234,11 +252,12 @@
             // 
             // colHoTen
             // 
+            this.colHoTen.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.colHoTen.FillWeight = 130F;
             this.colHoTen.HeaderText = "Họ và tên";
             this.colHoTen.MinimumWidth = 6;
             this.colHoTen.Name = "colHoTen";
             this.colHoTen.ReadOnly = true;
-            this.colHoTen.Width = 220;
             // 
             // colDienThoai
             // 
@@ -260,11 +279,12 @@
             // 
             // colKhoPhuTrach
             // 
+            this.colKhoPhuTrach.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.colKhoPhuTrach.FillWeight = 160F;
             this.colKhoPhuTrach.HeaderText = "Kho phụ trách";
             this.colKhoPhuTrach.MinimumWidth = 6;
             this.colKhoPhuTrach.Name = "colKhoPhuTrach";
             this.colKhoPhuTrach.ReadOnly = true;
-            this.colKhoPhuTrach.Width = 250;
             // 
             // colNgayTao
             // 
@@ -524,6 +544,7 @@
         private System.Windows.Forms.Button btnHuongDanSuDung;
         private System.Windows.Forms.Panel pnlBoLoc;
         private System.Windows.Forms.DataGridView dgvNguoiDung;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn colChon;
         private System.Windows.Forms.DataGridViewTextBoxColumn colMaTaiKhoan;
         private System.Windows.Forms.DataGridViewTextBoxColumn colTenDangNhap;
         private System.Windows.Forms.DataGridViewTextBoxColumn colMatKhau;

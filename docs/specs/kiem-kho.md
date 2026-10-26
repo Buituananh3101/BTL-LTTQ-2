@@ -89,7 +89,7 @@
 - **Thanh tiêu đề trên (`pnlTopLeft`)**: Tiêu đề "Thêm phiếu kiểm kho", nút `Nhập file` ở góc phải, thanh chọn hàng nhanh gồm `cboHangHoa`, `nudSoLuongThucTe`, nút `+ Thêm`, nút `Hiện cột` (mở popup `frmHienCotHangKiem`).
 - **Right Panel (`pnlRight`)**: Chứa thông tin Người kiểm, Ngày kiểm, Mã phiếu (không hiển thị trường trạng thái; trạng thái được quyết định khi người dùng ấn Lưu tạm hoặc Lưu), Kho kiểm, Ghi chú, tóm tắt kết quả (Số dòng kiểm, Tổng thực tế, Tổng lệch tăng, Tổng lệch giảm, Tổng chênh lệch). Ở đáy là thanh nút chuẩn: `Bỏ qua` ➜ `Lưu tạm` ➜ `Lưu`.
 - **Lưới kiểm kê `dgvHangKiem`**:
-  - Độ rộng các cột được tối ưu hóa chuẩn xác đảm bảo cột `Xóa` luôn hiển thị đầy đủ, không bị che khuất.
+  - Thao tác xóa dòng: Bỏ cột nút Xóa trên lưới; thay thế bằng thao tác nhấn đúp chuột (`Double click`) vào dòng mặt hàng để xóa, hiển thị hộp thoại xác nhận Yes/No trước khi xóa.
   - Cột `SL thực tế (nhập)` cho phép người dùng click sửa trực tiếp (`EditMode = EditOnEnter`), có màu nền phân biệt rõ (`#FEFCE8`) và ToolTip hướng dẫn.
   - Tự động tính chênh lệch số lượng và thành tiền lệch realtime.
 

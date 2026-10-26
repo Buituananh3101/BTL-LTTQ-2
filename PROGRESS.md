@@ -4,7 +4,7 @@
 ---
 
 ## Đang làm
-- [x] Thiết kế và chuẩn hóa bộ Form Quản lý Người dùng: `frmDanhSachNguoiDung`, `frmNguoiDung`, `frmChiTietNguoiDung`, `frmHienCotNguoiDung`.
+- [x] Chuẩn hóa giao diện DataGridView danh sách người dùng (`frmDanhSachNguoiDung`) đồng bộ 100% với khuôn mẫu `frmDanhSachHangHoa` (Header Checkbox, màu xen kẽ, selection pastel, co giãn AutoSizeMode Fill, màu trạng thái 3 nhóm).
 - [x] Viết logic Đăng nhập (`frmDangNhap.cs`): tự động nạp kho làm việc theo vai trò và phân quyền trong `TaiKhoanKho`, kiểm tra mật khẩu và trạng thái hoạt động.
 - [x] Viết logic Đổi mật khẩu (`frmDoiMatKhau.cs`): xác thực mật khẩu hiện tại và cập nhật mật khẩu mới.
 - [x] Đồng bộ thông tin phiên `SessionContext` và phân quyền hiển thị trên `frmMain`.
@@ -60,6 +60,7 @@
        - Đổi tên `button2` thành `btnHienCot` trong `frmThemPhieuKiemKho.Designer.cs`, gán sự kiện `btnHienCot_Click`.
        - Thay thế hàm `btnNapToanBoHang_Click` thành `btnHienCot_Click` gọi mở form `frmHienCotHangKiem`.
        - Giữ nguyên 100% kích thước, vị trí tọa độ mà người dùng đã thiết kế.
+       - Chuẩn hóa thao tác xóa dòng trong `dgvHangKiem`: Bỏ cột nút Xóa (`colXoaDong`), thay thế bằng sự kiện nhấn đúp (`CellDoubleClick`) vào dòng mặt hàng để xóa, hiển thị hộp thoại xác nhận Yes/No trước khi xóa.
     3. **Kiểm tra mã hóa & biên dịch**:
        - Đăng ký form mới đầy đủ trong `BTL-LTTQ-2.csproj`.
        - Chạy `tools/KiemTraMaHoa.ps1`: **180/180 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
