@@ -398,7 +398,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                 return;
             }
 
-            using (frmTraHangNhap frm = new frmTraHangNhap(maPhieuNhap))
+            using (frmTraHangTheoPhieuNhap frm = new frmTraHangTheoPhieuNhap(maPhieuNhap))
             {
                 if (frm.ShowDialog() == DialogResult.OK)
                 {

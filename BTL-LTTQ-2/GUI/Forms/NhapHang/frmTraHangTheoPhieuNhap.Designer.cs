@@ -1,6 +1,6 @@
 ﻿namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 {
-    partial class frmTraHangNhap
+    partial class frmTraHangTheoPhieuNhap
     {
         private System.ComponentModel.IContainer components = null;
 
@@ -498,7 +498,7 @@
             this.btnXacNhanTra.UseVisualStyleBackColor = true;
             this.btnXacNhanTra.Click += new System.EventHandler(this.btnXacNhanTra_Click);
             // 
-            // frmTraHangNhap
+            // frmTraHangTheoPhieuNhap
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -513,10 +513,10 @@
             this.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.MinimumSize = new System.Drawing.Size(950, 600);
-            this.Name = "frmTraHangNhap";
+            this.Name = "frmTraHangTheoPhieuNhap";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Trả hàng nhập";
-            this.Load += new System.EventHandler(this.frmTraHangNhap_Load);
+            this.Load += new System.EventHandler(this.frmTraHangTheoPhieuNhap_Load);
             this.pnlTop.ResumeLayout(false);
             this.pnlTop.PerformLayout();
             this.grpThongTin.ResumeLayout(false);

@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 {
-    public partial class frmTraHangNhap : Form
+    public partial class frmTraHangTheoPhieuNhap : Form
     {
         private int maPhieuNhap;
         private string maPhieuGoc;
@@ -18,7 +18,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
         private DataTable dtHangTra;
         private bool isCalculating = false;
 
-        public frmTraHangNhap(int maPhieuNhap)
+        public frmTraHangTheoPhieuNhap(int maPhieuNhap)
         {
             InitializeComponent();
             this.maPhieuNhap = maPhieuNhap;
@@ -56,7 +56,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             // colSoLuongTra.DefaultCellStyle.Font = Segoe UI 9.5F Regular
         }
 
-        private void frmTraHangNhap_Load(object sender, EventArgs e)
+        private void frmTraHangTheoPhieuNhap_Load(object sender, EventArgs e)
         {
             NapDanhSachNhanVien();
             dtpNgayTra.Value = DateTime.Now;

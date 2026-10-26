@@ -585,7 +585,7 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
 
         private void btnChuyenKho_Click(object sender, EventArgs e)
         {
-            using (frmThemPhieuChuyenKhoNew frm = new frmThemPhieuChuyenKhoNew())
+            using (frmThemPhieuChuyenKho frm = new frmThemPhieuChuyenKho())
             {
                 if (frm.ShowDialog(this) == DialogResult.OK)
                 {
