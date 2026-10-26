@@ -7,6 +7,9 @@ using BTL_LTTQ_2.GUI.Forms.NhapHang;
 using BTL_LTTQ_2.GUI.Forms.DangNhap;
 using BTL_LTTQ_2.GUI.Forms.NguoiDung;
 using System;
+using System.Drawing;
+
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace BTL_LTTQ_2.GUI.Forms
@@ -24,15 +27,8 @@ namespace BTL_LTTQ_2.GUI.Forms
             menuStrip1.RenderMode = ToolStripRenderMode.System;
             statusStrip1.RenderMode = ToolStripRenderMode.System;
 
-            // Đổi màu nền vùng làm việc MDI sang màu sáng hiện đại
-            foreach (Control ctrl in this.Controls)
-            {
-                if (ctrl is MdiClient mdiClient)
-                {
-                    mdiClient.BackColor = System.Drawing.Color.FromArgb(240, 242, 245);
-                    break;
-                }
-            }
+            // Thiết lập ảnh nền kho hàng phủ tối cho vùng làm việc MDI
+            CaiDatHinhNenMdi();
 
             // Thiết lập tiêu đề kèm kho làm việc hiện tại
             this.Text = "Hệ thống quản lí kho - [" + SessionContext.TenKhoHienTai + "]";
@@ -340,5 +336,142 @@ namespace BTL_LTTQ_2.GUI.Forms
             frm.MdiParent = this;
             frm.Show();
         }
+
+        private Image hinhNenKho = null;
+
+        /// <summary>
+        /// Cấu hình ảnh nền kho hàng được phủ tối dịu mắt cho vùng làm việc MdiClient
+        /// Bật chế độ vẽ tùy biến (UserPaint) để vẽ duy nhất 1 ảnh to toàn màn hình,
+        /// hoàn toàn khắc phục lỗi Windows Forms tự động lặp caro (tile) nhiều ảnh nhỏ.
+        /// </summary>
+        private void CaiDatHinhNenMdi()
+        {
+            hinhNenKho = LayHinhNenKho();
+            foreach (Control ctrl in this.Controls)
+            {
+                if (ctrl is MdiClient mdiClient)
+                {
+                    if (hinhNenKho != null)
+                    {
+                        // Kích hoạt UserPaint và đệm đôi để tự vẽ 1 ảnh to duy nhất thay vì bị lặp ô gạch
+                        var setStyleMethod = typeof(Control).GetMethod("SetStyle",
+                            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+                        if (setStyleMethod != null)
+                        {
+                            setStyleMethod.Invoke(mdiClient, new object[] {
+                                ControlStyles.UserPaint |
+                                ControlStyles.AllPaintingInWmPaint |
+                                ControlStyles.OptimizedDoubleBuffer,
+                                true
+                            });
+                        }
+
+                        // Không gán BackgroundImage mặc định để tránh Win32 MdiClient vẽ lặp caro
+                        mdiClient.BackgroundImage = null;
+
+                        // Gắn bộ điều khiển can thiệp thông điệp cuộn để vẽ lại ảnh ngay khi cuộn
+                        new MdiScrollController(mdiClient);
+
+                        // Tự vẽ duy nhất 1 ảnh lớn KHÓA CỨNG: không bị bóp khi thanh cuộn xuất hiện, không bị trôi khi cuộn
+                        mdiClient.Paint += (s, e) =>
+                        {
+                            if (hinhNenKho != null)
+                            {
+                                e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+
+                                // Lấy tọa độ cuộn thực tế của MdiClient để bù trừ, khóa cứng ảnh không bị trôi khi cuộn
+                                int scrollX = GetScrollPos(mdiClient.Handle, SB_HORZ);
+                                int scrollY = GetScrollPos(mdiClient.Handle, SB_VERT);
+
+                                // Luôn vẽ theo Width và Height toàn phần của MdiClient (thay vì ClientSize bị trừ thanh cuộn),
+                                // bảo đảm ảnh không bao giờ bị co bóp hay méo hình khi thanh cuộn ngang/dọc xuất hiện
+                                e.Graphics.DrawImage(hinhNenKho, scrollX, scrollY, mdiClient.Width, mdiClient.Height);
+
+                                // Lớp phủ tối bán trong suốt (Dark Overlay) làm chìm hình nền kho, chống chói lóa và nổi bật các form con
+                                using (var brush = new SolidBrush(Color.FromArgb(90, 0, 0, 0)))
+                                {
+                                    e.Graphics.FillRectangle(brush, scrollX, scrollY, mdiClient.Width, mdiClient.Height);
+                                }
+                            }
+                        };
+
+                        // Tự động vẽ lại toàn bộ khi form thay đổi kích thước hoặc phóng to toàn màn hình
+                        mdiClient.Resize += (s, e) => mdiClient.Invalidate();
+                        this.Resize += (s, e) => mdiClient.Invalidate();
+                    }
+                    else
+                    {
+                        mdiClient.BackColor = System.Drawing.Color.FromArgb(240, 242, 245);
+                    }
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Nạp ảnh nền kho hàng từ tài nguyên nhúng hoặc thư mục Resources
+        /// </summary>
+        private Image LayHinhNenKho()
+        {
+            try
+            {
+                // 1. Đọc từ tài nguyên nhúng của Assembly
+                var asm = System.Reflection.Assembly.GetExecutingAssembly();
+                var stream = asm.GetManifestResourceStream("BTL_LTTQ_2.Resources.hinh_nen_kho.jpg");
+                if (stream != null)
+                {
+                    return Image.FromStream(stream);
+                }
+            }
+            catch { }
+
+            try
+            {
+                // 2. Dự phòng: Đọc từ thư mục Resources của ứng dụng
+                string path = System.IO.Path.Combine(Application.StartupPath, "Resources", "hinh_nen_kho.jpg");
+                if (System.IO.File.Exists(path))
+                {
+                    return Image.FromFile(path);
+                }
+            }
+            catch { }
+
+            return null;
+        }
+
+        #region Win32 API & Bộ điều khiển cuộn MdiClient giúp khóa cứng hình nền
+
+        [DllImport("user32.dll")]
+        private static extern int GetScrollPos(IntPtr hWnd, int nBar);
+        private const int SB_HORZ = 0;
+        private const int SB_VERT = 1;
+
+        /// <summary>
+        /// Bộ lắng nghe thông điệp cuộn WM_HSCROLL / WM_VSCROLL của MdiClient
+        /// Khi người dùng cuộn vùng làm việc, lập tức yêu cầu vẽ lại để ảnh nền giữ nguyên vị trí cố định
+        /// </summary>
+        private class MdiScrollController : NativeWindow
+        {
+            private readonly MdiClient _mdiClient;
+            private const int WM_HSCROLL = 0x0114;
+            private const int WM_VSCROLL = 0x0115;
+
+            public MdiScrollController(MdiClient mdiClient)
+            {
+                _mdiClient = mdiClient;
+                AssignHandle(mdiClient.Handle);
+            }
+
+            protected override void WndProc(ref Message m)
+            {
+                base.WndProc(ref m);
+                if (m.Msg == WM_HSCROLL || m.Msg == WM_VSCROLL)
+                {
+                    _mdiClient.Invalidate();
+                }
+            }
+        }
+
+        #endregion
     }
 }

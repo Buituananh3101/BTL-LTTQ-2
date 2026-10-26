@@ -119,7 +119,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                                  AND pn.TrangThai = 'DA_XAC_NHAN'
                            ), 0) AS TongMua,
                            ISNULL((
-                               SELECT SUM(pt.TongTienTra) 
+                               SELECT SUM(pt.TongTienHang) 
                                FROM PhieuTraHangNhap pt 
                                WHERE pt.MaDonViCapHang = ncc.MaDonViCapHang 
                                  AND pt.TrangThai = 'DA_TRA_HANG'

@@ -1,6 +1,6 @@
 ﻿# Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-26 – Đồng bộ giao diện dgv người dùng, ẩn mật khẩu và bảo mật cập nhật mật khẩu mới (Phiên 50)
+**Cập nhật lần cuối**: 2026-10-26 – Khắc phục lỗi cột TongTienTra phân hệ Nhà cung cấp và Dọn dẹp thư mục mã chết DonViTinh (Phiên 51)
 ---
 
 ## Đang làm
@@ -49,6 +49,24 @@
 
 ## Nhật ký phiên (Session Logs)
 
+- **Phiên 51 (2026-10-26) – Khắc phục lỗi cột TongTienTra phân hệ Nhà cung cấp và Dọn dẹp thư mục mã chết DonViTinh**:
+  - **Nhu cầu**:
+    1. Người dùng phản hồi lỗi: `Lỗi khi tải thông tin nhà cung cấp: Invalid column name 'TongTienTra'`.
+    2. Người dùng hỏi và đồng ý dọn dẹp thư mục `GUI/Forms/DonViTinh/` hiện không còn dùng trong dự án.
+  - **Kết quả thực hiện**:
+    1. **Sửa lỗi truy vấn cột TongTienTra**:
+       - Tại `frmDonViCapHang.cs` (dòng 152) và `frmChiTietNhaCungCap.cs` (dòng 122): Sửa `pt.TongTienTra` thành `pt.TongTienHang` khớp chuẩn 100% với cấu trúc bảng `PhieuTraHangNhap` trong CSDL.
+       - Khi click đúp vào bất kỳ nhà cung cấp nào trên form `frmNhaCungCap` (ví dụ `NCC00012`), form nạp thông tin thông suốt, tính toán chính xác công nợ và tổng tiền mua/trả hàng.
+    2. **Dọn dẹp triệt để thư mục mã chết `DonViTinh`**:
+       - Xóa bỏ thư mục `BTL-LTTQ-2/GUI/Forms/DonViTinh/` gồm 3 form (`frmDonViTinh`, `frmChiTietDonViTinh`, `frmHienCotDvt`).
+       - Dọn sạch toàn bộ các tham chiếu liên quan trong file dự án `BTL-LTTQ-2.csproj`.
+       - Giữ nguyên form `frmDonViTinh` dạng popup danh mục đang hoạt động ổn định trong `GUI/Forms/DanhSachHangHoa/`.
+    3. **Kiểm tra chất lượng & Biên dịch**:
+       - Chạy `tools/KiemTraMaHoa.ps1`: **180/180 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+
+
+
 - **Phiên 50 (2026-10-26) – Đồng bộ giao diện DataGridView người dùng, bảo mật mật khẩu và cập nhật logic chi tiết người dùng**:
   - **Nhu cầu**: 
     1. Đồng bộ giao diện & viền của DataGridView trong danh sách người dùng (`frmDanhSachNguoiDung`) hoàn toàn theo khuôn mẫu `frmDanhSachHangHoa` (`ColumnHeadersBorderStyle = Raised`, `GridColor = SystemColors.ControlDark`, `CellBorderStyle = Single`).
@@ -64,6 +82,10 @@
     4. **Kiểm tra mã hóa & Biên dịch**:
        - Chạy `tools/KiemTraMaHoa.ps1`: 180/180 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake.
        - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+    5. **Hình nền Kho hàng Phủ tối cho Form chính (`frmMain`)**:
+       - Xử lý hình ảnh kho hàng do người dùng cung cấp: phủ lớp màu tối dịu mắt Slate `#0F172A` độ mờ ~55%, giảm độ sáng từ 96.7 xuống 56.3/255 giúp chống chói mắt và làm nổi bật các cửa sổ con MDI.
+       - Đăng ký tài nguyên nhúng `BTL_LTTQ_2.Resources.hinh_nen_kho.jpg` trong `BTL-LTTQ-2.csproj`.
+       - Cấu hình gán ảnh nền cho `MdiClient` trong `frmMain.cs`, bật `DoubleBuffered = true` chống giật lag khi di chuyển form con và tự động `Invalidate()` làm mới khi co giãn màn hình.
 
 - **Phiên 49 (2026-10-26) – Chuẩn hóa logic Form Thêm phiếu kiểm kho và Xây dựng Form chức năng "Hiện cột" hàng kiểm**:
   - **Nhu cầu**: Người dùng đã cập nhật giao diện `frmThemPhieuKiemKho`: bỏ nút "Nạp tất cả hàng trong kho", thêm nút "Hiện cột" (`button2`), đổi tên nút thêm thành `+ Thêm`. Yêu cầu giữ nguyên 100% giao diện đã chỉnh, cấu hình lại tên và logic điều khiển, đồng thời tạo mới form popup "Hiện cột".
