@@ -534,7 +534,7 @@
             this.MaximizeBox = false;
             this.Name = "frmDanhSachHangHoa";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Danh Sách Hàng Hóa";
+            this.Text = "7";
             this.Load += new System.EventHandler(this.frmDanhSachHangHoa_Load);
             this.pnlTop.ResumeLayout(false);
             this.grpTop.ResumeLayout(false);

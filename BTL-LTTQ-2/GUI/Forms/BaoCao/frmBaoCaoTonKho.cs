@@ -91,8 +91,10 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
             }
             catch { }
 
+            dgvBaoCaoTonKho.BringToFront();
             KhoiTaoCacCotLuoi();
             KhoiTaoBoLoc();
+            KhoiTaoSuKienTheKpi();
             TaiDuLieu();
             lblTongSoHang.BringToFront();
         }
@@ -278,6 +280,66 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
             dgvBaoCaoTonKho.Columns.Add(colTrangThai);
         }
 
+        private void KhoiTaoSuKienTheKpi()
+        {
+            // Thiết lập con trỏ tay (Hand) cho các thẻ KPI và nhãn bên trong
+            Control[] listControls = new Control[]
+            {
+                pnlCardSku, lblCardSkuTitle, lblCardSkuVal,
+                pnlCardSoLuong, lblCardSoLuongTitle, lblCardSoLuongVal,
+                pnlCardGiaTri, lblCardGiaTriTitle, lblCardGiaTriVal,
+                pnlCardCanLuuY, lblCardCanLuuYTitle, lblCardCanLuuYVal
+            };
+
+            foreach (var ctrl in listControls)
+            {
+                if (ctrl != null)
+                {
+                    ctrl.Cursor = Cursors.Hand;
+                }
+            }
+
+            // Nhấp Thẻ 1 (Tổng SKU): Chuyển về "Tất cả mức tồn"
+            Action chonTatCa = () =>
+            {
+                if (cboTieuChiTon.SelectedIndex != 0)
+                {
+                    cboTieuChiTon.SelectedIndex = 0;
+                }
+            };
+            if (pnlCardSku != null) pnlCardSku.Click += (s, e) => chonTatCa();
+            if (lblCardSkuTitle != null) lblCardSkuTitle.Click += (s, e) => chonTatCa();
+            if (lblCardSkuVal != null) lblCardSkuVal.Click += (s, e) => chonTatCa();
+
+            // Nhấp Thẻ 2 (Tổng số lượng tồn): Lọc hàng Còn tồn (> 0)
+            Action chonConTon = () =>
+            {
+                if (cboTieuChiTon.SelectedIndex != 1)
+                {
+                    cboTieuChiTon.SelectedIndex = 1;
+                }
+            };
+            if (pnlCardSoLuong != null) pnlCardSoLuong.Click += (s, e) => chonConTon();
+            if (lblCardSoLuongTitle != null) lblCardSoLuongTitle.Click += (s, e) => chonConTon();
+            if (lblCardSoLuongVal != null) lblCardSoLuongVal.Click += (s, e) => chonConTon();
+
+            // Nhấp Thẻ 4 (Cần lưu ý): Lọc hàng Hết hàng hoặc dưới định mức
+            Action chonCanLuuY = () =>
+            {
+                if (cboTieuChiTon.Items.Count > 6)
+                {
+                    cboTieuChiTon.SelectedIndex = 6;
+                }
+                else
+                {
+                    cboTieuChiTon.SelectedIndex = 4;
+                }
+            };
+            if (pnlCardCanLuuY != null) pnlCardCanLuuY.Click += (s, e) => chonCanLuuY();
+            if (lblCardCanLuuYTitle != null) lblCardCanLuuYTitle.Click += (s, e) => chonCanLuuY();
+            if (lblCardCanLuuYVal != null) lblCardCanLuuYVal.Click += (s, e) => chonCanLuuY();
+        }
+
         private void KhoiTaoBoLoc()
         {
             dangNapDuLieu = true;
@@ -315,7 +377,8 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                 "Hết hàng (= 0)",
                 "Tồn âm (< 0)",
                 "Dưới định mức tối thiểu",
-                "Vượt định mức tối đa"
+                "Vượt định mức tối đa",
+                "Cần lưu ý (Hết / Dưới định mức)"
             });
             cboTieuChiTon.SelectedIndex = 0;
 
@@ -424,6 +487,10 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                 else if (tieuChiTonIndex == 5) // Vượt định mức tối đa
                 {
                     whereSql.Append($" AND {tonKhoExpression} > {tonToiDaExp} AND {tonToiDaExp} > 0 ");
+                }
+                else if (tieuChiTonIndex == 6) // Cần lưu ý (Hết hàng hoặc dưới định mức)
+                {
+                    whereSql.Append($" AND ({tonKhoExpression} <= 0 OR {duoiDinhMucExp}) ");
                 }
 
                 // Xây dựng câu truy vấn theo MaKho
@@ -827,10 +894,11 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
         {
             string huongDan = "HƯỚNG DẪN BÁO CÁO TỒN KHO\n\n" +
                 "1. Xem tồn kho: Báo cáo hiển thị tồn của kho đang làm việc. Quản lý dùng menu Kho hàng > Đổi kho để xem kho khác hoặc 'Tất cả kho' (tổng hợp toàn hệ thống).\n" +
-                "2. Bộ lọc: Kết hợp lọc theo Nhóm hàng, Tiêu chí mức tồn (Còn tồn, Hết hàng, Tồn âm, Dưới định mức, Vượt định mức) và Trạng thái kinh doanh.\n" +
-                "3. Xem thẻ kho: Nhấp đúp vào dòng mặt hàng trên bảng để mở xem lịch sử xuất - nhập - tồn thẻ kho chi tiết.\n" +
-                "4. Xuất file: Nhấn 'Xuất file' để xuất toàn bộ kết quả theo bộ lọc hiện tại ra định dạng CSV chuẩn tiếng Việt có dấu.\n" +
-                "5. Cảnh báo đỏ: Các mặt hàng hết hàng hoặc tồn âm được đánh dấu đỏ nổi bật.";
+                "2. Bộ lọc: Kết hợp lọc theo Nhóm hàng, Tiêu chí mức tồn (Còn tồn, Hết hàng, Tồn âm, Dưới định mức, Vượt định mức, Cần lưu ý) và Trạng thái kinh doanh.\n" +
+                "3. Thẻ chỉ số KPI: Nhấp chuột trực tiếp vào các thẻ KPI (Tổng mặt hàng, Còn tồn, Cần lưu ý) để lọc nhanh danh sách tương ứng.\n" +
+                "4. Xem thẻ kho: Nhấp đúp vào dòng mặt hàng trên bảng để mở xem lịch sử xuất - nhập - tồn thẻ kho chi tiết.\n" +
+                "5. Xuất file: Nhấn 'Xuất file' để xuất toàn bộ kết quả theo bộ lọc hiện tại ra định dạng CSV chuẩn tiếng Việt có dấu.\n" +
+                "6. Cảnh báo đỏ: Các mặt hàng hết hàng hoặc tồn âm được đánh dấu đỏ nổi bật.";
 
             MessageBox.Show(huongDan, "Hướng dẫn sử dụng", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
