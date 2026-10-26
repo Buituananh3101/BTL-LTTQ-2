@@ -192,8 +192,18 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
             }
         }
 
+        /// <summary>
+        /// Quyền thao tác phía kho gửi (chuyển hàng, hủy, xóa phiếu tạm): Admin hoặc người đang làm việc tại kho gửi
+        /// </summary>
+        private bool DuocQuyenKhoGui()
+        {
+            return SessionContext.IsAdmin || SessionContext.MaKhoHienTai == this.maKhoNguon;
+        }
+
         private void CapNhatHienThiTrangThai()
         {
+            bool duocQuyenKhoGui = DuocQuyenKhoGui();
+
             // Bảng màu 3 nhóm chuẩn toàn hệ thống (Điều luật 15b & 19a)
             if (this.trangThai == "DA_NHAN")
             {
@@ -213,15 +223,18 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                 btnNhanHang.Visible = duocQuyenNhan;
                 btnNhanHang.Enabled = duocQuyenNhan;
                 btnHoanThanh.Visible = false;
-                btnXoa.Enabled = true; // Cho phép Hủy khi đang chuyển
+                btnXoa.Enabled = duocQuyenKhoGui; // Cho phép Hủy khi đang chuyển (chỉ kho gửi hoặc Admin)
             }
             else if (this.trangThai == "NHAP")
             {
                 lblTrangThai.Text = "Phiếu tạm";
                 lblTrangThai.ForeColor = Color.FromArgb(217, 119, 6); // Vàng amber
                 btnNhanHang.Visible = false;
-                btnHoanThanh.Visible = false;
-                btnXoa.Enabled = true; // Cho phép Xóa phiếu tạm
+                // Phiếu tạm: kho gửi (hoặc Admin) bấm "Chuyển hàng" để xuất kho chuyển đi
+                btnHoanThanh.Text = "Chuyển hàng";
+                btnHoanThanh.Visible = true;
+                btnHoanThanh.Enabled = duocQuyenKhoGui;
+                btnXoa.Enabled = duocQuyenKhoGui; // Cho phép Xóa phiếu tạm (chỉ kho gửi hoặc Admin)
             }
             else // HUY
             {
@@ -287,6 +300,9 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                 return;
             }
 
+            // Chỉ Admin hoặc người đang làm việc tại kho gửi mới được xóa/hủy phiếu
+            if (!DuocQuyenKhoGui()) return;
+
             if (this.trangThai == "NHAP")
             {
                 // Phiếu tạm: Xóa hoàn toàn khỏi CSDL
@@ -299,18 +315,24 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                     {
                         DataProcessing.ChangeDataTransaction((conn, trans) =>
                         {
-                            string sqlDelCT = "DELETE FROM ChiTietPhieuChuyenKho WHERE MaPhieuChuyen = @ID";
+                            // Chỉ xóa khi phiếu vẫn còn là phiếu tạm (chống xóa phiếu vừa được người khác chuyển hàng)
+                            string sqlDelCT = @"DELETE FROM ChiTietPhieuChuyenKho
+                                                WHERE MaPhieuChuyen = @ID
+                                                  AND EXISTS (SELECT 1 FROM PhieuChuyenKho WHERE MaPhieuChuyen = @ID AND TrangThai = 'NHAP')";
                             using (SqlCommand cmdCT = new SqlCommand(sqlDelCT, conn, trans))
                             {
                                 cmdCT.Parameters.AddWithValue("@ID", this.maPhieuChuyen);
                                 cmdCT.ExecuteNonQuery();
                             }
 
-                            string sqlDelP = "DELETE FROM PhieuChuyenKho WHERE MaPhieuChuyen = @ID";
+                            string sqlDelP = "DELETE FROM PhieuChuyenKho WHERE MaPhieuChuyen = @ID AND TrangThai = 'NHAP'";
                             using (SqlCommand cmdP = new SqlCommand(sqlDelP, conn, trans))
                             {
                                 cmdP.Parameters.AddWithValue("@ID", this.maPhieuChuyen);
-                                cmdP.ExecuteNonQuery();
+                                if (cmdP.ExecuteNonQuery() != 1)
+                                {
+                                    throw new InvalidOperationException("Phiếu chuyển kho không còn ở trạng thái phiếu tạm (có thể đã được chuyển hàng). Vui lòng tải lại dữ liệu.");
+                                }
                             }
 
                             string sqlLog = @"INSERT INTO NhatKyThaoTac (MaTaiKhoan, ThoiDiem, ThaoTac, LoaiDoiTuong, MaDoiTuong, NoiDung)
@@ -327,6 +349,11 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                         MessageBox.Show("Đã xóa phiếu tạm chuyển kho thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         this.DialogResult = DialogResult.OK;
                         this.Close();
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        MessageBox.Show(ex.Message, "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        TaiThongTinPhieu();
                     }
                     catch (Exception ex)
                     {
@@ -346,11 +373,15 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                     {
                         DataProcessing.ChangeDataTransaction((conn, trans) =>
                         {
-                            string sqlHuy = "UPDATE PhieuChuyenKho SET TrangThai = 'HUY' WHERE MaPhieuChuyen = @ID";
+                            // Chỉ hủy khi phiếu vẫn đang chuyển (chống hủy phiếu vừa được kho nhận xác nhận)
+                            string sqlHuy = "UPDATE PhieuChuyenKho SET TrangThai = 'HUY' WHERE MaPhieuChuyen = @ID AND TrangThai = 'DA_XUAT'";
                             using (SqlCommand cmdHuy = new SqlCommand(sqlHuy, conn, trans))
                             {
                                 cmdHuy.Parameters.AddWithValue("@ID", this.maPhieuChuyen);
-                                cmdHuy.ExecuteNonQuery();
+                                if (cmdHuy.ExecuteNonQuery() != 1)
+                                {
+                                    throw new InvalidOperationException("Phiếu chuyển kho không còn ở trạng thái Đang chuyển (có thể kho nhận vừa nhận hàng hoặc phiếu đã bị hủy). Vui lòng tải lại dữ liệu.");
+                                }
                             }
 
                             string sqlLog = @"INSERT INTO NhatKyThaoTac (MaTaiKhoan, ThoiDiem, ThaoTac, LoaiDoiTuong, MaDoiTuong, NoiDung)
@@ -365,6 +396,11 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                         });
 
                         MessageBox.Show("Đã hủy phiếu chuyển kho thành công!\nSố lượng tồn đã được phục hồi cho kho gửi.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        TaiThongTinPhieu();
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        MessageBox.Show(ex.Message, "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         TaiThongTinPhieu();
                     }
                     catch (Exception ex)
@@ -432,8 +468,22 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
         private void btnHoanThanh_Click(object sender, EventArgs e)
         {
             if (this.trangThai != "NHAP") return;
+            if (!DuocQuyenKhoGui()) return;
 
-            // 1. Kiểm tra tồn kho tại kho gửi trước khi xuất chuyển
+            // Bắt buộc tài khoản phải gắn với nhân viên (MaNVXuat tham chiếu NhanVien.MaNV)
+            if (!SessionContext.MaNV.HasValue || SessionContext.MaNV.Value <= 0)
+            {
+                MessageBox.Show("Tài khoản chưa được gắn với nhân viên, không thể lập chứng từ.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (dtChiTiet == null || dtChiTiet.Rows.Count == 0)
+            {
+                MessageBox.Show("Phiếu chuyển kho không có mặt hàng nào để chuyển!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // 1. Kiểm tra sơ bộ tồn kho tại kho gửi trước khi xuất chuyển (thông báo thân thiện)
             if (dtChiTiet != null && dtChiTiet.Rows.Count > 0)
             {
                 foreach (DataRow r in dtChiTiet.Rows)
@@ -453,7 +503,7 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                     if (tonKho < slChuyen)
                     {
                         MessageBox.Show(
-                            $"Không thể hoàn thành phiếu chuyển vì mặt hàng '{sku} - {ten}' không đủ số lượng tồn tại kho gửi '{this.tenKhoNguon}' (Tồn hiện tại: {tonKho:N0}, Cần chuyển: {slChuyen:N0})!",
+                            $"Không thể chuyển hàng vì mặt hàng '{sku} - {ten}' không đủ số lượng tồn tại kho gửi '{this.tenKhoNguon}' (Tồn hiện tại: {tonKho:N0}, Cần chuyển: {slChuyen:N0})!",
                             "Chặn âm kho gửi",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Warning);
@@ -463,8 +513,8 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
             }
 
             DialogResult dr = MessageBox.Show(
-                $"Bạn có chắc chắn muốn HOÀN THÀNH (Xuất chuyển) phiếu chuyển kho '{this.maPhieu}' không?\n\nSau khi hoàn thành:\n- Hàng hóa sẽ được xuất khỏi kho gửi '{this.tenKhoNguon}'.\n- Trạng thái phiếu sẽ chuyển sang 'Đang chuyển'.\n- Kho nhận '{this.tenKhoDich}' có thể xác nhận nhận hàng.",
-                "Xác nhận hoàn thành chuyển kho",
+                $"Bạn có chắc chắn muốn CHUYỂN HÀNG (Xuất chuyển) phiếu chuyển kho '{this.maPhieu}' không?\n\nSau khi chuyển hàng:\n- Hàng hóa sẽ được xuất khỏi kho gửi '{this.tenKhoNguon}'.\n- Trạng thái phiếu sẽ chuyển sang 'Đang chuyển'.\n- Kho nhận '{this.tenKhoDich}' có thể xác nhận nhận hàng.",
+                "Xác nhận chuyển hàng",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
 
@@ -472,20 +522,53 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
 
             try
             {
+                int maNVXuat = SessionContext.MaNV.Value;
+
                 DataProcessing.ChangeDataTransaction((conn, trans) =>
                 {
+                    // 1. Kiểm tra lại tồn kho gửi ngay trong giao dịch (cùng conn/trans) cho từng mặt hàng của phiếu
+                    string sqlKiemTon = @"
+                        SELECT ct.MaHang, h.MaHangNoiBo, h.TenHang,
+                               SUM(ct.SoLuong) AS SoLuongChuyen,
+                               ISNULL(MAX(tk.SoLuongTon), 0) AS TonKho
+                        FROM ChiTietPhieuChuyenKho ct
+                        JOIN HangHoa h ON ct.MaHang = h.MaHang
+                        LEFT JOIN vw_TonKhoHienTai tk ON tk.MaHang = ct.MaHang AND tk.MaKho = @MaKhoNguon
+                        WHERE ct.MaPhieuChuyen = @MaPhieuChuyen
+                        GROUP BY ct.MaHang, h.MaHangNoiBo, h.TenHang
+                        HAVING SUM(ct.SoLuong) > ISNULL(MAX(tk.SoLuongTon), 0)";
+
+                    using (SqlCommand cmdTon = new SqlCommand(sqlKiemTon, conn, trans))
+                    {
+                        cmdTon.Parameters.AddWithValue("@MaKhoNguon", this.maKhoNguon);
+                        cmdTon.Parameters.AddWithValue("@MaPhieuChuyen", this.maPhieuChuyen);
+                        using (SqlDataReader rd = cmdTon.ExecuteReader())
+                        {
+                            if (rd.Read())
+                            {
+                                string loi = string.Format("Không thể chuyển hàng vì mặt hàng '{0} - {1}' không đủ số lượng tồn tại kho gửi '{2}' (Tồn hiện tại: {3:N0}, Cần chuyển: {4:N0})!",
+                                    rd["MaHangNoiBo"], rd["TenHang"], this.tenKhoNguon, Convert.ToDecimal(rd["TonKho"]), Convert.ToDecimal(rd["SoLuongChuyen"]));
+                                throw new InvalidOperationException(loi);
+                            }
+                        }
+                    }
+
+                    // 2. Chuyển trạng thái sang DA_XUAT, chỉ khi phiếu vẫn còn là phiếu tạm
                     string sqlUpdate = @"
-                        UPDATE PhieuChuyenKho 
-                        SET TrangThai = 'DA_XUAT', 
-                            ThoiDiemXuat = GETDATE(), 
-                            MaNVXuat = @MaNVXuat 
-                        WHERE MaPhieuChuyen = @MaPhieuChuyen";
+                        UPDATE PhieuChuyenKho
+                        SET TrangThai = 'DA_XUAT',
+                            ThoiDiemXuat = SYSDATETIME(),
+                            MaNVXuat = @MaNVXuat
+                        WHERE MaPhieuChuyen = @MaPhieuChuyen AND TrangThai = 'NHAP'";
 
                     using (SqlCommand cmd = new SqlCommand(sqlUpdate, conn, trans))
                     {
                         cmd.Parameters.AddWithValue("@MaPhieuChuyen", this.maPhieuChuyen);
-                        cmd.Parameters.AddWithValue("@MaNVXuat", SessionContext.MaNV > 0 ? (object)SessionContext.MaNV : 1);
-                        cmd.ExecuteNonQuery();
+                        cmd.Parameters.AddWithValue("@MaNVXuat", maNVXuat);
+                        if (cmd.ExecuteNonQuery() != 1)
+                        {
+                            throw new InvalidOperationException("Phiếu chuyển kho không còn ở trạng thái phiếu tạm (có thể đã được chuyển hàng hoặc bị xóa). Vui lòng tải lại dữ liệu.");
+                        }
                     }
 
                     string sqlLog = @"
@@ -501,13 +584,18 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                     }
                 });
 
-                MessageBox.Show($"Hoàn thành xuất chuyển phiếu '{this.maPhieu}' thành công!\nHàng hóa đang được chuyển đến kho '{this.tenKhoDich}'.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"Chuyển hàng phiếu '{this.maPhieu}' thành công!\nHàng hóa đang được chuyển đến kho '{this.tenKhoDich}'.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.DialogResult = DialogResult.OK;
+                TaiThongTinPhieu();
+            }
+            catch (InvalidOperationException ex)
+            {
+                MessageBox.Show(ex.Message, "Chặn âm kho gửi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 TaiThongTinPhieu();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khi hoàn thành chuyển kho: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Lỗi khi chuyển hàng: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

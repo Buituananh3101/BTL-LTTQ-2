@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
@@ -224,21 +225,21 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
         {
             try
             {
+                // Lọc theo người tạo: giá trị là NhanVien.MaNV (khớp cột PhieuKiemKe.MaNVLap)
                 string sql = @"
-                    SELECT 
-                        0 AS MaNhanVien, 
-                        N'-- Tất cả người tạo --' AS HoTen 
-                    UNION ALL 
-                    SELECT 
-                        ISNULL(nv.MaNV, tk.MaTaiKhoan) AS MaNhanVien, 
-                        ISNULL(nv.HoTen, tk.TenDangNhap) AS HoTen 
-                    FROM TaiKhoan tk 
-                    LEFT JOIN NhanVien nv ON tk.MaNV = nv.MaNV 
-                    WHERE tk.TrangThai = 'HOAT_DONG' OR tk.TrangThai = 'ACTIVE' OR tk.TrangThai IS NULL";
+                    SELECT
+                        0 AS MaNV,
+                        N'-- Tất cả người tạo --' AS HoTen
+                    UNION ALL
+                    SELECT
+                        nv.MaNV,
+                        nv.HoTen
+                    FROM NhanVien nv
+                    WHERE nv.TrangThai = 'DANG_LAM'";
 
                 DataTable dt = DataProcessing.ReadData(sql);
                 Action callbackNguoiTao = () => { trangHienTai = 1; TaiDuLieu(); };
-                ComboboxHelper.CaiDatTimKiem(cboNguoiTao, dt, "HoTen", "MaNhanVien", callbackNguoiTao);
+                ComboboxHelper.CaiDatTimKiem(cboNguoiTao, dt, "HoTen", "MaNV", callbackNguoiTao);
                 Action dummy = () =>
                 {
                     trangHienTai = 1;
@@ -345,7 +346,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                 tongSoBanGhi = (countVal != null && countVal != DBNull.Value) ? Convert.ToInt32(countVal) : 0;
 
                 // 3. Tính phân trang
-                if (soDongMoiTrang <= 0) soDongMoiTrang = 15;
+                if (soDongMoiTrang <= 0) soDongMoiTrang = 20;
                 tongSoTrang = (int)Math.Ceiling((double)tongSoBanGhi / soDongMoiTrang);
                 if (tongSoTrang < 1) tongSoTrang = 1;
                 if (trangHienTai > tongSoTrang) trangHienTai = tongSoTrang;
@@ -796,12 +797,35 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("Mã kiểm kho,Ngày cân bằng,SL lệch tăng,SL lệch giảm,SL thực tế,Ghi chú,Tổng thực tế,Tổng chênh lệch,Thời gian tạo,Trạng thái");
 
+            // Thứ tự giá trị khớp đúng thứ tự tiêu đề cột (giống file Excel); số ghi theo định dạng bất biến
             foreach (DataRow r in danhSach)
             {
-                sb.AppendLine($"\"{r["MaPhieu"]}\",\"{r["ThoiGian"]}\",{r["TongGiaTriThucTe"]},{r["TongGiaTriChenhLech"]},{r["SlLechTang"]},{r["SlLechGiam"]},\"{r["NgayCanBang"]}\",{r["TongSlThucTe"]},\"{r["GhiChu"]}\",\"{r["TenTrangThai"]}\"");
+                sb.AppendLine(string.Join(",",
+                    ChuoiCsv(r["MaPhieu"]),
+                    ChuoiCsv(r["NgayCanBang"]),
+                    SoCsv(r["SlLechTang"]),
+                    SoCsv(r["SlLechGiam"]),
+                    SoCsv(r["TongSlThucTe"]),
+                    ChuoiCsv(r["GhiChu"]),
+                    SoCsv(r["TongGiaTriThucTe"]),
+                    SoCsv(r["TongGiaTriChenhLech"]),
+                    ChuoiCsv(r["ThoiGian"]),
+                    ChuoiCsv(r["TenTrangThai"])));
             }
 
             File.WriteAllText(filePath, sb.ToString(), new UTF8Encoding(true));
+        }
+
+        private static string ChuoiCsv(object giaTri)
+        {
+            string s = giaTri == null || giaTri == DBNull.Value ? "" : giaTri.ToString();
+            return "\"" + s.Replace("\"", "\"\"") + "\"";
+        }
+
+        private static string SoCsv(object giaTri)
+        {
+            if (giaTri == null || giaTri == DBNull.Value) return "";
+            return Convert.ToDecimal(giaTri).ToString("0.##", CultureInfo.InvariantCulture);
         }
 
         private void XuatExcelHtmlDanhSach(string filePath, IEnumerable<DataRow> danhSach)

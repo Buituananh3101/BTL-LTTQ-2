@@ -1,5 +1,6 @@
 ﻿using BTL_LTTQ_2.Classes;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
@@ -16,6 +17,13 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
         private int trangHienTai = 1;
         private int soDongMoiTrang = 20;
         private int tongSoTrang = 1;
+
+        // Mã phiếu do hệ thống tự sinh (để tự cấp mã mới nếu bị trùng khi lưu)
+        private string maPhieuTuSinh = "";
+
+        // Kho gửi đang chọn trước đó (để khôi phục khi người dùng không đồng ý đổi kho)
+        private int maKhoNguonDangChon = 0;
+        private bool dangKhoiPhucKho = false;
 
         public bool DaThayDoiDuLieu { get; private set; } = false;
 
@@ -88,6 +96,7 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
         private void frmThemPhieuChuyenKhoNew_Load(object sender, EventArgs e)
         {
             txtMaPhieu.Text = SinhMaPhieuTuDong();
+            maPhieuTuSinh = txtMaPhieu.Text;
             dtpNgayChuyen.Value = DateTime.Now;
 
             TaiDanhSachKho();
@@ -115,28 +124,48 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
         {
             try
             {
-                string sql = "SELECT ISNULL(MAX(MaPhieuChuyen), 0) + 1 FROM PhieuChuyenKho";
-                object val = DataProcessing.ReadValue(sql);
-                int nextId = (val != null && val != DBNull.Value) ? Convert.ToInt32(val) : 1;
-                string ma = "CK" + nextId.ToString("D6");
-                while (true)
+                using (SqlConnection conn = DataProcessing.OpenConnect())
                 {
-                    object exist = DataProcessing.ReadValue("SELECT COUNT(1) FROM PhieuChuyenKho WHERE MaPhieu = @MaPhieu", new SqlParameter[] { new SqlParameter("@MaPhieu", ma) });
-                    if (exist != null && Convert.ToInt32(exist) > 0)
-                    {
-                        nextId++;
-                        ma = "CK" + nextId.ToString("D6");
-                    }
-                    else
-                    {
-                        break;
-                    }
+                    return SinhMaPhieuTuDong(conn, null);
                 }
-                return ma;
             }
             catch
             {
                 return "CK" + DateTime.Now.ToString("yyMMddHHmm");
+            }
+        }
+
+        /// <summary>
+        /// Sinh mã phiếu CK kế tiếp dựa trên hậu tố số lớn nhất của các mã CK đã có (không dựa vào MAX(MaPhieuChuyen)),
+        /// lặp cho tới khi mã chưa được sử dụng. Dùng được cả trong giao dịch (trans khác null).
+        /// </summary>
+        private static string SinhMaPhieuTuDong(SqlConnection conn, SqlTransaction trans)
+        {
+            string sqlMax = "SELECT ISNULL(MAX(TRY_CAST(SUBSTRING(MaPhieu, 3, 30) AS INT)), 0) FROM PhieuChuyenKho WHERE MaPhieu LIKE 'CK%'";
+            int soLonNhat;
+            using (SqlCommand cmd = new SqlCommand(sqlMax, conn, trans))
+            {
+                soLonNhat = Convert.ToInt32(cmd.ExecuteScalar());
+            }
+
+            string ma;
+            do
+            {
+                soLonNhat++;
+                ma = "CK" + soLonNhat.ToString("D6");
+            }
+            while (MaPhieuDaTonTai(conn, trans, ma));
+            return ma;
+        }
+
+        private static bool MaPhieuDaTonTai(SqlConnection conn, SqlTransaction trans, string maPhieu)
+        {
+            // UPDLOCK + HOLDLOCK: giữ khóa khoảng mã trong giao dịch để chống 2 người lưu trùng mã cùng lúc
+            string sql = "SELECT COUNT(1) FROM PhieuChuyenKho WITH (UPDLOCK, HOLDLOCK) WHERE MaPhieu = @MaPhieu";
+            using (SqlCommand cmd = new SqlCommand(sql, conn, trans))
+            {
+                cmd.Parameters.Add("@MaPhieu", SqlDbType.VarChar, 30).Value = maPhieu;
+                return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
             }
         }
 
@@ -206,6 +235,8 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
 
         private void cboKhoNguon_SelectedIndexChanged(object sender, EventArgs e)
         {
+            // Đang khôi phục lựa chọn cũ: không xử lý lại
+            if (dangKhoiPhucKho) return;
             if (cboKhoNguon.SelectedValue == null) return;
 
             int maKhoMoi = 0;
@@ -218,9 +249,9 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                 maKhoMoi = k;
             }
 
-            if (maKhoMoi > 0)
+            if (maKhoMoi > 0 && maKhoMoi != maKhoNguonDangChon)
             {
-                if (dtHangChuyen != null && dtHangChuyen.Rows.Count > 0)
+                if (dtHangChuyen != null && dtHangChuyen.Rows.Count > 0 && maKhoNguonDangChon > 0)
                 {
                     DialogResult dr = MessageBox.Show(
                         "Đổi kho gửi sẽ làm mới danh sách hàng hóa đã chọn. Bạn có chắc chắn muốn đổi không?",
@@ -228,13 +259,27 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Question);
 
-                    if (dr == DialogResult.No) return;
+                    if (dr == DialogResult.No)
+                    {
+                        // Khôi phục kho gửi đã chọn trước đó, không kích hoạt lại sự kiện
+                        try
+                        {
+                            dangKhoiPhucKho = true;
+                            cboKhoNguon.SelectedValue = maKhoNguonDangChon;
+                        }
+                        finally
+                        {
+                            dangKhoiPhucKho = false;
+                        }
+                        return;
+                    }
 
                     dtHangChuyen.Clear();
                     CapNhatTongKet();
                     CapNhatPhanTrang();
                 }
 
+                maKhoNguonDangChon = maKhoMoi;
                 CapNhatDanhSachKhoDich();
                 TaiDanhSachHangHoa();
             }
@@ -244,36 +289,21 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
         {
             try
             {
+                // Người chuyển lấy từ NhanVien đang làm (MaNVLap/MaNVXuat tham chiếu NhanVien.MaNV, không dùng MaTaiKhoan)
                 string sql = @"
-                    SELECT 
-                        nv.MaNV AS MaNhanVien, 
-                        nv.HoTen 
-                    FROM NhanVien nv 
-                    WHERE nv.TrangThai = 'HOAT_DONG' OR nv.TrangThai = 'ACTIVE' OR nv.TrangThai IS NULL
+                    SELECT
+                        nv.MaNV,
+                        nv.HoTen
+                    FROM NhanVien nv
+                    WHERE nv.TrangThai = 'DANG_LAM'
                     ORDER BY nv.HoTen ASC";
                 DataTable dt = DataProcessing.ReadData(sql);
-                if (dt == null || dt.Rows.Count == 0)
-                {
-                    sql = @"
-                        SELECT 
-                            ISNULL(nv.MaNV, tk.MaTaiKhoan) AS MaNhanVien, 
-                            ISNULL(nv.HoTen, tk.TenDangNhap) AS HoTen 
-                        FROM TaiKhoan tk 
-                        LEFT JOIN NhanVien nv ON tk.MaNV = nv.MaNV 
-                        WHERE tk.TrangThai = 'HOAT_DONG' OR tk.TrangThai = 'ACTIVE' OR tk.TrangThai IS NULL
-                        ORDER BY HoTen ASC";
-                    dt = DataProcessing.ReadData(sql);
-                }
 
-                ComboboxHelper.CaiDatTimKiem(cboNguoiChuyen, dt, "HoTen", "MaNhanVien");
+                ComboboxHelper.CaiDatTimKiem(cboNguoiChuyen, dt, "HoTen", "MaNV");
 
                 if (SessionContext.MaNV.HasValue && SessionContext.MaNV.Value > 0)
                 {
                     cboNguoiChuyen.SelectedValue = SessionContext.MaNV.Value;
-                }
-                else if (SessionContext.MaTaiKhoan > 0)
-                {
-                    cboNguoiChuyen.SelectedValue = SessionContext.MaTaiKhoan;
                 }
             }
             catch (Exception ex)
@@ -526,7 +556,11 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                 }
                 else if (dgvHangChuyen.Columns.Contains("colSoLuong") && dgvRow.Cells["colSoLuong"].Value != null)
                 {
-                    text = dgvRow.Cells["colSoLuong"].Value.ToString();
+                    object giaTriO = dgvRow.Cells["colSoLuong"].Value;
+                    // Giá trị decimal (vd 5.00) chuyển sang chuỗi số nguyên để không bị hiểu nhầm dấu thập phân
+                    text = giaTriO is decimal d
+                        ? Math.Floor(d).ToString("0", System.Globalization.CultureInfo.InvariantCulture)
+                        : giaTriO.ToString();
                 }
 
                 decimal tonKho = row["TonKho"] != DBNull.Value ? Convert.ToDecimal(row["TonKho"]) : 0;
@@ -798,6 +832,10 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
             {
                 if (frm.ShowDialog(this) == DialogResult.OK && frm.DtKetQuaNhap != null)
                 {
+                    int demThemMoi = 0;
+                    int demCongDon = 0;
+                    List<string> dsBoQua = new List<string>(); // Các mặt hàng không nạp được vào phiếu kèm lý do
+
                     foreach (DataRow r in frm.DtKetQuaNhap.Rows)
                     {
                         int maHang = Convert.ToInt32(r["MaHang"]);
@@ -806,12 +844,24 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                         DataRow[] existing = dtHangChuyen.Select($"MaHang = {maHang}");
                         if (existing.Length > 0)
                         {
+                            // Phương án "Bỏ qua": không sửa dòng đã có trong phiếu
+                            if (!frm.CapNhatNeuTrung)
+                            {
+                                dsBoQua.Add($"Mã '{r["MaHangNoiBo"]}' đã có trong phiếu (không cập nhật)");
+                                continue;
+                            }
+
                             decimal tonKho = Convert.ToDecimal(existing[0]["TonKho"]);
                             decimal slMoi = Convert.ToDecimal(existing[0]["SoLuong"]) + slChuyen;
                             if (slMoi <= tonKho)
                             {
                                 existing[0]["SoLuong"] = slMoi;
                                 existing[0]["ThanhTien"] = slMoi * Convert.ToDecimal(existing[0]["DonGiaChuyen"]);
+                                demCongDon++;
+                            }
+                            else
+                            {
+                                dsBoQua.Add($"Mã '{r["MaHangNoiBo"]}': cộng dồn {slMoi:N0} vượt tồn kho gửi ({tonKho:N0})");
                             }
                         }
                         else
@@ -836,12 +886,20 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                             newRow["ThanhTien"] = slChuyen * Convert.ToDecimal(r["DonGia"]);
 
                             dtHangChuyen.Rows.Add(newRow);
+                            demThemMoi++;
                         }
                     }
 
                     DanhSoLaiStt();
                     CapNhatTongKet();
                     CapNhatPhanTrang();
+
+                    // Báo kết quả nạp vào phiếu (kể cả các dòng không nạp được)
+                    if (dsBoQua.Count > 0)
+                    {
+                        MessageBox.Show($"Nạp vào phiếu: thêm mới {demThemMoi} dòng, cộng dồn {demCongDon} dòng." + frmNhapChuyenKhoFile.TaoThongBaoBoQua(dsBoQua),
+                            "Kết quả nạp file", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
                 }
             }
         }
@@ -892,19 +950,17 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
             }
             this.BindingContext[dtHangChuyen]?.EndCurrentEdit();
 
+            // Bắt buộc tài khoản phải gắn với nhân viên (MaNVLap/MaNVXuat tham chiếu NhanVien.MaNV)
+            if (!SessionContext.MaNV.HasValue || SessionContext.MaNV.Value <= 0)
+            {
+                MessageBox.Show("Tài khoản chưa được gắn với nhân viên, không thể lập chứng từ.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             string maPhieu = txtMaPhieu.Text.Trim();
             if (string.IsNullOrEmpty(maPhieu))
             {
                 MessageBox.Show("Mã phiếu không được để trống!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtMaPhieu.Focus();
-                return;
-            }
-
-            string checkSql = "SELECT COUNT(1) FROM PhieuChuyenKho WHERE MaPhieu = @MaPhieu";
-            object exist = DataProcessing.ReadValue(checkSql, new SqlParameter[] { new SqlParameter("@MaPhieu", maPhieu) });
-            if (exist != null && Convert.ToInt32(exist) > 0)
-            {
-                MessageBox.Show(string.Format("Mã phiếu '{0}' đã tồn tại trong hệ thống! Vui lòng chọn mã khác.", maPhieu), "Trùng mã", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtMaPhieu.Focus();
                 return;
             }
@@ -953,22 +1009,19 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                 return;
             }
 
-            int maNVChon = 1;
-            if (cboNguoiChuyen.SelectedValue is DataRowView drvNV && drvNV["MaNhanVien"] != DBNull.Value)
+            int maNVChon = SessionContext.MaNV.Value;
+            if (cboNguoiChuyen.SelectedValue is DataRowView drvNV && drvNV["MaNV"] != DBNull.Value)
             {
-                maNVChon = Convert.ToInt32(drvNV["MaNhanVien"]);
+                maNVChon = Convert.ToInt32(drvNV["MaNV"]);
             }
-            else if (cboNguoiChuyen.SelectedValue != null && int.TryParse(cboNguoiChuyen.SelectedValue.ToString(), out int nvId))
+            else if (cboNguoiChuyen.SelectedValue != null && int.TryParse(cboNguoiChuyen.SelectedValue.ToString(), out int nvId) && nvId > 0)
             {
                 maNVChon = nvId;
-            }
-            else if (SessionContext.MaNV.HasValue && SessionContext.MaNV.Value > 0)
-            {
-                maNVChon = SessionContext.MaNV.Value;
             }
 
             if (trangThaiMoi == "DA_XUAT")
             {
+                // Kiểm tra sơ bộ tồn kho gửi (thông báo thân thiện); sẽ kiểm tra lại trong giao dịch khi lưu
                 foreach (DataRow r in dtHangChuyen.Rows)
                 {
                     if (r.RowState == DataRowState.Deleted) continue;
@@ -1012,7 +1065,46 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
             {
                 DataProcessing.ChangeDataTransaction((conn, trans) =>
                 {
-                    string sqlInsertP = @"INSERT INTO PhieuChuyenKho 
+                    // 0. Kiểm tra lại mã phiếu ngay trong giao dịch (chống trùng khi nhiều người lập phiếu cùng lúc)
+                    if (MaPhieuDaTonTai(conn, trans, maPhieu))
+                    {
+                        if (maPhieu == maPhieuTuSinh)
+                        {
+                            // Mã tự sinh đã bị người khác dùng: cấp mã mới
+                            maPhieu = SinhMaPhieuTuDong(conn, trans);
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException(string.Format("Mã phiếu '{0}' đã tồn tại trong hệ thống! Vui lòng chọn mã khác.", maPhieu));
+                        }
+                    }
+
+                    // 1. Chuyển hàng ngay: kiểm tra lại tồn kho gửi trong giao dịch (cùng conn/trans), thiếu thì rollback
+                    if (trangThaiMoi == "DA_XUAT")
+                    {
+                        string sqlKiemTon = "SELECT ISNULL(SUM(SoLuongTon), 0) FROM vw_TonKhoHienTai WHERE MaKho = @MaKho AND MaHang = @MaHang";
+                        foreach (DataRow r in dtHangChuyen.Rows)
+                        {
+                            if (r.RowState == DataRowState.Deleted) continue;
+
+                            decimal slCanChuyen = Convert.ToDecimal(r["SoLuong"]);
+                            decimal tonTrongGiaoDich;
+                            using (SqlCommand cmdTon = new SqlCommand(sqlKiemTon, conn, trans))
+                            {
+                                cmdTon.Parameters.AddWithValue("@MaKho", maKhoNguon);
+                                cmdTon.Parameters.AddWithValue("@MaHang", r["MaHang"]);
+                                tonTrongGiaoDich = Convert.ToDecimal(cmdTon.ExecuteScalar());
+                            }
+
+                            if (slCanChuyen > tonTrongGiaoDich)
+                            {
+                                throw new InvalidOperationException(string.Format("Mặt hàng '{0}' ({1}) có số lượng chuyển {2:N0} vượt quá tồn kho thực tế hiện tại {3:N0}!\nKhông thể thực hiện chuyển hàng.",
+                                    r["TenHang"], r["MaHangNoiBo"], slCanChuyen, tonTrongGiaoDich));
+                            }
+                        }
+                    }
+
+                    string sqlInsertP = @"INSERT INTO PhieuChuyenKho
                                          (MaPhieu, MaKhoNguon, MaKhoDich, MaNVLap, MaNVXuat, NgayLap, ThoiDiemXuat, 
                                           TrangThai, GhiChu, DaDanhDau, TongSoLuongChuyen, TongSoLuongNhan, TongGiaTriChuyen)
                                          VALUES 
@@ -1082,6 +1174,20 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
 
                 this.DialogResult = DialogResult.OK;
                 this.Close();
+            }
+            catch (InvalidOperationException ex)
+            {
+                MessageBox.Show(ex.Message, "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            catch (SqlException ex) when (ex.Number == 2627 || ex.Number == 2601)
+            {
+                // Vi phạm ràng buộc duy nhất (trùng mã phiếu do lưu đồng thời): cấp lại mã mới để người dùng lưu lại
+                if (txtMaPhieu.Text.Trim() == maPhieuTuSinh)
+                {
+                    txtMaPhieu.Text = SinhMaPhieuTuDong();
+                    maPhieuTuSinh = txtMaPhieu.Text;
+                }
+                MessageBox.Show("Mã phiếu chuyển kho bị trùng với phiếu đã có (có thể do người khác vừa lưu phiếu cùng lúc).\nVui lòng kiểm tra và bấm lưu lại.", "Trùng dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (Exception ex)
             {

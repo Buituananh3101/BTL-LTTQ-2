@@ -3,6 +3,7 @@ using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
@@ -134,7 +135,7 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
 
             NapDuLieuBoLoc();
 
-            cboSoDongMoiTrang.SelectedIndex = 2; // 20
+            cboSoDongMoiTrang.SelectedItem = "20";
             dangNapDuLieu = false;
 
             TaiDuLieu();
@@ -157,6 +158,8 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
             cboHuongChuyen.Items.Add("Chuyển đi (từ kho này)");
             cboHuongChuyen.Items.Add("Chuyển đến (về kho này)");
             cboHuongChuyen.SelectedIndex = 0;
+            // Chế độ "Tất cả kho" (MaKhoHienTai = 0): không có "kho này" nên bỏ qua bộ lọc hướng chuyển
+            cboHuongChuyen.Enabled = SessionContext.MaKhoHienTai > 0;
 
             // 3. Kho đối ứng
             string sqlKho = "SELECT MaKho, TenKho FROM Kho WHERE TrangThai = 'HOAT_DONG' OR TrangThai = 'ACTIVE' ORDER BY MaKho ASC";
@@ -173,11 +176,11 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
 
 
             // 4. Người tạo
-            string sqlNguoiTao = @"SELECT tk.MaNV, ISNULL(nv.HoTen, tk.TenDangNhap) AS HoTen
-                                  FROM TaiKhoan tk
-                                  LEFT JOIN NhanVien nv ON tk.MaNV = nv.MaNV
-                                  WHERE tk.TrangThai = 'HOAT_DONG' OR tk.TrangThai = 'ACTIVE' OR tk.TrangThai IS NULL
-                                  ORDER BY HoTen ASC";
+            // Giá trị lọc là NhanVien.MaNV (khớp cột PhieuChuyenKho.MaNVLap)
+            string sqlNguoiTao = @"SELECT nv.MaNV, nv.HoTen
+                                  FROM NhanVien nv
+                                  WHERE nv.TrangThai = 'DANG_LAM'
+                                  ORDER BY nv.HoTen ASC";
             DataTable dtNguoiTao = DataProcessing.ReadData(sqlNguoiTao);
             DataRow rowTatCaNguoiTao = dtNguoiTao.NewRow();
             rowTatCaNguoiTao["MaNV"] = 0;
@@ -193,95 +196,154 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
             cboNguoiTao.SelectedValue = 0;
         }
 
+        private const string SQL_SELECT_DANH_SACH = @"SELECT pc.MaPhieuChuyen, pc.MaPhieu, pc.NgayLap, pc.TrangThai,
+                                         pc.MaKhoNguon, kn.TenKho AS TenKhoNguon,
+                                         pc.MaKhoDich, kd.TenKho AS TenKhoDich,
+                                         pc.TongSoLuongChuyen, pc.TongSoLuongNhan, pc.TongGiaTriChuyen,
+                                         ISNULL(nv.HoTen, N'Chưa rõ') AS TenNguoiTao,
+                                         pc.GhiChu ";
+
+        private const string SQL_FROM_DANH_SACH = @" FROM PhieuChuyenKho pc
+                                   JOIN Kho kn ON pc.MaKhoNguon = kn.MaKho
+                                   JOIN Kho kd ON pc.MaKhoDich = kd.MaKho
+                                   LEFT JOIN NhanVien nv ON pc.MaNVLap = nv.MaNV ";
+
+        /// <summary>
+        /// Xây dựng điều kiện lọc theo các bộ lọc hiện tại (dùng chung cho hiển thị danh sách và xuất file)
+        /// </summary>
+        private string XayDungDieuKienLoc(List<SqlParameter> thamSo)
+        {
+            StringBuilder sbWhere = new StringBuilder(" WHERE 1=1 ");
+
+            // 1. Khoảng thời gian
+            sbWhere.Append(" AND pc.NgayLap >= @TuNgay AND pc.NgayLap <= @DenNgay ");
+            thamSo.Add(new SqlParameter("@TuNgay", dtpTuNgay.Value.Date));
+            thamSo.Add(new SqlParameter("@DenNgay", dtpDenNgay.Value.Date.AddDays(1).AddSeconds(-1)));
+
+            // 2. Tìm kiếm từ khóa
+            if (!string.IsNullOrWhiteSpace(txtTimKiem.Text))
+            {
+                sbWhere.Append(" AND (pc.MaPhieu LIKE @TuKhoa OR pc.GhiChu LIKE @TuKhoa OR kn.TenKho LIKE @TuKhoa OR kd.TenKho LIKE @TuKhoa) ");
+                thamSo.Add(new SqlParameter("@TuKhoa", "%" + txtTimKiem.Text.Trim() + "%"));
+            }
+
+            // 3. Trạng thái
+            if (cboTrangThai.SelectedIndex > 0)
+            {
+                string tt = cboTrangThai.Text;
+                string maTT = "";
+                if (tt == "Đã nhận") maTT = "DA_NHAN";
+                else if (tt == "Đang chuyển") maTT = "DA_XUAT";
+                else if (tt == "Phiếu tạm") maTT = "NHAP";
+                else if (tt == "Đã hủy") maTT = "HUY";
+
+                if (!string.IsNullOrEmpty(maTT))
+                {
+                    sbWhere.Append(" AND pc.TrangThai = @TrangThai ");
+                    thamSo.Add(new SqlParameter("@TrangThai", maTT));
+                }
+            }
+
+            // 4. Hướng chuyển & Kho làm việc hiện tại
+            //    Chế độ "Tất cả kho" (MaKhoHienTai = 0): bỏ qua bộ lọc hướng chuyển, hiển thị mọi phiếu
+            int khoHienTai = SessionContext.MaKhoHienTai;
+            if (khoHienTai > 0)
+            {
+                if (cboHuongChuyen.SelectedIndex == 1) // Chuyển đi
+                {
+                    sbWhere.Append(" AND pc.MaKhoNguon = @KhoHienTai ");
+                }
+                else if (cboHuongChuyen.SelectedIndex == 2) // Chuyển đến
+                {
+                    sbWhere.Append(" AND pc.MaKhoDich = @KhoHienTai ");
+                }
+                else
+                {
+                    // Mặc định chỉ thấy phiếu liên quan đến kho hiện tại
+                    sbWhere.Append(" AND (pc.MaKhoNguon = @KhoHienTai OR pc.MaKhoDich = @KhoHienTai) ");
+                }
+                thamSo.Add(new SqlParameter("@KhoHienTai", khoHienTai));
+            }
+
+            // 5. Người tạo
+            if (cboNguoiTao.SelectedValue != null && int.TryParse(cboNguoiTao.SelectedValue.ToString(), out int maNvTao) && maNvTao > 0)
+            {
+                sbWhere.Append(" AND pc.MaNVLap = @MaNVTao ");
+                thamSo.Add(new SqlParameter("@MaNVTao", maNvTao));
+            }
+
+            return sbWhere.ToString();
+        }
+
+        private static List<SqlParameter> SaoChepThamSo(List<SqlParameter> nguon)
+        {
+            List<SqlParameter> banSao = new List<SqlParameter>();
+            foreach (SqlParameter p in nguon)
+            {
+                banSao.Add(new SqlParameter(p.ParameterName, p.Value));
+            }
+            return banSao;
+        }
+
+        /// <summary>
+        /// Bổ sung các cột hiển thị (ngày lập, SL nhận, trạng thái tiếng Việt) cho bảng danh sách phiếu
+        /// </summary>
+        private static void BoSungCotHienThi(DataTable dt)
+        {
+            dt.Columns.Add("NgayLapHienThi", typeof(string));
+            dt.Columns.Add("TongSoLuongNhanHienThi", typeof(string));
+            dt.Columns.Add("TrangThaiHienThi", typeof(string));
+
+            foreach (DataRow r in dt.Rows)
+            {
+                r["NgayLapHienThi"] = r["NgayLap"] != DBNull.Value ? Convert.ToDateTime(r["NgayLap"]).ToString("dd/MM/yyyy HH:mm") : "";
+
+                string tt = r["TrangThai"] != DBNull.Value ? r["TrangThai"].ToString() : "";
+                if (tt == "DA_NHAN")
+                {
+                    r["TrangThaiHienThi"] = "Đã nhận";
+                    decimal slNhan = 0;
+                    if (r["TongSoLuongNhan"] != DBNull.Value && decimal.TryParse(r["TongSoLuongNhan"].ToString(), out slNhan))
+                    {
+                        r["TongSoLuongNhanHienThi"] = slNhan.ToString("N0");
+                    }
+                    else
+                    {
+                        r["TongSoLuongNhanHienThi"] = "---";
+                    }
+                }
+                else if (tt == "DA_XUAT")
+                {
+                    r["TrangThaiHienThi"] = "Đang chuyển";
+                    r["TongSoLuongNhanHienThi"] = "---";
+                }
+                else if (tt == "NHAP")
+                {
+                    r["TrangThaiHienThi"] = "Phiếu tạm";
+                    r["TongSoLuongNhanHienThi"] = "---";
+                }
+                else
+                {
+                    r["TrangThaiHienThi"] = "Đã hủy";
+                    r["TongSoLuongNhanHienThi"] = "---";
+                }
+            }
+        }
+
         public void TaiDuLieu()
         {
             if (dangNapDuLieu) return;
 
             try
             {
-                StringBuilder sbWhere = new StringBuilder(" WHERE 1=1 ");
-                SqlParameter[] paras = new SqlParameter[10];
-                int paramIndex = 0;
-
-                // 1. Khoảng thời gian
-                sbWhere.Append(" AND pc.NgayLap >= @TuNgay AND pc.NgayLap <= @DenNgay ");
-                paras[paramIndex++] = new SqlParameter("@TuNgay", dtpTuNgay.Value.Date);
-                paras[paramIndex++] = new SqlParameter("@DenNgay", dtpDenNgay.Value.Date.AddDays(1).AddSeconds(-1));
-
-                // 2. Tìm kiếm từ khóa
-                if (!string.IsNullOrWhiteSpace(txtTimKiem.Text))
-                {
-                    sbWhere.Append(" AND (pc.MaPhieu LIKE @TuKhoa OR pc.GhiChu LIKE @TuKhoa OR kn.TenKho LIKE @TuKhoa OR kd.TenKho LIKE @TuKhoa) ");
-                    paras[paramIndex++] = new SqlParameter("@TuKhoa", "%" + txtTimKiem.Text.Trim() + "%");
-                }
-
-                // 3. Trạng thái
-                if (cboTrangThai.SelectedIndex > 0)
-                {
-                    string tt = cboTrangThai.Text;
-                    string maTT = "";
-                    if (tt == "Đã nhận") maTT = "DA_NHAN";
-                    else if (tt == "Đang chuyển") maTT = "DA_XUAT";
-                    else if (tt == "Phiếu tạm") maTT = "NHAP";
-                    else if (tt == "Đã hủy") maTT = "HUY";
-
-                    if (!string.IsNullOrEmpty(maTT))
-                    {
-                        sbWhere.Append(" AND pc.TrangThai = @TrangThai ");
-                        paras[paramIndex++] = new SqlParameter("@TrangThai", maTT);
-                    }
-                }
-
-                // 4. Hướng chuyển & Kho làm việc hiện tại
-                int khoHienTai = SessionContext.MaKhoHienTai;
-                if (cboHuongChuyen.SelectedIndex == 1) // Chuyển đi
-                {
-                    sbWhere.Append(" AND pc.MaKhoNguon = @KhoHienTai ");
-                    paras[paramIndex++] = new SqlParameter("@KhoHienTai", khoHienTai);
-                }
-                else if (cboHuongChuyen.SelectedIndex == 2) // Chuyển đến
-                {
-                    sbWhere.Append(" AND pc.MaKhoDich = @KhoHienTai ");
-                    paras[paramIndex++] = new SqlParameter("@KhoHienTai", khoHienTai);
-                }
-                else
-                {
-                    // Nếu không phải admin: mặc định chỉ thấy phiếu liên quan đến kho hiện tại
-                    if (khoHienTai > 0)
-                    {
-                        sbWhere.Append(" AND (pc.MaKhoNguon = @KhoHienTai OR pc.MaKhoDich = @KhoHienTai) ");
-                        paras[paramIndex++] = new SqlParameter("@KhoHienTai", khoHienTai);
-                    }
-                }
-
-                // 5. Kho đối ứng
-                if (paramIndex < 0)
-                {
-                    // kho doi ung removed
-                    // kho doi ung removed
-                }
-
-                // 6. Người tạo
-                if (cboNguoiTao.SelectedValue != null && int.TryParse(cboNguoiTao.SelectedValue.ToString(), out int maNvTao) && maNvTao > 0)
-                {
-                    sbWhere.Append(" AND pc.MaNVLap = @MaNVTao ");
-                    paras[paramIndex++] = new SqlParameter("@MaNVTao", maNvTao);
-                }
+                // 1-6. Điều kiện lọc (dùng chung với chức năng xuất file)
+                List<SqlParameter> thamSoLoc = new List<SqlParameter>();
+                string dieuKienLoc = XayDungDieuKienLoc(thamSoLoc);
 
                 // 7. Đếm tổng số dòng
-                string sqlCount = @"SELECT COUNT(*) 
-                                   FROM PhieuChuyenKho pc
-                                   JOIN Kho kn ON pc.MaKhoNguon = kn.MaKho
-                                   JOIN Kho kd ON pc.MaKhoDich = kd.MaKho
-                                   LEFT JOIN NhanVien nv ON pc.MaNVLap = nv.MaNV " + sbWhere.ToString();
+                string sqlCount = "SELECT COUNT(*) " + SQL_FROM_DANH_SACH + dieuKienLoc;
 
-                SqlParameter[] countParams = new SqlParameter[paramIndex];
-                for (int i = 0; i < paramIndex; i++)
-                {
-                    countParams[i] = new SqlParameter(paras[i].ParameterName, paras[i].Value);
-                }
-
-                object countObj = DataProcessing.ReadValue(sqlCount, countParams);
+                object countObj = DataProcessing.ReadValue(sqlCount, SaoChepThamSo(thamSoLoc).ToArray());
                 tongSoDong = countObj != null && countObj != DBNull.Value ? Convert.ToInt32(countObj) : 0;
 
                 tongSoTrang = (int)Math.Ceiling((double)tongSoDong / soDongMoiTrang);
@@ -291,68 +353,16 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                 int offset = (trangHienTai - 1) * soDongMoiTrang;
 
                 // 8. Đọc dữ liệu phân trang (tạo mảng SqlParameter mới độc lập để tránh lỗi SqlParameterCollection)
-                SqlParameter[] dataParams = new SqlParameter[paramIndex + 2];
-                for (int i = 0; i < paramIndex; i++)
-                {
-                    dataParams[i] = new SqlParameter(paras[i].ParameterName, paras[i].Value);
-                }
-                dataParams[paramIndex] = new SqlParameter("@Offset", offset);
-                dataParams[paramIndex + 1] = new SqlParameter("@Fetch", soDongMoiTrang);
+                List<SqlParameter> dataParams = SaoChepThamSo(thamSoLoc);
+                dataParams.Add(new SqlParameter("@Offset", offset));
+                dataParams.Add(new SqlParameter("@Fetch", soDongMoiTrang));
 
-                string sqlData = @"SELECT pc.MaPhieuChuyen, pc.MaPhieu, pc.NgayLap, pc.TrangThai,
-                                         pc.MaKhoNguon, kn.TenKho AS TenKhoNguon,
-                                         pc.MaKhoDich, kd.TenKho AS TenKhoDich,
-                                         pc.TongSoLuongChuyen, pc.TongSoLuongNhan, pc.TongGiaTriChuyen,
-                                         ISNULL(nv.HoTen, N'Chưa rõ') AS TenNguoiTao,
-                                         pc.GhiChu
-                                  FROM PhieuChuyenKho pc
-                                  JOIN Kho kn ON pc.MaKhoNguon = kn.MaKho
-                                  JOIN Kho kd ON pc.MaKhoDich = kd.MaKho
-                                  LEFT JOIN NhanVien nv ON pc.MaNVLap = nv.MaNV "
-                                  + sbWhere.ToString() +
+                string sqlData = SQL_SELECT_DANH_SACH + SQL_FROM_DANH_SACH + dieuKienLoc +
                                   @" ORDER BY pc.NgayLap DESC, pc.MaPhieuChuyen DESC
                                      OFFSET @Offset ROWS FETCH NEXT @Fetch ROWS ONLY";
 
-                dtDanhSach = DataProcessing.ReadData(sqlData, dataParams);
-
-                dtDanhSach.Columns.Add("NgayLapHienThi", typeof(string));
-                dtDanhSach.Columns.Add("TongSoLuongNhanHienThi", typeof(string));
-                dtDanhSach.Columns.Add("TrangThaiHienThi", typeof(string));
-
-                foreach (DataRow r in dtDanhSach.Rows)
-                {
-                    r["NgayLapHienThi"] = r["NgayLap"] != DBNull.Value ? Convert.ToDateTime(r["NgayLap"]).ToString("dd/MM/yyyy HH:mm") : "";
-
-                    string tt = r["TrangThai"] != DBNull.Value ? r["TrangThai"].ToString() : "";
-                    if (tt == "DA_NHAN")
-                    {
-                        r["TrangThaiHienThi"] = "Đã nhận";
-                        decimal slNhan = 0;
-                        if (r["TongSoLuongNhan"] != DBNull.Value && decimal.TryParse(r["TongSoLuongNhan"].ToString(), out slNhan))
-                        {
-                            r["TongSoLuongNhanHienThi"] = slNhan.ToString("N0");
-                        }
-                        else
-                        {
-                            r["TongSoLuongNhanHienThi"] = "---";
-                        }
-                    }
-                    else if (tt == "DA_XUAT")
-                    {
-                        r["TrangThaiHienThi"] = "Đang chuyển";
-                        r["TongSoLuongNhanHienThi"] = "---";
-                    }
-                    else if (tt == "NHAP")
-                    {
-                        r["TrangThaiHienThi"] = "Phiếu tạm";
-                        r["TongSoLuongNhanHienThi"] = "---";
-                    }
-                    else
-                    {
-                        r["TrangThaiHienThi"] = "Đã hủy";
-                        r["TongSoLuongNhanHienThi"] = "---";
-                    }
-                }
+                dtDanhSach = DataProcessing.ReadData(sqlData, dataParams.ToArray());
+                BoSungCotHienThi(dtDanhSach);
 
                 // Thêm cột logic Chon vào DataTable để DataGridViewCheckBoxColumn bind chuẩn xác
                 if (!dtDanhSach.Columns.Contains("Chon"))
@@ -617,49 +627,79 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
             }
 
             bool coDongChon = danhSachXuat.Count > 0;
-            if (!coDongChon)
-            {
-                foreach (DataRow r in dtDanhSach.Rows)
-                {
-                    danhSachXuat.Add(r);
-                }
-            }
 
             try
             {
-                SaveFileDialog sfd = new SaveFileDialog();
-                sfd.Title = coDongChon ? string.Format("Xuất {0} phiếu chuyển kho đã chọn", danhSachXuat.Count) : "Xuất danh sách phiếu chuyển kho";
-                sfd.Filter = "File Excel (*.xls)|*.xls|File CSV (*.csv)|*.csv";
-                sfd.FileName = string.Format("Danh_Sach_Chuyen_Kho_{0}.csv", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
-
-                if (sfd.ShowDialog() == DialogResult.OK)
+                if (!coDongChon)
                 {
-                    StringBuilder sb = new StringBuilder();
-                    sb.AppendLine("Mã chuyển kho,Thời gian,Kho gửi,Kho nhận,Tổng SL chuyển,Tổng SL nhận,Tổng giá trị,Người tạo,Trạng thái,Ghi chú");
-
-                    foreach (DataRow r in dtDanhSach.Rows)
+                    // Không tích chọn: xuất toàn bộ phiếu khớp bộ lọc hiện tại (không chỉ trang đang xem)
+                    List<SqlParameter> thamSoLoc = new List<SqlParameter>();
+                    string dieuKienLoc = XayDungDieuKienLoc(thamSoLoc);
+                    string sqlTatCa = SQL_SELECT_DANH_SACH + SQL_FROM_DANH_SACH + dieuKienLoc +
+                                      " ORDER BY pc.NgayLap DESC, pc.MaPhieuChuyen DESC";
+                    DataTable dtTatCa = DataProcessing.ReadData(sqlTatCa, thamSoLoc.ToArray());
+                    BoSungCotHienThi(dtTatCa);
+                    foreach (DataRow r in dtTatCa.Rows)
                     {
-                        sb.AppendLine(string.Format("{0},{1},\"{2}\",\"{3}\",{4},{5},{6},\"{7}\",\"{8}\",\"{9}\"",
-                            r["MaPhieu"],
-                            r["NgayLapHienThi"],
-                            r["TenKhoNguon"].ToString().Replace("\"", "\"\""),
-                            r["TenKhoDich"].ToString().Replace("\"", "\"\""),
-                            r["TongSoLuongChuyen"],
-                            r["TongSoLuongNhanHienThi"],
-                            r["TongGiaTriChuyen"],
-                            r["TenNguoiTao"].ToString().Replace("\"", "\"\""),
-                            r["TrangThaiHienThi"],
-                            r["GhiChu"].ToString().Replace("\"", "\"\"")));
+                        danhSachXuat.Add(r);
                     }
+                }
 
-                    File.WriteAllText(sfd.FileName, sb.ToString(), new UTF8Encoding(true));
-                    MessageBox.Show("Xuất file CSV danh sách chuyển kho thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (danhSachXuat.Count == 0)
+                {
+                    MessageBox.Show("Không có dữ liệu phiếu chuyển kho để xuất!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                using (SaveFileDialog sfd = new SaveFileDialog())
+                {
+                    sfd.Title = coDongChon ? string.Format("Xuất {0} phiếu chuyển kho đã chọn", danhSachXuat.Count) : "Xuất danh sách phiếu chuyển kho";
+                    sfd.Filter = "File CSV (*.csv)|*.csv";
+                    sfd.FileName = string.Format("Danh_Sach_Chuyen_Kho_{0}.csv", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+
+                    if (sfd.ShowDialog() == DialogResult.OK)
+                    {
+                        StringBuilder sb = new StringBuilder();
+                        sb.AppendLine("Mã chuyển kho,Thời gian,Kho gửi,Kho nhận,Tổng SL chuyển,Tổng SL nhận,Tổng giá trị,Người tạo,Trạng thái,Ghi chú");
+
+                        foreach (DataRow r in danhSachXuat)
+                        {
+                            // SL nhận chỉ có khi phiếu đã nhận; số ghi theo định dạng bất biến để không lẫn dấu phẩy CSV
+                            string slNhan = r["TrangThai"].ToString() == "DA_NHAN" ? SoCsv(r["TongSoLuongNhan"]) : "";
+                            sb.AppendLine(string.Join(",",
+                                ChuoiCsv(r["MaPhieu"]),
+                                ChuoiCsv(r["NgayLapHienThi"]),
+                                ChuoiCsv(r["TenKhoNguon"]),
+                                ChuoiCsv(r["TenKhoDich"]),
+                                SoCsv(r["TongSoLuongChuyen"]),
+                                slNhan,
+                                SoCsv(r["TongGiaTriChuyen"]),
+                                ChuoiCsv(r["TenNguoiTao"]),
+                                ChuoiCsv(r["TrangThaiHienThi"]),
+                                ChuoiCsv(r["GhiChu"])));
+                        }
+
+                        File.WriteAllText(sfd.FileName, sb.ToString(), new UTF8Encoding(true));
+                        MessageBox.Show(string.Format("Xuất file CSV danh sách chuyển kho thành công ({0} phiếu)!", danhSachXuat.Count), "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi xuất file: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private static string ChuoiCsv(object giaTri)
+        {
+            string s = giaTri == null || giaTri == DBNull.Value ? "" : giaTri.ToString();
+            return "\"" + s.Replace("\"", "\"\"") + "\"";
+        }
+
+        private static string SoCsv(object giaTri)
+        {
+            if (giaTri == null || giaTri == DBNull.Value) return "";
+            return Convert.ToDecimal(giaTri).ToString("0.##", CultureInfo.InvariantCulture);
         }
 
         private void btnHienCot_Click(object sender, EventArgs e)
