@@ -416,15 +416,21 @@
             this.dgvKiemKho.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvKiemKho.Size = new System.Drawing.Size(1395, 727);
             this.dgvKiemKho.TabIndex = 3;
+            this.dgvKiemKho.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvKiemKho_CellClick);
             this.dgvKiemKho.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvKiemKho_CellDoubleClick);
+            this.dgvKiemKho.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dgvKiemKho_CellPainting);
+            this.dgvKiemKho.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvKiemKho_ColumnHeaderMouseClick);
+            this.dgvKiemKho.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvKiemKho_KeyDown);
             // 
             // colChon
             // 
+            this.colChon.DataPropertyName = "Chon";
             this.colChon.HeaderText = "";
             this.colChon.MinimumWidth = 35;
             this.colChon.Name = "colChon";
             this.colChon.ReadOnly = true;
             this.colChon.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.colChon.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.colChon.Width = 35;
             // 
             // colMaPhieu

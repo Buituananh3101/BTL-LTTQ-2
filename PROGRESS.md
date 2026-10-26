@@ -1,6 +1,6 @@
 ﻿# Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-26 – Đồng bộ giao diện và bố cục form nhập file của 4 chứng từ theo khuôn mẫu frmNhapHangHoaFile (Phiên 54)
+**Cập nhật lần cuối**: 2026-10-26 – Chuẩn hóa phím Enter/nhận SL kiểm kho và đồng bộ hành vi nút Bỏ qua của 4 form thêm chứng từ (Phiên 56)
 ---
 
 ## Đang làm
@@ -51,6 +51,36 @@
 ---
 
 ## Nhật ký phiên (Session Logs)
+- **Phiên 56 (2026-10-26) – Chuẩn hóa phím Enter/nhận SL kiểm kho và đồng bộ hành vi nút Bỏ qua của 4 form thêm chứng từ**:
+  - **Nhu cầu**: Người dùng phản ánh:
+    1. Trong form `frmThemPhieuKiemKho`: khi thêm 1, 2 hàng hóa thủ công thì nhập số lượng và ấn Enter thì số lượng không nhận.
+    2. Ở cả 2 form `frmThemPhieuKiemKho` và `frmThemPhieuChuyenKhoNew`: nút Bỏ qua khi có hàng trong phiếu có hiện thông báo xác nhận, nhưng ấn Yes hay ấn No đều thoát form.
+    3. Ở 2 form `frmThemPhieuNhap` và `frmThemPhieuTraHang`: nút Bỏ qua chưa có thông báo xác nhận khi có hàng trong phiếu.
+  - **Kết quả thực hiện**:
+    1. **Khắc phục nhận số lượng & phím Enter trong `frmThemPhieuKiemKho`**:
+       - Viết hàm `ApDungSoLuongThucTe()` chuyên biệt: đọc dữ liệu từ `dgvHangKiem.EditingControl as TextBox` (hoặc ô lưới), chuẩn hóa số nguyên >= 0, kết thúc edit, cập nhật ngược lại `DataRowView`/`DataRow`, tính lại `SlChenhLech` và `GiaTriChenhLech`, gọi `TinhToanTongKet()` và `InvalidateRow()`.
+       - Xử lý phím Enter trong cả `ProcessCmdKey` và `TxtSoLuongDgv_KeyDown`: khi ấn Enter trên ô `colSoLuongThucTe`, tự động áp dụng số lượng thực tế tức thời, tính toán lại toàn bộ chênh lệch và tổng kết.
+       - Thêm sự kiện `dgvHangKiem_CellClick`: click 1 lần vào ô `colSoLuongThucTe` tự động kích hoạt chế độ chỉnh sửa (`BeginEdit`) và bôi đen toàn bộ số cũ (`SelectAll()`).
+       - Trong `btnThemHang_Click`: khi thêm mới hoặc chọn mặt hàng đã có, tự động focus ô `colSoLuongThucTe`, mở edit và `SelectAll()`.
+    2. **Khắc phục triệt để lỗi nút Bỏ qua thoát form khi bấm No trên cả 4 form**:
+       - **Nguyên nhân gốc rễ**: Thuộc tính `this.btnBoQua.DialogResult = DialogResult.Cancel` trong Designer khiến WinForms tự động đóng form ngay khi click kết thúc, bất kể code-behind có gọi `return;` hay không.
+       - **Khắc phục**: Loại bỏ hoàn toàn `DialogResult.Cancel` trên `btnBoQua` trong Designer của cả 4 form (`frmThemPhieuKiemKho`, `frmThemPhieuChuyenKhoNew`, `frmThemPhieuNhap`, `frmThemPhieuTraHang`).
+       - Chuẩn hóa hàm `btnBoQua_Click` trên cả 4 form: khi lưới có dữ liệu, hiển thị `MessageBox.Show` xác nhận Yes/No. Nếu chọn `No`, lập tức `return;` (giữ nguyên form, không thoát). Nếu chọn `Yes` (hoặc khi bảng trống), mới gán `DialogResult = DialogResult.Cancel` và `Close()`.
+    3. **Kiểm tra chất lượng**:
+       - `tools/KiemTraMaHoa.ps1`: 100% file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake.
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+
+- **Phiên 55 (2026-10-26) – Đồng bộ 100% cột CheckBox và CheckBox chọn tất cả ở Header cho Kiểm kho và Chuyển kho theo mẫu frmDanhSachHangHoa**:
+  - **Nhu cầu**: Người dùng yêu cầu: Cột CheckBox phiếu của 2 chức năng Kiểm kho và Chuyển kho đang không hoạt động và mất checkBox thêm tất cả. Sửa lại giống 100% giao diện và chức năng cột CheckBox của Danh sách hàng hóa.
+  - **Kết quả thực hiện**:
+    1. Chuẩn hóa `colChon` trong cả `frmKiemKho` và `frmChuyenKho`: cấu hình `DataPropertyName = "Chon"`, `ReadOnly = true`, `SortMode = NotSortable`.
+    2. Cài đặt đầy đủ các sự kiện theo khuôn mẫu chuẩn của `frmDanhSachHangHoa`:
+       - `CellPainting`: tự tay vẽ `CheckBoxRenderer` ở header cột `colChon` đồng bộ với trạng thái `headerCheckboxState` (Unchecked / Checked).
+       - `ColumnHeaderMouseClick`: click vào header cột `colChon` đảo trạng thái chọn tất cả / bỏ chọn tất cả toàn bộ dòng trong DataTable.
+       - `CellClick`: click vào ô checkbox đảo trạng thái `Chon` của dòng và cập nhật lại checkbox header tương ứng.
+       - `KeyDown`: hỗ trợ ấn phím Spacebar để bật/tắt chọn dòng đang focus.
+    3. Kiểm tra mã hóa UTF-8 with BOM và biên dịch MSBuild thành công 0 Warning, 0 Error.
+
 
 - **Phiên 54 (2026-10-26) – Đồng bộ form nhập file của 4 chứng từ theo khuôn mẫu frmNhapHangHoaFile**:
   - **Nhu cầu**: Người dùng yêu cầu: "tiếp tục sửa lại form nhập file của các form Thêm phiếu kiểm kho, Thêm phiếu chuyển kho, Thêm phiếu nhập hàng, Thêm phiếu trả hàng nhập theo đúng mẫu giao diện, bố cục và cách sắp xếp của form nhập file của form Danh sách hàng hóa (vẫn phải đảm bảo đúng nghiệp vụ của chức năng)".

@@ -1034,6 +1034,23 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
 
         private void btnBoQua_Click(object sender, EventArgs e)
         {
+            if (dgvHangTra.IsCurrentCellInEditMode)
+            {
+                dgvHangTra.CancelEdit();
+            }
+
+            if (dtHangTra != null && dtHangTra.Rows.Count > 0)
+            {
+                DialogResult dr = MessageBox.Show(
+                    "Dữ liệu phiếu trả hàng nhập chưa được lưu. Bạn có chắc chắn muốn bỏ qua?",
+                    "Xác nhận bỏ qua",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (dr != DialogResult.Yes) return;
+            }
+
+            this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
     }

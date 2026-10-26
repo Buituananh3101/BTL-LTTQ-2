@@ -7,6 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 
 namespace BTL_LTTQ_2.GUI.Forms.KiemKho
 {
@@ -18,6 +19,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
         private int tongSoBanGhi = 0;
         private bool isInitializing = true;
         private DataTable dtDanhSachPhieu;
+        private bool isHeaderChecked = false;
 
         private Timer searchDebounceTimer;
 
@@ -89,6 +91,8 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             dgvKiemKho.DefaultCellStyle.SelectionForeColor = Color.FromArgb(30, 41, 59);
 
             colChon.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colChon.SortMode = DataGridViewColumnSortMode.NotSortable;
+            colChon.Resizable = DataGridViewTriState.False;
             colMaPhieu.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colThoiGian.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colNgayCanBang.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -404,7 +408,25 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                 listParams.Add(new SqlParameter("@Take", soDongMoiTrang));
 
                 dtDanhSachPhieu = DataProcessing.ReadData(sqlData, listParams.ToArray());
+
+                // Thêm cột logic Chon vào DataTable để DataGridViewCheckBoxColumn bind chuẩn xác
+                if (!dtDanhSachPhieu.Columns.Contains("Chon"))
+                {
+                    dtDanhSachPhieu.Columns.Add("Chon", typeof(bool));
+                    dtDanhSachPhieu.Columns["Chon"].DefaultValue = false;
+                    foreach (DataRow r in dtDanhSachPhieu.Rows)
+                    {
+                        r["Chon"] = false;
+                    }
+                }
                 dgvKiemKho.DataSource = dtDanhSachPhieu;
+
+                // Reset trạng thái Header CheckBox khi nạp trang mới
+                isHeaderChecked = false;
+                if (dgvKiemKho.Columns.Contains("colChon"))
+                {
+                    dgvKiemKho.InvalidateCell(dgvKiemKho.Columns["colChon"].Index, -1);
+                }
 
                 // 5. Cập nhật nhãn phân trang
                 lblTongSoPhieu.Text = $"Tổng số: {tongSoBanGhi:N0} phiếu kiểm";
@@ -496,6 +518,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
         private void dgvKiemKho_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;
+            if (e.ColumnIndex >= 0 && dgvKiemKho.Columns[e.ColumnIndex].Name == "colChon") return;
 
             DataGridViewRow row = dgvKiemKho.Rows[e.RowIndex];
             if (row.Cells["colMaPhieuKiemKe"].Value != null &&
@@ -511,6 +534,141 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                 }
             }
         }
+
+        #region Xử lý CheckBox danh sách & Header CheckBox
+
+        private void dgvKiemKho_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        {
+            if (e.RowIndex == -1 && e.ColumnIndex >= 0 && dgvKiemKho.Columns[e.ColumnIndex].Name == "colChon")
+            {
+                e.PaintBackground(e.CellBounds, true);
+
+                int boxSize = 14;
+                int x = e.CellBounds.X + (e.CellBounds.Width - boxSize) / 2;
+                int y = e.CellBounds.Y + (e.CellBounds.Height - boxSize) / 2;
+                Rectangle rect = new Rectangle(x, y, boxSize, boxSize);
+
+                if (Application.RenderWithVisualStyles)
+                {
+                    CheckBoxState state = isHeaderChecked
+                        ? CheckBoxState.CheckedNormal
+                        : CheckBoxState.UncheckedNormal;
+                    CheckBoxRenderer.DrawCheckBox(e.Graphics, new Point(x, y), state);
+                }
+                else
+                {
+                    ControlPaint.DrawCheckBox(e.Graphics, rect, isHeaderChecked ? ButtonState.Checked : ButtonState.Normal);
+                }
+
+                e.Handled = true;
+                return;
+            }
+        }
+
+        private void dgvKiemKho_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0 && e.ColumnIndex >= 0 && dgvKiemKho.Columns[e.ColumnIndex].Name == "colChon")
+            {
+                bool currentVal = Convert.ToBoolean(dgvKiemKho.Rows[e.RowIndex].Cells["colChon"].Value ?? false);
+                bool newVal = !currentVal;
+                dgvKiemKho.Rows[e.RowIndex].Cells["colChon"].Value = newVal;
+                if (dgvKiemKho.DataSource is DataTable dt && e.RowIndex < dt.Rows.Count)
+                {
+                    dt.Rows[e.RowIndex]["Chon"] = newVal;
+                }
+                CapNhatTrangThaiHeaderCheckBox();
+            }
+        }
+
+        private void dgvKiemKho_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.ColumnIndex >= 0 && dgvKiemKho.Columns[e.ColumnIndex].Name == "colChon")
+            {
+                if (dgvKiemKho.Rows.Count == 0) return;
+
+                isHeaderChecked = !isHeaderChecked;
+                foreach (DataGridViewRow row in dgvKiemKho.Rows)
+                {
+                    row.Cells["colChon"].Value = isHeaderChecked;
+                }
+                if (dgvKiemKho.DataSource is DataTable dt)
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        dr["Chon"] = isHeaderChecked;
+                    }
+                }
+                dgvKiemKho.InvalidateCell(e.ColumnIndex, -1);
+            }
+        }
+
+        private void dgvKiemKho_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Space && dgvKiemKho.CurrentRow != null && dgvKiemKho.CurrentRow.Index >= 0)
+            {
+                var cell = dgvKiemKho.CurrentRow.Cells["colChon"];
+                if (cell != null)
+                {
+                    bool currentVal = Convert.ToBoolean(cell.Value ?? false);
+                    bool newVal = !currentVal;
+                    cell.Value = newVal;
+                    if (dgvKiemKho.DataSource is DataTable dt && dgvKiemKho.CurrentRow.Index < dt.Rows.Count)
+                    {
+                        dt.Rows[dgvKiemKho.CurrentRow.Index]["Chon"] = newVal;
+                    }
+                    CapNhatTrangThaiHeaderCheckBox();
+                    e.Handled = true;
+                }
+            }
+        }
+
+        private void CapNhatTrangThaiHeaderCheckBox()
+        {
+            if (dgvKiemKho.Rows.Count == 0)
+            {
+                isHeaderChecked = false;
+                return;
+            }
+
+            bool allChecked = true;
+            foreach (DataGridViewRow row in dgvKiemKho.Rows)
+            {
+                bool val = Convert.ToBoolean(row.Cells["colChon"].Value ?? false);
+                if (!val)
+                {
+                    allChecked = false;
+                    break;
+                }
+            }
+
+            if (isHeaderChecked != allChecked)
+            {
+                isHeaderChecked = allChecked;
+                if (dgvKiemKho.Columns.Contains("colChon"))
+                {
+                    dgvKiemKho.InvalidateCell(dgvKiemKho.Columns["colChon"].Index, -1);
+                }
+            }
+        }
+
+        public List<int> LayDanhSachMaPhieuKiemKeDaChon()
+        {
+            List<int> list = new List<int>();
+            foreach (DataGridViewRow row in dgvKiemKho.Rows)
+            {
+                if (Convert.ToBoolean(row.Cells["colChon"].Value ?? false))
+                {
+                    if (row.Cells["colMaPhieuKiemKe"].Value != null &&
+                        int.TryParse(row.Cells["colMaPhieuKiemKe"].Value.ToString(), out int id))
+                    {
+                        list.Add(id);
+                    }
+                }
+            }
+            return list;
+        }
+
+        #endregion
 
         private void btnHienCot_Click(object sender, EventArgs e)
         {
@@ -580,9 +738,34 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
 
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
-                sfd.Title = "Xuất danh sách phiếu kiểm kho";
+                // Xác định danh sách dòng cần xuất: Ưu tiên các dòng được tích chọn CheckBox
+                List<DataRow> danhSachXuat = new List<DataRow>();
+                foreach (DataGridViewRow row in dgvKiemKho.Rows)
+                {
+                    if (Convert.ToBoolean(row.Cells["colChon"].Value ?? false))
+                    {
+                        DataRowView drv = row.DataBoundItem as DataRowView;
+                        if (drv != null)
+                        {
+                            danhSachXuat.Add(drv.Row);
+                        }
+                    }
+                }
+
+                bool coDongChon = danhSachXuat.Count > 0;
+                if (!coDongChon)
+                {
+                    foreach (DataRow r in dtDanhSachPhieu.Rows)
+                    {
+                        danhSachXuat.Add(r);
+                    }
+                }
+
+                sfd.Title = coDongChon ? $"Xuất {danhSachXuat.Count} phiếu kiểm kho đã chọn" : "Xuất danh sách phiếu kiểm kho";
                 sfd.Filter = "File Excel (*.xls)|*.xls|File CSV (*.csv)|*.csv";
-                sfd.FileName = $"DanhSachKiemKho_{DateTime.Now:yyyyMMdd_HHmm}.xls";
+                sfd.FileName = coDongChon
+                    ? $"DanhSachKiemKho_DaChon_{DateTime.Now:yyyyMMdd_HHmm}.xls"
+                    : $"DanhSachKiemKho_{DateTime.Now:yyyyMMdd_HHmm}.xls";
 
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
@@ -591,11 +774,11 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                         string ext = Path.GetExtension(sfd.FileName).ToLowerInvariant();
                         if (ext == ".csv")
                         {
-                            XuatCsvDanhSach(sfd.FileName);
+                            XuatCsvDanhSach(sfd.FileName, danhSachXuat);
                         }
                         else
                         {
-                            XuatExcelHtmlDanhSach(sfd.FileName);
+                            XuatExcelHtmlDanhSach(sfd.FileName, danhSachXuat);
                         }
 
                         MessageBox.Show("Xuất file danh sách thành công!\nĐường dẫn: " + sfd.FileName, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -608,12 +791,12 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             }
         }
 
-        private void XuatCsvDanhSach(string filePath)
+        private void XuatCsvDanhSach(string filePath, IEnumerable<DataRow> danhSach)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("Mã kiểm kho,Ngày cân bằng,SL lệch tăng,SL lệch giảm,SL thực tế,Ghi chú,Tổng thực tế,Tổng chênh lệch,Thời gian tạo,Trạng thái");
 
-            foreach (DataRow r in dtDanhSachPhieu.Rows)
+            foreach (DataRow r in danhSach)
             {
                 sb.AppendLine($"\"{r["MaPhieu"]}\",\"{r["ThoiGian"]}\",{r["TongGiaTriThucTe"]},{r["TongGiaTriChenhLech"]},{r["SlLechTang"]},{r["SlLechGiam"]},\"{r["NgayCanBang"]}\",{r["TongSlThucTe"]},\"{r["GhiChu"]}\",\"{r["TenTrangThai"]}\"");
             }
@@ -621,7 +804,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             File.WriteAllText(filePath, sb.ToString(), new UTF8Encoding(true));
         }
 
-        private void XuatExcelHtmlDanhSach(string filePath)
+        private void XuatExcelHtmlDanhSach(string filePath, IEnumerable<DataRow> danhSach)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("<html xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:x=\"urn:schemas-microsoft-com:office:excel\" xmlns=\"http://www.w3.org/TR/REC-html40\">");
@@ -652,7 +835,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             sb.AppendLine("<th>Trạng thái</th>");
             sb.AppendLine("</tr>");
 
-            foreach (DataRow r in dtDanhSachPhieu.Rows)
+            foreach (DataRow r in danhSach)
             {
                 sb.AppendLine("<tr>");
                 sb.AppendLine($"<td class=\"center\">{r["MaPhieu"]}</td>");

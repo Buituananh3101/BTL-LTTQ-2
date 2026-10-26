@@ -130,7 +130,6 @@
             // 
             // btnBoQua
             // 
-            this.btnBoQua.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnBoQua.Location = new System.Drawing.Point(23, 732);
             this.btnBoQua.Name = "btnBoQua";
             this.btnBoQua.Size = new System.Drawing.Size(100, 34);
@@ -468,6 +467,7 @@
             this.dgvHangKiem.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dgvHangKiem.Size = new System.Drawing.Size(1182, 653);
             this.dgvHangKiem.TabIndex = 3;
+            this.dgvHangKiem.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvHangKiem_CellClick);
             this.dgvHangKiem.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvHangKiem_CellDoubleClick);
             this.dgvHangKiem.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvHangKiem_CellEndEdit);
             // 

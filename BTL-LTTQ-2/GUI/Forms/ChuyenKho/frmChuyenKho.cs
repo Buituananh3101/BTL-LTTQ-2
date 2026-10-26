@@ -5,7 +5,9 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Text;
+using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 
 namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
 {
@@ -17,6 +19,7 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
         private int tongSoTrang = 1;
         private int tongSoDong = 0;
         private bool dangNapDuLieu = false;
+        private bool isHeaderChecked = false;
 
         private Timer searchDebounceTimer;
 
@@ -90,6 +93,8 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
             dgvChuyenKho.DefaultCellStyle.SelectionForeColor = Color.FromArgb(30, 41, 59);
 
             colChon.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colChon.SortMode = DataGridViewColumnSortMode.NotSortable;
+            colChon.Resizable = DataGridViewTriState.False;
             colMaPhieu.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colNgayLap.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colTongSlChuyen.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
@@ -349,7 +354,25 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                     }
                 }
 
+                // Thêm cột logic Chon vào DataTable để DataGridViewCheckBoxColumn bind chuẩn xác
+                if (!dtDanhSach.Columns.Contains("Chon"))
+                {
+                    dtDanhSach.Columns.Add("Chon", typeof(bool));
+                    dtDanhSach.Columns["Chon"].DefaultValue = false;
+                    foreach (DataRow r in dtDanhSach.Rows)
+                    {
+                        r["Chon"] = false;
+                    }
+                }
+
                 dgvChuyenKho.DataSource = dtDanhSach;
+
+                // Reset trạng thái Header CheckBox khi nạp trang mới
+                isHeaderChecked = false;
+                if (dgvChuyenKho.Columns.Contains("colChon"))
+                {
+                    dgvChuyenKho.InvalidateCell(dgvChuyenKho.Columns["colChon"].Index, -1);
+                }
 
                 lblTongSoPhieu.Text = string.Format("Tổng số: {0:N0} phiếu chuyển", tongSoDong);
                 lblTrangHienTai.Text = string.Format("Trang {0} / {1}", trangHienTai, tongSoTrang);
@@ -411,6 +434,7 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
         private void dgvChuyenKho_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;
+            if (e.ColumnIndex >= 0 && dgvChuyenKho.Columns[e.ColumnIndex].Name == "colChon") return;
 
             DataRowView rowView = dgvChuyenKho.Rows[e.RowIndex].DataBoundItem as DataRowView;
             if (rowView != null)
@@ -423,6 +447,141 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                 }
             }
         }
+
+        #region Xử lý CheckBox danh sách & Header CheckBox
+
+        private void dgvChuyenKho_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        {
+            if (e.RowIndex == -1 && e.ColumnIndex >= 0 && dgvChuyenKho.Columns[e.ColumnIndex].Name == "colChon")
+            {
+                e.PaintBackground(e.CellBounds, true);
+
+                int boxSize = 14;
+                int x = e.CellBounds.X + (e.CellBounds.Width - boxSize) / 2;
+                int y = e.CellBounds.Y + (e.CellBounds.Height - boxSize) / 2;
+                Rectangle rect = new Rectangle(x, y, boxSize, boxSize);
+
+                if (Application.RenderWithVisualStyles)
+                {
+                    CheckBoxState state = isHeaderChecked
+                        ? CheckBoxState.CheckedNormal
+                        : CheckBoxState.UncheckedNormal;
+                    CheckBoxRenderer.DrawCheckBox(e.Graphics, new Point(x, y), state);
+                }
+                else
+                {
+                    ControlPaint.DrawCheckBox(e.Graphics, rect, isHeaderChecked ? ButtonState.Checked : ButtonState.Normal);
+                }
+
+                e.Handled = true;
+                return;
+            }
+        }
+
+        private void dgvChuyenKho_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0 && e.ColumnIndex >= 0 && dgvChuyenKho.Columns[e.ColumnIndex].Name == "colChon")
+            {
+                bool currentVal = Convert.ToBoolean(dgvChuyenKho.Rows[e.RowIndex].Cells["colChon"].Value ?? false);
+                bool newVal = !currentVal;
+                dgvChuyenKho.Rows[e.RowIndex].Cells["colChon"].Value = newVal;
+                if (dgvChuyenKho.DataSource is DataTable dt && e.RowIndex < dt.Rows.Count)
+                {
+                    dt.Rows[e.RowIndex]["Chon"] = newVal;
+                }
+                CapNhatTrangThaiHeaderCheckBox();
+            }
+        }
+
+        private void dgvChuyenKho_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.ColumnIndex >= 0 && dgvChuyenKho.Columns[e.ColumnIndex].Name == "colChon")
+            {
+                if (dgvChuyenKho.Rows.Count == 0) return;
+
+                isHeaderChecked = !isHeaderChecked;
+                foreach (DataGridViewRow row in dgvChuyenKho.Rows)
+                {
+                    row.Cells["colChon"].Value = isHeaderChecked;
+                }
+                if (dgvChuyenKho.DataSource is DataTable dt)
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        dr["Chon"] = isHeaderChecked;
+                    }
+                }
+                dgvChuyenKho.InvalidateCell(e.ColumnIndex, -1);
+            }
+        }
+
+        private void dgvChuyenKho_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Space && dgvChuyenKho.CurrentRow != null && dgvChuyenKho.CurrentRow.Index >= 0)
+            {
+                var cell = dgvChuyenKho.CurrentRow.Cells["colChon"];
+                if (cell != null)
+                {
+                    bool currentVal = Convert.ToBoolean(cell.Value ?? false);
+                    bool newVal = !currentVal;
+                    cell.Value = newVal;
+                    if (dgvChuyenKho.DataSource is DataTable dt && dgvChuyenKho.CurrentRow.Index < dt.Rows.Count)
+                    {
+                        dt.Rows[dgvChuyenKho.CurrentRow.Index]["Chon"] = newVal;
+                    }
+                    CapNhatTrangThaiHeaderCheckBox();
+                    e.Handled = true;
+                }
+            }
+        }
+
+        private void CapNhatTrangThaiHeaderCheckBox()
+        {
+            if (dgvChuyenKho.Rows.Count == 0)
+            {
+                isHeaderChecked = false;
+                return;
+            }
+
+            bool allChecked = true;
+            foreach (DataGridViewRow row in dgvChuyenKho.Rows)
+            {
+                bool val = Convert.ToBoolean(row.Cells["colChon"].Value ?? false);
+                if (!val)
+                {
+                    allChecked = false;
+                    break;
+                }
+            }
+
+            if (isHeaderChecked != allChecked)
+            {
+                isHeaderChecked = allChecked;
+                if (dgvChuyenKho.Columns.Contains("colChon"))
+                {
+                    dgvChuyenKho.InvalidateCell(dgvChuyenKho.Columns["colChon"].Index, -1);
+                }
+            }
+        }
+
+        public List<int> LayDanhSachMaPhieuChuyenDaChon()
+        {
+            List<int> list = new List<int>();
+            foreach (DataGridViewRow row in dgvChuyenKho.Rows)
+            {
+                if (Convert.ToBoolean(row.Cells["colChon"].Value ?? false))
+                {
+                    if (row.Cells["colMaPhieuChuyen"].Value != null &&
+                        int.TryParse(row.Cells["colMaPhieuChuyen"].Value.ToString(), out int id))
+                    {
+                        list.Add(id);
+                    }
+                }
+            }
+            return list;
+        }
+
+        #endregion
 
         private void btnChuyenKho_Click(object sender, EventArgs e)
         {
@@ -443,10 +602,34 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                 return;
             }
 
+            // Xác định danh sách dòng cần xuất: Ưu tiên các dòng được tích chọn CheckBox
+            List<DataRow> danhSachXuat = new List<DataRow>();
+            foreach (DataGridViewRow row in dgvChuyenKho.Rows)
+            {
+                if (Convert.ToBoolean(row.Cells["colChon"].Value ?? false))
+                {
+                    DataRowView drv = row.DataBoundItem as DataRowView;
+                    if (drv != null)
+                    {
+                        danhSachXuat.Add(drv.Row);
+                    }
+                }
+            }
+
+            bool coDongChon = danhSachXuat.Count > 0;
+            if (!coDongChon)
+            {
+                foreach (DataRow r in dtDanhSach.Rows)
+                {
+                    danhSachXuat.Add(r);
+                }
+            }
+
             try
             {
                 SaveFileDialog sfd = new SaveFileDialog();
-                sfd.Filter = "File CSV (*.csv)|*.csv";
+                sfd.Title = coDongChon ? string.Format("Xuất {0} phiếu chuyển kho đã chọn", danhSachXuat.Count) : "Xuất danh sách phiếu chuyển kho";
+                sfd.Filter = "File Excel (*.xls)|*.xls|File CSV (*.csv)|*.csv";
                 sfd.FileName = string.Format("Danh_Sach_Chuyen_Kho_{0}.csv", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
 
                 if (sfd.ShowDialog() == DialogResult.OK)

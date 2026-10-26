@@ -79,8 +79,15 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             dgvHangKiem.EditMode = DataGridViewEditMode.EditOnEnter;
             dgvHangKiem.CellFormatting += dgvHangKiem_CellFormatting;
 
+            dgvHangKiem.CellClick += dgvHangKiem_CellClick;
             dgvHangKiem.EditingControlShowing += dgvHangKiem_EditingControlShowing;
-            dgvHangKiem.Leave += (s, e) => { if (dgvHangKiem.IsCurrentCellInEditMode) dgvHangKiem.EndEdit(); };
+            dgvHangKiem.Leave += (s, e) =>
+            {
+                if (dgvHangKiem.IsCurrentCellInEditMode)
+                {
+                    ApDungSoLuongThucTe();
+                }
+            };
 
             dgvHangKiem.DataSource = dtHangKiem;
         }
@@ -445,12 +452,27 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                 int pageChuaHang = (int)Math.Ceiling((double)sttCuaHang / soDongMoiTrang);
                 CapNhatPhanTrang(pageChuaHang);
 
+                dgvHangKiem.Focus();
                 foreach (DataGridViewRow dgvRow in dgvHangKiem.Rows)
                 {
                     if (dgvRow.Cells["colMaHangNoiBo"].Value?.ToString() == rowHang["MaHangNoiBo"]?.ToString())
                     {
-                        dgvHangKiem.CurrentCell = dgvRow.Cells["colSoLuongThucTe"];
-                        dgvRow.Selected = true;
+                        if (dgvHangKiem.Columns.Contains("colSoLuongThucTe") && dgvHangKiem.Columns["colSoLuongThucTe"].Visible)
+                        {
+                            try
+                            {
+                                dgvHangKiem.CurrentCell = dgvRow.Cells["colSoLuongThucTe"];
+                                dgvRow.Selected = true;
+                                dgvHangKiem.BeginEdit(true);
+                                if (dgvHangKiem.EditingControl is TextBox txtBox)
+                                {
+                                    txtBox.SelectAll();
+                                }
+                            }
+                            catch
+                            {
+                            }
+                        }
                         break;
                     }
                 }
@@ -480,12 +502,27 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                 CapNhatPhanTrang(targetPage);
 
                 // Cuộn đến dòng hàng vừa thêm và focus vào ô SL thực tế
+                dgvHangKiem.Focus();
                 foreach (DataGridViewRow dgvRow in dgvHangKiem.Rows)
                 {
                     if (dgvRow.Cells["colMaHangNoiBo"].Value?.ToString() == rowHang["MaHangNoiBo"]?.ToString())
                     {
-                        dgvHangKiem.CurrentCell = dgvRow.Cells["colSoLuongThucTe"];
-                        dgvRow.Selected = true;
+                        if (dgvHangKiem.Columns.Contains("colSoLuongThucTe") && dgvHangKiem.Columns["colSoLuongThucTe"].Visible)
+                        {
+                            try
+                            {
+                                dgvHangKiem.CurrentCell = dgvRow.Cells["colSoLuongThucTe"];
+                                dgvRow.Selected = true;
+                                dgvHangKiem.BeginEdit(true);
+                                if (dgvHangKiem.EditingControl is TextBox txtBox)
+                                {
+                                    txtBox.SelectAll();
+                                }
+                            }
+                            catch
+                            {
+                            }
+                        }
                         break;
                     }
                 }
@@ -556,12 +593,120 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             }
         }
 
+        private void dgvHangKiem_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
+            {
+                string colName = dgvHangKiem.Columns[e.ColumnIndex].Name;
+                if (colName == "colSoLuongThucTe")
+                {
+                    dgvHangKiem.BeginEdit(true);
+                    if (dgvHangKiem.EditingControl is TextBox txt)
+                    {
+                        txt.SelectAll();
+                    }
+                }
+            }
+        }
+
+        private void ApDungSoLuongThucTe()
+        {
+            try
+            {
+                if (dgvHangKiem.CurrentCell == null) return;
+                int rowIndex = dgvHangKiem.CurrentCell.RowIndex;
+                if (rowIndex < 0 || rowIndex >= dgvHangKiem.Rows.Count) return;
+
+                DataGridViewRow dgvRow = dgvHangKiem.Rows[rowIndex];
+                DataRowView drv = dgvRow.DataBoundItem as DataRowView;
+                DataRow row = drv != null ? drv.Row : (rowIndex < dtHangKiem.Rows.Count ? dtHangKiem.Rows[rowIndex] : null);
+                if (row == null) return;
+
+                // 1. Lấy chuỗi số lượng từ ô nhập liệu hoặc ô trên lưới
+                string text = "";
+                if (dgvHangKiem.EditingControl is TextBox txt)
+                {
+                    text = txt.Text;
+                }
+                else if (dgvHangKiem.Columns.Contains("colSoLuongThucTe") && dgvRow.Cells["colSoLuongThucTe"].Value != null)
+                {
+                    text = dgvRow.Cells["colSoLuongThucTe"].Value.ToString();
+                }
+
+                decimal tonKho = row["TonKho"] != DBNull.Value ? Convert.ToDecimal(row["TonKho"]) : 0;
+                decimal donGia = row["DonGia"] != DBNull.Value ? Convert.ToDecimal(row["DonGia"]) : 0;
+
+                decimal slThucTe = 0;
+                string cleanStr = text.Replace(",", "").Replace(".", "").Trim();
+                if (!string.IsNullOrEmpty(cleanStr) && decimal.TryParse(cleanStr, out decimal parsedVal))
+                {
+                    slThucTe = Math.Max(0, (int)Math.Floor(parsedVal));
+                }
+                else
+                {
+                    slThucTe = 0;
+                }
+
+                decimal slChenhLech = slThucTe - tonKho;
+                decimal giaTriChenhLech = slChenhLech * donGia;
+
+                // 2. Kết thúc edit trên DataGridView
+                if (dgvHangKiem.IsCurrentCellInEditMode)
+                {
+                    dgvHangKiem.EndEdit();
+                }
+
+                // 3. Cập nhật dữ liệu vào DataRow / DataRowView
+                if (drv != null)
+                {
+                    drv["SoLuongThucTe"] = slThucTe;
+                    drv["SlChenhLech"] = slChenhLech;
+                    drv["GiaTriChenhLech"] = giaTriChenhLech;
+                    drv.EndEdit();
+                }
+                row["SoLuongThucTe"] = slThucTe;
+                row["SlChenhLech"] = slChenhLech;
+                row["GiaTriChenhLech"] = giaTriChenhLech;
+
+                // 4. Cập nhật hiển thị lên các ô của lưới
+                if (dgvHangKiem.Columns.Contains("colSoLuongThucTe"))
+                {
+                    dgvRow.Cells["colSoLuongThucTe"].Value = slThucTe;
+                }
+                if (dgvHangKiem.Columns.Contains("colSlChenhLech"))
+                {
+                    dgvRow.Cells["colSlChenhLech"].Value = slChenhLech;
+                }
+                if (dgvHangKiem.Columns.Contains("colGiaTriChenhLech"))
+                {
+                    dgvRow.Cells["colGiaTriChenhLech"].Value = giaTriChenhLech;
+                }
+
+                // 5. Kết thúc edit của BindingContext
+                this.BindingContext[dtHangKiem]?.EndCurrentEdit();
+
+                // 6. Cập nhật các trường tổng kết
+                TinhToanTongKet();
+
+                // 7. Refresh lại dòng để hiển thị giá trị mới ngay lập tức
+                dgvHangKiem.InvalidateRow(rowIndex);
+            }
+            catch
+            {
+                // Bỏ qua tránh crash
+            }
+        }
+
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (keyData == Keys.Enter && dgvHangKiem.IsCurrentCellInEditMode)
             {
-                dgvHangKiem.EndEdit();
-                return true;
+                string colName = dgvHangKiem.CurrentCell != null ? dgvHangKiem.Columns[dgvHangKiem.CurrentCell.ColumnIndex].Name : "";
+                if (colName == "colSoLuongThucTe")
+                {
+                    ApDungSoLuongThucTe();
+                    return true;
+                }
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }
@@ -595,56 +740,26 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             if (e.KeyCode == Keys.Enter)
             {
                 e.SuppressKeyPress = true;
-                dgvHangKiem.EndEdit();
+                ApDungSoLuongThucTe();
             }
         }
 
         private void dgvHangKiem_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            if (isCalculating || e.RowIndex < 0) return;
+            if (isCalculating || e.RowIndex < 0 || e.RowIndex >= dgvHangKiem.Rows.Count) return;
 
-            try
+            string colName = dgvHangKiem.Columns[e.ColumnIndex].Name;
+            if (colName == "colSoLuongThucTe")
             {
-                isCalculating = true;
-                DataGridViewRow row = dgvHangKiem.Rows[e.RowIndex];
-                decimal slThucTe = 0;
-                object cellVal = row.Cells["colSoLuongThucTe"].Value;
-                if (cellVal != null && !string.IsNullOrWhiteSpace(cellVal.ToString()))
+                try
                 {
-                    if (decimal.TryParse(cellVal.ToString(), out decimal parsedVal))
-                    {
-                        slThucTe = Math.Max(0, (int)Math.Floor(parsedVal));
-                    }
+                    isCalculating = true;
+                    ApDungSoLuongThucTe();
                 }
-                row.Cells["colSoLuongThucTe"].Value = slThucTe;
-
-                decimal tonKho = Convert.ToDecimal(row.Cells["colTonKho"].Value);
-                decimal donGia = Convert.ToDecimal(row.Cells["colDonGia"].Value);
-                decimal slLech = slThucTe - tonKho;
-
-                row.Cells["colSlChenhLech"].Value = slLech;
-                row.Cells["colGiaTriChenhLech"].Value = slLech * donGia;
-
-                if (row.DataBoundItem is DataRowView drv)
+                finally
                 {
-                    DataRow dr = drv.Row;
-                    dr["SoLuongThucTe"] = slThucTe;
-                    dr["SlChenhLech"] = slLech;
-                    dr["GiaTriChenhLech"] = slLech * donGia;
+                    isCalculating = false;
                 }
-                else if (e.RowIndex < dtHangKiem.Rows.Count)
-                {
-                    DataRow dr = dtHangKiem.Rows[e.RowIndex];
-                    dr["SoLuongThucTe"] = slThucTe;
-                    dr["SlChenhLech"] = slLech;
-                    dr["GiaTriChenhLech"] = slLech * donGia;
-                }
-
-                TinhToanTongKet();
-            }
-            finally
-            {
-                isCalculating = false;
             }
         }
 
@@ -1060,6 +1175,11 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
 
         private void btnBoQua_Click(object sender, EventArgs e)
         {
+            if (dgvHangKiem.IsCurrentCellInEditMode)
+            {
+                dgvHangKiem.CancelEdit();
+            }
+
             if (dtHangKiem.Rows.Count > 0)
             {
                 DialogResult dr = MessageBox.Show(
@@ -1068,9 +1188,10 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question);
 
-                if (dr == DialogResult.No) return;
+                if (dr != DialogResult.Yes) return;
             }
 
+            this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
 

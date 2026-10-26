@@ -113,7 +113,6 @@
             // 
             // btnBoQua
             // 
-            this.btnBoQua.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnBoQua.Location = new System.Drawing.Point(23, 732);
             this.btnBoQua.Name = "btnBoQua";
             this.btnBoQua.Size = new System.Drawing.Size(100, 34);

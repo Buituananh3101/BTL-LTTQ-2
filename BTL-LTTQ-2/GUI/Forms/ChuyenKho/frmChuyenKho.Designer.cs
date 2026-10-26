@@ -427,16 +427,22 @@
             this.dgvChuyenKho.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvChuyenKho.Size = new System.Drawing.Size(1395, 727);
             this.dgvChuyenKho.TabIndex = 3;
+            this.dgvChuyenKho.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvChuyenKho_CellClick);
             this.dgvChuyenKho.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvChuyenKho_CellDoubleClick);
             this.dgvChuyenKho.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvChuyenKho_CellFormatting);
+            this.dgvChuyenKho.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dgvChuyenKho_CellPainting);
+            this.dgvChuyenKho.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvChuyenKho_ColumnHeaderMouseClick);
+            this.dgvChuyenKho.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvChuyenKho_KeyDown);
             // 
             // colChon
             // 
+            this.colChon.DataPropertyName = "Chon";
             this.colChon.HeaderText = "";
             this.colChon.MinimumWidth = 35;
             this.colChon.Name = "colChon";
             this.colChon.ReadOnly = true;
             this.colChon.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.colChon.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.colChon.Width = 35;
             // 
             // colMaPhieu
