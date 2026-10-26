@@ -48,11 +48,14 @@ namespace BTL_LTTQ_2.GUI.Forms.DoiKho
                     dtKho.Columns.Add("TenKho", typeof(string));
                 }
 
-                // Thêm lựa chọn "Tất cả kho" vào đầu danh sách
-                DataRow rTatCa = dtKho.NewRow();
-                rTatCa["MaKho"] = 0;
-                rTatCa["TenKho"] = "Tất cả kho";
-                dtKho.Rows.InsertAt(rTatCa, 0);
+                // Chỉ vai trò Quản lý mới có lựa chọn "Tất cả kho" ở đầu danh sách
+                if (SessionContext.IsAdmin)
+                {
+                    DataRow rTatCa = dtKho.NewRow();
+                    rTatCa["MaKho"] = 0;
+                    rTatCa["TenKho"] = "Tất cả kho";
+                    dtKho.Rows.InsertAt(rTatCa, 0);
+                }
 
                 cboKhoLamViec.DataSource = dtKho;
                 cboKhoLamViec.DisplayMember = "TenKho";
@@ -79,6 +82,34 @@ namespace BTL_LTTQ_2.GUI.Forms.DoiKho
 
             int maKhoMoi = Convert.ToInt32(cboKhoLamViec.SelectedValue);
             string tenKhoMoi = cboKhoLamViec.Text;
+
+            // Kiểm tra lại quyền: vai trò không phải Quản lý chỉ được chọn kho đã phân công trong TaiKhoanKho
+            if (!SessionContext.IsAdmin)
+            {
+                try
+                {
+                    string sqlQuyen = @"SELECT COUNT(1)
+                                        FROM TaiKhoanKho tk
+                                        INNER JOIN Kho k ON k.MaKho = tk.MaKho
+                                        WHERE tk.MaTaiKhoan = @MaTaiKhoan AND tk.MaKho = @MaKho
+                                          AND (k.TrangThai = 'HOAT_DONG' OR k.TrangThai = 'ACTIVE')";
+                    object soQuyen = DataProcessing.ReadValue(sqlQuyen, new SqlParameter[] {
+                        new SqlParameter("@MaTaiKhoan", SessionContext.MaTaiKhoan),
+                        new SqlParameter("@MaKho", maKhoMoi)
+                    });
+
+                    if (maKhoMoi <= 0 || soQuyen == null || soQuyen == DBNull.Value || Convert.ToInt32(soQuyen) == 0)
+                    {
+                        MessageBox.Show("Bạn không có quyền làm việc tại kho đã chọn.\nVui lòng chọn kho được phân công.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi kiểm tra quyền kho: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
 
             SessionContext.MaKhoHienTai = maKhoMoi;
             SessionContext.TenKhoHienTai = tenKhoMoi;

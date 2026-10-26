@@ -23,8 +23,9 @@ namespace BTL_LTTQ_2.Classes
 
         /// <summary>
         /// Vai trò Quản lý: Toàn quyền truy cập mọi chức năng và quản lý mọi kho hàng
+        /// (Ưu tiên MaVaiTro 1/2/3; chỉ so khớp theo tên vai trò khi MaVaiTro = 0 để các cờ không thể cùng đúng)
         /// </summary>
-        public static bool IsAdmin => MaVaiTro == 1 || (!string.IsNullOrEmpty(TenVaiTro) && TenVaiTro.IndexOf("Quản lý", StringComparison.OrdinalIgnoreCase) >= 0);
+        public static bool IsAdmin => MaVaiTro > 0 ? MaVaiTro == 1 : KhopTenVaiTro("Quản lý");
 
         /// <summary>
         /// Vai trò Quản lý (bí danh của IsAdmin)
@@ -34,12 +35,20 @@ namespace BTL_LTTQ_2.Classes
         /// <summary>
         /// Vai trò Thủ kho: Quản lý 1 kho duy nhất được phân công
         /// </summary>
-        public static bool IsThuKho => MaVaiTro == 2 || (!string.IsNullOrEmpty(TenVaiTro) && TenVaiTro.IndexOf("Thủ kho", StringComparison.OrdinalIgnoreCase) >= 0);
+        public static bool IsThuKho => MaVaiTro > 0 ? MaVaiTro == 2 : KhopTenVaiTro("Thủ kho");
 
         /// <summary>
         /// Vai trò Nhân viên kho: Thực hiện các nghiệp vụ tác nghiệp tại kho được phân công
         /// </summary>
-        public static bool IsNhanVienKho => MaVaiTro == 3 || (!string.IsNullOrEmpty(TenVaiTro) && TenVaiTro.IndexOf("Nhân viên", StringComparison.OrdinalIgnoreCase) >= 0);
+        public static bool IsNhanVienKho => MaVaiTro > 0 ? MaVaiTro == 3 : KhopTenVaiTro("Nhân viên");
+
+        /// <summary>
+        /// So khớp tên vai trò (chỉ dùng dự phòng khi chưa có MaVaiTro)
+        /// </summary>
+        private static bool KhopTenVaiTro(string tuKhoa)
+        {
+            return !string.IsNullOrEmpty(TenVaiTro) && TenVaiTro.IndexOf(tuKhoa, StringComparison.OrdinalIgnoreCase) >= 0;
+        }
 
         /// <summary>
         /// Xóa sạch thông tin phiên làm việc khi người dùng đăng xuất

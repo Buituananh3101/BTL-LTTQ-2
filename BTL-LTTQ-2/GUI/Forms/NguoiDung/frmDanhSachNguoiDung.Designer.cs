@@ -395,7 +395,7 @@
             // 
             dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.colNgayTao.DefaultCellStyle = dataGridViewCellStyle5;
-            this.colNgayTao.HeaderText = "Thời gian tạo";
+            this.colNgayTao.HeaderText = "Đăng nhập cuối";
             this.colNgayTao.MinimumWidth = 6;
             this.colNgayTao.Name = "colNgayTao";
             this.colNgayTao.ReadOnly = true;

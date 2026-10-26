@@ -2,8 +2,6 @@
 using System;
 using System.Data;
 using System.Data.SqlClient;
-using System.Security.Cryptography;
-using System.Text;
 using System.Windows.Forms;
 
 namespace BTL_LTTQ_2.GUI.Forms.DangNhap
@@ -27,7 +25,8 @@ namespace BTL_LTTQ_2.GUI.Forms.DangNhap
         /// <summary>
         /// Nạp toàn bộ danh sách kho đang hoạt động từ CSDL kèm lựa chọn 'Tất cả kho'
         /// </summary>
-        private void NapDanhSachKhoMacDinh()
+        /// <returns>True nếu nạp thành công, False nếu gặp lỗi CSDL</returns>
+        private bool NapDanhSachKhoMacDinh()
         {
             try
             {
@@ -51,28 +50,31 @@ namespace BTL_LTTQ_2.GUI.Forms.DangNhap
                 cboKhoLamViec.ValueMember = "MaKho";
                 cboKhoLamViec.SelectedIndex = 0;
                 cboKhoLamViec.Enabled = true;
+                return true;
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi nạp danh sách kho: " + ex.Message, "Lỗi kết nối", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
             }
         }
 
         /// <summary>
         /// Tự động nạp danh sách kho phù hợp theo vai trò của tài khoản khi người dùng nhập tên đăng nhập
         /// </summary>
-        private void CapNhatDanhSachKhoTheoTaiKhoan(string tenDangNhap)
+        /// <returns>True nếu nạp danh sách kho thành công, False nếu gặp lỗi (không được phép đăng nhập)</returns>
+        private bool CapNhatDanhSachKhoTheoTaiKhoan(string tenDangNhap)
         {
             if (string.IsNullOrWhiteSpace(tenDangNhap))
             {
                 _tenDangNhapHienTai = string.Empty;
-                NapDanhSachKhoMacDinh();
-                return;
+                return NapDanhSachKhoMacDinh();
             }
 
             if (string.Equals(_tenDangNhapHienTai, tenDangNhap, StringComparison.OrdinalIgnoreCase))
             {
-                return;
+                // Đã nạp thành công cho tài khoản này trước đó
+                return true;
             }
 
             _tenDangNhapHienTai = tenDangNhap;
@@ -91,8 +93,12 @@ namespace BTL_LTTQ_2.GUI.Forms.DangNhap
                 if (dtUser == null || dtUser.Rows.Count == 0)
                 {
                     // Tài khoản chưa tìm thấy trong CSDL -> giữ danh sách mặc định để người dùng tiếp tục thao tác
-                    NapDanhSachKhoMacDinh();
-                    return;
+                    if (!NapDanhSachKhoMacDinh())
+                    {
+                        _tenDangNhapHienTai = string.Empty;
+                        return false;
+                    }
+                    return true;
                 }
 
                 int maVaiTro = Convert.ToInt32(dtUser.Rows[0]["MaVaiTro"]);
@@ -101,7 +107,11 @@ namespace BTL_LTTQ_2.GUI.Forms.DangNhap
                 if (maVaiTro == 1)
                 {
                     // Vai trò Quản lý: Toàn quyền truy cập mọi kho + Tất cả kho
-                    NapDanhSachKhoMacDinh();
+                    if (!NapDanhSachKhoMacDinh())
+                    {
+                        _tenDangNhapHienTai = string.Empty;
+                        return false;
+                    }
                 }
                 else
                 {
@@ -142,10 +152,14 @@ namespace BTL_LTTQ_2.GUI.Forms.DangNhap
                         cboKhoLamViec.Enabled = false;
                     }
                 }
+                return true;
             }
             catch (Exception ex)
             {
+                // Không giữ lại danh sách 'Tất cả kho' mặc định khi chưa xác định được quyền kho -> chặn đăng nhập
+                _tenDangNhapHienTai = string.Empty;
                 MessageBox.Show("Lỗi kiểm tra quyền kho: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
             }
         }
 
@@ -199,8 +213,11 @@ namespace BTL_LTTQ_2.GUI.Forms.DangNhap
 
             try
             {
-                // Đồng bộ lại danh sách kho theo tài khoản trước khi xác thực
-                CapNhatDanhSachKhoTheoTaiKhoan(tenDangNhap);
+                // Đồng bộ lại danh sách kho theo tài khoản trước khi xác thực (lỗi nạp kho -> chặn đăng nhập)
+                if (!CapNhatDanhSachKhoTheoTaiKhoan(tenDangNhap))
+                {
+                    return;
+                }
 
                 string sql = @"
                     SELECT tk.MaTaiKhoan, tk.TenDangNhap, tk.MatKhauHash, tk.TrangThai, 
@@ -224,8 +241,8 @@ namespace BTL_LTTQ_2.GUI.Forms.DangNhap
                 DataRow row = dt.Rows[0];
                 string dbMatKhau = row["MatKhauHash"] != DBNull.Value ? row["MatKhauHash"].ToString() : string.Empty;
 
-                // Xác thực mật khẩu: Hỗ trợ so sánh trực tiếp chuỗi thuần (Plain-text) và SHA-256 đối với tài khoản mẫu hệ thống
-                bool hopLe = (matKhau == dbMatKhau) || string.Equals(TinhSha256(matKhau), dbMatKhau, StringComparison.OrdinalIgnoreCase);
+                // Xác thực mật khẩu: giá trị lưu là SHA-256 thì chỉ so sánh SHA256(mật khẩu nhập); dữ liệu cũ dạng thuần thì so sánh trực tiếp
+                bool hopLe = PasswordHelper.KiemTraMatKhau(matKhau, dbMatKhau);
 
                 if (!hopLe)
                 {
@@ -233,6 +250,23 @@ namespace BTL_LTTQ_2.GUI.Forms.DangNhap
                     txtMatKhau.Clear();
                     txtMatKhau.Focus();
                     return;
+                }
+
+                // Nâng cấp mật khẩu cũ dạng văn bản thuần sang chuỗi băm SHA-256
+                if (!PasswordHelper.LaChuoiBamSha256(dbMatKhau))
+                {
+                    try
+                    {
+                        string sqlNangCap = "UPDATE TaiKhoan SET MatKhauHash = @MatKhauHash WHERE MaTaiKhoan = @MaTaiKhoan";
+                        DataProcessing.ChangeData(sqlNangCap, new SqlParameter[] {
+                            new SqlParameter("@MatKhauHash", PasswordHelper.HashPassword(matKhau)),
+                            new SqlParameter("@MaTaiKhoan", Convert.ToInt32(row["MaTaiKhoan"]))
+                        });
+                    }
+                    catch
+                    {
+                        // Bỏ qua lỗi nâng cấp, lần đăng nhập sau sẽ thử lại
+                    }
                 }
 
                 // Kiểm tra trạng thái hoạt động của tài khoản
@@ -267,6 +301,27 @@ namespace BTL_LTTQ_2.GUI.Forms.DangNhap
                     MessageBox.Show("Chỉ vai trò Quản lý mới có quyền truy cập 'Tất cả kho'.\nVui lòng chọn một kho cụ thể được phân công.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     cboKhoLamViec.Focus();
                     return;
+                }
+
+                // Kiểm tra lại trên CSDL: vai trò không phải Quản lý chỉ được vào kho đã phân công trong TaiKhoanKho
+                if (maVaiTro != 1)
+                {
+                    string sqlQuyenKho = @"
+                        SELECT COUNT(1)
+                        FROM TaiKhoanKho tkk
+                        INNER JOIN Kho k ON tkk.MaKho = k.MaKho
+                        WHERE tkk.MaTaiKhoan = @MaTaiKhoan AND tkk.MaKho = @MaKho
+                          AND (k.TrangThai = 'HOAT_DONG' OR k.TrangThai = 'ACTIVE')";
+                    object soQuyen = DataProcessing.ReadValue(sqlQuyenKho, new SqlParameter[] {
+                        new SqlParameter("@MaTaiKhoan", Convert.ToInt32(row["MaTaiKhoan"])),
+                        new SqlParameter("@MaKho", maKho)
+                    });
+
+                    if (soQuyen == null || soQuyen == DBNull.Value || Convert.ToInt32(soQuyen) == 0)
+                    {
+                        MessageBox.Show("Tài khoản của bạn chưa được phân công kho làm việc hợp lệ.\nVui lòng liên hệ Quản lý.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
                 }
 
                 // Cập nhật thời điểm đăng nhập cuối cùng
@@ -304,24 +359,6 @@ namespace BTL_LTTQ_2.GUI.Forms.DangNhap
         {
             this.DialogResult = DialogResult.Cancel;
             this.Close();
-        }
-
-        /// <summary>
-        /// Hàm băm SHA-256 phục vụ xác thực đối chiếu với dữ liệu mẫu trong CSDL
-        /// </summary>
-        private static string TinhSha256(string chuoi)
-        {
-            if (string.IsNullOrEmpty(chuoi)) return string.Empty;
-            using (SHA256 sha256 = SHA256.Create())
-            {
-                byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(chuoi));
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < bytes.Length; i++)
-                {
-                    sb.Append(bytes[i].ToString("x2"));
-                }
-                return sb.ToString();
-            }
         }
     }
 }
