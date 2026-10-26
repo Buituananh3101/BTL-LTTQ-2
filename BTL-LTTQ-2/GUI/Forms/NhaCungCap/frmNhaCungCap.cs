@@ -777,16 +777,14 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
             MoFormDonViCapHang(0);
         }
 
-        // Bấm nút + tạo mới nhóm nhà cung cấp ngay cạnh ComboBox
+        // Bấm nút + tạo mới/quản lý nhóm nhà cung cấp ngay cạnh ComboBox
         private void btnThemNhomNCC_Click(object sender, EventArgs e)
         {
             using (frmNhomNhaCungCap frmNhom = new frmNhomNhaCungCap())
             {
-                if (frmNhom.ShowDialog(this) == DialogResult.OK)
-                {
-                    int maNhomMoi = frmNhom.MaNhomVuaTao;
-                    NapDanhSachNhomNCC(maNhomMoi);
-                }
+                frmNhom.ShowDialog(this);
+                int maNhomMoi = frmNhom.MaNhomVuaTao;
+                NapDanhSachNhomNCC(maNhomMoi);
             }
         }
 

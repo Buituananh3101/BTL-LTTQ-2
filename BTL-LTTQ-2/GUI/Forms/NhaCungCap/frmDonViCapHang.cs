@@ -45,6 +45,10 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
 
         private void frmDonViCapHang_Load(object sender, EventArgs e)
         {
+            // Cố định kích thước chuẩn form Size Lớn theo Rule 15e (1182, 803)
+            this.ClientSize = new Size(1182, 803);
+            this.StartPosition = FormStartPosition.CenterParent;
+
             if (btnXoa != null)
             {
                 btnXoa.Cursor = Cursors.Hand;
@@ -57,18 +61,26 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                 lblTieuDe.Text = "Cập nhật nhà cung cấp";
                 this.Text = "Cập nhật thông tin nhà cung cấp";
                 grpCongNo.Visible = true;
-                this.ClientSize = new Size(960, 705);
                 NapThongTinNhaCungCap();
             }
             else
             {
                 lblTieuDe.Text = "Tạo nhà cung cấp";
                 this.Text = "Thêm nhà cung cấp mới";
-                grpCongNo.Visible = false;
-                this.ClientSize = new Size(960, 610);
+                grpCongNo.Visible = true;
+                lblTongMuaVal.Text = "0 đ";
+                lblNoHienTaiVal.Text = "0 đ";
+                lblNoHienTaiVal.ForeColor = SystemColors.ControlText;
+
                 SinhMaNccGoiY();
                 trangThaiHienTai = "HOAT_DONG";
                 CapNhatGiaoDienNutXoa();
+
+                // Đặt con trỏ vào ô Tên nhà cung cấp để người dùng nhập ngay
+                this.BeginInvoke((MethodInvoker)delegate
+                {
+                    txtTenDonVi.Focus();
+                });
             }
         }
 
@@ -76,7 +88,6 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
 
         private void NapCombobox()
         {
-            // 1. Nhóm nhà cung cấp
             try
             {
                 string sqlNhom = @"
@@ -96,10 +107,8 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                 drNone["TenNhom"] = "-- Chưa phân nhóm --";
                 dtNhom.Rows.InsertAt(drNone, 0);
 
-                cboNhomNcc.DataSource = dtNhom;
-                cboNhomNcc.ValueMember = "MaNhomNcc";
-                cboNhomNcc.DisplayMember = "TenNhom";
-                cboNhomNcc.SelectedIndex = 0;
+                ComboboxHelper.CaiDatTimKiem(cboNhomNcc, dtNhom, "TenNhom", "MaNhomNcc");
+                cboNhomNcc.SelectedValue = 0;
             }
             catch (Exception ex)
             {
@@ -111,7 +120,14 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
         {
             try
             {
-                string sql = "SELECT ISNULL(MAX(MaDonViCapHang), 0) + 1 FROM DonViCapHang";
+                string sql = @"
+                    SELECT ISNULL(MAX(
+                        CASE 
+                            WHEN MaNcc LIKE 'NCC[0-9]%' THEN TRY_CAST(SUBSTRING(MaNcc, 4, 10) AS INT)
+                            ELSE 0 
+                        END
+                    ), 0) + 1 
+                    FROM DonViCapHang";
                 object val = DataProcessing.ReadValue(sql);
                 int nextId = val != null && int.TryParse(val.ToString(), out int id) ? id : 1;
                 txtMaNcc.Text = $"NCC{nextId:D5}";
@@ -136,7 +152,13 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                                FROM PhieuNhap pn 
                                WHERE pn.MaDonViCapHang = ncc.MaDonViCapHang 
                                  AND pn.TrangThai IN ('DA_XAC_NHAN', 'DA_NHAN')
-                           ), 0) AS TongMua
+                           ), 0) AS TongMua,
+                           ISNULL((
+                               SELECT SUM(pt.TongTienTra) 
+                               FROM PhieuTraHangNhap pt 
+                               WHERE pt.MaDonViCapHang = ncc.MaDonViCapHang 
+                                 AND pt.TrangThai = 'DA_TRA_HANG'
+                           ), 0) AS TongTra
                     FROM DonViCapHang ncc
                     WHERE ncc.MaDonViCapHang = @MaDonViCapHang;";
 
@@ -158,14 +180,22 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                     {
                         cboNhomNcc.SelectedValue = maNhom;
                     }
+                    else
+                    {
+                        cboNhomNcc.SelectedValue = 0;
+                    }
 
                     // Lưu trạng thái hiện tại
                     trangThaiHienTai = r["TrangThai"] != DBNull.Value ? r["TrangThai"].ToString() : "HOAT_DONG";
 
-                    // Hiển thị công nợ & tổng mua
+                    // Hiển thị công nợ & tổng mua thực tế (trừ phần trả hàng)
                     decimal tongMua = r["TongMua"] != DBNull.Value && decimal.TryParse(r["TongMua"].ToString(), out decimal tm) ? tm : 0;
+                    decimal tongTra = r["TongTra"] != DBNull.Value && decimal.TryParse(r["TongTra"].ToString(), out decimal tt) ? tt : 0;
+                    decimal noHienTai = tongMua - tongTra;
+
                     lblTongMuaVal.Text = $"{tongMua:N0} đ";
-                    lblNoHienTaiVal.Text = $"{tongMua:N0} đ"; // Khi chưa có sổ quỹ, nợ = tổng mua
+                    lblNoHienTaiVal.Text = $"{noHienTai:N0} đ";
+                    lblNoHienTaiVal.ForeColor = noHienTai > 0 ? Color.Red : SystemColors.ControlText;
 
                     CapNhatGiaoDienNutXoa();
                 }
@@ -441,6 +471,12 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                 }
 
                 // Nhóm nhà cung cấp
+                if (cboNhomNcc.SelectedIndex < 0 && !string.IsNullOrWhiteSpace(cboNhomNcc.Text))
+                {
+                    int idx = cboNhomNcc.FindStringExact(cboNhomNcc.Text.Trim());
+                    if (idx >= 0) cboNhomNcc.SelectedIndex = idx;
+                }
+
                 object valMaNhom = DBNull.Value;
                 if (cboNhomNcc.SelectedValue != null && int.TryParse(cboNhomNcc.SelectedValue.ToString(), out int maNhom) && maNhom > 0)
                 {
