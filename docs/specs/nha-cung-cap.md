@@ -114,5 +114,6 @@
 2. **Tên nhà cung cấp**: Bắt buộc nhập, tối đa 250 ký tự.
 3. **Bảo vệ toàn vẹn dữ liệu chứng từ**: Tuyệt đối không xóa cứng nhà cung cấp đã phát sinh phiếu nhập kho (`PhieuNhap`).
 4. **Tính toán Công nợ & Tổng mua**:
-   - `TongMua`: Tổng giá trị các phiếu nhập kho trạng thái hoàn thành (`DA_XAC_NHAN` / `DA_NHAN`).
-   - `NoCanTraHienTai`: Tính toán động từ các phiếu nhập (`PhieuNhap.CanTraNcc`), bảng `DonViCapHang` không lưu trường nợ tĩnh.
+   - `TongMua`: `SUM(PhieuNhap.TongTien)` của các phiếu nhập `DA_XAC_NHAN` (CHECK của `PhieuNhap` chỉ có `NHAP`/`DA_XAC_NHAN`/`HUY`).
+   - `NoCanTraHienTai` = `SUM(PhieuNhap.CanTraNcc)` phiếu `DA_XAC_NHAN` − `SUM(CanThuNcc − DaThuNcc)` của phiếu trả `DA_TRA_HANG`. Công thức dùng chung cho danh sách, bộ lọc "Nợ hiện tại", form chi tiết và form sửa NCC. Nợ âm hiển thị kèm "(NCC đang nợ lại)". Bảng `DonViCapHang` không lưu trường nợ tĩnh.
+5. **Trạng thái**: Chỉ dùng `HOAT_DONG` / `NGUNG_GIAO_DICH` (đúng CHECK của bảng), hiển thị "Đang hoạt động" / "Ngừng hoạt động".

@@ -3,12 +3,12 @@
 ## 1. Môi trường CSDL & Cấu hình Kết nối
 
 - **Hệ quản trị CSDL**: Microsoft SQL Server.
-- **Tên CSDL**: `QuanLyKhoPhuQuocLTW`.
+- **Tên CSDL**: `QuanLyKhoPhuQuocLTTQ`.
 - **Chuỗi kết nối**: Khai báo tập trung trong [`App.config`](../../BTL-LTTQ-2/App.config):
   ```xml
   <connectionStrings>
       <add name="QuanLyKhoConnection" 
-           connectionString="Server=localhost\SQLEXPRESS;Database=QuanLyKhoPhuQuocLTW;Integrated Security=True;TrustServerCertificate=True;MultipleActiveResultSets=True" 
+           connectionString="Server=localhost\SQLEXPRESS;Database=QuanLyKhoPhuQuocLTTQ;Integrated Security=True;TrustServerCertificate=True;MultipleActiveResultSets=True" 
            providerName="System.Data.SqlClient" />
   </connectionStrings>
   ```

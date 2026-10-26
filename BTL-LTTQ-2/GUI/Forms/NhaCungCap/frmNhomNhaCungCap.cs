@@ -352,7 +352,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
         private void txtTimKiem_TextChanged(object sender, EventArgs e)
         {
             if (dtNhomHang == null) return;
-            string kw = txtTimKiem.Text.Trim().Replace("'", "''").Replace("[", "[[]").Replace("%", "[%]");
+            string kw = ComboboxHelper.ThoatKyTuLikeRowFilter(txtTimKiem.Text.Trim());
             if (string.IsNullOrEmpty(kw))
             {
                 dtNhomHang.DefaultView.RowFilter = "";

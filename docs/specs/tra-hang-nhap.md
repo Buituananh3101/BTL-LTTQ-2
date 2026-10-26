@@ -37,7 +37,9 @@
   - `DaThuNcc` DECIMAL(18,2) (Số tiền NCC đã thanh toán hoàn trả lại)
   - `GhiChu` NVARCHAR(500) NULL
   - `DaDanhDau` BIT DEFAULT 0
-  - *(Ghi chú)*: Trong schema CSDL thực tế, bảng `PhieuTraHangNhap` không có cột `MaPhieuNhap`. Code phân hệ Trả hàng nhập được chuẩn hóa truy vấn đúng schema thực tế (hiển thị "Trả tự do" cho mã đơn nhập gốc). Khi nào có nhu cầu liên kết với đơn nhập gốc, cột `MaPhieuNhap` sẽ được đề xuất bổ sung theo đúng 3 Nguyên tắc vàng CSDL và Điều luật 17.
+  - `MaPhieuNhap` INT NULL: liên kết phiếu nhập gốc. Phiếu trả lập từ `NhapHang/frmTraHangNhap` (trả theo đơn nhập) lưu cột này; phiếu trả tự do để NULL (hiển thị "Trả tự do").
+  - **Trả theo đơn nhập**: số trả tối đa mỗi dòng = SL nhập − SL đã trả (phiếu `NHAP` + `DA_TRA_HANG` cùng `MaPhieuNhap`). Giá trả = (SL × Đơn giá − Giảm giá dòng) / SL. Trong transaction đọc lại `CanTraNcc`, kiểm tra lại SL còn được trả và tồn kho, rồi trừ `PhieuNhap.CanTraNcc`.
+  - **Hủy phiếu trả có `MaPhieuNhap`**: cộng lại `CanTraNcc += TongTienHang − GiamGia − CanThuNcc` trong cùng transaction. Phiếu nhập còn phiếu trả `NHAP`/`DA_TRA_HANG` liên kết thì không được hủy.
 - **`ChiTietPhieuTraHangNhap`**:
   - `MaCtphieuTra` INT IDENTITY(1,1) PRIMARY KEY
   - `MaPhieuTraHang` INT NOT NULL (Khóa ngoại $\to$ `PhieuTraHangNhap` ON DELETE CASCADE)

@@ -12,7 +12,7 @@
 ## NHÓM 1: NỀN TẢNG KIẾN TRÚC & XÁC THỰC (Foundation & Auth)
 
 - [x] **[TASK-01] Khởi tạo Solution WinForms .NET 4.7.2 & Kết nối CSDL**
-  - Cấu hình chuỗi kết nối `QuanLyKhoConnection` tới `localhost\SQLEXPRESS;Database=QuanLyKhoPhuQuocLTW` trong `App.config`.
+  - Cấu hình chuỗi kết nối `QuanLyKhoConnection` tới `localhost\SQLEXPRESS;Database=QuanLyKhoPhuQuocLTTQ` trong `App.config`.
   - Xây dựng lớp tiện ích ADO.NET thuần `DAL/DataProcessing.cs` hỗ trợ `ReadData`, `ChangeData`, `ReadValue`, `ChangeDataTransaction`.
 - [x] **[TASK-02] Thiết kế Form chính MDI (`frmMain`)**
   - Thiết lập thuộc tính `IsMdiContainer = true`.

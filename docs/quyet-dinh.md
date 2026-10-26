@@ -272,3 +272,10 @@
   4. **Cơ chế vòng lặp phiên làm việc và Đăng xuất (`Program.cs` & `frmMain.cs`)**:
      - `Program.cs` chạy vòng lặp yêu cầu đăng nhập trước khi vào `frmMain`.
      - Khi người dùng chọn "Đăng xuất" trên menu Hệ thống của `frmMain`, ứng dụng xóa sạch phiên làm việc trong `SessionContext` và quay trở lại ngay màn hình Đăng nhập `frmDangNhap`. Khi chọn "Thoát" hoặc đóng cửa sổ, ứng dụng kết thúc hoàn toàn.
+- **2026-10-26 (Phiên 57)** – Đổi tên CSDL của bản WinForms thành `QuanLyKhoPhuQuocLTTQ` và phát hành kèm `docs/TaoCSDL_DayDu.sql` (sinh bằng `tools/XuatScriptCSDL.ps1`) – Tách khỏi CSDL của dự án Web; người clone về chỉ cần chạy 1 script trên CSDL trống là chạy được ứng dụng.
+- **2026-10-26 (Phiên 57)** – Công nợ NCC tính bằng một công thức dùng chung: `SUM(CanTraNcc)` phiếu nhập `DA_XAC_NHAN` − `SUM(CanThuNcc − DaThuNcc)` phiếu trả `DA_TRA_HANG` – Danh sách, bộ lọc, chi tiết và form sửa NCC luôn ra cùng một số.
+- **2026-10-26 (Phiên 57)** – Phiếu trả lập theo đơn nhập lưu `PhieuTraHangNhap.MaPhieuNhap`, giới hạn SL còn được trả và trừ/hoàn `PhieuNhap.CanTraNcc` trong cùng transaction; phiếu nhập còn phiếu trả liên kết không được hủy – Tránh trả vượt số đã nhập và lệch công nợ.
+- **2026-10-26 (Phiên 57)** – Cột nhân viên trên chứng từ luôn ghi `NhanVien.MaNV` (lấy từ `SessionContext.MaNV`), không ghi `MaTaiKhoan` và không mặc định 1 – Tài khoản chưa gắn nhân viên thì không được lập chứng từ.
+- **2026-10-26 (Phiên 57)** – Cân bằng kho đọc lại tồn sổ sách ngay trong transaction cân bằng; ô SL thực tế để trống nghĩa là "chưa kiểm" (NULL) – Chênh lệch tính trên tồn tại thời điểm cân bằng, không trên tồn lúc mở phiếu.
+- **2026-10-26 (Phiên 57)** – Mật khẩu chỉ so khớp và lưu qua `PasswordHelper` (SHA-256, hex chữ thường); mật khẩu thuần cũ tự nâng cấp lên chuỗi băm khi đăng nhập đúng – Không còn đăng nhập được bằng cách gõ thẳng chuỗi băm.
+- **2026-10-26 (Phiên 57)** – Lệnh đổi trạng thái chứng từ luôn kèm điều kiện trạng thái hiện tại (`AND TrangThai = ...`) và kiểm tra số dòng tác động – Hai người thao tác cùng phiếu không ghi đè nhau.

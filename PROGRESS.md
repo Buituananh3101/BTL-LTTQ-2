@@ -1,6 +1,6 @@
 ﻿# Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-26 – Chuẩn hóa phím Enter/nhận SL kiểm kho và đồng bộ hành vi nút Bỏ qua của 4 form thêm chứng từ (Phiên 56)
+**Cập nhật lần cuối**: 2026-10-26 – Rà soát, sửa toàn bộ lỗi logic/nghiệp vụ và đóng gói script tạo CSDL đầy đủ (Phiên 57)
 ---
 
 ## Đang làm
@@ -33,7 +33,7 @@
 
 | STT | Phân hệ / Chức năng | Mô tả chi tiết | Trạng thái |
 |:---:|---|---|:---:|
-| 1 | **Khởi tạo Kiến trúc & CSDL** | Solution WinForms .NET 4.7.2, `DataProcessing.cs`, CSDL `QuanLyKhoPhuQuocLTW` | Hoàn thành 100% |
+| 1 | **Khởi tạo Kiến trúc & CSDL** | Solution WinForms .NET 4.7.2, `DataProcessing.cs`, CSDL `QuanLyKhoPhuQuocLTTQ` (tạo mới bằng `docs/TaoCSDL_DayDu.sql`) | Hoàn thành 100% |
 | 2 | **Quy chuẩn Vận hành AI** | Thư mục `.agent/rules/`, `AGENTS.md`, `PROGRESS.md`, `docs/` | Hoàn thành 100% |
 | 3 | **Giao diện Khung MDI** | `frmMain` MDI Container, MenuStrip 5 phân hệ, StatusStrip trạng thái | Hoàn thành 100% |
 | 4 | **Xác thực & Phân quyền** | SessionContext, SHA-256 PasswordHelper, rmDangNhap, phân quyền menu theo 3 vai trò | Hoàn thành 100% |
@@ -51,6 +51,18 @@
 ---
 
 ## Nhật ký phiên (Session Logs)
+- **Phiên 57 (2026-10-26) – Rà soát và sửa toàn bộ lỗi logic/nghiệp vụ, đóng gói CSDL**:
+  - **Nhu cầu**: Rà soát toàn dự án tìm lỗi logic, nghiệp vụ; sửa toàn bộ để chạy hoàn chỉnh; đóng gói để người khác clone về chạy được.
+  - **Kết quả thực hiện**:
+    1. **Báo cáo tồn kho / Thẻ kho / View**: bỏ cột `MaVach` không tồn tại (tìm theo `QuyCach`); lọc trạng thái đúng `DANG_BAN`/`NGUNG_BAN`; cảnh báo dưới định mức theo từng kho; xuất file toàn bộ kết quả lọc; Nhân viên kho không mở được thẻ kho. Thẻ kho tính tồn lũy kế trên toàn bộ giao dịch rồi mới lọc loại giao dịch, hiện đúng mã phiếu thật. `vw_BienDongKho` cộng kho nhận theo `SoLuongNhan`.
+    2. **Xác thực & Người dùng**: đăng nhập so khớp qua `PasswordHelper.KiemTraMatKhau` (không còn chấp nhận gõ chuỗi băm); mọi nơi lưu mật khẩu đều băm SHA-256; khóa/mở khóa dùng `KHOA`/`HOAT_DONG`; xóa tài khoản kiểm tra chứng từ ở các bảng thật; giữ tối thiểu 1 Quản lý hoạt động; phân quyền kho theo vai trò; danh sách người dùng đọc từ CSDL, có lọc và phân trang.
+    3. **Hàng hóa & Danh mục**: không ghi đè `QuyCach` khi sửa; chế độ Tất cả kho tính tổng tồn và khóa ô định mức; đặt lại định mức về 0 được; sinh mã `HH` + 6 số thống nhất; đọc số tiền không phụ thuộc vùng miền; xuất file toàn bộ theo bộ lọc; RowFilter thoát ký tự đặc biệt qua `ComboboxHelper.ThoatKyTuLikeRowFilter` (gồm cả `frmNhomNhaCungCap`).
+    4. **Kiểm kho & Chuyển kho**: cân bằng kho đọc lại tồn trong cùng transaction (`CanBangKhoTrongGiaoDich`); ô trống là "chưa kiểm" (NULL); phiếu hủy bị khóa; phiếu chuyển tạm chuyển được; hủy/nhận kiểm tra trạng thái hiện tại và số dòng tác động; `TonCuoi` → `SoLuongTon`; xuất file Kiểm kho toàn bộ phiếu khớp bộ lọc.
+    5. **Nhà cung cấp / Nhập hàng / Trả hàng nhập**: trạng thái NCC dùng `NGUNG_GIAO_DICH`; công thức công nợ dùng chung (trừ phiếu trả); trả theo đơn nhập lưu `MaPhieuNhap`, giới hạn SL còn được trả, trừ/hoàn `CanTraNcc` khi trả/hủy; chặn hủy phiếu nhập còn phiếu trả; combo nhân viên dùng `NhanVien.MaNV`; mã PN/THN chống trùng; nhập file báo dòng bị bỏ qua kèm lý do.
+    6. **Đóng gói CSDL**: thêm `tools/XuatScriptCSDL.ps1` và `docs/TaoCSDL_DayDu.sql` (cấu trúc + ràng buộc + view + dữ liệu mẫu). Đã chạy thử vào CSDL tạm: 30 bảng, 2 view, 32 CHECK, 54 khóa ngoại, dữ liệu và tồn kho khớp CSDL gốc.
+  - **Kiểm thử**: MSBuild 0 lỗi; `tools/KiemTraMaHoa.ps1` 100% UTF-8 BOM, 0 Mojibake; mở thử 57 màn hình bằng 3 vai trò (quanly/thukho/nvkho), không phát sinh lỗi; đăng nhập sai mật khẩu và để trống báo đúng.
+  - **Hạn chế còn lại**: kiểm tra tồn và sinh mã chạy ở mức READ COMMITTED (có kiểm tra lại trong transaction nhưng chưa khóa bảng); `frmThemPhieuChuyenKho` cũ không còn dùng; phiếu trả tạm có liên kết phiếu nhập chưa được tạo ở đâu trong code.
+
 - **Phiên 56 (2026-10-26) – Chuẩn hóa phím Enter/nhận SL kiểm kho và đồng bộ hành vi nút Bỏ qua của 4 form thêm chứng từ**:
   - **Nhu cầu**: Người dùng phản ánh:
     1. Trong form `frmThemPhieuKiemKho`: khi thêm 1, 2 hàng hóa thủ công thì nhập số lượng và ấn Enter thì số lượng không nhận.
