@@ -849,7 +849,8 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             return ChuyenDoiRawRowsThanhDongHangHoa(rawRows);
         }
 
-        private List<string> TachDongCsv(string line, char delimiter)
+        // Tách một dòng CSV có hỗ trợ ô trong dấu nháy kép (vd "350,000"); dùng chung cho các form nhập file
+        internal static List<string> TachDongCsv(string line, char delimiter)
         {
             List<string> result = new List<string>();
             StringBuilder cur = new StringBuilder();

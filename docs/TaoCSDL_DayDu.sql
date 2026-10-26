@@ -1125,11 +1125,11 @@ INSERT [dbo].[HangHoa] ([MaHang], [MaNhom], [MaDVT], [MaHangNoiBo], [TenHang], [
 GO
 SET IDENTITY_INSERT [dbo].[HangHoa] OFF
 GO
-INSERT [dbo].[TaiKhoanKho] ([MaTaiKhoan], [MaKho], [NgayPhanCong], [GhiChu]) VALUES (1, 1, CAST(N'2026-10-13T08:12:50.940' AS DateTime), N'Khá»Ÿi táº¡o phĂ¢n quyá»n máº·c Ä‘á»‹nh há»‡ thá»‘ng')
+INSERT [dbo].[TaiKhoanKho] ([MaTaiKhoan], [MaKho], [NgayPhanCong], [GhiChu]) VALUES (1, 1, CAST(N'2026-10-13T08:12:50.940' AS DateTime), N'Khởi tạo phân quyền mặc định hệ thống')
 GO
-INSERT [dbo].[TaiKhoanKho] ([MaTaiKhoan], [MaKho], [NgayPhanCong], [GhiChu]) VALUES (1, 2, CAST(N'2026-10-13T08:12:50.940' AS DateTime), N'Khá»Ÿi táº¡o phĂ¢n quyá»n máº·c Ä‘á»‹nh há»‡ thá»‘ng')
+INSERT [dbo].[TaiKhoanKho] ([MaTaiKhoan], [MaKho], [NgayPhanCong], [GhiChu]) VALUES (1, 2, CAST(N'2026-10-13T08:12:50.940' AS DateTime), N'Khởi tạo phân quyền mặc định hệ thống')
 GO
-INSERT [dbo].[TaiKhoanKho] ([MaTaiKhoan], [MaKho], [NgayPhanCong], [GhiChu]) VALUES (1, 3, CAST(N'2026-10-13T08:12:50.940' AS DateTime), N'Khá»Ÿi táº¡o phĂ¢n quyá»n máº·c Ä‘á»‹nh há»‡ thá»‘ng')
+INSERT [dbo].[TaiKhoanKho] ([MaTaiKhoan], [MaKho], [NgayPhanCong], [GhiChu]) VALUES (1, 3, CAST(N'2026-10-13T08:12:50.940' AS DateTime), N'Khởi tạo phân quyền mặc định hệ thống')
 GO
 INSERT [dbo].[TaiKhoanKho] ([MaTaiKhoan], [MaKho], [NgayPhanCong], [GhiChu]) VALUES (2, 1, CAST(N'2026-10-26T15:37:36.470' AS DateTime), NULL)
 GO
@@ -1427,7 +1427,7 @@ INSERT [dbo].[NhatKyThaoTac] ([MaNhatKy], [MaTaiKhoan], [ThoiDiem], [ThaoTac], [
 GO
 INSERT [dbo].[NhatKyThaoTac] ([MaNhatKy], [MaTaiKhoan], [ThoiDiem], [ThaoTac], [LoaiDoiTuong], [MaDoiTuong], [NoiDung]) VALUES (7, 1, CAST(N'2026-10-12T19:51:07.3128034' AS DateTime2), N'Cân bằng kho', N'PhieuKiemKe', N'5', N'Cân bằng kho #5 tại Kho 1, số dòng: 2, dòng chênh lệch: 0')
 GO
-INSERT [dbo].[NhatKyThaoTac] ([MaNhatKy], [MaTaiKhoan], [ThoiDiem], [ThaoTac], [LoaiDoiTuong], [MaDoiTuong], [NoiDung]) VALUES (8, 1, CAST(N'2026-10-13T10:38:16.2073551' AS DateTime2), N'Đăng nhập', N'TaiKhoan', N'1', N'Đăng nhập thành công với tài khoản quanly (Quáº£n lĂ½)')
+INSERT [dbo].[NhatKyThaoTac] ([MaNhatKy], [MaTaiKhoan], [ThoiDiem], [ThaoTac], [LoaiDoiTuong], [MaDoiTuong], [NoiDung]) VALUES (8, 1, CAST(N'2026-10-13T10:38:16.2073551' AS DateTime2), N'Đăng nhập', N'TaiKhoan', N'1', N'Đăng nhập thành công với tài khoản quanly (Quản lý)')
 GO
 INSERT [dbo].[NhatKyThaoTac] ([MaNhatKy], [MaTaiKhoan], [ThoiDiem], [ThaoTac], [LoaiDoiTuong], [MaDoiTuong], [NoiDung]) VALUES (9, 2, CAST(N'2026-10-13T10:41:06.2576663' AS DateTime2), N'Đăng nhập', N'TaiKhoan', N'2', N'Đăng nhập thành công với tài khoản thukho (NhĂ¢n viĂªn kho)')
 GO

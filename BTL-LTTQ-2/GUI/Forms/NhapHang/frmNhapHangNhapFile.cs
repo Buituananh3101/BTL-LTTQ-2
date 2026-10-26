@@ -431,7 +431,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                 string line = lines[i].Trim();
                 if (string.IsNullOrEmpty(line)) continue;
 
-                string[] parts = line.Split(sep);
+                string[] parts = DanhSachHangHoa.frmNhapHangHoaFile.TachDongCsv(line, sep).ToArray();
 
                 DataRow r = dt.NewRow();
                 r["DongSo"] = i + 1;

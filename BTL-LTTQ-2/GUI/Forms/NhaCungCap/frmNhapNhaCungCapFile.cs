@@ -650,7 +650,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                 {
                     if (!string.IsNullOrWhiteSpace(l))
                     {
-                        rawRows.Add(new List<string>(l.Split('\t', ',')));
+                        rawRows.Add(DanhSachHangHoa.frmNhapHangHoaFile.TachDongCsv(l, l.Contains("\t") ? '\t' : ','));
                     }
                 }
             }
