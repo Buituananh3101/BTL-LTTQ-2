@@ -112,18 +112,26 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                            ISNULL(ncc.MaNcc, 'NCC' + RIGHT('00000' + CAST(ncc.MaDonViCapHang AS VARCHAR(10)), 5)) AS MaNcc,
                            ncc.TenDonVi, ncc.DienThoai, ncc.Email, ncc.DiaChi, ncc.KhuVuc, ncc.MaSoThue,
                            ISNULL(ncc.MaNhomNcc, 0) AS MaNhomNcc, ncc.GhiChu, ncc.TrangThai,
+                           -- Tổng mua = tổng giá trị phiếu nhập đã hoàn thành
                            ISNULL((
-                               SELECT SUM(pn.TongTien) 
-                               FROM PhieuNhap pn 
-                               WHERE pn.MaDonViCapHang = ncc.MaDonViCapHang 
-                                 AND pn.TrangThai IN ('DA_XAC_NHAN', 'DA_NHAN')
+                               SELECT SUM(pn.TongTien)
+                               FROM PhieuNhap pn
+                               WHERE pn.MaDonViCapHang = ncc.MaDonViCapHang
+                                 AND pn.TrangThai = 'DA_XAC_NHAN'
                            ), 0) AS TongMua,
+                           -- Nợ cần trả hiện tại = Tổng cần trả NCC của phiếu nhập - phần NCC còn phải hoàn lại từ phiếu trả hàng (công thức dùng chung với danh sách NCC)
                            ISNULL((
-                               SELECT SUM(pt.CanThuNcc) 
-                               FROM PhieuTraHangNhap pt 
-                               WHERE pt.MaDonViCapHang = ncc.MaDonViCapHang 
+                               SELECT SUM(pn.CanTraNcc)
+                               FROM PhieuNhap pn
+                               WHERE pn.MaDonViCapHang = ncc.MaDonViCapHang
+                                 AND pn.TrangThai = 'DA_XAC_NHAN'
+                           ), 0)
+                           - ISNULL((
+                               SELECT SUM(pt.CanThuNcc - pt.DaThuNcc)
+                               FROM PhieuTraHangNhap pt
+                               WHERE pt.MaDonViCapHang = ncc.MaDonViCapHang
                                  AND pt.TrangThai = 'DA_TRA_HANG'
-                           ), 0) AS TongTra
+                           ), 0) AS NoCanTraHienTai
                     FROM DonViCapHang ncc
                     WHERE ncc.MaDonViCapHang = @MaDonViCapHang;";
 
@@ -155,11 +163,11 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
 
                     // Hiển thị công nợ & tổng mua thực tế
                     decimal tongMua = r["TongMua"] != DBNull.Value && decimal.TryParse(r["TongMua"].ToString(), out decimal tm) ? tm : 0;
-                    decimal tongTra = r["TongTra"] != DBNull.Value && decimal.TryParse(r["TongTra"].ToString(), out decimal tt) ? tt : 0;
-                    decimal noHienTai = tongMua - tongTra;
+                    decimal noHienTai = r["NoCanTraHienTai"] != DBNull.Value ? Convert.ToDecimal(r["NoCanTraHienTai"]) : 0;
 
                     lblTongMuaVal.Text = $"{tongMua:N0} đ";
-                    lblNoHienTaiVal.Text = $"{noHienTai:N0} đ";
+                    // Nợ âm nghĩa là NCC đang nợ lại cửa hàng (tiền hàng trả lại chưa thu)
+                    lblNoHienTaiVal.Text = noHienTai < 0 ? $"{noHienTai:N0} đ (NCC đang nợ lại)" : $"{noHienTai:N0} đ";
                     lblNoHienTaiVal.ForeColor = noHienTai > 0 ? Color.Red : SystemColors.ControlText;
 
                     CapNhatGiaoDienNutXoa();
@@ -190,7 +198,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
             btnXoa.ForeColor = SystemColors.ControlText;
             if (btnLuu != null) btnXoa.Font = btnLuu.Font;
 
-            if (trangThaiHienTai == "NGUNG_HOAT_DONG" || trangThaiHienTai == "NGUNG_GIAO_DICH")
+            if (trangThaiHienTai == "NGUNG_GIAO_DICH")
             {
                 btnXoa.Text = "Cho hoạt động lại";
             }
@@ -207,7 +215,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
 
         private void ThucHienThaoTacXoaHoacHoatDongLai()
         {
-            if (trangThaiHienTai == "NGUNG_HOAT_DONG" || trangThaiHienTai == "NGUNG_GIAO_DICH")
+            if (trangThaiHienTai == "NGUNG_GIAO_DICH")
             {
                 KichHoatHoatDongLai();
             }
@@ -295,7 +303,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                         if (demTra > 0) lyDo += $"\n- {demTra} phiếu trả hàng nhập";
                         if (demHang > 0) lyDo += $"\n- {demHang} mặt hàng liên quan";
 
-                        if (trangThaiHienTai == "NGUNG_HOAT_DONG" || trangThaiHienTai == "NGUNG_GIAO_DICH")
+                        if (trangThaiHienTai == "NGUNG_GIAO_DICH")
                         {
                             MessageBox.Show(
                                 $"Không thể xóa nhà cung cấp '{txtTenDonVi.Text}' ({txtMaNcc.Text}) vì đã phát sinh chứng từ giao dịch trong hệ thống:{lyDo}\n\nQuy chuẩn quản lý kho không cho phép xóa dữ liệu đã có lịch sử giao dịch nhằm bảo toàn tính toàn vẹn sổ sách.\n\nNhà cung cấp này hiện tại đã ở trạng thái 'Ngừng hoạt động'.",
@@ -316,14 +324,14 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                         {
                             DataProcessing.ChangeDataTransaction((conn, trans) =>
                             {
-                                string sqlUpdateTrangThai = "UPDATE DonViCapHang SET TrangThai = 'NGUNG_HOAT_DONG' WHERE MaDonViCapHang = @MaDonViCapHang;";
+                                string sqlUpdateTrangThai = "UPDATE DonViCapHang SET TrangThai = 'NGUNG_GIAO_DICH' WHERE MaDonViCapHang = @MaDonViCapHang;";
                                 using (SqlCommand cmd = new SqlCommand(sqlUpdateTrangThai, conn, trans))
                                 {
                                     cmd.Parameters.AddWithValue("@MaDonViCapHang", maDonViCapHangHienTai);
                                     cmd.ExecuteNonQuery();
                                 }
 
-                                GhiNhatKyThaoTac(conn, trans, "NGUNG_HOAT_DONG", $"Chuyển trạng thái nhà cung cấp '{txtTenDonVi.Text}' ({txtMaNcc.Text}) sang Ngừng hoạt động");
+                                GhiNhatKyThaoTac(conn, trans, "NGUNG_GIAO_DICH", $"Chuyển trạng thái nhà cung cấp '{txtTenDonVi.Text}' ({txtMaNcc.Text}) sang Ngừng hoạt động");
                             });
 
                             MessageBox.Show(

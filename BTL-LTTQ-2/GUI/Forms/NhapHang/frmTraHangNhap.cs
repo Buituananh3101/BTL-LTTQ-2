@@ -52,8 +52,61 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             colDonGiaTra.DefaultCellStyle.Format = "N0";
             colThanhTien.DefaultCellStyle.Format = "N0";
 
+            // Cột "SL đã trả": số lượng đã trả (hoặc đang nằm trong phiếu trả tạm) theo đúng phiếu nhập gốc này
+            if (!dgvHangTra.Columns.Contains("colSoLuongDaTra"))
+            {
+                DataGridViewTextBoxColumn colSoLuongDaTra = new DataGridViewTextBoxColumn
+                {
+                    Name = "colSoLuongDaTra",
+                    DataPropertyName = "SoLuongDaTra",
+                    HeaderText = "SL đã trả",
+                    ReadOnly = true,
+                    Width = 85,
+                    SortMode = DataGridViewColumnSortMode.NotSortable
+                };
+                colSoLuongDaTra.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                colSoLuongDaTra.DefaultCellStyle.Format = "N0";
+                dgvHangTra.Columns.Insert(colSoLuongNhap.Index + 1, colSoLuongDaTra);
+            }
+
+            // Lưới có thể bind lại khi hiển thị -> khóa lại các dòng đã trả hết sau mỗi lần bind
+            dgvHangTra.DataBindingComplete += (s, e) => KhoaDongDaTraHet();
+
             // Đánh dấu ô số lượng trả rõ ràng bằng font chữ đậm
             // colSoLuongTra.DefaultCellStyle.Font = Segoe UI 9.5F Regular
+        }
+
+        /// <summary>
+        /// Số lượng còn được phép trả của một dòng = SL đã nhập trên phiếu gốc - SL đã trả (phiếu trả tạm + đã trả) theo phiếu gốc
+        /// </summary>
+        private decimal LaySoLuongConDuocTra(DataGridViewRow row)
+        {
+            decimal slNhap = 0, slDaTra = 0;
+            if (row.Cells["colSoLuongNhap"].Value != null && row.Cells["colSoLuongNhap"].Value != DBNull.Value)
+                slNhap = Convert.ToDecimal(row.Cells["colSoLuongNhap"].Value);
+            if (row.Cells["colSoLuongDaTra"].Value != null && row.Cells["colSoLuongDaTra"].Value != DBNull.Value)
+                slDaTra = Convert.ToDecimal(row.Cells["colSoLuongDaTra"].Value);
+            decimal conLai = slNhap - slDaTra;
+            return conLai > 0 ? conLai : 0;
+        }
+
+        /// <summary>
+        /// Khóa ô "SL cần trả" của các dòng đã trả hết theo phiếu gốc. Trả về tổng số lượng còn được trả của cả phiếu.
+        /// </summary>
+        private decimal KhoaDongDaTraHet()
+        {
+            decimal tongConDuocTra = 0;
+            foreach (DataGridViewRow r in dgvHangTra.Rows)
+            {
+                decimal conLai = LaySoLuongConDuocTra(r);
+                tongConDuocTra += conLai;
+                if (conLai <= 0)
+                {
+                    r.Cells["colSoLuongTra"].ReadOnly = true;
+                    r.DefaultCellStyle.ForeColor = Color.Gray;
+                }
+            }
+            return tongConDuocTra;
         }
 
         private void frmTraHangNhap_Load(object sender, EventArgs e)
@@ -68,20 +121,30 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             cboNguoiTra.Items.Clear();
             try
             {
+                // Giá trị chọn là NhanVien.MaNV (khóa ngoại MaNvtra), chỉ lấy nhân viên đang làm có tài khoản hoạt động
                 string sql = @"
-                    SELECT tk.MaTaiKhoan, ISNULL(nv.HoTen, tk.TenDangNhap) AS HoTen 
-                    FROM TaiKhoan tk 
-                    LEFT JOIN NhanVien nv ON tk.MaNV = nv.MaNV 
-                    WHERE tk.TrangThai = 'HOAT_DONG' OR tk.TrangThai = 'ACTIVE' OR tk.TrangThai IS NULL
-                    ORDER BY HoTen ASC";
+                    SELECT nv.MaNV, nv.HoTen
+                    FROM NhanVien nv
+                    WHERE nv.TrangThai = 'DANG_LAM'
+                      AND EXISTS (SELECT 1 FROM TaiKhoan tk WHERE tk.MaNV = nv.MaNV AND tk.TrangThai = 'HOAT_DONG')
+                    ORDER BY nv.HoTen ASC";
                 DataTable dt = DataProcessing.ReadData(sql);
+                int viTriMacDinh = -1;
                 foreach (DataRow row in dt.Rows)
                 {
-                    int id = Convert.ToInt32(row["MaTaiKhoan"]);
+                    int id = Convert.ToInt32(row["MaNV"]);
                     string ten = row["HoTen"].ToString();
-                    cboNguoiTra.Items.Add(new ComboBoxItem(ten, id));
+                    int viTri = cboNguoiTra.Items.Add(new ComboBoxItem(ten, id));
+                    if (SessionContext.MaNV.HasValue && SessionContext.MaNV.Value == id)
+                    {
+                        viTriMacDinh = viTri;
+                    }
                 }
-                if (cboNguoiTra.Items.Count > 0)
+                if (viTriMacDinh >= 0)
+                {
+                    cboNguoiTra.SelectedIndex = viTriMacDinh;
+                }
+                else if (cboNguoiTra.Items.Count > 0)
                 {
                     cboNguoiTra.SelectedIndex = 0;
                 }
@@ -134,25 +197,38 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                 lblKhoVal.Text = rh["TenKho"].ToString();
                 lblNoCanTraGocVal.Text = canTraNccGoc.ToString("N0") + " đ";
 
-                // 2. Lấy danh sách hàng hóa và tồn kho thực tế hiện tại
+                // 2. Lấy danh sách hàng hóa (gộp theo mặt hàng), số lượng đã trả theo phiếu gốc và tồn kho thực tế hiện tại
+                //    - SoLuongDaTra: tổng SL trên các phiếu trả hàng nhập (tạm + đã trả) lập từ phiếu nhập này.
+                //    - DonGiaNhap (giá trả lại): đơn giá NET của dòng = (SL * Đơn giá nhập - Giảm giá dòng) / SL.
+                //      Lưu ý: KHÔNG phân bổ giảm giá tổng phiếu (PhieuNhap.GiamGia) vào giá trả lại.
                 string sqlItems = @"
-                    SELECT 
-                        ROW_NUMBER() OVER (ORDER BY ct.MaCTPhieuNhap ASC) AS STT,
+                    SELECT
+                        ROW_NUMBER() OVER (ORDER BY MIN(ct.MaCTPhieuNhap) ASC) AS STT,
                         ct.MaHang,
                         h.MaHangNoiBo,
                         h.TenHang,
                         ISNULL(d.TenDvt, N'Cái') AS TenDvt,
-                        ct.SoLuong AS SoLuongNhap,
-                        ISNULL(ton.SoLuongTon, 0) AS TonKho,
+                        SUM(ct.SoLuong) AS SoLuongNhap,
+                        ISNULL(MAX(tra.SoLuongDaTra), 0) AS SoLuongDaTra,
+                        ISNULL(MAX(ton.SoLuongTon), 0) AS TonKho,
                         CAST(0 AS DECIMAL(18,2)) AS SoLuongTra,
-                        ct.DonGiaNhap,
+                        CAST(ROUND((SUM(ct.SoLuong * ct.DonGiaNhap) - SUM(ct.GiamGia)) / NULLIF(SUM(ct.SoLuong), 0), 2) AS DECIMAL(18,2)) AS DonGiaNhap,
                         CAST(0 AS DECIMAL(18,2)) AS ThanhTienTra
                     FROM ChiTietPhieuNhap ct
                     JOIN HangHoa h ON ct.MaHang = h.MaHang
                     LEFT JOIN DonViTinh d ON h.MaDvt = d.MaDvt
                     LEFT JOIN vw_TonKhoHienTai ton ON ton.MaHang = ct.MaHang AND ton.MaKho = @MaKho
+                    OUTER APPLY (
+                        SELECT SUM(ctt.SoLuong) AS SoLuongDaTra
+                        FROM ChiTietPhieuTraHangNhap ctt
+                        JOIN PhieuTraHangNhap pt ON ctt.MaPhieuTraHang = pt.MaPhieuTraHang
+                        WHERE pt.MaPhieuNhap = @MaPhieuNhap
+                          AND pt.TrangThai IN ('DA_TRA_HANG', 'NHAP')
+                          AND ctt.MaHang = ct.MaHang
+                    ) tra
                     WHERE ct.MaPhieuNhap = @MaPhieuNhap
-                    ORDER BY ct.MaCTPhieuNhap ASC";
+                    GROUP BY ct.MaHang, h.MaHangNoiBo, h.TenHang, d.TenDvt
+                    ORDER BY MIN(ct.MaCTPhieuNhap) ASC";
 
                 dtHangTra = DataProcessing.ReadData(sqlItems, new SqlParameter[] {
                     new SqlParameter("@MaPhieuNhap", maPhieuNhap),
@@ -160,6 +236,15 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                 });
 
                 dgvHangTra.DataSource = dtHangTra;
+
+                // 3. Khóa ô nhập số lượng của các dòng đã trả hết; chặn trả nếu toàn phiếu không còn gì để trả
+                decimal tongConDuocTra = KhoaDongDaTraHet();
+
+                if (tongConDuocTra <= 0)
+                {
+                    btnXacNhanTra.Enabled = false;
+                    MessageBox.Show($"Toàn bộ hàng hóa của phiếu nhập '{maPhieuGoc}' đã được trả hết (hoặc đang nằm trong phiếu trả hàng tạm).\nKhông thể lập thêm phiếu trả hàng cho phiếu nhập này.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
 
                 TinhToanTienVaCongNo();
             }
@@ -195,10 +280,13 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                     return;
                 }
 
-                decimal slNhap = Convert.ToDecimal(dgvHangTra.Rows[e.RowIndex].Cells["colSoLuongNhap"].Value);
-                if (val > slNhap)
+                // Số lượng trả tối đa = SL đã nhập trên phiếu gốc - SL đã trả theo phiếu gốc
+                DataGridViewRow rowDangSua = dgvHangTra.Rows[e.RowIndex];
+                decimal slNhap = Convert.ToDecimal(rowDangSua.Cells["colSoLuongNhap"].Value);
+                decimal slConDuocTra = LaySoLuongConDuocTra(rowDangSua);
+                if (val > slConDuocTra)
                 {
-                    MessageBox.Show($"Số lượng trả ({val:N0}) không được vượt quá số lượng đã nhập ({slNhap:N0})!", "Cảnh báo vượt số lượng", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show($"Số lượng trả ({val:N0}) không được vượt quá số lượng còn được trả ({slConDuocTra:N0}).\n(Đã nhập: {slNhap:N0}, đã trả theo phiếu này: {slNhap - slConDuocTra:N0})", "Cảnh báo vượt số lượng", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     e.Cancel = true;
                     return;
                 }
@@ -229,10 +317,10 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             if (row.Cells["colDonGiaTra"].Value != null)
                 decimal.TryParse(row.Cells["colDonGiaTra"].Value.ToString(), out donGia);
 
-            decimal slNhap = Convert.ToDecimal(row.Cells["colSoLuongNhap"].Value);
+            decimal slConDuocTra = LaySoLuongConDuocTra(row);
             slTra = Math.Floor(slTra);
             if (slTra < 0) slTra = 0;
-            if (slTra > slNhap) slTra = slNhap;
+            if (slTra > slConDuocTra) slTra = slConDuocTra;
 
             decimal thanhTien = slTra * donGia;
 
@@ -393,34 +481,115 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                 return;
             }
 
+            // Người lập phiếu là nhân viên gắn với tài khoản đăng nhập (khóa ngoại NhanVien.MaNV, không dùng MaTaiKhoan)
+            if (!SessionContext.MaNV.HasValue || SessionContext.MaNV.Value <= 0)
+            {
+                MessageBox.Show("Tài khoản chưa được gắn với nhân viên, không thể lập chứng từ.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             int maNvTra = Convert.ToInt32((cboNguoiTra.SelectedItem as ComboBoxItem).Value);
-            int maNvLap = SessionContext.MaTaiKhoan > 0 ? SessionContext.MaTaiKhoan : maNvTra;
+            int maNvLap = SessionContext.MaNV.Value;
             DateTime ngayTra = dtpNgayTra.Value;
             string ghiChu = txtGhiChu.Text.Trim();
 
+            // Gom các dòng có số lượng trả > 0 để dùng trong giao dịch
+            var dongTra = new System.Collections.Generic.List<Tuple<int, string, decimal, decimal, decimal>>();
+            foreach (DataGridViewRow row in dgvHangTra.Rows)
+            {
+                decimal.TryParse(row.Cells["colSoLuongTra"].Value?.ToString(), out decimal slTra);
+                if (slTra > 0)
+                {
+                    int maHang = Convert.ToInt32(row.Cells["colMaHang"].Value);
+                    string tenHienThi = $"{row.Cells["colMaHangNoiBo"].Value} - {row.Cells["colTenHang"].Value}";
+                    decimal donGia = Convert.ToDecimal(row.Cells["colDonGiaTra"].Value);
+                    decimal thanhTien = Convert.ToDecimal(row.Cells["colThanhTien"].Value);
+                    dongTra.Add(Tuple.Create(maHang, tenHienThi, slTra, donGia, thanhTien));
+                }
+            }
+
             // 4. Bọc trong Transaction an toàn
             string maPhieuTraMoi = "";
+            decimal truVaoCongNoLuu = 0;
+            decimal tienNccTraLaiLuu = 0;
             try
             {
                 DataProcessing.ChangeDataTransaction((conn, trans) =>
                 {
-                    // 4.1. Sinh mã phiếu trả hàng THN000001
-                    string nextIdSql = "SELECT ISNULL(MAX(MaPhieuTraHang), 0) + 1 FROM PhieuTraHangNhap";
-                    SqlCommand cmdNextId = new SqlCommand(nextIdSql, conn, trans);
-                    int nextId = Convert.ToInt32(cmdNextId.ExecuteScalar());
-                    string maPhieuTra = "THN" + nextId.ToString("D6");
+                    // 4.0. Đọc lại (khóa dòng) phiếu nhập gốc để tính công nợ theo số liệu mới nhất
+                    decimal canTraNccMoiNhat;
+                    using (SqlCommand cmdGoc = new SqlCommand("SELECT TrangThai, CanTraNcc FROM PhieuNhap WITH (UPDLOCK, ROWLOCK) WHERE MaPhieuNhap = @MaPhieuNhap", conn, trans))
+                    {
+                        cmdGoc.Parameters.AddWithValue("@MaPhieuNhap", maPhieuNhap);
+                        using (SqlDataReader rd = cmdGoc.ExecuteReader())
+                        {
+                            if (!rd.Read() || rd["TrangThai"].ToString() != "DA_XAC_NHAN")
+                            {
+                                throw new InvalidOperationException($"Phiếu nhập '{maPhieuGoc}' không còn ở trạng thái 'Đã nhập hàng', không thể trả hàng.");
+                            }
+                            canTraNccMoiNhat = Convert.ToDecimal(rd["CanTraNcc"]);
+                        }
+                    }
+
+                    // 4.1. Kiểm tra lại trong giao dịch: SL còn được trả theo phiếu gốc & tồn kho (chặn âm tồn)
+                    string sqlKiemTraDong = @"
+                        SELECT
+                            (SELECT ISNULL(SUM(ct.SoLuong), 0) FROM ChiTietPhieuNhap ct
+                             WHERE ct.MaPhieuNhap = @MaPhieuNhap AND ct.MaHang = @MaHang) AS SoLuongNhap,
+                            (SELECT ISNULL(SUM(ctt.SoLuong), 0)
+                             FROM ChiTietPhieuTraHangNhap ctt
+                             JOIN PhieuTraHangNhap pt WITH (UPDLOCK, HOLDLOCK) ON ctt.MaPhieuTraHang = pt.MaPhieuTraHang
+                             WHERE pt.MaPhieuNhap = @MaPhieuNhap AND pt.TrangThai IN ('DA_TRA_HANG', 'NHAP') AND ctt.MaHang = @MaHang) AS SoLuongDaTra,
+                            (SELECT ISNULL(SUM(t.SoLuongTon), 0) FROM vw_TonKhoHienTai t
+                             WHERE t.MaKho = @MaKho AND t.MaHang = @MaHang) AS TonKho";
+
+                    foreach (var dong in dongTra)
+                    {
+                        using (SqlCommand cmdKt = new SqlCommand(sqlKiemTraDong, conn, trans))
+                        {
+                            cmdKt.Parameters.AddWithValue("@MaPhieuNhap", maPhieuNhap);
+                            cmdKt.Parameters.AddWithValue("@MaHang", dong.Item1);
+                            cmdKt.Parameters.AddWithValue("@MaKho", maKho);
+                            using (SqlDataReader rd = cmdKt.ExecuteReader())
+                            {
+                                rd.Read();
+                                decimal slNhap = Convert.ToDecimal(rd["SoLuongNhap"]);
+                                decimal slDaTra = Convert.ToDecimal(rd["SoLuongDaTra"]);
+                                decimal tonKho = Convert.ToDecimal(rd["TonKho"]);
+
+                                if (dong.Item3 > slNhap - slDaTra)
+                                {
+                                    throw new InvalidOperationException(
+                                        $"Mặt hàng '{dong.Item2}' chỉ còn được trả tối đa {Math.Max(0, slNhap - slDaTra):N0} (đã nhập {slNhap:N0}, đã trả theo phiếu này {slDaTra:N0}).\nVui lòng tải lại và kiểm tra số lượng trả.");
+                                }
+                                if (dong.Item3 > tonKho)
+                                {
+                                    throw new InvalidOperationException(
+                                        $"Không thể thực hiện trả hàng vì mặt hàng '{dong.Item2}' có số lượng trả ({dong.Item3:N0}) vượt quá tồn kho thực tế hiện tại ({tonKho:N0}) tại kho này!\n\nVui lòng kiểm tra lại số lượng tồn thực tế.");
+                                }
+                            }
+                        }
+                    }
+
+                    // 4.2. Tính lại các chỉ số công nợ theo số liệu mới nhất
+                    decimal truNoMoi = tongTienTra <= canTraNccMoiNhat ? tongTienTra : Math.Max(0, canTraNccMoiNhat);
+                    decimal noConLaiMoi = canTraNccMoiNhat - truNoMoi;
+                    decimal tienHoanLaiMoi = tongTienTra - truNoMoi;
+
+                    // 4.3. Sinh mã phiếu trả hàng THN000001 (theo hậu tố số lớn nhất, lặp đến khi chưa bị dùng)
+                    string maPhieuTra = SinhMaPhieuTraHangNhap(conn, trans);
                     maPhieuTraMoi = maPhieuTra;
 
-                    // 4.2. Thêm PhieuTraHangNhap
+                    // 4.4. Thêm PhieuTraHangNhap (lưu liên kết MaPhieuNhap với phiếu nhập gốc)
                     string insertPthSql = @"
                         INSERT INTO PhieuTraHangNhap (
                             MaPhieu, MaKho, MaDonViCapHang, MaNvlap, MaNvtra,
                             NgayLap, NgayTra, TrangThai, TongSoLuong, TongTienHang,
-                            GiamGia, CanThuNcc, DaThuNcc, GhiChu, DaDanhDau
+                            GiamGia, CanThuNcc, DaThuNcc, GhiChu, DaDanhDau, MaPhieuNhap
                         ) VALUES (
                             @MaPhieu, @MaKho, @MaDonViCapHang, @MaNvlap, @MaNvtra,
                             GETDATE(), @NgayTra, 'DA_TRA_HANG', @TongSoLuong, @TongTienHang,
-                            0, @CanThuNcc, 0, @GhiChu, 0
+                            0, @CanThuNcc, 0, @GhiChu, 0, @MaPhieuNhap
                         );
                         SELECT SCOPE_IDENTITY();";
 
@@ -433,12 +602,13 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                     cmdPth.Parameters.AddWithValue("@NgayTra", ngayTra);
                     cmdPth.Parameters.AddWithValue("@TongSoLuong", tongSlTra);
                     cmdPth.Parameters.AddWithValue("@TongTienHang", tongTienTra);
-                    cmdPth.Parameters.AddWithValue("@CanThuNcc", tienNccTraLai);
+                    cmdPth.Parameters.AddWithValue("@CanThuNcc", tienHoanLaiMoi);
                     cmdPth.Parameters.AddWithValue("@GhiChu", $"Trả hàng từ đơn nhập {maPhieuGoc}. " + ghiChu);
+                    cmdPth.Parameters.AddWithValue("@MaPhieuNhap", maPhieuNhap);
 
                     int maPhieuTraHangMoi = Convert.ToInt32(cmdPth.ExecuteScalar());
 
-                    // 4.3. Thêm ChiTietPhieuTraHangNhap
+                    // 4.5. Thêm ChiTietPhieuTraHangNhap
                     string insertCtpSql = @"
                         INSERT INTO ChiTietPhieuTraHangNhap (
                             MaPhieuTraHang, MaHang, SoLuong, GiaVon, DonGiaTra, ThanhTien, GhiChu
@@ -446,54 +616,89 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                             @MaPhieuTraHang, @MaHang, @SoLuong, @DonGiaTra, @DonGiaTra, @ThanhTien, @GhiChu
                         );";
 
-                    foreach (DataGridViewRow row in dgvHangTra.Rows)
+                    foreach (var dong in dongTra)
                     {
-                        decimal.TryParse(row.Cells["colSoLuongTra"].Value?.ToString(), out decimal slTra);
-                        if (slTra > 0)
-                        {
-                            int maHang = Convert.ToInt32(row.Cells["colMaHang"].Value);
-                            decimal donGia = Convert.ToDecimal(row.Cells["colDonGiaTra"].Value);
-                            decimal thanhTien = Convert.ToDecimal(row.Cells["colThanhTien"].Value);
-
-                            SqlCommand cmdCt = new SqlCommand(insertCtpSql, conn, trans);
-                            cmdCt.Parameters.AddWithValue("@MaPhieuTraHang", maPhieuTraHangMoi);
-                            cmdCt.Parameters.AddWithValue("@MaHang", maHang);
-                            cmdCt.Parameters.AddWithValue("@SoLuong", slTra);
-                            cmdCt.Parameters.AddWithValue("@DonGiaTra", donGia);
-                            cmdCt.Parameters.AddWithValue("@ThanhTien", thanhTien);
-                            cmdCt.Parameters.AddWithValue("@GhiChu", $"Trả từ {maPhieuGoc}");
-                            cmdCt.ExecuteNonQuery();
-                        }
+                        SqlCommand cmdCt = new SqlCommand(insertCtpSql, conn, trans);
+                        cmdCt.Parameters.AddWithValue("@MaPhieuTraHang", maPhieuTraHangMoi);
+                        cmdCt.Parameters.AddWithValue("@MaHang", dong.Item1);
+                        cmdCt.Parameters.AddWithValue("@SoLuong", dong.Item3);
+                        cmdCt.Parameters.AddWithValue("@DonGiaTra", dong.Item4);
+                        cmdCt.Parameters.AddWithValue("@ThanhTien", dong.Item5);
+                        cmdCt.Parameters.AddWithValue("@GhiChu", $"Trả từ {maPhieuGoc}");
+                        cmdCt.ExecuteNonQuery();
                     }
 
-                    // 4.4. Cập nhật giảm nợ cần trả của PhieuNhap gốc
+                    // 4.6. Cập nhật giảm nợ cần trả của PhieuNhap gốc
                     string updatePnSql = @"
-                        UPDATE PhieuNhap 
-                        SET CanTraNcc = @NoConLai 
+                        UPDATE PhieuNhap
+                        SET CanTraNcc = @NoConLai
                         WHERE MaPhieuNhap = @MaPhieuNhap";
                     SqlCommand cmdPn = new SqlCommand(updatePnSql, conn, trans);
-                    cmdPn.Parameters.AddWithValue("@NoConLai", noConLai);
+                    cmdPn.Parameters.AddWithValue("@NoConLai", noConLaiMoi);
                     cmdPn.Parameters.AddWithValue("@MaPhieuNhap", maPhieuNhap);
                     cmdPn.ExecuteNonQuery();
 
-                    // 4.5. Ghi nhật ký kiểm toán thao tác
+                    // 4.7. Ghi nhật ký kiểm toán thao tác
                     string logSql = @"
                         INSERT INTO NhatKyThaoTac (MaTaiKhoan, ThoiDiem, ThaoTac, LoaiDoiTuong, MaDoiTuong, NoiDung)
                         VALUES (@MaTaiKhoan, GETDATE(), 'TRA_HANG_NHAP', 'PhieuTraHangNhap', @MaDoiTuong, @NoiDung)";
                     SqlCommand cmdLog = new SqlCommand(logSql, conn, trans);
                     cmdLog.Parameters.AddWithValue("@MaTaiKhoan", SessionContext.MaTaiKhoan > 0 ? SessionContext.MaTaiKhoan : 1);
                     cmdLog.Parameters.AddWithValue("@MaDoiTuong", maPhieuTra);
-                    cmdLog.Parameters.AddWithValue("@NoiDung", $"Lập phiếu trả hàng {maPhieuTra} cho đơn {maPhieuGoc}, tổng SL: {tongSlTra:N0}, tổng tiền: {tongTienTra:N0}, trừ nợ: {truVaoCongNo:N0}, NCC hoàn lại: {tienNccTraLai:N0}");
+                    cmdLog.Parameters.AddWithValue("@NoiDung", $"Lập phiếu trả hàng {maPhieuTra} cho đơn {maPhieuGoc}, tổng SL: {tongSlTra:N0}, tổng tiền: {tongTienTra:N0}, trừ nợ: {truNoMoi:N0}, NCC hoàn lại: {tienHoanLaiMoi:N0}");
                     cmdLog.ExecuteNonQuery();
+
+                    truVaoCongNoLuu = truNoMoi;
+                    tienNccTraLaiLuu = tienHoanLaiMoi;
                 });
 
-                MessageBox.Show($"Xác nhận trả hàng thành công!\nPhiếu trả hàng đã sinh: {maPhieuTraMoi}", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"Xác nhận trả hàng thành công!\nPhiếu trả hàng đã sinh: {maPhieuTraMoi}\n- Trừ vào công nợ đơn: {truVaoCongNoLuu:N0} đ\n- NCC cần hoàn trả lại: {tienNccTraLaiLuu:N0} đ", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.DialogResult = DialogResult.OK;
                 this.Close();
+            }
+            catch (InvalidOperationException exNghiepVu)
+            {
+                // Vi phạm ràng buộc nghiệp vụ (vượt SL còn được trả / âm tồn) -> giao dịch đã rollback
+                MessageBox.Show(exNghiepVu.Message, "Không thể trả hàng", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+            catch (SqlException exSql) when (exSql.Number == 2627 || exSql.Number == 2601)
+            {
+                MessageBox.Show("Mã phiếu trả hàng vừa sinh đã bị trùng do có người dùng khác lưu phiếu cùng lúc.\nVui lòng bấm 'Xác nhận trả hàng' lại để hệ thống sinh mã mới.", "Trùng mã phiếu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi trong quá trình lưu phiếu trả hàng: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Sinh mã phiếu trả hàng nhập THNxxxxxx trong giao dịch: lấy hậu tố số lớn nhất của các mã THN hiện có + 1,
+        /// sau đó lặp kiểm tra cho đến khi mã chưa được sử dụng.
+        /// </summary>
+        private static string SinhMaPhieuTraHangNhap(SqlConnection conn, SqlTransaction trans)
+        {
+            string sqlMax = @"
+                SELECT ISNULL(MAX(TRY_CAST(SUBSTRING(MaPhieu, 4, 20) AS BIGINT)), 0)
+                FROM PhieuTraHangNhap WITH (UPDLOCK, HOLDLOCK)
+                WHERE MaPhieu LIKE 'THN[0-9]%'";
+            long soHienTai;
+            using (SqlCommand cmdMax = new SqlCommand(sqlMax, conn, trans))
+            {
+                soHienTai = Convert.ToInt64(cmdMax.ExecuteScalar());
+            }
+
+            while (true)
+            {
+                soHienTai++;
+                string maMoi = "THN" + soHienTai.ToString("D6");
+                using (SqlCommand cmdDem = new SqlCommand("SELECT COUNT(1) FROM PhieuTraHangNhap WHERE MaPhieu = @MaPhieu", conn, trans))
+                {
+                    cmdDem.Parameters.AddWithValue("@MaPhieu", maMoi);
+                    if (Convert.ToInt32(cmdDem.ExecuteScalar()) == 0)
+                    {
+                        return maMoi;
+                    }
+                }
             }
         }
 
