@@ -57,6 +57,12 @@
     <Compile Include="Classes\ComboboxHelper.cs" />
     <Compile Include="Classes\DataProcessing.cs" />
     <Compile Include="Classes\PasswordHelper.cs" />
+    <Compile Include="GUI\Forms\ChuyenKho\frmThemPhieuChuyenKhoNew.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\ChuyenKho\frmThemPhieuChuyenKhoNew.Designer.cs">
+      <DependentUpon>frmThemPhieuChuyenKhoNew.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\Forms\DanhSachHangHoa\frmHienCot.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -92,6 +98,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\BaoCao\frmHienCotBaoCao.resx">
       <DependentUpon>frmHienCotBaoCao.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Forms\ChuyenKho\frmThemPhieuChuyenKhoNew.resx">
+      <DependentUpon>frmThemPhieuChuyenKhoNew.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\ChuyenKho\frmChiTietChuyenKho.resx">
       <DependentUpon>frmChiTietChuyenKho.cs</DependentUpon>
