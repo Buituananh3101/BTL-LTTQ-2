@@ -14,6 +14,10 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
         private DataTable dtDanhSachHang;
         private bool isCalculating = false;
 
+        private int trangHienTai = 1;
+        private int soDongMoiTrang = 20;
+        private int tongSoTrang = 1;
+
         public bool DaThayDoiDuLieu { get; private set; } = false;
 
         public frmThemPhieuKiemKho()
@@ -110,7 +114,22 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             NapDanhSachNhanVien();
             NapDanhSachHangHoa();
 
+            // Khởi tạo ComboBox phân trang
+            if (cboSoDongMoiTrang != null)
+            {
+                if (cboSoDongMoiTrang.Items.Count == 0)
+                {
+                    cboSoDongMoiTrang.Items.AddRange(new object[] { "10", "20", "50", "100" });
+                }
+                cboSoDongMoiTrang.SelectedItem = "20";
+                if (cboSoDongMoiTrang.SelectedIndex < 0 && cboSoDongMoiTrang.Items.Count > 0)
+                {
+                    cboSoDongMoiTrang.SelectedIndex = 1;
+                }
+            }
+
             TinhToanTongKet();
+            CapNhatPhanTrang();
         }
 
         private string SinhMaPhieuTuDong()
@@ -320,6 +339,82 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             // Không cần cập nhật nudSoLuongThucTe nữa do người dùng nhập SL thực tế trực tiếp trên bảng
         }
 
+        #region Xử Lý Phân Trang Lưới Hàng Kiểm
+
+        private void CapNhatPhanTrang(int pageToFocus = -1)
+        {
+            if (dtHangKiem == null) return;
+
+            if (dgvHangKiem.IsCurrentCellInEditMode)
+            {
+                dgvHangKiem.EndEdit();
+            }
+
+            int tongSoBanGhi = dtHangKiem.Rows.Count;
+            if (soDongMoiTrang <= 0) soDongMoiTrang = 20;
+
+            tongSoTrang = (int)Math.Ceiling((double)tongSoBanGhi / soDongMoiTrang);
+            if (tongSoTrang < 1) tongSoTrang = 1;
+
+            if (pageToFocus > 0)
+            {
+                trangHienTai = Math.Min(pageToFocus, tongSoTrang);
+            }
+            else
+            {
+                if (trangHienTai > tongSoTrang) trangHienTai = tongSoTrang;
+                if (trangHienTai < 1) trangHienTai = 1;
+            }
+
+            if (tongSoBanGhi == 0)
+            {
+                dtHangKiem.DefaultView.RowFilter = "";
+                lblTrangHienTai.Text = "Trang 1 / 1";
+                btnTrangTruoc.Enabled = false;
+                btnTrangSau.Enabled = false;
+                return;
+            }
+
+            int minSTT = (trangHienTai - 1) * soDongMoiTrang + 1;
+            int maxSTT = trangHienTai * soDongMoiTrang;
+
+            dtHangKiem.DefaultView.RowFilter = $"STT >= {minSTT} AND STT <= {maxSTT}";
+
+            lblTrangHienTai.Text = $"Trang {trangHienTai} / {tongSoTrang}";
+            btnTrangTruoc.Enabled = (trangHienTai > 1);
+            btnTrangSau.Enabled = (trangHienTai < tongSoTrang);
+        }
+
+        private void btnTrangTruoc_Click(object sender, EventArgs e)
+        {
+            if (trangHienTai > 1)
+            {
+                trangHienTai--;
+                CapNhatPhanTrang();
+            }
+        }
+
+        private void btnTrangSau_Click(object sender, EventArgs e)
+        {
+            if (trangHienTai < tongSoTrang)
+            {
+                trangHienTai++;
+                CapNhatPhanTrang();
+            }
+        }
+
+        private void cboSoDongMoiTrang_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cboSoDongMoiTrang.SelectedItem != null && int.TryParse(cboSoDongMoiTrang.SelectedItem.ToString(), out int rows))
+            {
+                soDongMoiTrang = rows;
+                trangHienTai = 1;
+                CapNhatPhanTrang();
+            }
+        }
+
+        #endregion
+
         #region Thao Tác Thêm & Xóa Dòng Hàng
 
         private void btnThemHang_Click(object sender, EventArgs e)
@@ -346,6 +441,20 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             DataRow[] daCo = dtHangKiem.Select($"MaHang = {maHang}");
             if (daCo.Length > 0)
             {
+                int sttCuaHang = Convert.ToInt32(daCo[0]["STT"]);
+                int pageChuaHang = (int)Math.Ceiling((double)sttCuaHang / soDongMoiTrang);
+                CapNhatPhanTrang(pageChuaHang);
+
+                foreach (DataGridViewRow dgvRow in dgvHangKiem.Rows)
+                {
+                    if (dgvRow.Cells["colMaHangNoiBo"].Value?.ToString() == rowHang["MaHangNoiBo"]?.ToString())
+                    {
+                        dgvHangKiem.CurrentCell = dgvRow.Cells["colSoLuongThucTe"];
+                        dgvRow.Selected = true;
+                        break;
+                    }
+                }
+
                 MessageBox.Show($"Mặt hàng '{rowHang["TenHang"]}' đã có trong phiếu kiểm kê!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
@@ -365,16 +474,20 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                 dtHangKiem.Rows.Add(rMoi);
 
                 TinhToanTongKet();
-            }
 
-            // Cuộn đến dòng hàng vừa thêm / sửa
-            foreach (DataGridViewRow dgvRow in dgvHangKiem.Rows)
-            {
-                if (dgvRow.Cells["colMaHangNoiBo"].Value?.ToString() == rowHang["MaHangNoiBo"]?.ToString())
+                // Chuyển tới trang cuối cùng (trang chứa dòng vừa thêm)
+                int targetPage = (int)Math.Ceiling((double)dtHangKiem.Rows.Count / soDongMoiTrang);
+                CapNhatPhanTrang(targetPage);
+
+                // Cuộn đến dòng hàng vừa thêm và focus vào ô SL thực tế
+                foreach (DataGridViewRow dgvRow in dgvHangKiem.Rows)
                 {
-                    dgvHangKiem.CurrentCell = dgvRow.Cells["colSoLuongThucTe"];
-                    dgvRow.Selected = true;
-                    break;
+                    if (dgvRow.Cells["colMaHangNoiBo"].Value?.ToString() == rowHang["MaHangNoiBo"]?.ToString())
+                    {
+                        dgvHangKiem.CurrentCell = dgvRow.Cells["colSoLuongThucTe"];
+                        dgvRow.Selected = true;
+                        break;
+                    }
                 }
             }
         }
@@ -439,6 +552,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
 
                 DanhSoLaiStt();
                 TinhToanTongKet();
+                CapNhatPhanTrang();
             }
         }
 
@@ -695,6 +809,8 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
 
                     DanhSoLaiStt();
                     TinhToanTongKet();
+                    trangHienTai = 1;
+                    CapNhatPhanTrang();
 
                     MessageBox.Show($"Nạp file thành công!\nThêm mới: {demThemMoi} dòng | Cập nhật: {demCapNhat} dòng.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }

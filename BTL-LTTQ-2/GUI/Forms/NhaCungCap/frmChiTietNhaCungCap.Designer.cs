@@ -78,7 +78,7 @@
             // 
             this.lblNoHienTaiVal.AutoSize = true;
             this.lblNoHienTaiVal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
-            this.lblNoHienTaiVal.Location = new System.Drawing.Point(624, 50);
+            this.lblNoHienTaiVal.Location = new System.Drawing.Point(624, 62);
             this.lblNoHienTaiVal.Name = "lblNoHienTaiVal";
             this.lblNoHienTaiVal.Size = new System.Drawing.Size(32, 21);
             this.lblNoHienTaiVal.TabIndex = 0;
@@ -247,7 +247,7 @@
             // lblNoHienTaiTieuDe
             // 
             this.lblNoHienTaiTieuDe.AutoSize = true;
-            this.lblNoHienTaiTieuDe.Location = new System.Drawing.Point(454, 50);
+            this.lblNoHienTaiTieuDe.Location = new System.Drawing.Point(454, 62);
             this.lblNoHienTaiTieuDe.Name = "lblNoHienTaiTieuDe";
             this.lblNoHienTaiTieuDe.Size = new System.Drawing.Size(141, 21);
             this.lblNoHienTaiTieuDe.TabIndex = 0;
@@ -259,7 +259,7 @@
             this.lblTieuDe.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblTieuDe.Location = new System.Drawing.Point(23, 19);
             this.lblTieuDe.Name = "lblTieuDe";
-            this.lblTieuDe.Size = new System.Drawing.Size(217, 28);
+            this.lblTieuDe.Size = new System.Drawing.Size(213, 28);
             this.lblTieuDe.TabIndex = 0;
             this.lblTieuDe.Text = "Chi tiết nhà cung cấp";
             // 
@@ -397,7 +397,7 @@
             // lblTongMuaTieuDe
             // 
             this.lblTongMuaTieuDe.AutoSize = true;
-            this.lblTongMuaTieuDe.Location = new System.Drawing.Point(24, 50);
+            this.lblTongMuaTieuDe.Location = new System.Drawing.Point(24, 62);
             this.lblTongMuaTieuDe.Name = "lblTongMuaTieuDe";
             this.lblTongMuaTieuDe.Size = new System.Drawing.Size(152, 21);
             this.lblTongMuaTieuDe.TabIndex = 0;
@@ -419,7 +419,7 @@
             // lblTongMuaVal
             // 
             this.lblTongMuaVal.AutoSize = true;
-            this.lblTongMuaVal.Location = new System.Drawing.Point(184, 50);
+            this.lblTongMuaVal.Location = new System.Drawing.Point(184, 62);
             this.lblTongMuaVal.Name = "lblTongMuaVal";
             this.lblTongMuaVal.Size = new System.Drawing.Size(32, 21);
             this.lblTongMuaVal.TabIndex = 0;

@@ -80,6 +80,7 @@
        - Chuẩn hóa cột lưới hàng kiểm: Ẩn mặc định cột Đơn vị tính (`colDonViTinh.Visible = false`), bỏ chữ "(nhập)" trên tiêu đề cột thành "SL thực tế", đồng bộ mặc định bỏ tích ĐVT trong popup `frmHienCotHangKiem`.
        - Khắc phục lỗi tràn/xuống dòng tiêu đề cột trên `dgvHangKiem`: Tắt WrapMode header (`WrapMode = False`), cố định chiều cao header 36px và tăng độ rộng các cột (Mã hàng: 110, Tồn kho: 90, SL lệch: 90, Đơn giá: 100), bảo đảm toàn bộ tiêu đề cột hiển thị trên 1 dòng duy nhất.
        - Tối ưu vùng chọn hàng: Loại bỏ ô `nudSoLuongThucTe` và nhãn `lblSlThucTe` dư thừa ở góc trên bên phải; khi bấm `+ Thêm`, hàng được thêm vào với SL thực tế mặc định bằng tồn sổ sách và tự động focus vào ô SL thực tế trên lưới để nhập trực tiếp.
+       - Hoàn thiện toàn diện logic Phân trang cho lưới hàng kiểm: Kết nối thanh điều hướng phân trang đáy (`btnTrangTruoc`, `btnTrangSau`, `lblTrangHienTai`, `cboSoDongMoiTrang`), phân trang mượt mà qua `dtHangKiem.DefaultView.RowFilter`, tự động nhảy tới trang chứa mặt hàng khi thêm mới hoặc chọn hàng đã có, đồng bộ realtime khi xóa dòng và nạp file.
     3. **Kiểm tra mã hóa & biên dịch**:
        - Đăng ký form mới đầy đủ trong `BTL-LTTQ-2.csproj`.
        - Chạy `tools/KiemTraMaHoa.ps1`: **180/180 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.

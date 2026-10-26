@@ -92,6 +92,7 @@
   - Thao tác xóa dòng: Bỏ cột nút Xóa trên lưới; thay thế bằng thao tác nhấn đúp chuột (`Double click`) vào dòng mặt hàng để xóa, hiển thị hộp thoại xác nhận Yes/No trước khi xóa.
   - Cột `SL thực tế` cho phép người dùng click sửa trực tiếp (`EditMode = EditOnEnter`), có màu nền phân biệt rõ (`#FEFCE8`) và ToolTip hướng dẫn.
   - Tự động tính chênh lệch số lượng và thành tiền lệch realtime.
+- **Khối phân trang đáy**: Gồm các nút Trang trước (`btnTrangTruoc`), Trang sau (`btnTrangSau`), nhãn hiển thị `Trang X / Y` (`lblTrangHienTai`) và ComboBox chọn số dòng mỗi trang (`cboSoDongMoiTrang`: 10, 20, 50, 100), tự động chuyển trang khi thêm hàng mới, xóa dòng hoặc nhập file dữ liệu.
 
 ### 3.4. Màn hình Nhập file `frmNhapKiemKhoFile`
 - Cung cấp 2 nút tải file mẫu:

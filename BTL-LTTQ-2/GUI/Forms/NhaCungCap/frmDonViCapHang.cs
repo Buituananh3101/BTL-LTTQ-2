@@ -45,8 +45,8 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
 
         private void frmDonViCapHang_Load(object sender, EventArgs e)
         {
-            // Cố định kích thước chuẩn form Size Lớn theo Rule 15e (1182, 803)
-            this.ClientSize = new Size(1182, 803);
+            // Cố định kích thước chuẩn form Size Lớn theo Rule 15e (1182, 703)
+            this.ClientSize = new Size(1182, 703);
             this.StartPosition = FormStartPosition.CenterParent;
 
             if (btnXoa != null)
