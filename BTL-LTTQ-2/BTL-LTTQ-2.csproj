@@ -63,6 +63,12 @@
     <Compile Include="GUI\Forms\ChuyenKho\frmThemPhieuChuyenKhoNew.Designer.cs">
       <DependentUpon>frmThemPhieuChuyenKhoNew.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\Forms\ChuyenKho\frmHienCotHangChuyen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\ChuyenKho\frmHienCotHangChuyen.Designer.cs">
+      <DependentUpon>frmHienCotHangChuyen.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\Forms\DanhSachHangHoa\frmHienCot.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -113,6 +119,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\ChuyenKho\frmThemPhieuChuyenKhoNew.resx">
       <DependentUpon>frmThemPhieuChuyenKhoNew.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Forms\ChuyenKho\frmHienCotHangChuyen.resx">
+      <DependentUpon>frmHienCotHangChuyen.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\ChuyenKho\frmChiTietChuyenKho.resx">
       <DependentUpon>frmChiTietChuyenKho.cs</DependentUpon>

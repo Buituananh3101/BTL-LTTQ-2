@@ -1,11 +1,12 @@
 ﻿# Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-26 – Làm lại form frmThemPhieuChuyenKhoNew giống 100% với form frmThemPhieuKiemKho (Phiên 51)
+**Cập nhật lần cuối**: 2026-10-26 – Bắt lỗi cột Số lượng không hiển thị khi thêm hàng trong frmThemPhieuChuyenKhoNew (Phiên 52)
 ---
 
 ## Đang làm
-- [x] Làm lại giao diện & bố cục Form `frmThemPhieuChuyenKhoNew` giống 100% khuôn mẫu `frmThemPhieuKiemKho` (`ClientSize = (1582, 803)`, font Segoe UI 9.5pt, Z-order Docking chuẩn).
-- [x] Hoàn thiện toàn bộ logic code-behind cho `frmThemPhieuChuyenKhoNew.cs` đồng bộ đầy đủ các chức năng: nạp kho, nhân viên, hàng hóa, nhập số lượng nguyên trên lưới, popup Hiện cột, nạp file, phân trang, lưu tạm và lưu phiếu.
+- [x] Bắt lỗi khi thêm hàng hoặc nhập file mà cột dữ liệu 'Số lượng' đang bị ẩn trên DataGridView của `frmThemPhieuChuyenKhoNew`.
+- [x] Hiển thị MessageBox thông báo rõ ràng cho người dùng, ngăn chặn triệt để hộp thoại lỗi hệ thống (System.InvalidOperationException: Current cell cannot be set to an invisible cell).
+- [x] Bọc các điểm truy xuất và thao tác cell bằng kiểm tra tồn tại và try...catch an toàn.
 
 
 
@@ -49,6 +50,16 @@
 
 ## Nhật ký phiên (Session Logs)
 
+- **Phiên 52 (2026-10-26) – Bắt lỗi khi thêm hàng mà cột dữ liệu số lượng không hiển thị trong frmThemPhieuChuyenKhoNew**:
+  - **Nhu cầu**: Người dùng phát hiện lỗi: khi thêm hàng mà trong dgv đang không có cột dữ liệu số lượng (do ẩn ở Hiện cột) thì xuất hiện ngoại lệ hệ thống unhandled exception `System.InvalidOperationException: Current cell cannot be set to an invisible cell`. Yêu cầu bắt lỗi này và hiển thị thông báo rõ ràng cho người dùng, không để xuất hiện hộp thoại lỗi hệ thống.
+  - **Kết quả thực hiện**:
+    1. Trong `btnThemHang_Click`: Kiểm tra trước `!dgvHangChuyen.Columns.Contains("colSoLuong") || !dgvHangChuyen.Columns["colSoLuong"].Visible`, nếu cột Số lượng đang bị ẩn thì hiển thị `MessageBox.Show` cảnh báo và dừng thực hiện: *"Cột dữ liệu 'Số lượng' hiện đang không hiển thị trên danh sách hàng chuyển. Vui lòng vào mục 'Hiện cột' và tích chọn hiển thị lại cột 'Số lượng' trước khi thêm hàng!"*.
+    2. Trong `btnNhapFile_Click`: Thêm kiểm tra tương tự để cảnh báo người dùng bật lại cột Số lượng trước khi nhập file.
+    3. Thêm kiểm tra `colSoLuong.Visible` an toàn trước khi gán `dgvHangChuyen.CurrentCell = dgvRow.Cells["colSoLuong"]` và bọc `try...catch` ngăn chặn mọi nguy cơ phát sinh ngoại lệ unhandled exception.
+    4. Cập nhật `ApDungSoLuongNhap()` và `dgvHangChuyen_CellDoubleClick` kiểm tra tồn tại cột an toàn.
+    5. Kiểm tra UTF-8 with BOM (190/190 file) và kiểm tra MSBuild biên dịch đạt 0 Errors, 0 Warnings.
+
+
 - **Phiên 51 (2026-10-26) – Làm lại form frmThemPhieuChuyenKhoNew giống 100% với form frmThemPhieuKiemKho**:
   - **Nhu cầu**: Người dùng yêu cầu: "Làm lại form frmThemPhieuChuyenKhoNew giống với form frmThemPhieuKiemKho. Mọi phần bố cục và giao diện phải giống 100%, không được phép tự ý đổi bất cứ gì."
   - **Kết quả thực hiện**:
@@ -69,6 +80,7 @@
        - Phân trang đầy đủ qua RowFilter (`STT >= minSTT AND STT <= maxSTT`).
        - Nạp file qua `frmNhapKiemKhoFile`.
        - Lưu tạm (`NHAP`) và Lưu/Cân bằng kho (`DA_DIEU_CHINH`) bọc trong Transaction ADO.NET an toàn.
+       - Kết nối mở form: Đổi sự kiện click `btnChuyenKho_Click` trong `frmChuyenKho.cs` mở form `frmThemPhieuChuyenKhoNew`.
     3. **Kiểm tra chất lượng**:
        - Chạy `tools/KiemTraMaHoa.ps1`: **187/187 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
        - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
