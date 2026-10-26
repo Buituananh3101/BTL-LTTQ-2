@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
@@ -17,6 +18,11 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
         public DataTable DtKetQuaNhap { get; private set; }
         public int SoLuongThemMoi { get; private set; }
         public int SoLuongCapNhat { get; private set; }
+
+        /// <summary>
+        /// true: cập nhật lại SL nếu trùng mã hàng; false ("Bỏ qua"): không sửa các dòng đã có trong phiếu
+        /// </summary>
+        public bool CapNhatNeuTrung { get; private set; } = true;
 
         public frmNhapKiemKhoFile()
         {
@@ -181,13 +187,22 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                 int themMoi = 0;
                 int capNhat = 0;
                 bool capNhatTrung = rdoCapNhat.Checked;
+                CapNhatNeuTrung = capNhatTrung;
+
+                // Danh sách dòng bị bỏ qua kèm lý do (báo cáo cho người dùng)
+                List<string> dsBoQua = new List<string>();
 
                 foreach (DataRow row in dtRaw.Rows)
                 {
                     string maHangNoiBo = row["MaHang"]?.ToString()?.Trim();
                     if (string.IsNullOrEmpty(maHangNoiBo)) continue;
 
-                    if (!dictHang.ContainsKey(maHangNoiBo)) continue; // Bỏ qua nếu mã hàng không tồn tại trong hệ thống
+                    string dongSo = row["DongSo"]?.ToString();
+                    if (!dictHang.ContainsKey(maHangNoiBo))
+                    {
+                        dsBoQua.Add($"Dòng {dongSo}: mã hàng '{maHangNoiBo}' không tồn tại trong hệ thống");
+                        continue;
+                    }
 
                     DataRow hInfo = dictHang[maHangNoiBo];
                     int maHang = Convert.ToInt32(hInfo["MaHang"]);
@@ -195,11 +210,19 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                     string tenHang = hInfo["TenHang"]?.ToString() ?? "";
                     string tenDvt = hInfo["TenDVT"]?.ToString() ?? "";
 
-                    decimal slThucTe = 0;
-                    if (row["SoLuongThucTe"] != DBNull.Value && decimal.TryParse(row["SoLuongThucTe"].ToString(), out decimal parsedSl))
+                    // Số lượng thực tế bắt buộc là số nguyên >= 0 (ô trống hoặc sai định dạng: bỏ qua dòng)
+                    string slChuoi = row["SoLuongThucTe"]?.ToString()?.Trim() ?? "";
+                    if (string.IsNullOrEmpty(slChuoi))
                     {
-                        slThucTe = parsedSl >= 0 ? parsedSl : 0;
+                        dsBoQua.Add($"Dòng {dongSo}: mã '{maHangNoiBo}' chưa nhập SL thực tế");
+                        continue;
                     }
+                    if (!TryDocSoLuongNguyen(slChuoi, out int slNguyen))
+                    {
+                        dsBoQua.Add($"Dòng {dongSo}: mã '{maHangNoiBo}' có SL thực tế '{slChuoi}' không hợp lệ (phải là số nguyên >= 0)");
+                        continue;
+                    }
+                    decimal slThucTe = slNguyen;
 
                     string ghiChu = row["GhiChu"]?.ToString() ?? "";
 
@@ -213,6 +236,10 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                                 dictKetQua[maHang]["GhiChu"] = ghiChu;
                             }
                             capNhat++;
+                        }
+                        else
+                        {
+                            dsBoQua.Add($"Dòng {dongSo}: mã '{maHangNoiBo}' bị trùng trong file");
                         }
                     }
                     else
@@ -238,11 +265,11 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
 
                 if (DtKetQuaNhap.Rows.Count == 0)
                 {
-                    MessageBox.Show("Không tìm thấy dòng dữ liệu nào khớp với danh mục hàng hóa trong hệ thống!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Không tìm thấy dòng dữ liệu hợp lệ nào khớp với danh mục hàng hóa trong hệ thống!" + TaoThongBaoBoQua(dsBoQua), "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                MessageBox.Show($"Đã đọc thành công {DtKetQuaNhap.Rows.Count} mặt hàng kiểm kho từ file!\n(Thêm mới: {themMoi}, Cập nhật trùng: {capNhat})", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"Đã đọc thành công {DtKetQuaNhap.Rows.Count} mặt hàng kiểm kho từ file!\n(Thêm mới: {themMoi}, Cập nhật trùng: {capNhat})" + TaoThongBaoBoQua(dsBoQua), "Thành công", MessageBoxButtons.OK, dsBoQua.Count > 0 ? MessageBoxIcon.Warning : MessageBoxIcon.Information);
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }
@@ -261,6 +288,49 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             }
         }
 
+        /// <summary>
+        /// Đọc số lượng nguyên không phụ thuộc cấu hình vùng: chấp nhận số nguyên thuần, có dấu phân cách hàng nghìn
+        /// (1,234 / 1.234) hoặc dạng thập phân có phần lẻ bằng 0 do Excel lưu (10.0 / 10,00). Không chấp nhận số âm, số lẻ.
+        /// </summary>
+        private static bool TryDocSoLuongNguyen(string giaTri, out int soLuong)
+        {
+            soLuong = 0;
+            if (string.IsNullOrWhiteSpace(giaTri)) return false;
+
+            string s = giaTri.Trim().Replace(" ", "").Replace(" ", "");
+            if (Regex.IsMatch(s, @"^\d{1,3}([.,]\d{3})+$"))
+            {
+                s = s.Replace(",", "").Replace(".", "");
+            }
+            else if (Regex.IsMatch(s, @"^\d+[.,]0+$"))
+            {
+                s = s.Substring(0, s.IndexOfAny(new[] { '.', ',' }));
+            }
+            return int.TryParse(s, NumberStyles.None, CultureInfo.InvariantCulture, out soLuong);
+        }
+
+        /// <summary>
+        /// Tạo đoạn thông báo các dòng bị bỏ qua (tối đa 10 dòng kèm lý do)
+        /// </summary>
+        private static string TaoThongBaoBoQua(List<string> dsBoQua)
+        {
+            if (dsBoQua == null || dsBoQua.Count == 0) return "";
+
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine();
+            sb.AppendLine();
+            sb.AppendLine($"Bỏ qua {dsBoQua.Count} dòng không hợp lệ:");
+            for (int i = 0; i < dsBoQua.Count && i < 10; i++)
+            {
+                sb.AppendLine("- " + dsBoQua[i]);
+            }
+            if (dsBoQua.Count > 10)
+            {
+                sb.AppendLine($"... và {dsBoQua.Count - 10} dòng khác.");
+            }
+            return sb.ToString().TrimEnd();
+        }
+
         #endregion
 
         #region Đọc File Dữ Liệu (Excel & CSV)
@@ -273,6 +343,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             dt.Columns.Add("DonViTinh", typeof(string));
             dt.Columns.Add("SoLuongThucTe", typeof(string));
             dt.Columns.Add("GhiChu", typeof(string));
+            dt.Columns.Add("DongSo", typeof(int)); // Số dòng trong file (phục vụ báo lỗi)
 
             string ext = Path.GetExtension(filePath).ToLower();
             if (ext == ".csv")
@@ -307,6 +378,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                 if (parts.Length < 2) continue;
 
                 DataRow r = dt.NewRow();
+                r["DongSo"] = i + 1;
                 r["MaHang"] = parts[0].Trim().Trim('\"');
                 if (parts.Length >= 4)
                 {
@@ -360,13 +432,18 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                             IEnumerable<XElement> rows = xdoc.Descendants(ns + "row");
 
                             bool isHeader = true;
+                            int dongSo = 0;
                             foreach (XElement row in rows)
                             {
+                                dongSo++;
                                 if (isHeader)
                                 {
                                     isHeader = false;
                                     continue;
                                 }
+                                // Ưu tiên số dòng thật trong sheet (thuộc tính r của thẻ row)
+                                int dongThuc;
+                                if (!int.TryParse((string)row.Attribute("r"), out dongThuc)) dongThuc = dongSo;
 
                                 Dictionary<string, string> cellValues = new Dictionary<string, string>();
                                 foreach (XElement c in row.Elements(ns + "c"))
@@ -386,10 +463,13 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                                 if (cellValues.ContainsKey("A") && !string.IsNullOrEmpty(cellValues["A"]))
                                 {
                                     DataRow r = dt.NewRow();
+                                    r["DongSo"] = dongThuc;
                                     r["MaHang"] = cellValues["A"].Trim();
                                     r["TenHang"] = cellValues.ContainsKey("B") ? cellValues["B"].Trim() : "";
                                     r["DonViTinh"] = cellValues.ContainsKey("C") ? cellValues["C"].Trim() : "";
-                                    r["SoLuongThucTe"] = cellValues.ContainsKey("D") ? cellValues["D"].Trim() : (cellValues.ContainsKey("B") ? cellValues["B"].Trim() : "0");
+                                    // File đủ cột (có ĐVT/Ghi chú) mà trống cột D: coi là chưa nhập SL; file 2 cột (Mã, SL): lấy cột B
+                                    bool duCot = cellValues.ContainsKey("C") || cellValues.ContainsKey("E");
+                                    r["SoLuongThucTe"] = cellValues.ContainsKey("D") ? cellValues["D"].Trim() : (!duCot && cellValues.ContainsKey("B") ? cellValues["B"].Trim() : "");
                                     r["GhiChu"] = cellValues.ContainsKey("E") ? cellValues["E"].Trim() : "";
                                     dt.Rows.Add(r);
                                 }
@@ -411,9 +491,11 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             {
                 MatchCollection rows = Regex.Matches(content, @"<tr[^>]*>(.*?)</tr>", RegexOptions.Singleline | RegexOptions.IgnoreCase);
                 bool isHeader = true;
+                int dongSo = 0;
 
                 foreach (Match rowMatch in rows)
                 {
+                    dongSo++;
                     if (isHeader)
                     {
                         isHeader = false;
@@ -424,6 +506,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                     if (cells.Count >= 2)
                     {
                         DataRow r = dt.NewRow();
+                        r["DongSo"] = dongSo;
                         r["MaHang"] = Regex.Replace(cells[0].Groups[1].Value, @"<[^>]+>", "").Trim();
                         if (cells.Count >= 4)
                         {

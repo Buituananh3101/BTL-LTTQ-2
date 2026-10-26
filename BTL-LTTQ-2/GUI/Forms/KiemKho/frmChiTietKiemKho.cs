@@ -1,5 +1,6 @@
 ﻿using BTL_LTTQ_2.Classes;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
@@ -145,6 +146,21 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                     btnXoa.Text = "Xóa";
                     btnCanBang.Visible = false;
                 }
+                else if (trangThai == "HUY")
+                {
+                    // Phiếu đã hủy: chỉ xem, không cho xóa và không cho cân bằng
+                    lblTrangThaiBadge.Text = "Đã hủy";
+                    lblTrangThaiBadge.ForeColor = Color.FromArgb(100, 116, 139);
+
+                    lblNguoiCanBang.Text = "Người cân bằng: --";
+                    lblNgayCanBang.Text = "Ngày cân bằng: --";
+                    lblNguoiCanBang.Visible = true;
+                    lblNgayCanBang.Visible = true;
+
+                    btnXoa.Enabled = false;
+                    btnXoa.Text = "Xóa";
+                    btnCanBang.Visible = false;
+                }
                 else
                 {
                     lblTrangThaiBadge.Text = "Phiếu tạm";
@@ -185,13 +201,14 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                         ctpkk.SoLuongTheoSo AS TonKho,
                         ctpkk.SoLuongThucTe,
                         ctpkk.DonGia,
-                        CASE 
-                            WHEN ctpkk.SoLuongThucTe IS NOT NULL THEN (ctpkk.SoLuongThucTe - ctpkk.SoLuongTheoSo) 
-                            ELSE 0 
+                        -- Dòng chưa kiểm (SoLuongThucTe NULL): để trống chênh lệch, không tính vào tổng
+                        CASE
+                            WHEN ctpkk.SoLuongThucTe IS NOT NULL THEN (ctpkk.SoLuongThucTe - ctpkk.SoLuongTheoSo)
+                            ELSE NULL
                         END AS SlChenhLech,
-                        CASE 
-                            WHEN ctpkk.SoLuongThucTe IS NOT NULL THEN (ctpkk.SoLuongThucTe - ctpkk.SoLuongTheoSo) * ctpkk.DonGia 
-                            ELSE 0 
+                        CASE
+                            WHEN ctpkk.SoLuongThucTe IS NOT NULL THEN (ctpkk.SoLuongThucTe - ctpkk.SoLuongTheoSo) * ctpkk.DonGia
+                            ELSE NULL
                         END AS GiaTriChenhLech
                     FROM ChiTietPhieuKiemKe ctpkk
                     JOIN HangHoa h ON ctpkk.MaHang = h.MaHang
@@ -305,6 +322,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                 MessageBox.Show("Phiếu kiểm kho đã cân bằng kho không được phép xóa theo Điều luật 6 quản lý kho!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+            if (trangThai == "HUY") return;
 
             DialogResult dr = MessageBox.Show(
                 $"Bạn có chắc chắn muốn xóa phiếu kiểm kho '{this.maPhieu}'?\nHành động này không thể hoàn tác!",
@@ -318,20 +336,26 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                 {
                     DataProcessing.ChangeDataTransaction((conn, trans) =>
                     {
-                        // 1. Xóa chi tiết kiểm kê
-                        string sqlDeleteDetail = "DELETE FROM ChiTietPhieuKiemKe WHERE MaPhieuKiemKe = @MaPhieuKiemKe";
+                        // 1. Xóa chi tiết kiểm kê (chỉ khi phiếu vẫn còn là phiếu tạm)
+                        string sqlDeleteDetail = @"
+                            DELETE FROM ChiTietPhieuKiemKe
+                            WHERE MaPhieuKiemKe = @MaPhieuKiemKe
+                              AND EXISTS (SELECT 1 FROM PhieuKiemKe WHERE MaPhieuKiemKe = @MaPhieuKiemKe AND TrangThai IN ('NHAP', 'DANG_KIEM', 'DA_KIEM'))";
                         using (SqlCommand cmdDtl = new SqlCommand(sqlDeleteDetail, conn, trans))
                         {
                             cmdDtl.Parameters.AddWithValue("@MaPhieuKiemKe", maPhieuKiemKe);
                             cmdDtl.ExecuteNonQuery();
                         }
 
-                        // 2. Xóa phiếu kiểm kê
-                        string sqlDeleteHeader = "DELETE FROM PhieuKiemKe WHERE MaPhieuKiemKe = @MaPhieuKiemKe";
+                        // 2. Xóa phiếu kiểm kê (kiểm tra số dòng tác động để chống xóa phiếu vừa được cân bằng/hủy)
+                        string sqlDeleteHeader = "DELETE FROM PhieuKiemKe WHERE MaPhieuKiemKe = @MaPhieuKiemKe AND TrangThai IN ('NHAP', 'DANG_KIEM', 'DA_KIEM')";
                         using (SqlCommand cmdHdr = new SqlCommand(sqlDeleteHeader, conn, trans))
                         {
                             cmdHdr.Parameters.AddWithValue("@MaPhieuKiemKe", maPhieuKiemKe);
-                            cmdHdr.ExecuteNonQuery();
+                            if (cmdHdr.ExecuteNonQuery() != 1)
+                            {
+                                throw new InvalidOperationException("Phiếu kiểm kho không còn ở trạng thái phiếu tạm (có thể đã được cân bằng hoặc hủy). Vui lòng tải lại dữ liệu.");
+                            }
                         }
 
                         // 3. Ghi nhật ký thao tác
@@ -352,6 +376,12 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                     this.DialogResult = DialogResult.OK;
                     this.Close();
                 }
+                catch (InvalidOperationException ex)
+                {
+                    MessageBox.Show(ex.Message, "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    DaThayDoiDuLieu = true;
+                    NapThongTinPhieu();
+                }
                 catch (Exception ex)
                 {
                     MessageBox.Show("Lỗi khi xóa phiếu kiểm kho: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -361,7 +391,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
 
         private void btnCanBang_Click(object sender, EventArgs e)
         {
-            if (trangThai == "DA_DIEU_CHINH") return;
+            if (trangThai == "DA_DIEU_CHINH" || trangThai == "HUY") return;
 
             if (dtChiTietData == null || dtChiTietData.Rows.Count == 0)
             {
@@ -369,8 +399,31 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                 return;
             }
 
+            // Bắt buộc tài khoản phải gắn với nhân viên (MaNVLap/MaNVDuyet tham chiếu NhanVien.MaNV)
+            if (!SessionContext.MaNV.HasValue || SessionContext.MaNV.Value <= 0)
+            {
+                MessageBox.Show("Tài khoản chưa được gắn với nhân viên, không thể lập chứng từ.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Đếm dòng chưa kiểm (SoLuongThucTe NULL) sẽ bị bỏ qua khi cân bằng
+            int soDongChuaKiem = 0;
+            foreach (DataRow r in dtChiTietData.Rows)
+            {
+                if (r["SoLuongThucTe"] == DBNull.Value) soDongChuaKiem++;
+            }
+            if (soDongChuaKiem == dtChiTietData.Rows.Count)
+            {
+                MessageBox.Show("Phiếu kiểm kho chưa có mặt hàng nào được nhập số lượng thực tế, không thể cân bằng!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            string luuYChuaKiem = soDongChuaKiem > 0
+                ? $"\n\nLưu ý: Có {soDongChuaKiem} mặt hàng chưa kiểm sẽ được bỏ qua (giữ nguyên tồn hiện tại)."
+                : "";
+
             DialogResult dr = MessageBox.Show(
-                $"Bạn có chắc chắn muốn HOÀN THÀNH (Cân bằng kho) phiếu kiểm kê '{this.maPhieu}'?\n\nHành động này sẽ cập nhật tồn kho thực tế vào sổ sách và khóa vĩnh viễn phiếu kiểm kê (không thể hủy/sửa theo Luật 6)!",
+                $"Bạn có chắc chắn muốn HOÀN THÀNH (Cân bằng kho) phiếu kiểm kê '{this.maPhieu}'?\n\nHệ thống sẽ đọc lại tồn sổ sách tại thời điểm cân bằng, cập nhật tồn kho theo số lượng thực tế và khóa vĩnh viễn phiếu kiểm kê (không thể hủy/sửa theo Luật 6)!" + luuYChuaKiem,
                 "Xác nhận hoàn thành kiểm kho",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
@@ -379,64 +432,15 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
 
             try
             {
-                int maNhanVien = (SessionContext.MaNV.HasValue && SessionContext.MaNV.Value > 0) ? SessionContext.MaNV.Value : 1;
+                int maNhanVien = SessionContext.MaNV.Value;
+                KetQuaCanBang ketQua = null;
 
                 DataProcessing.ChangeDataTransaction((conn, trans) =>
                 {
-                    // 1. Cập nhật trạng thái PhieuKiemKe sang DA_DIEU_CHINH
-                    string sqlUpdatePkk = @"
-                        UPDATE PhieuKiemKe 
-                        SET TrangThai = 'DA_DIEU_CHINH'
-                        WHERE MaPhieuKiemKe = @MaPhieuKiemKe";
+                    // 1. Cân bằng kho: đọc lại tồn hiện tại, cập nhật SoLuongTheoSo, sinh phiếu điều chỉnh (cùng conn/trans)
+                    ketQua = CanBangKhoTrongGiaoDich(conn, trans, maPhieuKiemKe, maNhanVien, this.maPhieu);
 
-                    using (SqlCommand cmdPkk = new SqlCommand(sqlUpdatePkk, conn, trans))
-                    {
-                        cmdPkk.Parameters.AddWithValue("@MaPhieuKiemKe", maPhieuKiemKe);
-                        cmdPkk.ExecuteNonQuery();
-                    }
-
-                    // 2. Tạo PhieuDieuChinh trạng thái DA_DUYET
-                    string sqlPdc = @"
-                        INSERT INTO PhieuDieuChinh (MaPhieuKiemKe, MaNVLap, MaNVDuyet, NgayLap, NgayDuyet, TrangThai, GhiChu)
-                        VALUES (@MaPhieuKiemKe, @MaNVLap, @MaNVDuyet, sysdatetime(), sysdatetime(), 'DA_DUYET', @GhiChu);
-                        SELECT SCOPE_IDENTITY();";
-
-                    int newMaPhieuDieuChinh;
-                    using (SqlCommand cmdPdc = new SqlCommand(sqlPdc, conn, trans))
-                    {
-                        cmdPdc.Parameters.AddWithValue("@MaPhieuKiemKe", maPhieuKiemKe);
-                        cmdPdc.Parameters.AddWithValue("@MaNVLap", maNhanVien);
-                        cmdPdc.Parameters.AddWithValue("@MaNVDuyet", maNhanVien);
-                        cmdPdc.Parameters.AddWithValue("@GhiChu", $"Cân bằng kiểm kê phiếu {this.maPhieu}");
-                        object pdcRes = cmdPdc.ExecuteScalar();
-                        newMaPhieuDieuChinh = Convert.ToInt32(pdcRes);
-                    }
-
-                    // 3. Thêm các dòng ChiTietPhieuDieuChinh cho mặt hàng có chênh lệch
-                    int countDieuChinh = 0;
-                    foreach (DataRow r in dtChiTietData.Rows)
-                    {
-                        int maCTKiemKe = Convert.ToInt32(r["MaCTKiemKe"]);
-                        decimal slChenhLech = Convert.ToDecimal(r["SlChenhLech"]);
-
-                        if (slChenhLech != 0)
-                        {
-                            string sqlCtpdc = @"
-                                INSERT INTO ChiTietPhieuDieuChinh (MaPhieuDieuChinh, MaCTKiemKe, SoLuongDieuChinh)
-                                VALUES (@MaPhieuDieuChinh, @MaCTKiemKe, @SoLuongDieuChinh)";
-
-                            using (SqlCommand cmdCtpdc = new SqlCommand(sqlCtpdc, conn, trans))
-                            {
-                                cmdCtpdc.Parameters.AddWithValue("@MaPhieuDieuChinh", newMaPhieuDieuChinh);
-                                cmdCtpdc.Parameters.AddWithValue("@MaCTKiemKe", maCTKiemKe);
-                                cmdCtpdc.Parameters.AddWithValue("@SoLuongDieuChinh", slChenhLech);
-                                cmdCtpdc.ExecuteNonQuery();
-                            }
-                            countDieuChinh++;
-                        }
-                    }
-
-                    // 4. Ghi nhật ký thao tác
+                    // 2. Ghi nhật ký thao tác
                     string sqlLog = @"
                         INSERT INTO NhatKyThaoTac (MaTaiKhoan, ThoiDiem, ThaoTac, LoaiDoiTuong, MaDoiTuong, NoiDung)
                         VALUES (@MaTaiKhoan, sysdatetime(), N'Cân bằng kho', 'PhieuKiemKe', @MaDoiTuong, @NoiDung)";
@@ -445,20 +449,179 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                     {
                         cmdLog.Parameters.AddWithValue("@MaTaiKhoan", SessionContext.MaTaiKhoan > 0 ? SessionContext.MaTaiKhoan : 1);
                         cmdLog.Parameters.AddWithValue("@MaDoiTuong", maPhieuKiemKe.ToString());
-                        cmdLog.Parameters.AddWithValue("@NoiDung", $"Cân bằng kiểm kho {this.maPhieu}, {dtChiTietData.Rows.Count} dòng kiểm, {countDieuChinh} dòng điều chỉnh");
+                        cmdLog.Parameters.AddWithValue("@NoiDung", $"Cân bằng kiểm kho {this.maPhieu}, {ketQua.SoDongKiem} dòng kiểm, {ketQua.SoDongDieuChinh} dòng điều chỉnh, {ketQua.SoDongChuaKiem} dòng chưa kiểm");
                         cmdLog.ExecuteNonQuery();
                     }
                 });
 
                 DaThayDoiDuLieu = true;
                 this.DialogResult = DialogResult.OK;
-                MessageBox.Show($"Cân bằng kho cho phiếu kiểm '{this.maPhieu}' thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(ketQua.TaoThongBao(this.maPhieu), "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                NapThongTinPhieu();
+            }
+            catch (InvalidOperationException ex)
+            {
+                MessageBox.Show(ex.Message, "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                DaThayDoiDuLieu = true;
                 NapThongTinPhieu();
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi khi cân bằng phiếu kiểm kho: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        /// <summary>
+        /// Kết quả một lần cân bằng kho (phục vụ thông báo tóm tắt sau khi cân bằng)
+        /// </summary>
+        internal sealed class KetQuaCanBang
+        {
+            public int SoDongKiem { get; set; }
+            public int SoDongChuaKiem { get; set; }
+            public int SoDongDieuChinh { get; set; }
+            public decimal TongDieuChinhTang { get; set; }
+            public decimal TongDieuChinhGiam { get; set; }
+
+            public string TaoThongBao(string maPhieu)
+            {
+                return $"Cân bằng kho thành công cho phiếu {maPhieu}!\n\n" +
+                       $"- Số dòng đã kiểm: {SoDongKiem:N0}\n" +
+                       $"- Số dòng điều chỉnh: {SoDongDieuChinh:N0}\n" +
+                       $"- Tổng điều chỉnh tăng: +{TongDieuChinhTang:N0}\n" +
+                       $"- Tổng điều chỉnh giảm: -{TongDieuChinhGiam:N0}\n" +
+                       $"- Số dòng chưa kiểm (bỏ qua): {SoDongChuaKiem:N0}\n\n" +
+                       "Tồn sổ sách đã được chốt lại theo thời điểm cân bằng.";
+            }
+        }
+
+        /// <summary>
+        /// Cân bằng kho cho 1 phiếu kiểm trong giao dịch đang mở (dùng chung cho frmThemPhieuKiemKho và frmChiTietKiemKho):
+        /// đọc lại tồn hiện tại từ vw_TonKhoHienTai tại kho của phiếu, cập nhật SoLuongTheoSo,
+        /// sinh PhieuDieuChinh (DA_DUYET, thời điểm = lúc cân bằng) và ChiTietPhieuDieuChinh cho các dòng lệch khác 0.
+        /// Dòng chưa kiểm (SoLuongThucTe NULL) được bỏ qua.
+        /// </summary>
+        internal static KetQuaCanBang CanBangKhoTrongGiaoDich(SqlConnection conn, SqlTransaction trans, int maPhieuKiemKe, int maNhanVien, string maPhieu)
+        {
+            KetQuaCanBang ketQua = new KetQuaCanBang();
+
+            // 1. Khóa phiếu: chỉ phiếu tạm mới được cân bằng (chống cân bằng 2 lần hoặc cân bằng phiếu đã hủy)
+            string sqlKhoaPhieu = @"
+                UPDATE PhieuKiemKe
+                SET TrangThai = 'DA_DIEU_CHINH'
+                WHERE MaPhieuKiemKe = @MaPhieuKiemKe AND TrangThai IN ('NHAP', 'DANG_KIEM', 'DA_KIEM')";
+            using (SqlCommand cmd = new SqlCommand(sqlKhoaPhieu, conn, trans))
+            {
+                cmd.Parameters.AddWithValue("@MaPhieuKiemKe", maPhieuKiemKe);
+                if (cmd.ExecuteNonQuery() != 1)
+                {
+                    throw new InvalidOperationException("Phiếu kiểm kho không còn ở trạng thái phiếu tạm (có thể đã được cân bằng hoặc hủy). Vui lòng tải lại dữ liệu.");
+                }
+            }
+
+            int maKho;
+            using (SqlCommand cmd = new SqlCommand("SELECT MaKho FROM PhieuKiemKe WHERE MaPhieuKiemKe = @MaPhieuKiemKe", conn, trans))
+            {
+                cmd.Parameters.AddWithValue("@MaPhieuKiemKe", maPhieuKiemKe);
+                maKho = Convert.ToInt32(cmd.ExecuteScalar());
+            }
+
+            // 2. Đọc lại tồn sổ sách hiện tại của từng dòng tại kho của phiếu (cùng conn/trans)
+            string sqlDong = @"
+                SELECT
+                    ct.MaCTKiemKe,
+                    ct.SoLuongThucTe,
+                    h.MaHangNoiBo,
+                    h.TenHang,
+                    ISNULL(tk.SoLuongTon, 0) AS TonHienTai
+                FROM ChiTietPhieuKiemKe ct
+                JOIN HangHoa h ON ct.MaHang = h.MaHang
+                LEFT JOIN vw_TonKhoHienTai tk ON tk.MaHang = ct.MaHang AND tk.MaKho = @MaKho
+                WHERE ct.MaPhieuKiemKe = @MaPhieuKiemKe
+                ORDER BY ct.MaCTKiemKe ASC";
+
+            DataTable dtDong = new DataTable();
+            using (SqlCommand cmd = new SqlCommand(sqlDong, conn, trans))
+            {
+                cmd.Parameters.AddWithValue("@MaKho", maKho);
+                cmd.Parameters.AddWithValue("@MaPhieuKiemKe", maPhieuKiemKe);
+                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                {
+                    da.Fill(dtDong);
+                }
+            }
+
+            // 3. Chốt SoLuongTheoSo = tồn hiện tại và tính lệch = thực tế - tồn tại thời điểm cân bằng
+            var danhSachDieuChinh = new List<Tuple<int, decimal>>(); // MaCTKiemKe, SoLuongDieuChinh
+            string sqlChotTon = "UPDATE ChiTietPhieuKiemKe SET SoLuongTheoSo = @SoLuongTheoSo WHERE MaCTKiemKe = @MaCTKiemKe";
+
+            foreach (DataRow r in dtDong.Rows)
+            {
+                // Dòng chưa kiểm: bỏ qua, giữ nguyên tồn hiện tại
+                if (r["SoLuongThucTe"] == DBNull.Value)
+                {
+                    ketQua.SoDongChuaKiem++;
+                    continue;
+                }
+
+                ketQua.SoDongKiem++;
+                int maCTKiemKe = Convert.ToInt32(r["MaCTKiemKe"]);
+                decimal thucTe = Convert.ToDecimal(r["SoLuongThucTe"]);
+                decimal tonHienTai = Convert.ToDecimal(r["TonHienTai"]);
+
+                if (tonHienTai < 0)
+                {
+                    throw new InvalidOperationException($"Mặt hàng '{r["MaHangNoiBo"]} - {r["TenHang"]}' đang có tồn sổ sách âm ({tonHienTai:N0}), không thể cân bằng. Vui lòng kiểm tra lại các chứng từ liên quan.");
+                }
+
+                using (SqlCommand cmd = new SqlCommand(sqlChotTon, conn, trans))
+                {
+                    cmd.Parameters.AddWithValue("@SoLuongTheoSo", tonHienTai);
+                    cmd.Parameters.AddWithValue("@MaCTKiemKe", maCTKiemKe);
+                    cmd.ExecuteNonQuery();
+                }
+
+                decimal slDieuChinh = thucTe - tonHienTai;
+                if (slDieuChinh != 0)
+                {
+                    danhSachDieuChinh.Add(new Tuple<int, decimal>(maCTKiemKe, slDieuChinh));
+                    if (slDieuChinh > 0) ketQua.TongDieuChinhTang += slDieuChinh;
+                    else ketQua.TongDieuChinhGiam += Math.Abs(slDieuChinh);
+                }
+            }
+            ketQua.SoDongDieuChinh = danhSachDieuChinh.Count;
+
+            // 4. Tạo PhieuDieuChinh DA_DUYET với thời điểm thực tế lúc cân bằng
+            string sqlPdc = @"
+                INSERT INTO PhieuDieuChinh (MaPhieuKiemKe, MaNVLap, MaNVDuyet, NgayLap, NgayDuyet, TrangThai, GhiChu)
+                VALUES (@MaPhieuKiemKe, @MaNVLap, @MaNVDuyet, SYSDATETIME(), SYSDATETIME(), 'DA_DUYET', @GhiChu);
+                SELECT SCOPE_IDENTITY();";
+
+            int maPhieuDieuChinh;
+            using (SqlCommand cmd = new SqlCommand(sqlPdc, conn, trans))
+            {
+                cmd.Parameters.AddWithValue("@MaPhieuKiemKe", maPhieuKiemKe);
+                cmd.Parameters.AddWithValue("@MaNVLap", maNhanVien);
+                cmd.Parameters.AddWithValue("@MaNVDuyet", maNhanVien);
+                cmd.Parameters.AddWithValue("@GhiChu", $"Cân bằng kiểm kê phiếu {maPhieu}");
+                maPhieuDieuChinh = Convert.ToInt32(cmd.ExecuteScalar());
+            }
+
+            // 5. Thêm ChiTietPhieuDieuChinh cho các dòng có chênh lệch khác 0
+            string sqlCtpdc = @"
+                INSERT INTO ChiTietPhieuDieuChinh (MaPhieuDieuChinh, MaCTKiemKe, SoLuongDieuChinh)
+                VALUES (@MaPhieuDieuChinh, @MaCTKiemKe, @SoLuongDieuChinh)";
+            foreach (var item in danhSachDieuChinh)
+            {
+                using (SqlCommand cmd = new SqlCommand(sqlCtpdc, conn, trans))
+                {
+                    cmd.Parameters.AddWithValue("@MaPhieuDieuChinh", maPhieuDieuChinh);
+                    cmd.Parameters.AddWithValue("@MaCTKiemKe", item.Item1);
+                    cmd.Parameters.AddWithValue("@SoLuongDieuChinh", item.Item2);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+
+            return ketQua;
         }
 
         private void btnXuatFile_Click(object sender, EventArgs e)
@@ -572,10 +735,13 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                 sb.AppendLine($"<td>{r["TenHang"]}</td>");
                 sb.AppendLine($"<td class=\"center\">{r["TenDVT"]}</td>");
                 sb.AppendLine($"<td class=\"num\">{Convert.ToDecimal(r["TonKho"]):N0}</td>");
+                // Dòng chưa kiểm: để trống chênh lệch
+                string slLech = r["SlChenhLech"] != DBNull.Value ? Convert.ToDecimal(r["SlChenhLech"]).ToString("N0") : "";
+                string giaTriLech = r["GiaTriChenhLech"] != DBNull.Value ? Convert.ToDecimal(r["GiaTriChenhLech"]).ToString("N0") : "";
                 sb.AppendLine($"<td class=\"num\">{thucTe}</td>");
-                sb.AppendLine($"<td class=\"num\">{Convert.ToDecimal(r["SlChenhLech"]):N0}</td>");
+                sb.AppendLine($"<td class=\"num\">{slLech}</td>");
                 sb.AppendLine($"<td class=\"num\">{Convert.ToDecimal(r["DonGia"]):N0}</td>");
-                sb.AppendLine($"<td class=\"num\">{Convert.ToDecimal(r["GiaTriChenhLech"]):N0}</td>");
+                sb.AppendLine($"<td class=\"num\">{giaTriLech}</td>");
                 sb.AppendLine("</tr>");
             }
 

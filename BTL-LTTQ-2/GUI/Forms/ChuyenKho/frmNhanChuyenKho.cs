@@ -22,6 +22,57 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
             this.maPhieu = maPhieu;
             this.tenKhoNguon = tenKhoNguon;
             this.tenKhoDich = tenKhoDich;
+
+            // Ô SL thực nhận chỉ cho nhập chữ số; chặn hộp thoại lỗi DataError mặc định
+            dgvHangNhan.EditingControlShowing += dgvHangNhan_EditingControlShowing;
+            dgvHangNhan.DataError += dgvHangNhan_DataError;
+        }
+
+        private void dgvHangNhan_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        {
+            if (e.Control is TextBox txt)
+            {
+                txt.KeyPress -= TxtSoLuongNhan_KeyPress;
+                txt.TextChanged -= TxtSoLuongNhan_TextChanged;
+                txt.MaxLength = 32767;
+
+                string colName = dgvHangNhan.CurrentCell != null ? dgvHangNhan.Columns[dgvHangNhan.CurrentCell.ColumnIndex].Name : "";
+                if (colName == "colSoLuongNhan")
+                {
+                    txt.MaxLength = 9; // Giới hạn độ dài để không tràn số
+                    txt.KeyPress += TxtSoLuongNhan_KeyPress;
+                    txt.TextChanged += TxtSoLuongNhan_TextChanged;
+                }
+            }
+        }
+
+        private void TxtSoLuongNhan_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void TxtSoLuongNhan_TextChanged(object sender, EventArgs e)
+        {
+            // Loại bỏ ký tự không phải chữ số khi người dùng dán dữ liệu (Ctrl+V)
+            if (sender is TextBox txt)
+            {
+                string chiSo = new string(Array.FindAll(txt.Text.ToCharArray(), char.IsDigit));
+                if (chiSo != txt.Text)
+                {
+                    txt.Text = chiSo;
+                    txt.SelectionStart = txt.Text.Length;
+                }
+            }
+        }
+
+        private void dgvHangNhan_DataError(object sender, DataGridViewDataErrorEventArgs e)
+        {
+            // Phòng hờ: không hiện hộp thoại lỗi mặc định, giữ ô ở chế độ sửa để người dùng nhập lại
+            e.ThrowException = false;
+            e.Cancel = true;
         }
 
         private void frmNhanChuyenKho_Load(object sender, EventArgs e)
@@ -115,6 +166,13 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                 row["SoLuongNhan"] = soLuongNhan;
             }
 
+            // Số lượng nhận là số nguyên
+            if (soLuongNhan != Math.Floor(soLuongNhan))
+            {
+                soLuongNhan = Math.Floor(soLuongNhan);
+                row["SoLuongNhan"] = soLuongNhan;
+            }
+
             if (soLuongNhan < 0)
             {
                 MessageBox.Show("Số lượng nhận không thể nhỏ hơn 0!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -198,6 +256,18 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                 return;
             }
 
+            // Bắt buộc tài khoản phải gắn với nhân viên (MaNVNhan tham chiếu NhanVien.MaNV)
+            if (!SessionContext.MaNV.HasValue || SessionContext.MaNV.Value <= 0)
+            {
+                MessageBox.Show("Tài khoản chưa được gắn với nhân viên, không thể lập chứng từ.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (dgvHangNhan.IsCurrentCellInEditMode && !dgvHangNhan.EndEdit())
+            {
+                return;
+            }
+
             decimal tongChuyen = 0;
             decimal tongNhan = 0;
             decimal tongHaoHut = 0;
@@ -228,36 +298,42 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
 
             try
             {
+                int maNVNhan = SessionContext.MaNV.Value;
+
                 DataProcessing.ChangeDataTransaction((conn, trans) =>
                 {
-                    // 1. Cập nhật số lượng nhận từng dòng
-                    string sqlUpdateCT = "UPDATE ChiTietPhieuChuyenKho SET SoLuongNhan = @SoLuongNhan WHERE MaCTPhieuChuyen = @MaCT";
+                    // 1. Cập nhật phiếu chuyển kho sang DA_NHAN, chỉ khi phiếu vẫn đang chuyển (chống nhận phiếu vừa bị hủy/đã nhận)
+                    string sqlUpdatePhieu = @"UPDATE PhieuChuyenKho
+                                             SET TrangThai = 'DA_NHAN',
+                                                 ThoiDiemNhan = SYSDATETIME(),
+                                                 MaNVNhan = @MaNVNhan,
+                                                 TongSoLuongNhan = @TongSoLuongNhan,
+                                                 GhiChuNhan = @GhiChuNhan
+                                             WHERE MaPhieuChuyen = @MaPhieuChuyen AND TrangThai = 'DA_XUAT'";
+
+                    using (SqlCommand cmdPhieu = new SqlCommand(sqlUpdatePhieu, conn, trans))
+                    {
+                        cmdPhieu.Parameters.AddWithValue("@MaNVNhan", maNVNhan);
+                        cmdPhieu.Parameters.AddWithValue("@TongSoLuongNhan", tongNhan);
+                        cmdPhieu.Parameters.AddWithValue("@GhiChuNhan", string.IsNullOrWhiteSpace(txtGhiChuNhan.Text) ? (object)DBNull.Value : txtGhiChuNhan.Text.Trim());
+                        cmdPhieu.Parameters.AddWithValue("@MaPhieuChuyen", this.maPhieuChuyen);
+                        if (cmdPhieu.ExecuteNonQuery() != 1)
+                        {
+                            throw new InvalidOperationException("Phiếu chuyển kho không còn ở trạng thái Đang chuyển (có thể đã bị hủy hoặc đã được nhận). Vui lòng tải lại dữ liệu.");
+                        }
+                    }
+
+                    // 2. Cập nhật số lượng nhận từng dòng
+                    string sqlUpdateCT = "UPDATE ChiTietPhieuChuyenKho SET SoLuongNhan = @SoLuongNhan WHERE MaCTPhieuChuyen = @MaCT AND MaPhieuChuyen = @MaPhieuChuyen";
                     foreach (DataRow r in dtChiTiet.Rows)
                     {
                         using (SqlCommand cmdCT = new SqlCommand(sqlUpdateCT, conn, trans))
                         {
-                            cmdCT.Parameters.AddWithValue("@SoLuongNhan", r["SoLuongNhan"]);
+                            cmdCT.Parameters.AddWithValue("@SoLuongNhan", r["SoLuongNhan"] != DBNull.Value ? r["SoLuongNhan"] : r["SoLuong"]);
                             cmdCT.Parameters.AddWithValue("@MaCT", r["MaCTPhieuChuyen"]);
+                            cmdCT.Parameters.AddWithValue("@MaPhieuChuyen", this.maPhieuChuyen);
                             cmdCT.ExecuteNonQuery();
                         }
-                    }
-
-                    // 2. Cập nhật phiếu chuyển kho sang DA_NHAN
-                    string sqlUpdatePhieu = @"UPDATE PhieuChuyenKho 
-                                             SET TrangThai = 'DA_NHAN',
-                                                 ThoiDiemNhan = GETDATE(),
-                                                 MaNVNhan = @MaNVNhan,
-                                                 TongSoLuongNhan = @TongSoLuongNhan,
-                                                 GhiChuNhan = @GhiChuNhan
-                                             WHERE MaPhieuChuyen = @MaPhieuChuyen";
-
-                    using (SqlCommand cmdPhieu = new SqlCommand(sqlUpdatePhieu, conn, trans))
-                    {
-                        cmdPhieu.Parameters.AddWithValue("@MaNVNhan", SessionContext.MaNV.HasValue ? (object)SessionContext.MaNV.Value : 1);
-                        cmdPhieu.Parameters.AddWithValue("@TongSoLuongNhan", tongNhan);
-                        cmdPhieu.Parameters.AddWithValue("@GhiChuNhan", string.IsNullOrWhiteSpace(txtGhiChuNhan.Text) ? (object)DBNull.Value : txtGhiChuNhan.Text.Trim());
-                        cmdPhieu.Parameters.AddWithValue("@MaPhieuChuyen", this.maPhieuChuyen);
-                        cmdPhieu.ExecuteNonQuery();
                     }
 
                     // 3. Ghi log kiểm toán
@@ -273,6 +349,13 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                 });
 
                 MessageBox.Show("Xác nhận nhận hàng chuyển kho thành công!\nTồn kho tại kho nhận đã được cập nhật.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+            }
+            catch (InvalidOperationException ex)
+            {
+                MessageBox.Show(ex.Message, "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                // Đóng form để màn hình chi tiết tải lại trạng thái mới nhất
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }
