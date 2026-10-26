@@ -1,4 +1,6 @@
-﻿USE [QuanLyKhoPhuQuocLTW];
+﻿-- Script MỘT LẦN: chuẩn hóa dữ liệu mẫu bị lỗi font (mojibake). Các lệnh xóa chỉ xóa bản ghi
+-- không còn được tham chiếu, nên chạy lại cũng không làm mất danh mục đang dùng.
+USE [QuanLyKhoPhuQuocLTTQ];
 GO
 
 SET NOCOUNT ON;
@@ -22,7 +24,9 @@ UPDATE HangHoa SET MaDvt = 2 WHERE MaDvt IN (SELECT MaDvt FROM DonViTinh WHERE (
 UPDATE HangHoa SET MaDvt = 4 WHERE MaDvt IN (SELECT MaDvt FROM DonViTinh WHERE (TenDvt LIKE N'%M%t%' OR TenDvt = N'MĂ©t') AND MaDvt <> 4);
 
 -- Xóa các ĐVT lỗi
-DELETE FROM DonViTinh WHERE MaDvt > 4;
+DELETE FROM DonViTinh WHERE MaDvt > 4
+  AND TenDvt NOT IN (N'Cuộn', N'Hộp', N'Bộ')
+  AND NOT EXISTS (SELECT 1 FROM HangHoa h WHERE h.MaDVT = DonViTinh.MaDvt);
 
 -- Thêm các ĐVT mở rộng chuẩn UTF-8
 IF NOT EXISTS (SELECT 1 FROM DonViTinh WHERE TenDvt = N'Cuộn') INSERT INTO DonViTinh (TenDvt) VALUES (N'Cuộn');
@@ -43,7 +47,8 @@ UPDATE HangHoa SET MaNhom = 4 WHERE MaNhom IN (SELECT MaNhom FROM NhomHang WHERE
 UPDATE HangHoa SET MaNhom = 5 WHERE MaNhom IN (SELECT MaNhom FROM NhomHang WHERE (TenNhom LIKE N'%Thi%t b% an to%n%' OR TenNhom LIKE N'%Th% nghi%m%') AND MaNhom <> 5);
 
 -- Xóa các Nhóm lỗi
-DELETE FROM NhomHang WHERE MaNhom > 5;
+DELETE FROM NhomHang WHERE MaNhom > 5
+  AND NOT EXISTS (SELECT 1 FROM HangHoa h WHERE h.MaNhom = NhomHang.MaNhom);
 
 -- 4. ĐỒNG BỘ NHÀ CUNG CẤP & KHÁCH HÀNG
 UPDATE DonViCapHang SET TenDonVi = N'Công ty Gas Kiên Giang', DiaChi = N'Rạch Giá, Kiên Giang' WHERE MaDonViCapHang = 1;
@@ -55,7 +60,8 @@ DELETE FROM DonViCapHang WHERE TenDonVi LIKE N'%CĂ´ng ty%' AND MaDonViCapHang 
 
 UPDATE KhachHang SET TenKH = N'Cửa hàng Minh Anh', DiaChi = N'Cửa Dương, Phú Quốc', LoaiKhachHang = 'CUA_HANG' WHERE MaKH = 1;
 UPDATE KhachHang SET TenKH = N'Khách sạn Sunset Phú Quốc', DiaChi = N'Dương Đông, Phú Quốc', LoaiKhachHang = 'CUA_HANG' WHERE MaKH = 2;
-DELETE FROM KhachHang WHERE MaKH > 2;
+DELETE FROM KhachHang WHERE MaKH > 2
+  AND NOT EXISTS (SELECT 1 FROM DonBan d WHERE d.MaKH = KhachHang.MaKH);
 
 -- 5. SỬA TÊN HÀNG HÓA CHUẨN TIẾNG VIỆT
 UPDATE HangHoa SET TenHang = N'Bình gas 12kg', MaNhom = 1, MaDvt = 1, GiaBanThamKhao = 420000, GiaVon = 350000 WHERE MaHang = 1;

@@ -392,7 +392,8 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                            nccPth.TenDonVi AS PthTenNCC,
                            pc.MaKhoNguon, kn.TenKho AS TenKhoNguon,
                            pc.MaKhoDich, kd.TenKho AS TenKhoDich,
-                           kh.TenKH AS PxTenKH, px.GhiChu AS PxGhiChu
+                           kh.TenKH AS PxTenKH, px.GhiChu AS PxGhiChu,
+                           COALESCE(pn.MaPhieu, pth.MaPhieu, pc.MaPhieu, px.MaPhieu, pkk.MaPhieu) AS MaPhieuThat
                     FROM vw_BienDongKho bd
                     LEFT JOIN Kho k ON bd.MaKho = k.MaKho
                     -- Thông tin phiếu nhập
@@ -409,6 +410,8 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                     LEFT JOIN PhieuXuat px ON (bd.LoaiChungTu = 'XUAT_BAN' OR bd.LoaiChungTu = 'XUAT_HUY' OR bd.LoaiChungTu = 'XUAT_NOI_BO') AND bd.MaChungTu = px.MaPhieuXuat
                     LEFT JOIN DonBan db ON px.MaDonBan = db.MaDonBan
                     LEFT JOIN KhachHang kh ON db.MaKH = kh.MaKH
+                    -- Mã phiếu kiểm kê (để hiển thị đúng mã chứng từ thật)
+                    LEFT JOIN PhieuKiemKe pkk ON bd.LoaiChungTu = 'KIEM_KE' AND bd.MaChungTu = pkk.MaPhieuKiemKe
                     WHERE bd.MaHang = @MaHang
                       AND (@MaKho = 0 OR bd.MaKho = @MaKho)
                       AND bd.NgayGiaoDich >= @TuNgay AND bd.NgayGiaoDich <= @DenNgay
@@ -422,35 +425,10 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                     new SqlParameter("@DenNgay", denNgay)
                 };
 
-                // Lọc theo loại chứng từ
-                if (loaiChungTuIdx == 1) // Phiếu nhập mua (NCC)
-                {
-                    sqlGd.Append(" AND bd.LoaiChungTu = 'PHIEU_NHAP' ");
-                }
-                else if (loaiChungTuIdx == 2) // Xuất bán
-                {
-                    sqlGd.Append(" AND bd.LoaiChungTu = 'XUAT_BAN' ");
-                }
-                else if (loaiChungTuIdx == 3) // Xuất hủy
-                {
-                    sqlGd.Append(" AND bd.LoaiChungTu = 'XUAT_HUY' ");
-                }
-                else if (loaiChungTuIdx == 4) // Chuyển kho đến
-                {
-                    sqlGd.Append(" AND bd.LoaiChungTu = 'CHUYEN_NHAP' ");
-                }
-                else if (loaiChungTuIdx == 5) // Chuyển kho đi
-                {
-                    sqlGd.Append(" AND bd.LoaiChungTu = 'CHUYEN_XUAT' ");
-                }
-                else if (loaiChungTuIdx == 6) // Cân bằng kiểm kê
-                {
-                    sqlGd.Append(" AND bd.LoaiChungTu = 'KIEM_KE' ");
-                }
-                else if (loaiChungTuIdx == 7) // Trả hàng nhập
-                {
-                    sqlGd.Append(" AND bd.LoaiChungTu = 'TRA_HANG_NHAP' ");
-                }
+                // Lọc theo loại chứng từ: KHÔNG lọc trong SQL để tồn lũy kế và tồn cuối kỳ luôn tính trên
+                // toàn bộ giao dịch; bộ lọc chỉ quyết định dòng nào được hiển thị
+                string[] maLoaiTheoIdx = { null, "PHIEU_NHAP", "XUAT_BAN", "XUAT_HUY", "CHUYEN_NHAP", "CHUYEN_XUAT", "KIEM_KE", "TRA_HANG_NHAP" };
+                string loaiCanHienThi = (loaiChungTuIdx > 0 && loaiChungTuIdx < maLoaiTheoIdx.Length) ? maLoaiTheoIdx[loaiChungTuIdx] : null;
 
                 sqlGd.Append(" ORDER BY bd.NgayGiaoDich ASC, bd.MaChungTu ASC;");
 
@@ -554,6 +532,21 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                                 break;
                         }
 
+                        // Ưu tiên mã phiếu thật đã lưu trên chứng từ
+                        if (r.Table.Columns.Contains("MaPhieuThat") && r["MaPhieuThat"] != DBNull.Value
+                            && !string.IsNullOrWhiteSpace(r["MaPhieuThat"].ToString()))
+                        {
+                            maHienThi = r["MaPhieuThat"].ToString();
+                        }
+
+                        // Tồn lũy kế luôn tính trên toàn bộ giao dịch (trước khi áp bộ lọc hiển thị)
+                        tonLuyKe = tonLuyKe + slTang - slGiam;
+                        tongNhapKy += slTang;
+                        tongXuatKy += slGiam;
+
+                        // Lọc theo loại chứng từ (chỉ ẩn dòng, không ảnh hưởng số dư)
+                        if (loaiCanHienThi != null && loaiCt != loaiCanHienThi) continue;
+
                         // Lọc từ khóa tìm kiếm (hỗ trợ cả tiếng Việt có dấu và không dấu)
                         if (!string.IsNullOrWhiteSpace(tuKhoa))
                         {
@@ -565,11 +558,6 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                                          ComboboxHelper.BoDauTiengViet(ghiChu).IndexOf(tuKhoaKhongDau, StringComparison.OrdinalIgnoreCase) >= 0;
                             if (!match) continue;
                         }
-
-                        // Tính tồn lũy kế
-                        tonLuyKe = tonLuyKe + slTang - slGiam;
-                        tongNhapKy += slTang;
-                        tongXuatKy += slGiam;
 
                         string slTangStr = slTang > 0 ? slTang.ToString("N0") : "-";
                         string slGiamStr = slGiam > 0 ? slGiam.ToString("N0") : "-";
@@ -789,7 +777,8 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
         {
             string huongDan = "HƯỚNG DẪN BÁO CÁO THẺ KHO\n\n" +
                 "1. Chọn mặt hàng: Bắt buộc chọn mặt hàng cần theo dõi tại ComboBox 'Mặt hàng' bên trái (hỗ trợ gõ tìm kiếm theo mã hoặc tên).\n" +
-                "2. Chi nhánh kho: Chọn xem thẻ kho tại 1 kho cụ thể hoặc toàn hệ thống.\n" +
+                "2. Kho: Thẻ kho hiển thị theo kho đang làm việc. Quản lý dùng Kho hàng > Đổi kho để xem kho khác hoặc 'Tất cả kho'.\n" +
+                "   Bộ lọc 'Loại giao dịch' và ô tìm kiếm chỉ ẩn/hiện dòng; Tồn lũy kế và Tồn cuối kỳ luôn tính trên toàn bộ giao dịch.\n" +
                 "3. Dải ngày: Chọn mốc thời gian để hệ thống tính Tồn đầu kỳ và Tồn cuối kỳ chuẩn xác theo chuỗi chứng từ.\n" +
                 "4. Tồn lũy kế: Cột 'Tồn lũy kế' tự động cộng dồn SL nhập và trừ đi SL xuất theo trình tự thời gian phát sinh.\n" +
                 "5. Xuất file: Nhấn 'Xuất file' để xuất toàn bộ biến động thẻ kho ra file CSV chuẩn tiếng Việt có dấu.";

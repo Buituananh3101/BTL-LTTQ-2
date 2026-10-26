@@ -29,7 +29,7 @@ namespace BTL_LTTQ_2.Classes
                     else
                     {
                         // Chuỗi kết nối dự phòng
-                        _strConnection = @"Server=localhost\SQLEXPRESS;Database=QuanLyKhoPhuQuocLTW;Integrated Security=True;TrustServerCertificate=True;MultipleActiveResultSets=True";
+                        _strConnection = @"Server=localhost\SQLEXPRESS;Database=QuanLyKhoPhuQuocLTTQ;Integrated Security=True;TrustServerCertificate=True;MultipleActiveResultSets=True";
                     }
                 }
                 return _strConnection;

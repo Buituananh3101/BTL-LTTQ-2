@@ -1,14 +1,15 @@
 ﻿-- =========================================================================================
 -- FILE CẬP NHẬT CƠ SỞ DỮ LIỆU: docs/database_update.sql
--- Dự án: Quản lý kho hàng nhiều kho (QuanLyKhoPhuQuocLTW)
--- Ngày thực hiện: 2026-10-13
+-- Dự án: Quản lý kho hàng nhiều kho (QuanLyKhoPhuQuocLTTQ – khớp App.config)
+-- Ngày thực hiện: 2026-10-13 (cập nhật 2026-10-26: đổi tên CSDL, view cộng kho nhận theo SL thực nhận)
 -- Tuân thủ: 3 Nguyên tắc vàng trong .agent/rules/05-co-so-du-lieu.md ("Chỉ cộng, không phá")
+-- Lưu ý: CSDL mới hoàn toàn hãy chạy docs/TaoCSDL_DayDu.sql (đã gồm cấu trúc + dữ liệu mẫu).
 -- =========================================================================================
 
-USE QuanLyKhoPhuQuocLTW;
+USE QuanLyKhoPhuQuocLTTQ;
 GO
 
-PRINT N'=== BẮT ĐẦU NÂNG CẤP CƠ SỞ DỮ LIỆU QUANLYKHOPHUQUOCLTW ===';
+PRINT N'=== BẮT ĐẦU NÂNG CẤP CƠ SỞ DỮ LIỆU QUANLYKHOPHUQUOCLTTQ ===';
 GO
 
 -- -----------------------------------------------------------------------------------------
@@ -209,13 +210,13 @@ JOIN ChiTietPhieuChuyenKho ct ON ct.MaPhieuChuyen = pc.MaPhieuChuyen
 WHERE pc.TrangThai IN ('DA_XUAT', 'DA_NHAN')
 
 UNION ALL
--- 4. Chuyển kho đã nhận: Cộng tồn kho đích
+-- 4. Chuyển kho đã nhận: Cộng tồn kho đích theo SỐ LƯỢNG THỰC NHẬN (phần hao hụt không được cộng)
 SELECT CAST(ISNULL(pc.ThoiDiemNhan, ISNULL(pc.ThoiDiemXuat, pc.NgayLap)) AS DATETIME) AS NgayGiaoDich,
        pc.MaKhoDich AS MaKho,
        ct.MaHang,
        CAST('CHUYEN_NHAP' AS VARCHAR(30)) AS LoaiChungTu,
        pc.MaPhieuChuyen AS MaChungTu,
-       ct.SoLuong AS SoLuongTang,
+       ISNULL(ct.SoLuongNhan, ct.SoLuong) AS SoLuongTang,
        CAST(0 AS DECIMAL(18,2)) AS SoLuongGiam
 FROM PhieuChuyenKho pc
 JOIN ChiTietPhieuChuyenKho ct ON ct.MaPhieuChuyen = pc.MaPhieuChuyen
