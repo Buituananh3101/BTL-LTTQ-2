@@ -18,8 +18,9 @@
         private void InitializeComponent()
         {
             this.pnlTop = new System.Windows.Forms.Panel();
-            this.pnlTopDivider = new System.Windows.Forms.Panel();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.lblTieuDe = new System.Windows.Forms.Label();
+            this.pnlTopDivider = new System.Windows.Forms.Panel();
             this.grpLienHe = new System.Windows.Forms.GroupBox();
             this.lblTieuDeLienHe = new System.Windows.Forms.Label();
             this.txtKhuVuc = new System.Windows.Forms.TextBox();
@@ -31,17 +32,12 @@
             this.grpGhiChu = new System.Windows.Forms.GroupBox();
             this.lblTieuDeGhiChu = new System.Windows.Forms.Label();
             this.txtGhiChu = new System.Windows.Forms.TextBox();
-            this.grpCongNo = new System.Windows.Forms.GroupBox();
-            this.lblTieuDeCongNo = new System.Windows.Forms.Label();
-            this.lblNoHienTaiVal = new System.Windows.Forms.Label();
-            this.lblNoHienTaiTieuDe = new System.Windows.Forms.Label();
-            this.lblTongMuaVal = new System.Windows.Forms.Label();
-            this.lblTongMuaTieuDe = new System.Windows.Forms.Label();
             this.pnlBottom = new System.Windows.Forms.Panel();
-            this.pnlBottomDivider = new System.Windows.Forms.Panel();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.btnXoa = new System.Windows.Forms.Button();
-            this.btnBoQua = new System.Windows.Forms.Button();
             this.btnLuu = new System.Windows.Forms.Button();
+            this.btnBoQua = new System.Windows.Forms.Button();
+            this.pnlBottomDivider = new System.Windows.Forms.Panel();
             this.lblMaNcc = new System.Windows.Forms.Label();
             this.txtMaNcc = new System.Windows.Forms.TextBox();
             this.lblTenDonVi = new System.Windows.Forms.Label();
@@ -52,14 +48,11 @@
             this.txtDiaChi = new System.Windows.Forms.TextBox();
             this.lblNhomNcc = new System.Windows.Forms.Label();
             this.cboNhomNcc = new System.Windows.Forms.ComboBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.pnlTop.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.grpLienHe.SuspendLayout();
             this.grpGhiChu.SuspendLayout();
-            this.grpCongNo.SuspendLayout();
             this.pnlBottom.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -74,14 +67,14 @@
             this.pnlTop.Size = new System.Drawing.Size(1182, 73);
             this.pnlTop.TabIndex = 0;
             // 
-            // pnlTopDivider
+            // groupBox1
             // 
-            this.pnlTopDivider.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
-            this.pnlTopDivider.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlTopDivider.Location = new System.Drawing.Point(0, 72);
-            this.pnlTopDivider.Name = "pnlTopDivider";
-            this.pnlTopDivider.Size = new System.Drawing.Size(1182, 1);
-            this.pnlTopDivider.TabIndex = 1;
+            this.groupBox1.Controls.Add(this.lblTieuDe);
+            this.groupBox1.Location = new System.Drawing.Point(0, 3);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(1182, 60);
+            this.groupBox1.TabIndex = 2;
+            this.groupBox1.TabStop = false;
             // 
             // lblTieuDe
             // 
@@ -92,6 +85,15 @@
             this.lblTieuDe.Size = new System.Drawing.Size(179, 28);
             this.lblTieuDe.TabIndex = 0;
             this.lblTieuDe.Text = "Tạo nhà cung cấp";
+            // 
+            // pnlTopDivider
+            // 
+            this.pnlTopDivider.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
+            this.pnlTopDivider.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pnlTopDivider.Location = new System.Drawing.Point(0, 72);
+            this.pnlTopDivider.Name = "pnlTopDivider";
+            this.pnlTopDivider.Size = new System.Drawing.Size(1182, 1);
+            this.pnlTopDivider.TabIndex = 1;
             // 
             // grpLienHe
             // 
@@ -195,85 +197,27 @@
             this.txtGhiChu.Size = new System.Drawing.Size(1079, 60);
             this.txtGhiChu.TabIndex = 0;
             // 
-            // grpCongNo
-            // 
-            this.grpCongNo.Controls.Add(this.lblTieuDeCongNo);
-            this.grpCongNo.Controls.Add(this.lblNoHienTaiVal);
-            this.grpCongNo.Controls.Add(this.lblNoHienTaiTieuDe);
-            this.grpCongNo.Controls.Add(this.lblTongMuaVal);
-            this.grpCongNo.Controls.Add(this.lblTongMuaTieuDe);
-            this.grpCongNo.Location = new System.Drawing.Point(30, 617);
-            this.grpCongNo.Name = "grpCongNo";
-            this.grpCongNo.Size = new System.Drawing.Size(1127, 112);
-            this.grpCongNo.TabIndex = 4;
-            this.grpCongNo.TabStop = false;
-            // 
-            // lblTieuDeCongNo
-            // 
-            this.lblTieuDeCongNo.AutoSize = true;
-            this.lblTieuDeCongNo.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblTieuDeCongNo.Location = new System.Drawing.Point(10, 16);
-            this.lblTieuDeCongNo.Name = "lblTieuDeCongNo";
-            this.lblTieuDeCongNo.Size = new System.Drawing.Size(154, 21);
-            this.lblTieuDeCongNo.TabIndex = 0;
-            this.lblTieuDeCongNo.Text = "Giao dịch & Công nợ";
-            // 
-            // lblNoHienTaiVal
-            // 
-            this.lblNoHienTaiVal.AutoSize = true;
-            this.lblNoHienTaiVal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
-            this.lblNoHienTaiVal.Location = new System.Drawing.Point(624, 50);
-            this.lblNoHienTaiVal.Name = "lblNoHienTaiVal";
-            this.lblNoHienTaiVal.Size = new System.Drawing.Size(32, 21);
-            this.lblNoHienTaiVal.TabIndex = 0;
-            this.lblNoHienTaiVal.Text = "0 đ";
-            // 
-            // lblNoHienTaiTieuDe
-            // 
-            this.lblNoHienTaiTieuDe.AutoSize = true;
-            this.lblNoHienTaiTieuDe.Location = new System.Drawing.Point(454, 50);
-            this.lblNoHienTaiTieuDe.Name = "lblNoHienTaiTieuDe";
-            this.lblNoHienTaiTieuDe.Size = new System.Drawing.Size(141, 21);
-            this.lblNoHienTaiTieuDe.TabIndex = 0;
-            this.lblNoHienTaiTieuDe.Text = "Nợ cần trả hiện tại:";
-            // 
-            // lblTongMuaVal
-            // 
-            this.lblTongMuaVal.AutoSize = true;
-            this.lblTongMuaVal.Location = new System.Drawing.Point(184, 50);
-            this.lblTongMuaVal.Name = "lblTongMuaVal";
-            this.lblTongMuaVal.Size = new System.Drawing.Size(32, 21);
-            this.lblTongMuaVal.TabIndex = 0;
-            this.lblTongMuaVal.Text = "0 đ";
-            // 
-            // lblTongMuaTieuDe
-            // 
-            this.lblTongMuaTieuDe.AutoSize = true;
-            this.lblTongMuaTieuDe.Location = new System.Drawing.Point(24, 50);
-            this.lblTongMuaTieuDe.Name = "lblTongMuaTieuDe";
-            this.lblTongMuaTieuDe.Size = new System.Drawing.Size(152, 21);
-            this.lblTongMuaTieuDe.TabIndex = 0;
-            this.lblTongMuaTieuDe.Text = "Tổng tiền mua hàng:";
-            // 
             // pnlBottom
             // 
             this.pnlBottom.BackColor = System.Drawing.SystemColors.Control;
             this.pnlBottom.Controls.Add(this.groupBox2);
             this.pnlBottom.Controls.Add(this.pnlBottomDivider);
             this.pnlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlBottom.Location = new System.Drawing.Point(0, 735);
+            this.pnlBottom.Location = new System.Drawing.Point(0, 635);
             this.pnlBottom.Name = "pnlBottom";
             this.pnlBottom.Size = new System.Drawing.Size(1182, 68);
             this.pnlBottom.TabIndex = 5;
             // 
-            // pnlBottomDivider
+            // groupBox2
             // 
-            this.pnlBottomDivider.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
-            this.pnlBottomDivider.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlBottomDivider.Location = new System.Drawing.Point(0, 0);
-            this.pnlBottomDivider.Name = "pnlBottomDivider";
-            this.pnlBottomDivider.Size = new System.Drawing.Size(1182, 1);
-            this.pnlBottomDivider.TabIndex = 2;
+            this.groupBox2.Controls.Add(this.btnXoa);
+            this.groupBox2.Controls.Add(this.btnLuu);
+            this.groupBox2.Controls.Add(this.btnBoQua);
+            this.groupBox2.Location = new System.Drawing.Point(0, 0);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(1182, 54);
+            this.groupBox2.TabIndex = 3;
+            this.groupBox2.TabStop = false;
             // 
             // btnXoa
             // 
@@ -285,6 +229,17 @@
             this.btnXoa.Text = "Xóa";
             this.btnXoa.UseVisualStyleBackColor = true;
             this.btnXoa.Click += new System.EventHandler(this.btnXoa_Click);
+            // 
+            // btnLuu
+            // 
+            this.btnLuu.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnLuu.Location = new System.Drawing.Point(1047, 16);
+            this.btnLuu.Name = "btnLuu";
+            this.btnLuu.Size = new System.Drawing.Size(110, 32);
+            this.btnLuu.TabIndex = 0;
+            this.btnLuu.Text = "Lưu";
+            this.btnLuu.UseVisualStyleBackColor = true;
+            this.btnLuu.Click += new System.EventHandler(this.btnLuu_Click);
             // 
             // btnBoQua
             // 
@@ -298,16 +253,14 @@
             this.btnBoQua.UseVisualStyleBackColor = true;
             this.btnBoQua.Click += new System.EventHandler(this.btnBoQua_Click);
             // 
-            // btnLuu
+            // pnlBottomDivider
             // 
-            this.btnLuu.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnLuu.Location = new System.Drawing.Point(1047, 16);
-            this.btnLuu.Name = "btnLuu";
-            this.btnLuu.Size = new System.Drawing.Size(110, 32);
-            this.btnLuu.TabIndex = 0;
-            this.btnLuu.Text = "Lưu";
-            this.btnLuu.UseVisualStyleBackColor = true;
-            this.btnLuu.Click += new System.EventHandler(this.btnLuu_Click);
+            this.pnlBottomDivider.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
+            this.pnlBottomDivider.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlBottomDivider.Location = new System.Drawing.Point(0, 0);
+            this.pnlBottomDivider.Name = "pnlBottomDivider";
+            this.pnlBottomDivider.Size = new System.Drawing.Size(1182, 1);
+            this.pnlBottomDivider.TabIndex = 2;
             // 
             // lblMaNcc
             // 
@@ -394,37 +347,16 @@
             this.cboNhomNcc.Size = new System.Drawing.Size(415, 29);
             this.cboNhomNcc.TabIndex = 2;
             // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.lblTieuDe);
-            this.groupBox1.Location = new System.Drawing.Point(0, 3);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1182, 60);
-            this.groupBox1.TabIndex = 2;
-            this.groupBox1.TabStop = false;
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.btnXoa);
-            this.groupBox2.Controls.Add(this.btnLuu);
-            this.groupBox2.Controls.Add(this.btnBoQua);
-            this.groupBox2.Location = new System.Drawing.Point(0, 0);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(1182, 54);
-            this.groupBox2.TabIndex = 3;
-            this.groupBox2.TabStop = false;
-            // 
             // frmDonViCapHang
             // 
             this.AcceptButton = this.btnLuu;
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnBoQua;
-            this.ClientSize = new System.Drawing.Size(1182, 803);
+            this.ClientSize = new System.Drawing.Size(1182, 703);
             this.Controls.Add(this.cboNhomNcc);
             this.Controls.Add(this.pnlBottom);
             this.Controls.Add(this.lblNhomNcc);
-            this.Controls.Add(this.grpCongNo);
             this.Controls.Add(this.txtDiaChi);
             this.Controls.Add(this.grpGhiChu);
             this.Controls.Add(this.lblDiaChi);
@@ -445,15 +377,13 @@
             this.Text = "Thông tin nhà cung cấp";
             this.Load += new System.EventHandler(this.frmDonViCapHang_Load);
             this.pnlTop.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.grpLienHe.ResumeLayout(false);
             this.grpLienHe.PerformLayout();
             this.grpGhiChu.ResumeLayout(false);
             this.grpGhiChu.PerformLayout();
-            this.grpCongNo.ResumeLayout(false);
-            this.grpCongNo.PerformLayout();
             this.pnlBottom.ResumeLayout(false);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -476,12 +406,6 @@
         private System.Windows.Forms.GroupBox grpGhiChu;
         private System.Windows.Forms.Label lblTieuDeGhiChu;
         private System.Windows.Forms.TextBox txtGhiChu;
-        private System.Windows.Forms.GroupBox grpCongNo;
-        private System.Windows.Forms.Label lblTieuDeCongNo;
-        private System.Windows.Forms.Label lblTongMuaTieuDe;
-        private System.Windows.Forms.Label lblTongMuaVal;
-        private System.Windows.Forms.Label lblNoHienTaiTieuDe;
-        private System.Windows.Forms.Label lblNoHienTaiVal;
         private System.Windows.Forms.Panel pnlBottom;
         private System.Windows.Forms.Panel pnlBottomDivider;
         private System.Windows.Forms.Button btnXoa;

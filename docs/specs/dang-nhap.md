@@ -38,7 +38,7 @@
 ### 3.1. Form Đăng nhập (`frmDangNhap`)
 - **Kích thước form**: Form Size Nhỏ gọn gàng (`ClientSize = (444, 321)`), `FormBorderStyle = FixedDialog`, `MaximizeBox = false`, `MinimizeBox = false`, `StartPosition = CenterScreen`.
 - **Thành phần giao diện**:
-  - Tiêu đề header: `HỆ THỐNG QUẢN LÝ KHO PHÚ QUỐC` (`Segoe UI, 12pt, Bold`), phụ đề `Đăng nhập để xác thực quyền hạn và kho làm việc`.
+  - Tiêu đề header: `Hệ thống quản lí kho` (`Segoe UI, 12pt, Bold`), phụ đề `Đăng nhập để xác thực quyền hạn và kho làm việc`.
   - Ô nhập Tên đăng nhập: `txtTenDangNhap`, sự kiện `Leave` tự động nhận diện vai trò tài khoản để nạp danh sách kho tương ứng vào `cboKhoLamViec`. Phím `Enter` tự động chuyển con trỏ sang ô Mật khẩu.
   - Ô nhập Mật khẩu: `txtMatKhau` (`UseSystemPasswordChar = true`), phím `Enter` kích hoạt đăng nhập ngay.
   - CheckBox Hiện mật khẩu: `chkHienMatKhau` bật/tắt hiển thị mật khẩu.
@@ -61,7 +61,7 @@
 
 ### 3.3. Phân quyền trên `frmMain` (`PhanQuyenMenu()`)
 - Khi `frmMain` tải dữ liệu:
-  - Cập nhật tiêu đề cửa sổ: `Quản Lý Kho Phú Quốc - [{TenKhoHienTai}]`.
+  - Cập nhật tiêu đề cửa sổ: `Hệ thống quản lí kho - [{TenKhoHienTai}]`.
   - Cập nhật StatusStrip: `Người dùng: {HoTen} ({TenVaiTro})` | `Kho: {TenKhoHienTai}` | `Thời gian`.
   - Phân quyền các mục Menu:
     - **Quản lý (`IsAdmin` / `IsQuanLy`)**: Toàn quyền mọi phân hệ; `mnuDoiKho.Visible = true; mnuDoiKho.Enabled = true;`

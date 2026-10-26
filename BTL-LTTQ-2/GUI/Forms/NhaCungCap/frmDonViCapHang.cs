@@ -60,17 +60,12 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
             {
                 lblTieuDe.Text = "Cập nhật nhà cung cấp";
                 this.Text = "Cập nhật thông tin nhà cung cấp";
-                grpCongNo.Visible = true;
                 NapThongTinNhaCungCap();
             }
             else
             {
                 lblTieuDe.Text = "Tạo nhà cung cấp";
                 this.Text = "Thêm nhà cung cấp mới";
-                grpCongNo.Visible = true;
-                lblTongMuaVal.Text = "0 đ";
-                lblNoHienTaiVal.Text = "0 đ";
-                lblNoHienTaiVal.ForeColor = SystemColors.ControlText;
 
                 SinhMaNccGoiY();
                 trangThaiHienTai = "HOAT_DONG";
@@ -188,14 +183,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                     // Lưu trạng thái hiện tại
                     trangThaiHienTai = r["TrangThai"] != DBNull.Value ? r["TrangThai"].ToString() : "HOAT_DONG";
 
-                    // Hiển thị công nợ & tổng mua thực tế (trừ phần trả hàng)
-                    decimal tongMua = r["TongMua"] != DBNull.Value && decimal.TryParse(r["TongMua"].ToString(), out decimal tm) ? tm : 0;
-                    decimal tongTra = r["TongTra"] != DBNull.Value && decimal.TryParse(r["TongTra"].ToString(), out decimal tt) ? tt : 0;
-                    decimal noHienTai = tongMua - tongTra;
-
-                    lblTongMuaVal.Text = $"{tongMua:N0} đ";
-                    lblNoHienTaiVal.Text = $"{noHienTai:N0} đ";
-                    lblNoHienTaiVal.ForeColor = noHienTai > 0 ? Color.Red : SystemColors.ControlText;
+                    // Cập nhật giao diện theo trạng thái
 
                     CapNhatGiaoDienNutXoa();
                 }

@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using BTL_LTTQ_2.Classes;
 using BTL_LTTQ_2.GUI.Forms;
+using BTL_LTTQ_2.GUI.Forms.DangNhap;
 
 namespace BTL_LTTQ_2
 {

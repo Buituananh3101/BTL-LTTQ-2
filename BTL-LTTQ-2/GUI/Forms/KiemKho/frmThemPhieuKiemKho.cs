@@ -123,7 +123,21 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                 string sql = "SELECT ISNULL(MAX(MaPhieuKiemKe), 0) + 1 FROM PhieuKiemKe";
                 object val = DataProcessing.ReadValue(sql);
                 int nextId = (val != null && val != DBNull.Value) ? Convert.ToInt32(val) : 1;
-                return "PKK" + nextId.ToString("D6");
+                string ma = "PKK" + nextId.ToString("D6");
+                while (true)
+                {
+                    object exist = DataProcessing.ReadValue("SELECT COUNT(1) FROM PhieuKiemKe WHERE MaPhieu = @MaPhieu", new SqlParameter[] { new SqlParameter("@MaPhieu", ma) });
+                    if (exist != null && Convert.ToInt32(exist) > 0)
+                    {
+                        nextId++;
+                        ma = "PKK" + nextId.ToString("D6");
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                return ma;
             }
             catch
             {
@@ -169,18 +183,32 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             {
                 string sql = @"
                     SELECT 
-                        ISNULL(nv.MaNV, tk.MaTaiKhoan) AS MaNhanVien, 
-                        ISNULL(nv.HoTen, tk.TenDangNhap) AS HoTen 
-                    FROM TaiKhoan tk 
-                    LEFT JOIN NhanVien nv ON tk.MaNV = nv.MaNV 
-                    WHERE tk.TrangThai = 'HOAT_DONG' OR tk.TrangThai = 'ACTIVE' OR tk.TrangThai IS NULL
-                    ORDER BY HoTen ASC";
+                        nv.MaNV AS MaNhanVien, 
+                        nv.HoTen 
+                    FROM NhanVien nv 
+                    WHERE nv.TrangThai = 'HOAT_DONG' OR nv.TrangThai = 'ACTIVE' OR nv.TrangThai IS NULL
+                    ORDER BY nv.HoTen ASC";
                 DataTable dt = DataProcessing.ReadData(sql);
-                cboNguoiKiem.DisplayMember = "HoTen";
-                cboNguoiKiem.ValueMember = "MaNhanVien";
-                cboNguoiKiem.DataSource = dt;
+                if (dt == null || dt.Rows.Count == 0)
+                {
+                    sql = @"
+                        SELECT 
+                            ISNULL(nv.MaNV, tk.MaTaiKhoan) AS MaNhanVien, 
+                            ISNULL(nv.HoTen, tk.TenDangNhap) AS HoTen 
+                        FROM TaiKhoan tk 
+                        LEFT JOIN NhanVien nv ON tk.MaNV = nv.MaNV 
+                        WHERE tk.TrangThai = 'HOAT_DONG' OR tk.TrangThai = 'ACTIVE' OR tk.TrangThai IS NULL
+                        ORDER BY HoTen ASC";
+                    dt = DataProcessing.ReadData(sql);
+                }
 
-                if (SessionContext.MaTaiKhoan > 0)
+                ComboboxHelper.CaiDatTimKiem(cboNguoiKiem, dt, "HoTen", "MaNhanVien");
+
+                if (SessionContext.MaNV.HasValue && SessionContext.MaNV.Value > 0)
+                {
+                    cboNguoiKiem.SelectedValue = SessionContext.MaNV.Value;
+                }
+                else if (SessionContext.MaTaiKhoan > 0)
                 {
                     cboNguoiKiem.SelectedValue = SessionContext.MaTaiKhoan;
                 }
@@ -196,7 +224,11 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             try
             {
                 int maKho = 1;
-                if (cboKho.SelectedValue != null && int.TryParse(cboKho.SelectedValue.ToString(), out int k))
+                if (cboKho.SelectedValue is DataRowView drv && drv["MaKho"] != DBNull.Value)
+                {
+                    maKho = Convert.ToInt32(drv["MaKho"]);
+                }
+                else if (cboKho.SelectedValue != null && int.TryParse(cboKho.SelectedValue.ToString(), out int k))
                 {
                     maKho = k;
                 }
@@ -234,7 +266,17 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
 
         private void cboKho_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cboKho.SelectedValue != null && int.TryParse(cboKho.SelectedValue.ToString(), out _))
+            int maKhoMoi = 0;
+            if (cboKho.SelectedValue is DataRowView drv && drv["MaKho"] != DBNull.Value)
+            {
+                maKhoMoi = Convert.ToInt32(drv["MaKho"]);
+            }
+            else if (cboKho.SelectedValue != null && int.TryParse(cboKho.SelectedValue.ToString(), out int k))
+            {
+                maKhoMoi = k;
+            }
+
+            if (maKhoMoi > 0)
             {
                 if (dtHangKiem != null && dtHangKiem.Rows.Count > 0)
                 {
@@ -258,6 +300,8 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
 
             foreach (DataRow r in dtHangKiem.Rows)
             {
+                if (r.RowState == DataRowState.Deleted) continue;
+
                 int maHang = Convert.ToInt32(r["MaHang"]);
                 DataRow[] tim = dtDanhSachHang.Select($"MaHang = {maHang}");
                 if (tim != null && tim.Length > 0)
@@ -294,6 +338,11 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
 
         private void btnThemHang_Click(object sender, EventArgs e)
         {
+            if (dgvHangKiem.IsCurrentCellInEditMode)
+            {
+                dgvHangKiem.EndEdit();
+            }
+
             if (cboHangHoa.SelectedValue == null || !int.TryParse(cboHangHoa.SelectedValue.ToString(), out int maHang))
             {
                 MessageBox.Show("Vui lòng chọn hàng hóa!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -337,6 +386,17 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             }
 
             TinhToanTongKet();
+
+            // Cuộn đến dòng hàng vừa thêm / sửa
+            foreach (DataGridViewRow dgvRow in dgvHangKiem.Rows)
+            {
+                if (dgvRow.Cells["colMaHangNoiBo"].Value?.ToString() == rowHang["MaHangNoiBo"]?.ToString())
+                {
+                    dgvHangKiem.CurrentCell = dgvRow.Cells["colSoLuongThucTe"];
+                    dgvRow.Selected = true;
+                    break;
+                }
+            }
         }
 
         private void btnNapToanBoHang_Click(object sender, EventArgs e)
@@ -383,7 +443,15 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
         {
             if (e.RowIndex >= 0 && e.ColumnIndex == colXoaDong.Index)
             {
-                dtHangKiem.Rows.RemoveAt(e.RowIndex);
+                if (dgvHangKiem.Rows[e.RowIndex].DataBoundItem is DataRowView drv)
+                {
+                    drv.Row.Delete();
+                    dtHangKiem.AcceptChanges();
+                }
+                else if (e.RowIndex < dtHangKiem.Rows.Count)
+                {
+                    dtHangKiem.Rows.RemoveAt(e.RowIndex);
+                }
                 DanhSoLaiStt();
                 TinhToanTongKet();
             }
@@ -440,27 +508,39 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             {
                 isCalculating = true;
                 DataGridViewRow row = dgvHangKiem.Rows[e.RowIndex];
-                if (row.Cells["colSoLuongThucTe"].Value != null &&
-                    decimal.TryParse(row.Cells["colSoLuongThucTe"].Value.ToString(), out decimal slThucTe))
+                decimal slThucTe = 0;
+                object cellVal = row.Cells["colSoLuongThucTe"].Value;
+                if (cellVal != null && !string.IsNullOrWhiteSpace(cellVal.ToString()))
                 {
-                    slThucTe = Math.Max(0, (int)Math.Floor(slThucTe));
-                    row.Cells["colSoLuongThucTe"].Value = slThucTe;
-
-                    decimal tonKho = Convert.ToDecimal(row.Cells["colTonKho"].Value);
-                    decimal donGia = Convert.ToDecimal(row.Cells["colDonGia"].Value);
-                    decimal slLech = slThucTe - tonKho;
-
-                    row.Cells["colSlChenhLech"].Value = slLech;
-                    row.Cells["colGiaTriChenhLech"].Value = slLech * donGia;
-
-                    if (e.RowIndex < dtHangKiem.Rows.Count)
+                    if (decimal.TryParse(cellVal.ToString(), out decimal parsedVal))
                     {
-                        DataRow dr = dtHangKiem.Rows[e.RowIndex];
-                        dr["SoLuongThucTe"] = slThucTe;
-                        dr["SlChenhLech"] = slLech;
-                        dr["GiaTriChenhLech"] = slLech * donGia;
+                        slThucTe = Math.Max(0, (int)Math.Floor(parsedVal));
                     }
                 }
+                row.Cells["colSoLuongThucTe"].Value = slThucTe;
+
+                decimal tonKho = Convert.ToDecimal(row.Cells["colTonKho"].Value);
+                decimal donGia = Convert.ToDecimal(row.Cells["colDonGia"].Value);
+                decimal slLech = slThucTe - tonKho;
+
+                row.Cells["colSlChenhLech"].Value = slLech;
+                row.Cells["colGiaTriChenhLech"].Value = slLech * donGia;
+
+                if (row.DataBoundItem is DataRowView drv)
+                {
+                    DataRow dr = drv.Row;
+                    dr["SoLuongThucTe"] = slThucTe;
+                    dr["SlChenhLech"] = slLech;
+                    dr["GiaTriChenhLech"] = slLech * donGia;
+                }
+                else if (e.RowIndex < dtHangKiem.Rows.Count)
+                {
+                    DataRow dr = dtHangKiem.Rows[e.RowIndex];
+                    dr["SoLuongThucTe"] = slThucTe;
+                    dr["SlChenhLech"] = slLech;
+                    dr["GiaTriChenhLech"] = slLech * donGia;
+                }
+
                 TinhToanTongKet();
             }
             finally
@@ -471,9 +551,13 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
 
         private void DanhSoLaiStt()
         {
+            int stt = 1;
             for (int i = 0; i < dtHangKiem.Rows.Count; i++)
             {
-                dtHangKiem.Rows[i]["STT"] = i + 1;
+                if (dtHangKiem.Rows[i].RowState != DataRowState.Deleted)
+                {
+                    dtHangKiem.Rows[i]["STT"] = stt++;
+                }
             }
         }
 
@@ -490,6 +574,8 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
 
             foreach (DataRow r in dtHangKiem.Rows)
             {
+                if (r.RowState == DataRowState.Deleted) continue;
+
                 decimal tt = Convert.ToDecimal(r["SoLuongThucTe"]);
                 decimal donGia = Convert.ToDecimal(r["DonGia"]);
                 decimal slLech = Convert.ToDecimal(r["SlChenhLech"]);
@@ -679,11 +765,28 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                 return;
             }
 
-            int maKho = Convert.ToInt32(cboKho.SelectedValue);
+            int maKho = 1;
+            if (cboKho.SelectedValue is DataRowView drvKho && drvKho["MaKho"] != DBNull.Value)
+            {
+                maKho = Convert.ToInt32(drvKho["MaKho"]);
+            }
+            else if (cboKho.SelectedValue != null && int.TryParse(cboKho.SelectedValue.ToString(), out int k))
+            {
+                maKho = k;
+            }
+
             int maNhanVien = 1;
-            if (cboNguoiKiem.SelectedValue != null && int.TryParse(cboNguoiKiem.SelectedValue.ToString(), out int nvId))
+            if (cboNguoiKiem.SelectedValue is DataRowView drvNv && drvNv["MaNhanVien"] != DBNull.Value)
+            {
+                maNhanVien = Convert.ToInt32(drvNv["MaNhanVien"]);
+            }
+            else if (cboNguoiKiem.SelectedValue != null && int.TryParse(cboNguoiKiem.SelectedValue.ToString(), out int nvId))
             {
                 maNhanVien = nvId;
+            }
+            else if (SessionContext.MaNV.HasValue && SessionContext.MaNV.Value > 0)
+            {
+                maNhanVien = SessionContext.MaNV.Value;
             }
 
             DateTime thoiDiemChot = dtpThoiDiemChot.Value;
@@ -736,6 +839,8 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
 
                     foreach (DataRow r in dtHangKiem.Rows)
                     {
+                        if (r.RowState == DataRowState.Deleted) continue;
+
                         int maHang = Convert.ToInt32(r["MaHang"]);
                         decimal tonKho = Convert.ToDecimal(r["TonKho"]);
                         decimal thucTe = Convert.ToDecimal(r["SoLuongThucTe"]);

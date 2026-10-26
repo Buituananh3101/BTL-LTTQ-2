@@ -144,12 +144,21 @@
     <EmbeddedResource Include="GUI\Forms\DanhSachHangHoa\frmHangHoa.resx">
       <DependentUpon>frmHangHoa.cs</DependentUpon>
     </EmbeddedResource>
+    <Compile Include="GUI\Forms\NhaCungCap\frmChiTietNhaCungCap.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\NhaCungCap\frmChiTietNhaCungCap.Designer.cs">
+      <DependentUpon>frmChiTietNhaCungCap.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\Forms\NhaCungCap\frmHienCotNcc.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="GUI\Forms\NhaCungCap\frmHienCotNcc.Designer.cs">
       <DependentUpon>frmHienCotNcc.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="GUI\Forms\NhaCungCap\frmChiTietNhaCungCap.resx">
+      <DependentUpon>frmChiTietNhaCungCap.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\NhaCungCap\frmHienCotNcc.resx">
       <DependentUpon>frmHienCotNcc.cs</DependentUpon>
     </EmbeddedResource>
@@ -423,14 +432,50 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="GUI\Forms\frmDangNhap.cs">
+    <Compile Include="GUI\Forms\DangNhap\frmDangNhap.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GUI\Forms\frmDangNhap.Designer.cs">
+    <Compile Include="GUI\Forms\DangNhap\frmDangNhap.Designer.cs">
       <DependentUpon>frmDangNhap.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="GUI\Forms\frmDangNhap.resx">
+    <EmbeddedResource Include="GUI\Forms\DangNhap\frmDangNhap.resx">
       <DependentUpon>frmDangNhap.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="GUI\Forms\DangNhap\frmDoiMatKhau.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\DangNhap\frmDoiMatKhau.Designer.cs">
+      <DependentUpon>frmDoiMatKhau.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="GUI\Forms\DangNhap\frmDoiMatKhau.resx">
+      <DependentUpon>frmDoiMatKhau.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="GUI\Forms\NguoiDung\frmDanhSachNguoiDung.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\NguoiDung\frmDanhSachNguoiDung.Designer.cs">
+      <DependentUpon>frmDanhSachNguoiDung.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="GUI\Forms\NguoiDung\frmDanhSachNguoiDung.resx">
+      <DependentUpon>frmDanhSachNguoiDung.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="GUI\Forms\NguoiDung\frmNguoiDung.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\NguoiDung\frmNguoiDung.Designer.cs">
+      <DependentUpon>frmNguoiDung.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="GUI\Forms\NguoiDung\frmNguoiDung.resx">
+      <DependentUpon>frmNguoiDung.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="GUI\Forms\NguoiDung\frmHienCotNguoiDung.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\NguoiDung\frmHienCotNguoiDung.Designer.cs">
+      <DependentUpon>frmHienCotNguoiDung.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="GUI\Forms\NguoiDung\frmHienCotNguoiDung.resx">
+      <DependentUpon>frmHienCotNguoiDung.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

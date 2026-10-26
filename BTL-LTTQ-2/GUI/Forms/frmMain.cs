@@ -4,6 +4,8 @@ using BTL_LTTQ_2.GUI.Forms.ChuyenKho;
 using BTL_LTTQ_2.GUI.Forms.DoiKho;
 using BTL_LTTQ_2.GUI.Forms.NhaCungCap;
 using BTL_LTTQ_2.GUI.Forms.NhapHang;
+using BTL_LTTQ_2.GUI.Forms.DangNhap;
+using BTL_LTTQ_2.GUI.Forms.NguoiDung;
 using System;
 using System.Windows.Forms;
 
@@ -33,7 +35,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             }
 
             // Thiết lập tiêu đề kèm kho làm việc hiện tại
-            this.Text = "Quản Lý Kho Phú Quốc - [" + SessionContext.TenKhoHienTai + "]";
+            this.Text = "Hệ thống quản lí kho - [" + SessionContext.TenKhoHienTai + "]";
 
             // Thiết lập thông tin trạng thái ở góc trái dưới
             tssNguoiDung.Text = "Người dùng: " + SessionContext.HoTen + " (" + SessionContext.TenVaiTro + ")";
@@ -55,6 +57,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             if (SessionContext.IsAdmin)
             {
                 // Vai trò 1: Quản lý - Toàn quyền mọi chức năng và mọi kho
+                mnuNguoiDung.Visible = true;
                 mnuDoiKho.Visible = true;
                 mnuDoiKho.Enabled = true;
 
@@ -71,6 +74,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             {
                 // Vai trò 2: Thủ kho (Quản lý 1 kho duy nhất)
                 // Khóa chức năng đổi kho vì thủ kho chỉ quản lý 1 kho cố định được phân công
+                mnuNguoiDung.Visible = false;
                 mnuDoiKho.Visible = false;
                 mnuDoiKho.Enabled = false;
 
@@ -88,6 +92,7 @@ namespace BTL_LTTQ_2.GUI.Forms
             {
                 // Vai trò 3: Nhân viên kho
                 // Không được đổi kho
+                mnuNguoiDung.Visible = false;
                 mnuDoiKho.Visible = false;
                 mnuDoiKho.Enabled = false;
 
@@ -102,6 +107,30 @@ namespace BTL_LTTQ_2.GUI.Forms
                 // Ẩn các chức năng quản lý danh mục nhạy cảm và thẻ kho sổ sách
                 mnuNhaCungCap.Visible = false;
                 mnuBaoCaoTheKho.Visible = false;
+            }
+        }
+
+                private void mnuNguoiDung_Click(object sender, EventArgs e)
+        {
+            foreach (Form form in this.MdiChildren)
+            {
+                if (form is frmDanhSachNguoiDung)
+                {
+                    form.Activate();
+                    return;
+                }
+            }
+
+            frmDanhSachNguoiDung frm = new frmDanhSachNguoiDung();
+            frm.MdiParent = this;
+            frm.Show();
+        }
+
+        private void mnuDoiMatKhau_Click(object sender, EventArgs e)
+        {
+            using (frmDoiMatKhau frm = new frmDoiMatKhau())
+            {
+                frm.ShowDialog();
             }
         }
 
@@ -144,7 +173,7 @@ namespace BTL_LTTQ_2.GUI.Forms
 
         private void menuThongTin_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Hệ thống Quản lý Kho - BTL Lập trình trực quan\nPhiên bản: 1.0\nNền tảng: Windows Forms .NET Framework", "Thông tin phần mềm", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Hệ thống quản lí kho - BTL Lập trình trực quan\nPhiên bản: 1.0\nNền tảng: Windows Forms .NET Framework", "Thông tin phần mềm", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void mnuNhaCungCap_Click(object sender, EventArgs e)
@@ -239,7 +268,7 @@ namespace BTL_LTTQ_2.GUI.Forms
                 if (frm.ShowDialog(this) == DialogResult.OK)
                 {
                     // Cập nhật tiêu đề Form cha và StatusStrip
-                    this.Text = "Quản Lý Kho Phú Quốc - [" + SessionContext.TenKhoHienTai + "]";
+                    this.Text = "Hệ thống quản lí kho - [" + SessionContext.TenKhoHienTai + "]";
                     tssKho.Text = "Kho: " + SessionContext.TenKhoHienTai;
 
                     // Làm mới các form con MDI đang mở

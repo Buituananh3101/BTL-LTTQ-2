@@ -758,7 +758,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
 
         #region Hành động & Nút chức năng
 
-        // Click đúp vào dòng để mở form sửa
+        // Click đúp vào dòng để mở form xem chi tiết
         private void dgvNhaCungCap_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;
@@ -767,14 +767,14 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
             var cellMaDonVi = dgvNhaCungCap.Rows[e.RowIndex].Cells["colMaDonViCapHang"].Value;
             if (cellMaDonVi != null && int.TryParse(cellMaDonVi.ToString(), out int maDonVi))
             {
-                MoFormDonViCapHang(maDonVi);
+                MoFormChiTietNhaCungCap(maDonVi);
             }
         }
 
         // Bấm nút + Nhà cung cấp mở form thêm mới
         private void btnThemNhaCungCap_Click(object sender, EventArgs e)
         {
-            MoFormDonViCapHang(0);
+            MoFormThemNhaCungCap();
         }
 
         // Bấm nút + tạo mới/quản lý nhóm nhà cung cấp ngay cạnh ComboBox
@@ -788,15 +788,39 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
             }
         }
 
-        private void MoFormDonViCapHang(int maDonViCapHang)
+        private void MoFormThemNhaCungCap()
         {
-            using (frmDonViCapHang frm = maDonViCapHang > 0 ? new frmDonViCapHang(maDonViCapHang) : new frmDonViCapHang())
+            using (frmDonViCapHang frm = new frmDonViCapHang())
             {
                 frm.StartPosition = FormStartPosition.CenterParent;
                 if (frm.ShowDialog(this) == DialogResult.OK)
                 {
                     HienThiDanhSach();
                 }
+            }
+        }
+
+        private void MoFormChiTietNhaCungCap(int maDonViCapHang)
+        {
+            using (frmChiTietNhaCungCap frm = new frmChiTietNhaCungCap(maDonViCapHang))
+            {
+                frm.StartPosition = FormStartPosition.CenterParent;
+                if (frm.ShowDialog(this) == DialogResult.OK)
+                {
+                    HienThiDanhSach();
+                }
+            }
+        }
+
+        private void MoFormDonViCapHang(int maDonViCapHang)
+        {
+            if (maDonViCapHang > 0)
+            {
+                MoFormChiTietNhaCungCap(maDonViCapHang);
+            }
+            else
+            {
+                MoFormThemNhaCungCap();
             }
         }
 

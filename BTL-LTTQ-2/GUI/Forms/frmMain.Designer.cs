@@ -19,6 +19,7 @@
         {
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.mnuHeThong = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuNguoiDung = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuDoiMatKhau = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuDangXuat = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -69,6 +70,7 @@
             // mnuHeThong
             // 
             this.mnuHeThong.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuNguoiDung,
             this.mnuDoiMatKhau,
             this.mnuDangXuat,
             this.toolStripSeparator1,
@@ -77,11 +79,19 @@
             this.mnuHeThong.Size = new System.Drawing.Size(74, 21);
             this.mnuHeThong.Text = "&Hệ thống";
             // 
+            // mnuNguoiDung
+            // 
+            this.mnuNguoiDung.Name = "mnuNguoiDung";
+            this.mnuNguoiDung.Size = new System.Drawing.Size(153, 22);
+            this.mnuNguoiDung.Text = "Người dùng";
+            this.mnuNguoiDung.Click += new System.EventHandler(this.mnuNguoiDung_Click);
+            // 
             // mnuDoiMatKhau
             // 
             this.mnuDoiMatKhau.Name = "mnuDoiMatKhau";
             this.mnuDoiMatKhau.Size = new System.Drawing.Size(153, 22);
             this.mnuDoiMatKhau.Text = "Đổi mật khẩu";
+            this.mnuDoiMatKhau.Click += new System.EventHandler(this.mnuDoiMatKhau_Click);
             // 
             // mnuDangXuat
             // 
@@ -280,7 +290,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "frmMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Hệ Thống Quản Lý Kho";
+            this.Text = "Hệ thống quản lí kho";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.frmMain_Load);
             this.menuStrip1.ResumeLayout(false);
@@ -296,6 +306,7 @@
 
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem mnuHeThong;
+        private System.Windows.Forms.ToolStripMenuItem mnuNguoiDung;
         private System.Windows.Forms.ToolStripMenuItem mnuDoiMatKhau;
         private System.Windows.Forms.ToolStripMenuItem mnuDangXuat;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
