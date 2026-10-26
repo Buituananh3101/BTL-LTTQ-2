@@ -319,82 +319,11 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
 
         #region Tải dữ liệu & Lọc dữ liệu
 
-        public void HienThiDanhSach()
-        {
-            if (!isLoaded) return;
-
-            try
-            {
-                List<SqlParameter> parameters = new List<SqlParameter>();
-                StringBuilder whereSql = new StringBuilder(" WHERE 1=1 ");
-
-                // Lọc từ khóa tìm kiếm (Mã NCC, Tên NCC, Số điện thoại)
-                if (!string.IsNullOrWhiteSpace(txtTimKiem.Text))
-                {
-                    whereSql.Append(" AND (c.MaNcc LIKE @Search OR c.TenDonVi LIKE @Search OR c.DienThoai LIKE @Search) ");
-                    parameters.Add(new SqlParameter("@Search", "%" + txtTimKiem.Text.Trim() + "%"));
-                }
-
-                // Lọc nhóm NCC
-                if (cboNhomNCC.SelectedValue != null && int.TryParse(cboNhomNCC.SelectedValue.ToString(), out int maNhom) && maNhom > 0)
-                {
-                    whereSql.Append(" AND c.MaNhomNcc = @MaNhom ");
-                    parameters.Add(new SqlParameter("@MaNhom", maNhom));
-                }
-
-                // Lọc trạng thái
-                if (cboTrangThai.SelectedIndex == 1) // Đang hoạt động
-                {
-                    whereSql.Append(" AND c.TrangThai = 'HOAT_DONG' ");
-                }
-                else if (cboTrangThai.SelectedIndex == 2) // Ngừng hoạt động
-                {
-                    whereSql.Append(" AND c.TrangThai IN ('NGUNG_GIAO_DICH', 'NGUNG_HOAT_DONG') ");
-                }
-
-                // Lọc mức tổng mua
-                if (cboMucTongMua.SelectedIndex == 1) // < 5tr
-                {
-                    whereSql.Append(" AND c.TongMua < 5000000 ");
-                }
-                else if (cboMucTongMua.SelectedIndex == 2) // 5 - 20tr
-                {
-                    whereSql.Append(" AND c.TongMua >= 5000000 AND c.TongMua <= 20000000 ");
-                }
-                else if (cboMucTongMua.SelectedIndex == 3) // 20 - 50tr
-                {
-                    whereSql.Append(" AND c.TongMua > 20000000 AND c.TongMua <= 50000000 ");
-                }
-                else if (cboMucTongMua.SelectedIndex == 4) // > 50tr
-                {
-                    whereSql.Append(" AND c.TongMua > 50000000 ");
-                }
-
-                // Lọc mức nợ hiện tại
-                if (cboNoHienTai.SelectedIndex == 1) // Còn nợ (> 0)
-                {
-                    whereSql.Append(" AND c.NoCanTraHienTai > 0 ");
-                }
-                else if (cboNoHienTai.SelectedIndex == 2) // Hết nợ (= 0)
-                {
-                    whereSql.Append(" AND c.NoCanTraHienTai = 0 ");
-                }
-                else if (cboNoHienTai.SelectedIndex == 3) // Nợ lớn (> 10tr)
-                {
-                    whereSql.Append(" AND c.NoCanTraHienTai > 10000000 ");
-                }
-                else if (cboNoHienTai.SelectedIndex == 4) // Nợ rất lớn (> 50tr)
-                {
-                    whereSql.Append(" AND c.NoCanTraHienTai > 50000000 ");
-                }
-
-                // Lọc theo khoảng ngày tạo (đồng bộ frmDanhSachHangHoa)
-                whereSql.Append(" AND c.NgayTao >= @TuNgay AND c.NgayTao < @DenNgay ");
-                parameters.Add(new SqlParameter("@TuNgay", dtpTuNgay.Value.Date));
-                parameters.Add(new SqlParameter("@DenNgay", dtpDenNgay.Value.Date.AddDays(1)));
-
-                // Truy vấn CTE linh hoạt, tự động sinh mã hiển thị nếu MaNcc đang NULL
-                string cteSql = $@"
+        // Truy vấn CTE linh hoạt, tự động sinh mã hiển thị nếu MaNcc đang NULL
+        // Công thức công nợ dùng chung với form chi tiết NCC:
+        //   - Tổng mua = SUM(PhieuNhap.TongTien) các phiếu 'DA_XAC_NHAN'
+        //   - Nợ cần trả hiện tại = SUM(PhieuNhap.CanTraNcc) 'DA_XAC_NHAN' - SUM(PhieuTraHangNhap.CanThuNcc - DaThuNcc) 'DA_TRA_HANG'
+        private const string CTE_NHA_CUNG_CAP = @"
                     WITH CTE_NhaCungCap AS (
                         SELECT 
                             ncc.MaDonViCapHang,
@@ -411,17 +340,108 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                                 SELECT SUM(pn.TongTien) 
                                 FROM PhieuNhap pn 
                                 WHERE pn.MaDonViCapHang = ncc.MaDonViCapHang 
-                                  AND pn.TrangThai IN ('DA_XAC_NHAN', 'DA_NHAN')
+                                  AND pn.TrangThai = 'DA_XAC_NHAN'
                             ), 0) AS TongMua,
                             ISNULL((
-                                SELECT SUM(pn.TongTien) 
+                                SELECT SUM(pn.CanTraNcc) 
                                 FROM PhieuNhap pn 
                                 WHERE pn.MaDonViCapHang = ncc.MaDonViCapHang 
-                                  AND pn.TrangThai IN ('DA_XAC_NHAN', 'DA_NHAN')
+                                  AND pn.TrangThai = 'DA_XAC_NHAN'
+                            ), 0)
+                            - ISNULL((
+                                SELECT SUM(pt.CanThuNcc - pt.DaThuNcc) 
+                                FROM PhieuTraHangNhap pt 
+                                WHERE pt.MaDonViCapHang = ncc.MaDonViCapHang 
+                                  AND pt.TrangThai = 'DA_TRA_HANG'
                             ), 0) AS NoCanTraHienTai
                         FROM DonViCapHang ncc
                         LEFT JOIN NhomNhaCungCap nhom ON ncc.MaNhomNcc = nhom.MaNhomNcc
                     )";
+
+        /// <summary>
+        /// Xây dựng mệnh đề WHERE theo bộ lọc hiện tại (dùng chung cho hiển thị phân trang và xuất file toàn bộ)
+        /// </summary>
+        private string XayDungDieuKienLoc(List<SqlParameter> parameters)
+        {
+            StringBuilder whereSql = new StringBuilder(" WHERE 1=1 ");
+
+            // Lọc từ khóa tìm kiếm (Mã NCC, Tên NCC, Số điện thoại)
+            if (!string.IsNullOrWhiteSpace(txtTimKiem.Text))
+            {
+                whereSql.Append(" AND (c.MaNcc LIKE @Search OR c.TenDonVi LIKE @Search OR c.DienThoai LIKE @Search) ");
+                parameters.Add(new SqlParameter("@Search", "%" + txtTimKiem.Text.Trim() + "%"));
+            }
+
+            // Lọc nhóm NCC
+            if (cboNhomNCC.SelectedValue != null && int.TryParse(cboNhomNCC.SelectedValue.ToString(), out int maNhom) && maNhom > 0)
+            {
+                whereSql.Append(" AND c.MaNhomNcc = @MaNhom ");
+                parameters.Add(new SqlParameter("@MaNhom", maNhom));
+            }
+
+            // Lọc trạng thái
+            if (cboTrangThai.SelectedIndex == 1) // Đang hoạt động
+            {
+                whereSql.Append(" AND c.TrangThai = 'HOAT_DONG' ");
+            }
+            else if (cboTrangThai.SelectedIndex == 2) // Ngừng hoạt động
+            {
+                whereSql.Append(" AND c.TrangThai = 'NGUNG_GIAO_DICH' ");
+            }
+
+            // Lọc mức tổng mua
+            if (cboMucTongMua.SelectedIndex == 1) // < 5tr
+            {
+                whereSql.Append(" AND c.TongMua < 5000000 ");
+            }
+            else if (cboMucTongMua.SelectedIndex == 2) // 5 - 20tr
+            {
+                whereSql.Append(" AND c.TongMua >= 5000000 AND c.TongMua <= 20000000 ");
+            }
+            else if (cboMucTongMua.SelectedIndex == 3) // 20 - 50tr
+            {
+                whereSql.Append(" AND c.TongMua > 20000000 AND c.TongMua <= 50000000 ");
+            }
+            else if (cboMucTongMua.SelectedIndex == 4) // > 50tr
+            {
+                whereSql.Append(" AND c.TongMua > 50000000 ");
+            }
+
+            // Lọc mức nợ hiện tại
+            if (cboNoHienTai.SelectedIndex == 1) // Còn nợ (> 0)
+            {
+                whereSql.Append(" AND c.NoCanTraHienTai > 0 ");
+            }
+            else if (cboNoHienTai.SelectedIndex == 2) // Hết nợ (= 0)
+            {
+                whereSql.Append(" AND c.NoCanTraHienTai = 0 ");
+            }
+            else if (cboNoHienTai.SelectedIndex == 3) // Nợ lớn (> 10tr)
+            {
+                whereSql.Append(" AND c.NoCanTraHienTai > 10000000 ");
+            }
+            else if (cboNoHienTai.SelectedIndex == 4) // Nợ rất lớn (> 50tr)
+            {
+                whereSql.Append(" AND c.NoCanTraHienTai > 50000000 ");
+            }
+
+            // Lọc theo khoảng ngày tạo (đồng bộ frmDanhSachHangHoa)
+            whereSql.Append(" AND c.NgayTao >= @TuNgay AND c.NgayTao < @DenNgay ");
+            parameters.Add(new SqlParameter("@TuNgay", dtpTuNgay.Value.Date));
+            parameters.Add(new SqlParameter("@DenNgay", dtpDenNgay.Value.Date.AddDays(1)));
+
+            return whereSql.ToString();
+        }
+
+        public void HienThiDanhSach()
+        {
+            if (!isLoaded) return;
+
+            try
+            {
+                List<SqlParameter> parameters = new List<SqlParameter>();
+                string whereSql = XayDungDieuKienLoc(parameters);
+                string cteSql = CTE_NHA_CUNG_CAP;
 
                 // 1. Đếm tổng số bản ghi
                 string sqlCount = $@"
@@ -577,7 +597,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                     e.Value = "Đang hoạt động";
                     e.CellStyle.ForeColor = Color.ForestGreen;
                 }
-                else if (val == "NGUNG_GIAO_DICH" || val == "NGUNG_HOAT_DONG")
+                else if (val == "NGUNG_GIAO_DICH")
                 {
                     e.Value = "Ngừng hoạt động";
                     e.CellStyle.ForeColor = Color.Gray;
@@ -841,37 +861,67 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                 {
                     try
                     {
+                        // Truy vấn lại TOÀN BỘ nhà cung cấp khớp bộ lọc hiện tại (không phân trang)
+                        List<SqlParameter> parameters = new List<SqlParameter>();
+                        string whereSql = XayDungDieuKienLoc(parameters);
+                        string sqlAll = $@"
+                            {CTE_NHA_CUNG_CAP}
+                            SELECT c.MaDonViCapHang, c.MaNcc, c.TenDonVi, c.DienThoai, c.Email,
+                                   c.NoCanTraHienTai, c.TongMua, c.TrangThai, c.TenNhom, c.NgayTao
+                            FROM CTE_NhaCungCap c
+                            {whereSql}
+                            ORDER BY c.MaDonViCapHang DESC;";
+                        DataTable dtAll = DataProcessing.ReadData(sqlAll, parameters.ToArray());
+
                         StringBuilder sb = new StringBuilder();
 
                         // Ghi tiêu đề cột (bỏ các cột ẩn và cột hộp kiểm)
+                        List<DataGridViewColumn> cotXuat = new List<DataGridViewColumn>();
                         List<string> headers = new List<string>();
                         foreach (DataGridViewColumn col in dgvNhaCungCap.Columns)
                         {
-                            if (col.Visible && col.Name != "colChon" && col.Name != "colMaDonViCapHang")
+                            if (col.Visible && col.Name != "colChon" && col.Name != "colMaDonViCapHang"
+                                && !string.IsNullOrEmpty(col.DataPropertyName) && dtAll.Columns.Contains(col.DataPropertyName))
                             {
+                                cotXuat.Add(col);
                                 headers.Add($"\"{col.HeaderText}\"");
                             }
                         }
                         sb.AppendLine(string.Join(",", headers));
 
-                        // Ghi từng dòng dữ liệu
-                        foreach (DataGridViewRow row in dgvNhaCungCap.Rows)
+                        // Ghi từng dòng dữ liệu (định dạng giống trên lưới)
+                        foreach (DataRow row in dtAll.Rows)
                         {
                             List<string> rowValues = new List<string>();
-                            foreach (DataGridViewColumn col in dgvNhaCungCap.Columns)
+                            foreach (DataGridViewColumn col in cotXuat)
                             {
-                                if (col.Visible && col.Name != "colChon" && col.Name != "colMaDonViCapHang")
+                                object val = row[col.DataPropertyName];
+                                string cellVal;
+                                if (val == null || val == DBNull.Value)
                                 {
-                                    string cellVal = row.Cells[col.Index].FormattedValue?.ToString() ?? "";
-                                    rowValues.Add($"\"{cellVal.Replace("\"", "\"\"")}\"");
+                                    cellVal = "";
                                 }
+                                else if (col.Name == "colTrangThai")
+                                {
+                                    string tt = val.ToString();
+                                    cellVal = tt == "HOAT_DONG" ? "Đang hoạt động" : (tt == "NGUNG_GIAO_DICH" ? "Ngừng hoạt động" : tt);
+                                }
+                                else if (val is decimal so)
+                                {
+                                    cellVal = so.ToString("N0");
+                                }
+                                else
+                                {
+                                    cellVal = val.ToString();
+                                }
+                                rowValues.Add($"\"{cellVal.Replace("\"", "\"\"")}\"");
                             }
                             sb.AppendLine(string.Join(",", rowValues));
                         }
 
                         // Ghi ra file với UTF-8 BOM để Excel hiển thị đúng tiếng Việt
                         File.WriteAllText(sfd.FileName, sb.ToString(), Encoding.UTF8);
-                        MessageBox.Show("Xuất danh sách nhà cung cấp thành công tại:\n" + sfd.FileName, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show($"Xuất {dtAll.Rows.Count:N0} nhà cung cấp thành công tại:\n" + sfd.FileName, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     catch (Exception ex)
                     {

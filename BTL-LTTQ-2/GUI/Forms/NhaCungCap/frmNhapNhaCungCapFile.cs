@@ -149,6 +149,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                 int capNhat = 0;
                 int boQua = 0;
                 int soDongLoi = 0;
+                List<string> dsLoi = new List<string>();
 
                 DataProcessing.ChangeDataTransaction((conn, trans) =>
                 {
@@ -163,20 +164,31 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                         }
                     }
 
-                    // Đọc danh sách mã NCC hiện hữu
+                    // Đọc danh sách mã NCC hiện hữu và tên NCC (TenDonVi là UNIQUE) -> mã NCC đang dùng tên đó
                     HashSet<string> setMaNccHienHuu = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-                    using (SqlCommand cmdCheck = new SqlCommand("SELECT MaNcc FROM DonViCapHang WHERE MaNcc IS NOT NULL AND MaNcc <> ''", conn, trans))
+                    Dictionary<string, string> dictTenNcc = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                    using (SqlCommand cmdCheck = new SqlCommand("SELECT MaNcc, TenDonVi FROM DonViCapHang", conn, trans))
                     using (SqlDataReader rdr = cmdCheck.ExecuteReader())
                     {
                         while (rdr.Read())
                         {
-                            setMaNccHienHuu.Add(rdr["MaNcc"].ToString().Trim());
+                            string ma = rdr["MaNcc"] == DBNull.Value ? "" : rdr["MaNcc"].ToString().Trim();
+                            if (!string.IsNullOrEmpty(ma)) setMaNccHienHuu.Add(ma);
+                            string ten = rdr["TenDonVi"] == DBNull.Value ? "" : rdr["TenDonVi"].ToString().Trim();
+                            if (!string.IsNullOrEmpty(ten)) dictTenNcc[ten] = ma;
                         }
                     }
 
-                    // Lấy số thứ tự lớn nhất để sinh mã tự động
+                    // Lấy hậu tố số lớn nhất của mã NCCxxxxx để sinh mã tự động (đồng bộ form thêm NCC thủ công)
                     int soThuTuTiepTheo = 1;
-                    using (SqlCommand cmdMax = new SqlCommand("SELECT ISNULL(MAX(MaDonViCapHang), 0) + 1 FROM DonViCapHang", conn, trans))
+                    using (SqlCommand cmdMax = new SqlCommand(@"
+                        SELECT ISNULL(MAX(
+                            CASE
+                                WHEN MaNcc LIKE 'NCC[0-9]%' THEN TRY_CAST(SUBSTRING(MaNcc, 4, 10) AS INT)
+                                ELSE 0
+                            END
+                        ), 0) + 1
+                        FROM DonViCapHang WITH (UPDLOCK, HOLDLOCK)", conn, trans))
                     {
                         soThuTuTiepTheo = Convert.ToInt32(cmdMax.ExecuteScalar());
                     }
@@ -185,10 +197,43 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                     {
                         var dong = dsDong[i];
 
-                        // Kiểm tra tên nhà cung cấp (bắt buộc)
-                        if (string.IsNullOrWhiteSpace(dong.TenDonVi))
+                        // Kiểm tra dữ liệu bắt buộc & độ dài trường theo cấu trúc bảng DonViCapHang
+                        string tenDonVi = dong.TenDonVi?.Trim() ?? "";
+                        string maNccFile = dong.MaNcc?.Trim() ?? "";
+                        string lyDoLoi = null;
+                        if (string.IsNullOrWhiteSpace(tenDonVi)) lyDoLoi = "Thiếu tên nhà cung cấp";
+                        else if (tenDonVi.Length > 150) lyDoLoi = "Tên nhà cung cấp vượt quá 150 ký tự";
+                        else if (maNccFile.Length > 30) lyDoLoi = "Mã nhà cung cấp vượt quá 30 ký tự";
+                        else if ((dong.DienThoai?.Trim() ?? "").Length > 15) lyDoLoi = "Điện thoại vượt quá 15 ký tự";
+                        else if ((dong.Email?.Trim() ?? "").Length > 100) lyDoLoi = "Email vượt quá 100 ký tự";
+                        else if ((dong.DiaChi?.Trim() ?? "").Length > 255) lyDoLoi = "Địa chỉ vượt quá 255 ký tự";
+                        else if ((dong.KhuVuc?.Trim() ?? "").Length > 100) lyDoLoi = "Khu vực vượt quá 100 ký tự";
+                        else if ((dong.MaSoThue?.Trim() ?? "").Length > 30) lyDoLoi = "Mã số thuế vượt quá 30 ký tự";
+                        else if ((dong.GhiChu?.Trim() ?? "").Length > 500) lyDoLoi = "Ghi chú vượt quá 500 ký tự";
+                        else if ((dong.TenNhom?.Trim() ?? "").Length > 150) lyDoLoi = "Tên nhóm vượt quá 150 ký tự";
+
+                        bool laDongCapNhat = !string.IsNullOrEmpty(maNccFile) && setMaNccHienHuu.Contains(maNccFile);
+                        if (lyDoLoi == null && !(laDongCapNhat && !capNhatKhiTrung)
+                            && dictTenNcc.TryGetValue(tenDonVi, out string maNccDungTen))
+                        {
+                            // Tên NCC là duy nhất: chỉ hợp lệ khi chính NCC đó đang được cập nhật
+                            if (!(laDongCapNhat && string.Equals(maNccDungTen, maNccFile, StringComparison.OrdinalIgnoreCase)))
+                            {
+                                lyDoLoi = $"Tên nhà cung cấp '{tenDonVi}' đã tồn tại" + (string.IsNullOrEmpty(maNccDungTen) ? "" : $" (mã {maNccDungTen})");
+                            }
+                        }
+
+                        if (lyDoLoi != null)
                         {
                             soDongLoi++;
+                            dsLoi.Add($"Dòng {dong.DongSo}: {lyDoLoi}");
+                            continue;
+                        }
+
+                        // Bỏ qua dòng trùng mã khi người dùng chọn "Bỏ qua" (trước khi tạo nhóm mới)
+                        if (laDongCapNhat && !capNhatKhiTrung)
+                        {
+                            boQua++;
                             continue;
                         }
 
@@ -215,52 +260,46 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                             }
                         }
 
-                        // Xử lý mã nhà cung cấp
-                        string maNcc = dong.MaNcc != null ? dong.MaNcc.Trim() : "";
-                        bool isAutoCode = false;
+                        // Xử lý mã nhà cung cấp: tự sinh NCC + 5 chữ số, lặp đến khi chưa bị dùng
+                        string maNcc = maNccFile;
                         if (string.IsNullOrEmpty(maNcc))
                         {
-                            maNcc = "NCC" + (soThuTuTiepTheo++).ToString("D5");
-                            isAutoCode = true;
+                            do
+                            {
+                                maNcc = "NCC" + (soThuTuTiepTheo++).ToString("D5");
+                            } while (setMaNccHienHuu.Contains(maNcc));
                         }
 
-                        // Kiểm tra tồn tại mã NCC
-                        if (setMaNccHienHuu.Contains(maNcc) && !isAutoCode)
+                        if (laDongCapNhat)
                         {
-                            if (capNhatKhiTrung)
-                            {
-                                // Cập nhật thông tin NCC
-                                string updateSql = @"
-                                    UPDATE DonViCapHang
-                                    SET TenDonVi = @TenDonVi,
-                                        DienThoai = @DienThoai,
-                                        Email = @Email,
-                                        DiaChi = @DiaChi,
-                                        KhuVuc = @KhuVuc,
-                                        MaSoThue = @MaSoThue,
-                                        GhiChu = @GhiChu,
-                                        MaNhomNcc = ISNULL(@MaNhomNcc, MaNhomNcc)
-                                    WHERE MaNcc = @MaNcc";
+                            // Cập nhật thông tin NCC (mã đã tồn tại và người dùng chọn "Cập nhật")
+                            string updateSql = @"
+                                UPDATE DonViCapHang
+                                SET TenDonVi = @TenDonVi,
+                                    DienThoai = @DienThoai,
+                                    Email = @Email,
+                                    DiaChi = @DiaChi,
+                                    KhuVuc = @KhuVuc,
+                                    MaSoThue = @MaSoThue,
+                                    GhiChu = @GhiChu,
+                                    MaNhomNcc = ISNULL(@MaNhomNcc, MaNhomNcc)
+                                WHERE MaNcc = @MaNcc";
 
-                                using (SqlCommand cmdUpdate = new SqlCommand(updateSql, conn, trans))
-                                {
-                                    cmdUpdate.Parameters.AddWithValue("@TenDonVi", dong.TenDonVi.Trim());
-                                    cmdUpdate.Parameters.AddWithValue("@DienThoai", (object)dong.DienThoai?.Trim() ?? DBNull.Value);
-                                    cmdUpdate.Parameters.AddWithValue("@Email", (object)dong.Email?.Trim() ?? DBNull.Value);
-                                    cmdUpdate.Parameters.AddWithValue("@DiaChi", (object)dong.DiaChi?.Trim() ?? DBNull.Value);
-                                    cmdUpdate.Parameters.AddWithValue("@KhuVuc", (object)dong.KhuVuc?.Trim() ?? DBNull.Value);
-                                    cmdUpdate.Parameters.AddWithValue("@MaSoThue", (object)dong.MaSoThue?.Trim() ?? DBNull.Value);
-                                    cmdUpdate.Parameters.AddWithValue("@GhiChu", (object)dong.GhiChu?.Trim() ?? DBNull.Value);
-                                    cmdUpdate.Parameters.AddWithValue("@MaNhomNcc", (object)maNhom ?? DBNull.Value);
-                                    cmdUpdate.Parameters.AddWithValue("@MaNcc", maNcc);
-
-                                    cmdUpdate.ExecuteNonQuery();
-                                    capNhat++;
-                                }
-                            }
-                            else
+                            using (SqlCommand cmdUpdate = new SqlCommand(updateSql, conn, trans))
                             {
-                                boQua++;
+                                cmdUpdate.Parameters.AddWithValue("@TenDonVi", tenDonVi);
+                                cmdUpdate.Parameters.AddWithValue("@DienThoai", (object)dong.DienThoai?.Trim() ?? DBNull.Value);
+                                cmdUpdate.Parameters.AddWithValue("@Email", (object)dong.Email?.Trim() ?? DBNull.Value);
+                                cmdUpdate.Parameters.AddWithValue("@DiaChi", (object)dong.DiaChi?.Trim() ?? DBNull.Value);
+                                cmdUpdate.Parameters.AddWithValue("@KhuVuc", (object)dong.KhuVuc?.Trim() ?? DBNull.Value);
+                                cmdUpdate.Parameters.AddWithValue("@MaSoThue", (object)dong.MaSoThue?.Trim() ?? DBNull.Value);
+                                cmdUpdate.Parameters.AddWithValue("@GhiChu", (object)dong.GhiChu?.Trim() ?? DBNull.Value);
+                                cmdUpdate.Parameters.AddWithValue("@MaNhomNcc", (object)maNhom ?? DBNull.Value);
+                                cmdUpdate.Parameters.AddWithValue("@MaNcc", maNcc);
+
+                                cmdUpdate.ExecuteNonQuery();
+                                dictTenNcc[tenDonVi] = maNcc;
+                                capNhat++;
                             }
                         }
                         else
@@ -276,7 +315,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                             using (SqlCommand cmdInsert = new SqlCommand(insertSql, conn, trans))
                             {
                                 cmdInsert.Parameters.AddWithValue("@MaNcc", maNcc);
-                                cmdInsert.Parameters.AddWithValue("@TenDonVi", dong.TenDonVi.Trim());
+                                cmdInsert.Parameters.AddWithValue("@TenDonVi", tenDonVi);
                                 cmdInsert.Parameters.AddWithValue("@DienThoai", (object)dong.DienThoai?.Trim() ?? DBNull.Value);
                                 cmdInsert.Parameters.AddWithValue("@Email", (object)dong.Email?.Trim() ?? DBNull.Value);
                                 cmdInsert.Parameters.AddWithValue("@DiaChi", (object)dong.DiaChi?.Trim() ?? DBNull.Value);
@@ -287,6 +326,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
 
                                 cmdInsert.ExecuteNonQuery();
                                 setMaNccHienHuu.Add(maNcc);
+                                dictTenNcc[tenDonVi] = maNcc;
                                 themMoi++;
                             }
                         }
@@ -300,14 +340,26 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                 SoLuongThemMoi = themMoi;
                 SoLuongCapNhat = capNhat;
 
+                StringBuilder sbLoi = new StringBuilder();
+                if (dsLoi.Count > 0)
+                {
+                    sbLoi.AppendLine("\nCác dòng bị lỗi (tối đa 10 dòng đầu):");
+                    for (int k = 0; k < dsLoi.Count && k < 10; k++)
+                    {
+                        sbLoi.AppendLine("  • " + dsLoi[k]);
+                    }
+                    if (dsLoi.Count > 10) sbLoi.AppendLine($"  ... và {dsLoi.Count - 10:N0} dòng lỗi khác.");
+                }
+
                 string thongBao = $"KẾT QUẢ NHẬP DỮ LIỆU NHÀ CUNG CẤP:\n\n" +
                                   $"- Thêm mới thành công: {themMoi:N0} nhà cung cấp\n" +
                                   $"- Cập nhật thông tin: {capNhat:N0} nhà cung cấp\n" +
                                   $"- Bỏ qua do trùng mã: {boQua:N0} dòng\n" +
-                                  (soDongLoi > 0 ? $"- Dòng thiếu tên hoặc không hợp lệ: {soDongLoi:N0} dòng\n" : "") +
+                                  $"- Dòng lỗi không được nhập: {soDongLoi:N0} dòng\n" +
+                                  sbLoi.ToString() +
                                   $"\nDữ liệu danh sách nhà cung cấp đã được cập nhật!";
 
-                MessageBox.Show(thongBao, "Hoàn tất nhập dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(thongBao, "Hoàn tất nhập dữ liệu", MessageBoxButtons.OK, soDongLoi > 0 ? MessageBoxIcon.Warning : MessageBoxIcon.Information);
 
                 this.DialogResult = DialogResult.OK;
                 this.Close();
@@ -329,6 +381,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
 
         private class DongNhaCungCapFile
         {
+            public int DongSo { get; set; }
             public string MaNcc { get; set; }
             public string TenDonVi { get; set; }
             public string TenNhom { get; set; }
@@ -681,8 +734,15 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                     if (row.Count > 8) item.GhiChu = row[8];
                 }
 
-                if (!string.IsNullOrWhiteSpace(item.TenDonVi))
+                // Giữ lại mọi dòng có dữ liệu (kể cả thiếu tên) để đếm và báo lỗi chính xác; bỏ qua dòng trống hoàn toàn
+                bool coDuLieu = false;
+                foreach (string o in row)
                 {
+                    if (!string.IsNullOrWhiteSpace(o)) { coDuLieu = true; break; }
+                }
+                if (coDuLieu)
+                {
+                    item.DongSo = r + 1;
                     ketQua.Add(item);
                 }
             }

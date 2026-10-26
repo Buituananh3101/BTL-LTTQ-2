@@ -69,9 +69,11 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                         ISNULL(pth.MaDonViCapHang, 0) AS MaDonViCapHang,
                         ISNULL(ncc.TenDonVi, N'Nhà cung cấp lẻ') AS TenDonVi,
                         pth.MaNvlap,
-                        ISNULL(nvLap.HoTen, ISNULL(tkLap.TenDangNhap, N'Quản trị viên')) AS TenNvLap,
+                        ISNULL(nvLap.HoTen, N'Quản trị viên') AS TenNvLap,
                         pth.MaNvtra,
-                        ISNULL(nvTra.HoTen, ISNULL(tkTra.TenDangNhap, ISNULL(nvLap.HoTen, N'Quản trị viên'))) AS TenNvTra,
+                        ISNULL(nvTra.HoTen, ISNULL(nvLap.HoTen, N'Quản trị viên')) AS TenNvTra,
+                        pth.MaPhieuNhap,
+                        pnGoc.MaPhieu AS MaPhieuNhapGoc,
                         pth.NgayLap,
                         pth.NgayTra,
                         pth.TrangThai,
@@ -84,10 +86,10 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                     FROM PhieuTraHangNhap pth
                     LEFT JOIN Kho k ON pth.MaKho = k.MaKho
                     LEFT JOIN DonViCapHang ncc ON pth.MaDonViCapHang = ncc.MaDonViCapHang
-                    LEFT JOIN TaiKhoan tkLap ON pth.MaNvlap = tkLap.MaTaiKhoan
-                    LEFT JOIN NhanVien nvLap ON tkLap.MaNV = nvLap.MaNV
-                    LEFT JOIN TaiKhoan tkTra ON pth.MaNvtra = tkTra.MaTaiKhoan
-                    LEFT JOIN NhanVien nvTra ON tkTra.MaNV = nvTra.MaNV
+                    -- MaNvlap / MaNvtra là khóa ngoại tới NhanVien.MaNV
+                    LEFT JOIN NhanVien nvLap ON pth.MaNvlap = nvLap.MaNV
+                    LEFT JOIN NhanVien nvTra ON pth.MaNvtra = nvTra.MaNV
+                    LEFT JOIN PhieuNhap pnGoc ON pth.MaPhieuNhap = pnGoc.MaPhieuNhap
                     WHERE pth.MaPhieuTraHang = @MaPhieuTraHang";
 
                 SqlParameter[] pHeader = { new SqlParameter("@MaPhieuTraHang", maPhieuTraHang) };
@@ -139,7 +141,17 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                 lblNgayTraVal.Text = Convert.ToDateTime(row["NgayTra"]).ToString("dd/MM/yyyy HH:mm");
                 lblTenNccVal.Text = row["TenDonVi"].ToString();
 
-                lblMaNhapHangVal.Text = "Trả tự do";
+                // Hiển thị mã phiếu nhập gốc nếu phiếu trả được lập theo phiếu nhập
+                if (row["MaPhieuNhap"] != DBNull.Value)
+                {
+                    lblMaNhapHangVal.Text = row["MaPhieuNhapGoc"] != DBNull.Value && !string.IsNullOrWhiteSpace(row["MaPhieuNhapGoc"].ToString())
+                        ? row["MaPhieuNhapGoc"].ToString()
+                        : "PN" + Convert.ToInt32(row["MaPhieuNhap"]).ToString("D6");
+                }
+                else
+                {
+                    lblMaNhapHangVal.Text = "Trả tự do";
+                }
 
                 txtGhiChu.Text = row["GhiChu"].ToString();
 
@@ -237,11 +249,44 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                     else
                     {
                         // Đã trả hàng: Chuyển sang trạng thái HUY để hoàn tồn qua View biến động kho
-                        string sqlHuy = "UPDATE PhieuTraHangNhap SET TrangThai = 'HUY' WHERE MaPhieuTraHang = @MaPhieuTraHang";
+                        // 1. Đọc lại phiếu (khóa dòng) để lấy liên kết phiếu nhập gốc và số tiền đã trừ vào nợ phiếu nhập
+                        object maPhieuNhapGoc = DBNull.Value;
+                        decimal tienDaTruNoPhieuNhap = 0;
+                        string sqlDoc = @"
+                            SELECT MaPhieuNhap, TongTienHang - GiamGia - CanThuNcc AS TienDaTruNo
+                            FROM PhieuTraHangNhap WITH (UPDLOCK, ROWLOCK)
+                            WHERE MaPhieuTraHang = @MaPhieuTraHang AND TrangThai = 'DA_TRA_HANG'";
+                        using (SqlCommand cmdDoc = new SqlCommand(sqlDoc, conn, trans))
+                        {
+                            cmdDoc.Parameters.AddWithValue("@MaPhieuTraHang", maPhieuTraHang);
+                            using (SqlDataReader rd = cmdDoc.ExecuteReader())
+                            {
+                                if (!rd.Read())
+                                {
+                                    throw new InvalidOperationException("Đơn trả hàng không còn ở trạng thái 'Đã trả hàng'. Vui lòng tải lại phiếu.");
+                                }
+                                maPhieuNhapGoc = rd["MaPhieuNhap"];
+                                tienDaTruNoPhieuNhap = Math.Max(0, Convert.ToDecimal(rd["TienDaTruNo"]));
+                            }
+                        }
+
+                        string sqlHuy = "UPDATE PhieuTraHangNhap SET TrangThai = 'HUY' WHERE MaPhieuTraHang = @MaPhieuTraHang AND TrangThai = 'DA_TRA_HANG'";
                         using (SqlCommand cmdHuy = new SqlCommand(sqlHuy, conn, trans))
                         {
                             cmdHuy.Parameters.AddWithValue("@MaPhieuTraHang", maPhieuTraHang);
                             cmdHuy.ExecuteNonQuery();
+                        }
+
+                        // 2. Phiếu trả lập theo phiếu nhập: hoàn lại phần đã trừ vào nợ cần trả NCC của phiếu nhập gốc
+                        if (maPhieuNhapGoc != DBNull.Value && tienDaTruNoPhieuNhap > 0)
+                        {
+                            string sqlHoanNo = "UPDATE PhieuNhap SET CanTraNcc = CanTraNcc + @TienHoan WHERE MaPhieuNhap = @MaPhieuNhap";
+                            using (SqlCommand cmdHoanNo = new SqlCommand(sqlHoanNo, conn, trans))
+                            {
+                                cmdHoanNo.Parameters.AddWithValue("@TienHoan", tienDaTruNoPhieuNhap);
+                                cmdHoanNo.Parameters.AddWithValue("@MaPhieuNhap", maPhieuNhapGoc);
+                                cmdHoanNo.ExecuteNonQuery();
+                            }
                         }
                     }
 
@@ -269,6 +314,11 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                 MessageBox.Show(currentTrangThai == "NHAP" ? "Đã xóa vĩnh viễn phiếu tạm trả hàng thành công!" : "Đã hủy đơn trả hàng thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.DialogResult = DialogResult.OK;
                 this.Close();
+            }
+            catch (InvalidOperationException exNghiepVu)
+            {
+                MessageBox.Show(exNghiepVu.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                NapThongTinPhieu();
             }
             catch (Exception ex)
             {
@@ -392,22 +442,62 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
 
             if (dr != DialogResult.Yes) return;
 
+            // Người trả hàng là nhân viên gắn với tài khoản đăng nhập (khóa ngoại NhanVien.MaNV)
+            if (!SessionContext.MaNV.HasValue || SessionContext.MaNV.Value <= 0)
+            {
+                MessageBox.Show("Tài khoản chưa được gắn với nhân viên, không thể lập chứng từ.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            int maNvTra = SessionContext.MaNV.Value;
+
             try
             {
                 DataProcessing.ChangeDataTransaction((conn, trans) =>
                 {
+                    // Kiểm tra lại tồn kho ngay trong giao dịch (gộp theo mặt hàng) để chặn âm tồn
+                    string sqlKiemTon = @"
+                        SELECT ct.MaHang, h.MaHangNoiBo, h.TenHang, SUM(ct.SoLuong) AS SoLuongTra,
+                               ISNULL((SELECT SUM(t.SoLuongTon) FROM vw_TonKhoHienTai t WHERE t.MaKho = @MaKho AND t.MaHang = ct.MaHang), 0) AS TonHienTai
+                        FROM ChiTietPhieuTraHangNhap ct
+                        JOIN HangHoa h ON ct.MaHang = h.MaHang
+                        WHERE ct.MaPhieuTraHang = @MaPhieuTraHang
+                        GROUP BY ct.MaHang, h.MaHangNoiBo, h.TenHang";
+                    DataTable dtKiemTon = new DataTable();
+                    using (SqlCommand cmdTon = new SqlCommand(sqlKiemTon, conn, trans))
+                    {
+                        cmdTon.Parameters.AddWithValue("@MaKho", maKho);
+                        cmdTon.Parameters.AddWithValue("@MaPhieuTraHang", maPhieuTraHang);
+                        using (SqlDataAdapter da = new SqlDataAdapter(cmdTon))
+                        {
+                            da.Fill(dtKiemTon);
+                        }
+                    }
+                    foreach (DataRow r in dtKiemTon.Rows)
+                    {
+                        decimal slTraKt = Convert.ToDecimal(r["SoLuongTra"]);
+                        decimal tonKt = Convert.ToDecimal(r["TonHienTai"]);
+                        if (tonKt < slTraKt)
+                        {
+                            throw new InvalidOperationException(
+                                $"Không thể hoàn thành phiếu trả hàng vì mặt hàng '{r["MaHangNoiBo"]} - {r["TenHang"]}' không đủ số lượng tồn trong kho (Tồn hiện tại: {tonKt:N0}, Cần trả: {slTraKt:N0})!\nNếu hoàn thành sẽ dẫn đến âm kho.");
+                        }
+                    }
+
                     string sqlUpdate = @"
-                        UPDATE PhieuTraHangNhap 
-                        SET TrangThai = 'DA_TRA_HANG', 
-                            NgayTra = GETDATE(), 
-                            MaNvtra = @MaNvtra 
-                        WHERE MaPhieuTraHang = @MaPhieuTraHang";
+                        UPDATE PhieuTraHangNhap
+                        SET TrangThai = 'DA_TRA_HANG',
+                            NgayTra = GETDATE(),
+                            MaNvtra = @MaNvtra
+                        WHERE MaPhieuTraHang = @MaPhieuTraHang AND TrangThai = 'NHAP'";
 
                     using (SqlCommand cmd = new SqlCommand(sqlUpdate, conn, trans))
                     {
                         cmd.Parameters.AddWithValue("@MaPhieuTraHang", maPhieuTraHang);
-                        cmd.Parameters.AddWithValue("@MaNvtra", SessionContext.MaTaiKhoan > 0 ? (object)SessionContext.MaTaiKhoan : 1);
-                        cmd.ExecuteNonQuery();
+                        cmd.Parameters.AddWithValue("@MaNvtra", maNvTra);
+                        if (cmd.ExecuteNonQuery() == 0)
+                        {
+                            throw new InvalidOperationException("Phiếu trả hàng không còn ở trạng thái phiếu tạm. Vui lòng tải lại phiếu.");
+                        }
                     }
 
                     string sqlLog = @"
@@ -426,6 +516,11 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                 MessageBox.Show($"Hoàn thành phiếu trả hàng '{maPhieu}' thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.DialogResult = DialogResult.OK;
                 NapThongTinPhieu();
+            }
+            catch (InvalidOperationException exNghiepVu)
+            {
+                // Vi phạm ràng buộc nghiệp vụ -> giao dịch đã rollback
+                MessageBox.Show(exNghiepVu.Message, "Chặn âm tồn kho", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (Exception ex)
             {

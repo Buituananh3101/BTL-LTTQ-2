@@ -200,7 +200,8 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
         {
             try
             {
-                string sql = "SELECT MaNV, HoTen FROM NhanVien WHERE TrangThai = 'DANG_LAM' OR TrangThai = 'HOAT_DONG' OR TrangThai IS NULL ORDER BY HoTen ASC";
+                // Bộ lọc theo NhanVien.MaNV (khớp PhieuNhap.MaNVLap / MaNVXacNhan); lấy tất cả nhân viên để lọc được cả phiếu của nhân viên đã nghỉ
+                string sql = "SELECT MaNV, HoTen FROM NhanVien ORDER BY HoTen ASC";
                 DataTable dtNvl = DataProcessing.ReadData(sql);
                 DataRow drAllNvl = dtNvl.NewRow();
                 drAllNvl["MaNV"] = 0;
@@ -234,33 +235,8 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             HienThiDanhSach();
         }
 
-        public void HienThiDanhSach()
-        {
-            try
-            {
-                // Thu thập tham số lọc
-                string trangThai = (cboTrangThai.SelectedItem as ComboBoxItem)?.Value?.ToString();
-                int? maNcc = null;
-                if (cboNhaCungCap.SelectedValue != null && int.TryParse(cboNhaCungCap.SelectedValue.ToString(), out int nccVal) && nccVal > 0)
-                {
-                    maNcc = nccVal;
-                }
-                int? maNvLap = null;
-                if (cboNguoiTao.SelectedValue != null && int.TryParse(cboNguoiTao.SelectedValue.ToString(), out int nvlVal) && nvlVal > 0)
-                {
-                    maNvLap = nvlVal;
-                }
-                int? maNvNhap = null;
-                if (cboNguoiNhap.SelectedValue != null && int.TryParse(cboNguoiNhap.SelectedValue.ToString(), out int nvnVal) && nvnVal > 0)
-                {
-                    maNvNhap = nvnVal;
-                }
-                DateTime tuNgay = dtpTuNgay.Value.Date;
-                DateTime denNgay = dtpDenNgay.Value.Date.AddDays(1);
-                string timKiem = txtTimKiem.Text.Trim();
-
-                string countSql = @"
-                    SELECT COUNT(1)
+        // Phần FROM/WHERE dùng chung cho đếm, hiển thị phân trang và xuất file toàn bộ theo bộ lọc
+        private const string FROM_WHERE_PHIEU_NHAP = @"
                     FROM PhieuNhap pn
                     LEFT JOIN DonViCapHang ncc ON pn.MaDonViCapHang = ncc.MaDonViCapHang
                     LEFT JOIN Kho k ON pn.MaKho = k.MaKho
@@ -279,29 +255,9 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                           OR pn.GhiChu LIKE @TimKiemLike
                       )";
 
-                SqlParameter[] countParams = new SqlParameter[]
-                {
-                    new SqlParameter("@TrangThai", (object)trangThai ?? DBNull.Value),
-                    new SqlParameter("@MaNcc", (object)maNcc ?? DBNull.Value),
-                    new SqlParameter("@MaNVLap", (object)maNvLap ?? DBNull.Value),
-                    new SqlParameter("@MaNVNhap", (object)maNvNhap ?? DBNull.Value),
-                    new SqlParameter("@MaKho", SessionContext.MaKhoHienTai > 0 ? (object)SessionContext.MaKhoHienTai : DBNull.Value),
-                    new SqlParameter("@TuNgay", tuNgay),
-                    new SqlParameter("@DenNgay", denNgay),
-                    new SqlParameter("@TimKiem", timKiem),
-                    new SqlParameter("@TimKiemLike", "%" + timKiem + "%")
-                };
-
-                object countObj = DataProcessing.ReadValue(countSql, countParams);
-                tongSoBanGhi = Convert.ToInt32(countObj);
-                tongSoTrang = (int)Math.Ceiling((double)tongSoBanGhi / soDongMoiTrang);
-                if (tongSoTrang < 1) tongSoTrang = 1;
-                if (trangHienTai > tongSoTrang) trangHienTai = tongSoTrang;
-
-                int skip = (trangHienTai - 1) * soDongMoiTrang;
-
-                string querySql = @"
-                    SELECT 
+        // Danh sách cột hiển thị / xuất file
+        private const string COT_PHIEU_NHAP = @"
+                    SELECT
                         CAST(0 AS BIT) AS Chon,
                         pn.MaPhieuNhap,
                         ISNULL(pn.MaPhieu, 'PN' + RIGHT('000000' + CAST(pn.MaPhieuNhap AS VARCHAR(10)), 6)) AS MaPhieu,
@@ -312,48 +268,75 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                         pn.CanTraNcc,
                         pn.TongTien,
                         pn.TrangThai,
-                        CASE pn.TrangThai 
+                        CASE pn.TrangThai
                             WHEN 'NHAP' THEN N'Phiếu tạm'
                             WHEN 'DA_XAC_NHAN' THEN N'Đã nhập hàng'
                             WHEN 'HUY' THEN N'Đã hủy'
-                            ELSE pn.TrangThai 
-                        END AS TenTrangThai
-                    FROM PhieuNhap pn
-                    LEFT JOIN DonViCapHang ncc ON pn.MaDonViCapHang = ncc.MaDonViCapHang
-                    LEFT JOIN Kho k ON pn.MaKho = k.MaKho
-                    WHERE (@TrangThai IS NULL OR pn.TrangThai = @TrangThai)
-                      AND (@MaNcc IS NULL OR pn.MaDonViCapHang = @MaNcc)
-                      AND (@MaNVLap IS NULL OR pn.MaNVLap = @MaNVLap)
-                      AND (@MaNVNhap IS NULL OR pn.MaNVXacNhan = @MaNVNhap)
-                      AND (@MaKho IS NULL OR pn.MaKho = @MaKho)
-                      AND (pn.NgayLap >= @TuNgay AND pn.NgayLap < @DenNgay)
-                      AND (
-                          @TimKiem = ''
-                          OR pn.MaPhieu LIKE @TimKiemLike
-                          OR pn.SoHoaDon LIKE @TimKiemLike
-                          OR ncc.TenDonVi LIKE @TimKiemLike
-                          OR ncc.MaNcc LIKE @TimKiemLike
-                          OR pn.GhiChu LIKE @TimKiemLike
-                      )
+                            ELSE pn.TrangThai
+                        END AS TenTrangThai";
+
+        /// <summary>
+        /// Thu thập tham số lọc hiện tại (mỗi lần gọi tạo bộ SqlParameter mới)
+        /// </summary>
+        private List<SqlParameter> TaoThamSoLoc()
+        {
+            string trangThai = (cboTrangThai.SelectedItem as ComboBoxItem)?.Value?.ToString();
+            int? maNcc = null;
+            if (cboNhaCungCap.SelectedValue != null && int.TryParse(cboNhaCungCap.SelectedValue.ToString(), out int nccVal) && nccVal > 0)
+            {
+                maNcc = nccVal;
+            }
+            int? maNvLap = null;
+            if (cboNguoiTao.SelectedValue != null && int.TryParse(cboNguoiTao.SelectedValue.ToString(), out int nvlVal) && nvlVal > 0)
+            {
+                maNvLap = nvlVal;
+            }
+            int? maNvNhap = null;
+            if (cboNguoiNhap.SelectedValue != null && int.TryParse(cboNguoiNhap.SelectedValue.ToString(), out int nvnVal) && nvnVal > 0)
+            {
+                maNvNhap = nvnVal;
+            }
+            DateTime tuNgay = dtpTuNgay.Value.Date;
+            DateTime denNgay = dtpDenNgay.Value.Date.AddDays(1);
+            string timKiem = txtTimKiem.Text.Trim();
+
+            return new List<SqlParameter>
+            {
+                new SqlParameter("@TrangThai", (object)trangThai ?? DBNull.Value),
+                new SqlParameter("@MaNcc", (object)maNcc ?? DBNull.Value),
+                new SqlParameter("@MaNVLap", (object)maNvLap ?? DBNull.Value),
+                new SqlParameter("@MaNVNhap", (object)maNvNhap ?? DBNull.Value),
+                new SqlParameter("@MaKho", SessionContext.MaKhoHienTai > 0 ? (object)SessionContext.MaKhoHienTai : DBNull.Value),
+                new SqlParameter("@TuNgay", tuNgay),
+                new SqlParameter("@DenNgay", denNgay),
+                new SqlParameter("@TimKiem", timKiem),
+                new SqlParameter("@TimKiemLike", "%" + timKiem + "%")
+            };
+        }
+
+        public void HienThiDanhSach()
+        {
+            try
+            {
+                string countSql = "SELECT COUNT(1) " + FROM_WHERE_PHIEU_NHAP;
+
+                object countObj = DataProcessing.ReadValue(countSql, TaoThamSoLoc().ToArray());
+                tongSoBanGhi = Convert.ToInt32(countObj);
+                tongSoTrang = (int)Math.Ceiling((double)tongSoBanGhi / soDongMoiTrang);
+                if (tongSoTrang < 1) tongSoTrang = 1;
+                if (trangHienTai > tongSoTrang) trangHienTai = tongSoTrang;
+
+                int skip = (trangHienTai - 1) * soDongMoiTrang;
+
+                string querySql = COT_PHIEU_NHAP + FROM_WHERE_PHIEU_NHAP + @"
                     ORDER BY pn.NgayLap DESC, pn.MaPhieuNhap DESC
                     OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY";
 
-                SqlParameter[] queryParams = new SqlParameter[]
-                {
-                    new SqlParameter("@TrangThai", (object)trangThai ?? DBNull.Value),
-                    new SqlParameter("@MaNcc", (object)maNcc ?? DBNull.Value),
-                    new SqlParameter("@MaNVLap", (object)maNvLap ?? DBNull.Value),
-                    new SqlParameter("@MaNVNhap", (object)maNvNhap ?? DBNull.Value),
-                    new SqlParameter("@MaKho", SessionContext.MaKhoHienTai > 0 ? (object)SessionContext.MaKhoHienTai : DBNull.Value),
-                    new SqlParameter("@TuNgay", tuNgay),
-                    new SqlParameter("@DenNgay", denNgay),
-                    new SqlParameter("@TimKiem", timKiem),
-                    new SqlParameter("@TimKiemLike", "%" + timKiem + "%"),
-                    new SqlParameter("@Skip", skip),
-                    new SqlParameter("@Take", soDongMoiTrang)
-                };
+                List<SqlParameter> queryParams = TaoThamSoLoc();
+                queryParams.Add(new SqlParameter("@Skip", skip));
+                queryParams.Add(new SqlParameter("@Take", soDongMoiTrang));
 
-                DataTable dt = DataProcessing.ReadData(querySql, queryParams);
+                DataTable dt = DataProcessing.ReadData(querySql, queryParams.ToArray());
 
                 if (!dt.Columns.Contains("Chon"))
                 {
@@ -463,7 +446,10 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                         StringBuilder sb = new StringBuilder();
                         sb.AppendLine("Mã nhập hàng,Thời gian,Mã NCC,Tên NCC,Cần trả NCC,Tổng tiền,Trạng thái");
 
-                        DataTable dt = dgvNhapHang.DataSource as DataTable;
+                        // Truy vấn lại TOÀN BỘ phiếu nhập khớp bộ lọc hiện tại (không phân trang)
+                        string sqlTatCa = COT_PHIEU_NHAP + FROM_WHERE_PHIEU_NHAP + @"
+                    ORDER BY pn.NgayLap DESC, pn.MaPhieuNhap DESC";
+                        DataTable dt = DataProcessing.ReadData(sqlTatCa, TaoThamSoLoc().ToArray());
                         if (dt != null)
                         {
                             foreach (DataRow row in dt.Rows)
@@ -482,7 +468,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 
                         // Ghi với UTF-8 with BOM để Excel đọc không lỗi font tiếng Việt
                         File.WriteAllText(sfd.FileName, sb.ToString(), new UTF8Encoding(true));
-                        MessageBox.Show("Xuất file dữ liệu thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show($"Xuất file dữ liệu thành công ({(dt != null ? dt.Rows.Count : 0):N0} phiếu nhập)!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     catch (Exception ex)
                     {

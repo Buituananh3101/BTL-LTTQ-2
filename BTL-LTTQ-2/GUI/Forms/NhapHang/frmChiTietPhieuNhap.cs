@@ -276,39 +276,60 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                 {
                     try
                     {
-                        // Kiểm tra an toàn: Nếu trừ tồn kho có làm âm kho không?
-                        foreach (DataRow r in dtChiTietData.Rows)
-                        {
-                            int maHang = Convert.ToInt32(r["MaHang"]);
-                            decimal slNhap = Convert.ToDecimal(r["SoLuong"]);
-                            string sku = r["MaHangNoiBo"].ToString();
-                            string ten = r["TenHang"].ToString();
-
-                            string checkTonSql = "SELECT ISNULL(SoLuongTon, 0) FROM vw_TonKhoHienTai WHERE MaKho = @MaKho AND MaHang = @MaHang";
-                            object tonObj = DataProcessing.ReadValue(checkTonSql, new SqlParameter[] {
-                                new SqlParameter("@MaKho", maKho),
-                                new SqlParameter("@MaHang", maHang)
-                            });
-                            decimal tonHienTai = tonObj != null && tonObj != DBNull.Value ? Convert.ToDecimal(tonObj) : 0m;
-
-                            if (tonHienTai < slNhap)
-                            {
-                                MessageBox.Show(
-                                    $"Không thể hủy phiếu nhập vì mặt hàng '{sku} - {ten}' đã phát sinh xuất bán/chuyển kho (Tồn hiện tại: {tonHienTai:N0}, Số lượng phiếu cần trừ: {slNhap:N0}).\nNếu hủy sẽ dẫn đến âm kho!",
-                                    "Chặn âm kho",
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Stop
-                                );
-                                return;
-                            }
-                        }
-
                         DataProcessing.ChangeDataTransaction((conn, trans) =>
                         {
-                            // 1. Cập nhật trạng thái phiếu thành HUY
-                            SqlCommand cmd = new SqlCommand("UPDATE PhieuNhap SET TrangThai = 'HUY' WHERE MaPhieuNhap = @MaPhieuNhap", conn, trans);
+                            // 0.1. Chặn hủy nếu còn phiếu trả hàng nhập (chưa hủy) liên kết với phiếu nhập này
+                            string sqlDemPhieuTra = @"
+                                SELECT COUNT(1) FROM PhieuTraHangNhap WITH (UPDLOCK, HOLDLOCK)
+                                WHERE MaPhieuNhap = @MaPhieuNhap AND TrangThai IN ('NHAP', 'DA_TRA_HANG')";
+                            using (SqlCommand cmdDem = new SqlCommand(sqlDemPhieuTra, conn, trans))
+                            {
+                                cmdDem.Parameters.AddWithValue("@MaPhieuNhap", maPhieuNhap);
+                                int soPhieuTra = Convert.ToInt32(cmdDem.ExecuteScalar());
+                                if (soPhieuTra > 0)
+                                {
+                                    throw new InvalidOperationException(
+                                        $"Không thể hủy phiếu nhập '{maPhieu}' vì đang có {soPhieuTra} phiếu trả hàng nhập (phiếu tạm hoặc đã trả hàng) lập từ phiếu này.\n\nVui lòng hủy các phiếu trả hàng nhập đó trước khi hủy phiếu nhập.");
+                                }
+                            }
+
+                            // 0.2. Kiểm tra an toàn ngay trong giao dịch: Nếu trừ tồn kho có làm âm kho không? (gộp theo mặt hàng)
+                            string sqlKiemTon = @"
+                                SELECT ct.MaHang, h.MaHangNoiBo, h.TenHang, SUM(ct.SoLuong) AS SoLuongNhap,
+                                       ISNULL((SELECT SUM(t.SoLuongTon) FROM vw_TonKhoHienTai t WHERE t.MaKho = @MaKho AND t.MaHang = ct.MaHang), 0) AS TonHienTai
+                                FROM ChiTietPhieuNhap ct
+                                JOIN HangHoa h ON ct.MaHang = h.MaHang
+                                WHERE ct.MaPhieuNhap = @MaPhieuNhap
+                                GROUP BY ct.MaHang, h.MaHangNoiBo, h.TenHang";
+                            DataTable dtKiemTon = new DataTable();
+                            using (SqlCommand cmdTon = new SqlCommand(sqlKiemTon, conn, trans))
+                            {
+                                cmdTon.Parameters.AddWithValue("@MaKho", maKho);
+                                cmdTon.Parameters.AddWithValue("@MaPhieuNhap", maPhieuNhap);
+                                using (SqlDataAdapter da = new SqlDataAdapter(cmdTon))
+                                {
+                                    da.Fill(dtKiemTon);
+                                }
+                            }
+
+                            foreach (DataRow r in dtKiemTon.Rows)
+                            {
+                                decimal slNhap = Convert.ToDecimal(r["SoLuongNhap"]);
+                                decimal tonHienTai = Convert.ToDecimal(r["TonHienTai"]);
+                                if (tonHienTai < slNhap)
+                                {
+                                    throw new InvalidOperationException(
+                                        $"Không thể hủy phiếu nhập vì mặt hàng '{r["MaHangNoiBo"]} - {r["TenHang"]}' đã phát sinh xuất bán/chuyển kho (Tồn hiện tại: {tonHienTai:N0}, Số lượng phiếu cần trừ: {slNhap:N0}).\nNếu hủy sẽ dẫn đến âm kho!");
+                                }
+                            }
+
+                            // 1. Cập nhật trạng thái phiếu thành HUY (chỉ khi phiếu vẫn đang ở trạng thái Đã nhập hàng)
+                            SqlCommand cmd = new SqlCommand("UPDATE PhieuNhap SET TrangThai = 'HUY' WHERE MaPhieuNhap = @MaPhieuNhap AND TrangThai = 'DA_XAC_NHAN'", conn, trans);
                             cmd.Parameters.AddWithValue("@MaPhieuNhap", maPhieuNhap);
-                            cmd.ExecuteNonQuery();
+                            if (cmd.ExecuteNonQuery() == 0)
+                            {
+                                throw new InvalidOperationException("Phiếu nhập đã được thay đổi trạng thái bởi người dùng khác. Vui lòng tải lại phiếu.");
+                            }
 
                             // 2. Ghi nhật ký thao tác
                             SqlCommand cmdLog = new SqlCommand(@"
@@ -322,6 +343,11 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 
                         MessageBox.Show($"Đã hủy/xóa phiếu nhập '{maPhieu}' thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         NapThongTinPhieu();
+                    }
+                    catch (InvalidOperationException exNghiepVu)
+                    {
+                        // Vi phạm ràng buộc nghiệp vụ -> giao dịch đã được rollback
+                        MessageBox.Show(exNghiepVu.Message, "Không thể hủy phiếu nhập", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                     }
                     catch (Exception ex)
                     {
@@ -420,22 +446,33 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 
             if (dr != DialogResult.Yes) return;
 
+            // Người xác nhận phải là nhân viên gắn với tài khoản đăng nhập (không dùng mã tài khoản / giá trị mặc định)
+            if (!SessionContext.MaNV.HasValue || SessionContext.MaNV.Value <= 0)
+            {
+                MessageBox.Show("Tài khoản chưa được gắn với nhân viên, không thể lập chứng từ.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            int maNvXacNhan = SessionContext.MaNV.Value;
+
             try
             {
                 DataProcessing.ChangeDataTransaction((conn, trans) =>
                 {
                     string sqlUpdate = @"
-                        UPDATE PhieuNhap 
-                        SET TrangThai = 'DA_XAC_NHAN', 
-                            NgayXacNhan = GETDATE(), 
-                            MaNVXacNhan = @MaNVXacNhan 
-                        WHERE MaPhieuNhap = @MaPhieuNhap";
+                        UPDATE PhieuNhap
+                        SET TrangThai = 'DA_XAC_NHAN',
+                            NgayXacNhan = GETDATE(),
+                            MaNVXacNhan = @MaNVXacNhan
+                        WHERE MaPhieuNhap = @MaPhieuNhap AND TrangThai = 'NHAP'";
 
                     using (SqlCommand cmd = new SqlCommand(sqlUpdate, conn, trans))
                     {
                         cmd.Parameters.AddWithValue("@MaPhieuNhap", maPhieuNhap);
-                        cmd.Parameters.AddWithValue("@MaNVXacNhan", SessionContext.MaNV > 0 ? (object)SessionContext.MaNV : 1);
-                        cmd.ExecuteNonQuery();
+                        cmd.Parameters.AddWithValue("@MaNVXacNhan", maNvXacNhan);
+                        if (cmd.ExecuteNonQuery() == 0)
+                        {
+                            throw new InvalidOperationException("Phiếu nhập không còn ở trạng thái phiếu tạm. Vui lòng tải lại phiếu.");
+                        }
                     }
 
                     string sqlLog = @"
@@ -453,6 +490,11 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 
                 MessageBox.Show($"Hoàn thành phiếu nhập hàng '{maPhieu}' thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.DialogResult = DialogResult.OK;
+                NapThongTinPhieu();
+            }
+            catch (InvalidOperationException exNghiepVu)
+            {
+                MessageBox.Show(exNghiepVu.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 NapThongTinPhieu();
             }
             catch (Exception ex)

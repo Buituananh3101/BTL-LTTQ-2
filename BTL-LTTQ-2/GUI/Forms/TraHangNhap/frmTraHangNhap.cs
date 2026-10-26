@@ -217,22 +217,21 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                 MessageBox.Show("Lỗi tải danh mục nhà cung cấp: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
-            // 3. Người tạo (Hỗ trợ tìm kiếm theo text)
+            // 3. Người tạo (Hỗ trợ tìm kiếm theo text) - lọc theo NhanVien.MaNV (khớp PhieuTraHangNhap.MaNvlap)
+            //    Lấy tất cả nhân viên để lọc được cả phiếu của nhân viên đã nghỉ việc
             try
             {
                 string sqlNv = @"
-                    SELECT tk.MaTaiKhoan, ISNULL(nv.HoTen, tk.TenDangNhap) AS HoTen 
-                    FROM TaiKhoan tk 
-                    LEFT JOIN NhanVien nv ON tk.MaNV = nv.MaNV 
-                    WHERE tk.TrangThai = 'HOAT_DONG' OR tk.TrangThai = 'ACTIVE' OR tk.TrangThai IS NULL
-                    ORDER BY HoTen ASC";
+                    SELECT nv.MaNV, nv.HoTen
+                    FROM NhanVien nv
+                    ORDER BY nv.HoTen ASC";
                 DataTable dtNguoiTao = DataProcessing.ReadData(sqlNv);
                 DataRow drAllNguoiTao = dtNguoiTao.NewRow();
-                drAllNguoiTao["MaTaiKhoan"] = 0;
+                drAllNguoiTao["MaNV"] = 0;
                 drAllNguoiTao["HoTen"] = "-- Tất cả người tạo --";
                 dtNguoiTao.Rows.InsertAt(drAllNguoiTao, 0);
 
-                ComboboxHelper.CaiDatTimKiem(cboNguoiTao, dtNguoiTao, "HoTen", "MaTaiKhoan", locDuLieu);
+                ComboboxHelper.CaiDatTimKiem(cboNguoiTao, dtNguoiTao, "HoTen", "MaNV", locDuLieu);
                 cboNguoiTao.SelectedIndex = 0;
             }
             catch (Exception ex)
@@ -240,22 +239,20 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                 MessageBox.Show("Lỗi tải danh sách người tạo: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
-            // 4. Người trả (Hỗ trợ tìm kiếm theo text)
+            // 4. Người trả (Hỗ trợ tìm kiếm theo text) - lọc theo NhanVien.MaNV (khớp PhieuTraHangNhap.MaNvtra)
             try
             {
                 string sqlNv = @"
-                    SELECT tk.MaTaiKhoan, ISNULL(nv.HoTen, tk.TenDangNhap) AS HoTen 
-                    FROM TaiKhoan tk 
-                    LEFT JOIN NhanVien nv ON tk.MaNV = nv.MaNV 
-                    WHERE tk.TrangThai = 'HOAT_DONG' OR tk.TrangThai = 'ACTIVE' OR tk.TrangThai IS NULL
-                    ORDER BY HoTen ASC";
+                    SELECT nv.MaNV, nv.HoTen
+                    FROM NhanVien nv
+                    ORDER BY nv.HoTen ASC";
                 DataTable dtNguoiTra = DataProcessing.ReadData(sqlNv);
                 DataRow drAllNguoiTra = dtNguoiTra.NewRow();
-                drAllNguoiTra["MaTaiKhoan"] = 0;
+                drAllNguoiTra["MaNV"] = 0;
                 drAllNguoiTra["HoTen"] = "-- Tất cả người trả --";
                 dtNguoiTra.Rows.InsertAt(drAllNguoiTra, 0);
 
-                ComboboxHelper.CaiDatTimKiem(cboNguoiTra, dtNguoiTra, "HoTen", "MaTaiKhoan", locDuLieu);
+                ComboboxHelper.CaiDatTimKiem(cboNguoiTra, dtNguoiTra, "HoTen", "MaNV", locDuLieu);
                 cboNguoiTra.SelectedIndex = 0;
             }
             catch (Exception ex)
