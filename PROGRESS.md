@@ -1,12 +1,14 @@
 ﻿# Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-26 – Bắt lỗi cột Số lượng không hiển thị khi thêm hàng trong frmThemPhieuChuyenKhoNew (Phiên 52)
+**Cập nhật lần cuối**: 2026-10-26 – Chuẩn hóa toàn diện form Thêm phiếu nhập hàng và Thêm phiếu trả hàng nhập theo khuôn mẫu frmThemPhieuKiemKho (Phiên 53)
 ---
 
 ## Đang làm
-- [x] Bắt lỗi khi thêm hàng hoặc nhập file mà cột dữ liệu 'Số lượng' đang bị ẩn trên DataGridView của `frmThemPhieuChuyenKhoNew`.
-- [x] Hiển thị MessageBox thông báo rõ ràng cho người dùng, ngăn chặn triệt để hộp thoại lỗi hệ thống (System.InvalidOperationException: Current cell cannot be set to an invisible cell).
-- [x] Bọc các điểm truy xuất và thao tác cell bằng kiểm tra tồn tại và try...catch an toàn.
+- [x] Tái thiết kế toàn diện `frmThemPhieuNhap` và `frmThemPhieuTraHang` theo khuôn mẫu bố cục `frmThemPhieuKiemKho`.
+- [x] Xây dựng 2 popup Hiện cột riêng biệt: `frmHienCotHangNhap` (nhập hàng) và `frmHienCotHangTra` (trả hàng nhập), đăng ký vào `BTL-LTTQ-2.csproj`.
+- [x] Bắt lỗi an toàn khi thêm hàng mới hoặc nhập file mà cột dữ liệu 'Số lượng'/'Số lượng trả' đang bị ẩn, hiển thị `MessageBox.Show` cảnh báo người dùng.
+- [x] Đồng bộ đặc tả chức năng `docs/specs/nhap-hang.md` và `docs/specs/tra-hang-nhap.md`.
+
 
 
 
@@ -37,8 +39,8 @@
 | 4 | **Xác thực & Phân quyền** | SessionContext, SHA-256 PasswordHelper, rmDangNhap, phân quyền menu theo 3 vai trò | Hoàn thành 100% |
 | 5 | **Danh mục Hàng hóa** | `frmDanhSachHangHoa` & `frmHangHoa` (**Khuôn mẫu Thiết kế chuẩn UI/UX toàn hệ thống**) | Hoàn thành 100% |
 | 6 | **Danh mục Nhà cung cấp** | `frmNhaCungCap`, `frmDonViCapHang`, `frmNhomNhaCungCap`, `frmHienCotNcc`, `frmNhapNhaCungCapFile` | Hoàn thành 100% |
-| 7 | **Phiếu Nhập hàng** | `frmNhapHang`, `frmThemPhieuNhap`, `frmChiTietPhieuNhap`, `frmHienCotNhapHang` | Hoàn thành 100% |
-| 8 | **Trả hàng nhập** | `frmTraHangNhap`, `frmThemPhieuTraHang`, `frmChiTietTraHangNhap`, `frmHienCotTraHang` | Hoàn thành 100% |
+| 7 | **Phiếu Nhập hàng** | `frmNhapHang`, `frmThemPhieuNhap`, `frmChiTietPhieuNhap`, `frmHienCotNhapHang`, `frmHienCotHangNhap` | Hoàn thành 100% |
+| 8 | **Trả hàng nhập** | `frmTraHangNhap`, `frmThemPhieuTraHang`, `frmChiTietTraHangNhap`, `frmHienCotTraHang`, `frmHienCotHangTra` | Hoàn thành 100% |
 | 9 | **Danh mục Đơn vị tính** | `frmDonViTinh`, `frmChiTietDonViTinh`, `frmHienCotDvt`, tạo nhanh từ `frmHangHoa` | Hoàn thành 100% |
 | 10 | **Danh mục Cơ bản khác** | CRUD Nhóm hàng, Vị trí, Chi nhánh Kho, Khách hàng | Chưa bắt đầu |
 | 11 | **Kiểm kê & Cân bằng kho** | `frmKiemKho`, nạp tồn sổ sách, sinh phiếu điều chỉnh, khóa vĩnh viễn, `frmThemPhieuKiemKho`, `frmHienCotHangKiem` | Hoàn thành 100% |
@@ -49,6 +51,34 @@
 ---
 
 ## Nhật ký phiên (Session Logs)
+
+- **Phiên 53 (2026-10-26) – Chuẩn hóa form Thêm phiếu nhập hàng và Thêm phiếu trả hàng nhập theo khuôn mẫu frmThemPhieuKiemKho**:
+  - **Nhu cầu**: Người dùng yêu cầu: "Tương tự với tất cả các yêu cầu trên về form Thêm phiếu chuyển kho, làm lại cho tôi form Thêm phiếu nhập hàng và thêm phiếu Trả hàng nhập theo đúng mẫu giao diện, bố cục và cách sắp xếp của form Thêm phiếu kiểm kho (vẫn phải đảm bảo đúng nghiệp vụ của chức năng)".
+  - **Kết quả thực hiện**:
+    1. **Tái thiết kế toàn diện `frmThemPhieuNhap`**:
+       - Bố cục kích thước chuẩn: `ClientSize = (1582, 803)`, font `Segoe UI, 9.5pt`, `KeyPreview = true`, `StartPosition = CenterScreen`.
+       - Panel bên phải `pnlRight` (Width: 400, Dock = Right) chứa `pnlRightBorder` (1px) và `grpThongTinPhieu` (373 x 784): Người nhập, Thời gian, Mã phiếu (tự sinh PN...), Nhà cung cấp (tìm kiếm), Kho nhập, Số hóa đơn, Ghi chú, Số mặt hàng, Tổng SL, Tổng tiền hàng, Giảm giá, Tổng cộng, Tiền đã trả, Cần trả NCC; cụm 3 nút đáy chuẩn `Bỏ qua` ➜ `Lưu tạm` ➜ `Lưu` (Y=732, Size: 100x34).
+       - Panel bên trên `pnlTop` (Height: 150, Dock = Top) chứa `grpChonHang` (1182 x 125): Tiêu đề `Thêm phiếu nhập hàng` (12pt Bold), Chọn hàng (`cboHangHoa`), nút `+ Thêm`, `Nhập file`, `Hiện cột`.
+       - Lưới DataGridView `dgvChiTietHang`: STT, Mã hàng, Tên hàng, ĐVT, Số lượng, Đơn giá, Giảm giá, Thành tiền. Ô Số lượng màu vàng `#FEFCE8`, click 1 lần cho phép sửa ngay, nhấn Enter lưu số lượng và tính lại thành tiền cùng tổng tiền hàng/công nợ tức thời. Double-click xóa dòng có xác nhận.
+       - Panel phân trang `pnlPhanTrang` ở đáy (Height: 46) với các nút lật trang và tùy chọn 10, 20, 50, 100 dòng qua `RowFilter`.
+       - Xây dựng popup `frmHienCotHangNhap` cho phép bật/tắt 7 cột dữ liệu trên lưới.
+       - Bắt lỗi an toàn: Kiểm tra `colSoLuong.Visible` khi thêm hàng hoặc nhập file; hiển thị `MessageBox.Show` cảnh báo rõ ràng nếu cột bị ẩn, loại bỏ triệt để lỗi unhandled exception `Current cell cannot be set to an invisible cell`.
+       - Lưu dữ liệu: Bọc toàn bộ trong `DataProcessing.ChangeDataTransaction` cho cả Lưu tạm (`NHAP`) và Lưu (`DA_XAC_NHAN`).
+    2. **Tái thiết kế toàn diện `frmThemPhieuTraHang`**:
+       - Bố cục kích thước chuẩn: `ClientSize = (1582, 803)`, font `Segoe UI, 9.5pt`, `KeyPreview = true`, `StartPosition = CenterScreen`.
+       - Panel bên phải `pnlRight` (Width: 400, Dock = Right) chứa `grpThongTinPhieu` (373 x 784): Người trả, Thời gian, Mã phiếu (tự sinh THN...), Nhà cung cấp, Kho xuất trả, Ghi chú, Số mặt hàng, Tổng SL trả, Tổng tiền trả, Giảm giá, Cần thu NCC, Đã thu NCC; cụm 3 nút đáy chuẩn `Bỏ qua` ➜ `Lưu tạm` ➜ `Lưu`.
+       - Panel bên trên `pnlTop` (Height: 150) chứa `grpChonHang` (1182 x 125): Tiêu đề `Thêm phiếu trả hàng nhập` (12pt Bold), Chọn hàng, `+ Thêm`, `Nhập file`, `Hiện cột`.
+       - Lưới DataGridView `dgvHangTra`: STT, Mã hàng, Tên hàng, ĐVT, Tồn kho, Số lượng trả, Đơn giá trả, Thành tiền. Ô Số lượng trả màu vàng `#FEFCE8`, click 1 lần cho phép sửa ngay, nhấn Enter kiểm tra tồn kho (chặn vượt quá tồn kho hoặc <= 0), tính lại thành tiền và nhãn thống kê tức thời. Double-click xóa dòng có xác nhận.
+       - Panel phân trang `pnlPhanTrang` ở đáy với các nút lật trang và ComboBox chọn 10, 20, 50, 100 dòng.
+       - Xây dựng popup `frmHienCotHangTra` cho phép bật/tắt 7 cột dữ liệu trên lưới.
+       - Bắt lỗi an toàn: Kiểm tra `colSoLuongTra.Visible` khi thêm hàng hoặc nhập file; hiển thị `MessageBox.Show` cảnh báo rõ ràng nếu cột bị ẩn.
+       - Lưu dữ liệu: Bọc toàn bộ trong `DataProcessing.ChangeDataTransaction` cho cả Lưu tạm (`NHAP`) và Lưu (`DA_TRA_HANG`).
+    3. **Đăng ký dự án & Đồng bộ tài liệu**:
+       - Đăng ký đầy đủ `frmHienCotHangNhap` và `frmHienCotHangTra` vào `BTL-LTTQ-2.csproj`.
+       - Cập nhật đặc tả chi tiết `docs/specs/nhap-hang.md` và `docs/specs/tra-hang-nhap.md`.
+    4. **Kiểm tra chất lượng**:
+       - Chạy `tools/KiemTraMaHoa.ps1`: 100% file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake.
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
 
 - **Phiên 52 (2026-10-26) – Bắt lỗi khi thêm hàng mà cột dữ liệu số lượng không hiển thị trong frmThemPhieuChuyenKhoNew**:
   - **Nhu cầu**: Người dùng phát hiện lỗi: khi thêm hàng mà trong dgv đang không có cột dữ liệu số lượng (do ẩn ở Hiện cột) thì xuất hiện ngoại lệ hệ thống unhandled exception `System.InvalidOperationException: Current cell cannot be set to an invisible cell`. Yêu cầu bắt lỗi này và hiển thị thông báo rõ ràng cho người dùng, không để xuất hiện hộp thoại lỗi hệ thống.

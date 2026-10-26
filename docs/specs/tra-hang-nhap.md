@@ -9,9 +9,10 @@
 ### 1.1. Bản đồ File liên quan (File Map)
 - **Thư mục phân hệ chính**: `BTL-LTTQ-2/GUI/Forms/TraHangNhap/`
   - `frmTraHangNhap.cs`, `.Designer.cs`, `.resx`: Màn hình danh sách đơn trả hàng nhập (MDI Child mở từ MenuStrip `Quản lý kho` $\to$ `Trả hàng nhập` / `mnuTraHangNhap`).
-  - `frmThemPhieuTraHang.cs`, `.Designer.cs`, `.resx`: Form lập phiếu trả hàng nhập mới (mở khi bấm nút `+ Trả hàng nhập`).
+  - `frmThemPhieuTraHang.cs`, `.Designer.cs`, `.resx`: Form lập phiếu trả hàng nhập mới (mở khi bấm nút `+ Trả hàng nhập`), đồng bộ 100% bố cục và giao diện theo khuôn mẫu `frmThemPhieuKiemKho` (kích thước 1582x803, panel thông tin bên phải rộng 400px với 3 nút bấm ở đáy `Bỏ qua` ➜ `Lưu tạm` ➜ `Lưu`, panel trên chọn hàng cao 150px, DataGridView trung tâm chỉnh sửa số lượng trả trực tiếp trên lưới kèm kiểm tra tồn kho, kiểm tra an toàn cột số lượng trả khi ẩn, phân trang đáy 10, 20, 50, 100 dòng, bọc Transaction an toàn).
+  - `frmHienCotHangTra.cs`, `.Designer.cs`, `.resx`: Form popup ẩn/hiện cột dữ liệu cho DataGridView `dgvHangTra` trong `frmThemPhieuTraHang` (quản lý 7 cột: Mã hàng, Tên hàng, Đơn vị tính, Tồn kho, Số lượng trả, Đơn giá trả, Thành tiền).
   - `frmChiTietTraHangNhap.cs`, `.Designer.cs`, `.resx`: Form chi tiết đơn trả hàng nhập (mở khi nhấp đúp vào dòng trên lưới; cung cấp các nút: `Xóa`, `Xuất file`, và `Hoàn thành` khi là phiếu tạm `NHAP`).
-  - `frmHienCotTraHang.cs`, `.Designer.cs`, `.resx`: Form popup ẩn/hiện cột cho DataGridView `dgvTraHangNhap`.
+  - `frmHienCotTraHang.cs`, `.Designer.cs`, `.resx`: Form popup ẩn/hiện cột cho DataGridView `dgvTraHangNhap` trên màn hình danh sách.
 - **Form liên kết trong phân hệ Nhập hàng**:
   - `BTL-LTTQ-2/GUI/Forms/NhapHang/frmChiTietPhieuNhap.cs`: Cho phép mở form trả hàng theo từng đơn nhập gốc.
 - **Truy xuất dữ liệu (DAL)**: `BTL-LTTQ-2/Classes/DataProcessing.cs` (ADO.NET thuần: `ReadData`, `ReadValue`, `ChangeDataTransaction`).
@@ -77,18 +78,39 @@
   - Tùy chọn `10, 20, 50, 100` dòng/trang (mặc định 20 dòng).
   - Nhãn: `Hiển thị X - Y trên tổng số Z phiếu trả hàng`.
 
-### 2.2. Form Lập phiếu trả hàng (`frmThemPhieuTraHang`)
-- **Thông tin chung**: Tự động sinh mã `THN00000X`, chọn Nhà cung cấp, chọn Kho xuất trả, chọn Người trả, Ngày trả, Ghi chú.
-- **Chọn sản phẩm từ danh mục hàng hóa**:
-  - ComboBox `cboHangHoa`: Tự động lọc sản phẩm đang kinh doanh và lấy động tồn kho tại kho xuất đã chọn.
-  - Nhãn hiển thị: Đơn vị tính (`lblDonViTinhVal`), Tồn kho hiện tại (`lblTonKhoVal`).
-  - Ô nhập: Số lượng trả (`txtSoLuongTra`, mặc định 1), Giá trả lại (`txtDonGiaTra`). Hỗ trợ nhấn `Enter` để thêm ngay vào bảng.
-- **Bảng hàng trả (`dgvHangTra`)**:
-  - Cột: STT, Mã hàng, Tên hàng, ĐVT, Tồn kho, Số lượng trả, Đơn giá trả, Thành tiền, Nút xóa dòng.
-  - Cho phép sửa trực tiếp Số lượng trả và Giá trả lại trên ô lưới; tự động kiểm tra chặn số âm và chặn vượt tồn kho hiện tại.
-- **Tổng kết & Thao tác**:
-  - Tính toán: Tổng số lượng trả, Tổng tiền hàng, Giảm giá, NCC cần trả, Tiền NCC đã trả.
-  - Nút bấm: `Lưu tạm` (`TrangThai = 'NHAP'`), `Trả hàng` (`TrangThai = 'DA_TRA_HANG'`), `Bỏ qua`. Bọc toàn bộ trong `DataProcessing.ChangeDataTransaction`.
+### 2.2. Form Lập phiếu trả hàng (`frmThemPhieuTraHang` - Đồng bộ 100% khuôn mẫu `frmThemPhieuKiemKho`)
+- **Kích thước & Thiết lập**:
+  - `ClientSize = (1582, 803)`, `MinimumSize = (1050, 680)`, font `Segoe UI, 9.5pt`, `KeyPreview = true`, `StartPosition = CenterScreen`.
+- **Bố cục 4 khối chính**:
+  1. **Panel thông tin bên phải (`pnlRight` - Width 400px, Dock = Right)**:
+     - Viền ngăn cách `pnlRightBorder` (1px, màu `#CBD5E1`).
+     - Khung `grpThongTinPhieu` (373 x 784):
+       - Người trả: ComboBox `cboNguoiTra` (gán mặc định tài khoản đang đăng nhập từ `SessionContext`).
+       - Thời gian: DateTimePicker `dtpNgayTra` (ngày giờ hiện tại).
+       - Mã phiếu: TextBox `txtMaPhieu` (tự động sinh mã `THN...`, chỉ đọc).
+       - Nhà cung cấp: ComboBox `cboNhaCungCap` (kèm tìm kiếm tiếng Việt không dấu qua `ComboboxHelper.CaiDatTimKiem`).
+       - Kho xuất trả: ComboBox `cboKhoXuat` (tự động khóa nếu tài khoản đang ở kho chi nhánh).
+       - Ghi chú: TextBox `txtGhiChu` (đa dòng).
+       - Thống kê tổng hợp: Số mặt hàng (`lblSoMatHangVal`), Tổng SL trả (`lblTongSoLuongVal`), Tổng tiền trả (`lblTongTienHangVal`), Giảm giá (TextBox `txtGiamGia`), Cần thu NCC (`lblCanThuNccVal`), Đã thu NCC (TextBox `txtDaThuNcc`).
+       - Cụm 3 nút bấm ở đáy (Location: Y=732, Size: 100x34): `Bỏ qua` (`btnBoQua`) ➜ `Lưu tạm` (`btnLuuTam`) ➜ `Lưu` (`btnLuu`).
+  2. **Panel chọn hàng bên trên (`pnlTop` - Height 150px, Dock = Top)**:
+     - Khung `grpChonHang` (1182 x 125):
+       - Tiêu đề: `Thêm phiếu trả hàng nhập` (Segoe UI, 12pt, Bold).
+       - Tìm kiếm & chọn hàng: ComboBox `cboHangHoa` (Width: 450px) với `ComboboxHelper.CaiDatTimKiem`.
+       - Nút `+ Thêm` (`btnThemHang`): Thêm hàng đã chọn vào lưới, tự động focus vào ô Số lượng trả để nhập ngay.
+       - Nút `Nhập file` (`btnNhapFile`): Nhập danh sách mặt hàng và số lượng trả từ file.
+       - Nút `Hiện cột` (`btnHienCot`): Mở popup `frmHienCotHangTra` để ẩn/hiện các cột dữ liệu.
+  3. **Lưới dữ liệu trung tâm (`dgvHangTra` - Dock = Fill)**:
+     - Cột: STT (ReadOnly, MiddleCenter), Mã hàng (ReadOnly, MiddleCenter), Tên hàng (ReadOnly, MiddleLeft), Đơn vị tính (ReadOnly, MiddleCenter), Tồn kho (ReadOnly, MiddleRight, `N0`), Số lượng trả (Editable, màu `#FEFCE8`, MiddleRight, định dạng `N0`), Đơn giá trả (ReadOnly, MiddleRight, `N0`), Thành tiền (ReadOnly, MiddleRight, `N0`).
+     - Cho phép chỉnh sửa số lượng trả trực tiếp trên ô lưới; nhấn `Enter` commit dữ liệu và tự động kiểm tra tồn kho (chặn <= 0 hoặc vượt quá tồn kho), tính toán lại thành tiền dòng cùng các chỉ số tài chính tổng hợp.
+     - Nhấp đúp chuột (Double click) vào một dòng trên lưới hiển thị hộp thoại xác nhận xóa mặt hàng khỏi phiếu.
+     - **Kiểm tra an toàn cột Số lượng trả**: Khi thêm hàng mới (`btnThemHang_Click`) hoặc nạp file (`btnNhapFile_Click`), nếu cột 'Số lượng trả' đang bị ẩn (`!colSoLuongTra.Visible`), hệ thống chặn thao tác và hiển thị `MessageBox.Show` cảnh báo người dùng bật lại cột trước khi thêm hàng, ngăn chặn hoàn toàn lỗi hệ thống unhandled exception `System.InvalidOperationException: Current cell cannot be set to an invisible cell`.
+  4. **Panel phân trang ở đáy (`pnlPhanTrang` - Height 46px, Dock = Bottom)**:
+     - Nút `btnTrangTruoc`, nhãn `lblTrangHienTai`, nút `btnTrangSau`.
+     - Tùy chọn số dòng mỗi trang: ComboBox `cboSoDongMoiTrang` (10, 20, 50, 100 dòng).
+     - Phân trang mượt mà qua `DataView.RowFilter` (`STT >= minSTT AND STT <= maxSTT`).
+- **Lưu dữ liệu an toàn**:
+  - Toàn bộ thao tác lưu phiếu tạm (`TrangThai = 'NHAP'`) và lưu phiếu trả hàng (`TrangThai = 'DA_TRA_HANG'`) đều bọc trong giao dịch ADO.NET `DataProcessing.ChangeDataTransaction`. Khi lưu hoàn thành, tự động trừ số lượng tồn kho qua View và giảm công nợ NCC.
 
 ### 2.3. Form Chi tiết đơn trả (`frmChiTietTraHangNhap`)
 - **Header**: Mã phiếu `THN...`, Badge trạng thái màu (Xanh lá: Đã trả hàng, Vàng cam: Phiếu tạm, Đỏ: Đã hủy), Kho chi nhánh.
