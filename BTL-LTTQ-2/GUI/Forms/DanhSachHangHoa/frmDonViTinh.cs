@@ -330,7 +330,8 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
         private void txtTimKiem_TextChanged(object sender, EventArgs e)
         {
             if (dtDonViTinh == null) return;
-            string kw = txtTimKiem.Text.Trim().Replace("'", "''");
+            // Thoát ký tự đặc biệt (' [ ] * %) để RowFilter không lỗi khi gõ ký tự đại diện
+            string kw = ComboboxHelper.ThoatKyTuLikeRowFilter(txtTimKiem.Text.Trim());
             if (string.IsNullOrEmpty(kw))
             {
                 dtDonViTinh.DefaultView.RowFilter = "";

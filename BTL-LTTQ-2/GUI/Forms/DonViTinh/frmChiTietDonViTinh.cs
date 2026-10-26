@@ -301,7 +301,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DonViTinh
                         }
 
                         // Ghi nhật ký thao tác
-                        GhiNhatKy(conn, trans, "THEM_MOI", string.Format("Thêm mới đơn vị tính: {0} (Mã: DVT{1:D3})", tenDvt, MaDvtMoi));
+                        GhiNhatKy(conn, trans, "THEM_MOI", MaDvtMoi, string.Format("Thêm mới đơn vị tính: {0} (Mã: DVT{1:D3})", tenDvt, MaDvtMoi));
                     }
                     else
                     {
@@ -319,7 +319,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DonViTinh
                         }
 
                         // Ghi nhật ký thao tác
-                        GhiNhatKy(conn, trans, "CAP_NHAT", string.Format("Cập nhật đơn vị tính mã DVT{0:D3}: '{1}' -> '{2}'", 
+                        GhiNhatKy(conn, trans, "CAP_NHAT", maDvt, string.Format("Cập nhật đơn vị tính mã DVT{0:D3}: '{1}' -> '{2}'", 
                             maDvt, tenDvtGoc, tenDvt));
                     }
                 });
@@ -382,8 +382,8 @@ namespace BTL_LTTQ_2.GUI.Forms.DonViTinh
                         cmd.ExecuteNonQuery();
                     }
 
-                    // Ghi nhật ký thao tác
-                    GhiNhatKy(conn, trans, "XOA", string.Format("Xóa đơn vị tính: {0} ({1})", txtTenDvt.Text.Trim(), txtMaDvt.Text.Trim()));
+                    // Ghi nhật ký thao tác (MaDoiTuong là mã của chính đơn vị tính bị xóa)
+                    GhiNhatKy(conn, trans, "XOA", maDvt, string.Format("Xóa đơn vị tính: {0} ({1})", txtTenDvt.Text.Trim(), txtMaDvt.Text.Trim()));
                 });
 
                 MessageBox.Show("Đã xóa đơn vị tính thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -396,7 +396,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DonViTinh
             }
         }
 
-        private void GhiNhatKy(SqlConnection conn, SqlTransaction trans, string thaoTac, string noiDung)
+        private void GhiNhatKy(SqlConnection conn, SqlTransaction trans, string thaoTac, int maDoiTuong, string noiDung)
         {
             try
             {
@@ -409,14 +409,15 @@ namespace BTL_LTTQ_2.GUI.Forms.DonViTinh
                 {
                     cmdLog.Parameters.AddWithValue("@MaTaiKhoan", maTaiKhoan);
                     cmdLog.Parameters.AddWithValue("@ThaoTac", thaoTac);
-                    cmdLog.Parameters.AddWithValue("@MaDoiTuong", MaDvtMoi.ToString());
+                    cmdLog.Parameters.AddWithValue("@MaDoiTuong", maDoiTuong.ToString());
                     cmdLog.Parameters.AddWithValue("@NoiDung", noiDung);
                     cmdLog.ExecuteNonQuery();
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                // Bỏ qua lỗi log không làm gián đoạn luồng chính
+                // Không làm gián đoạn luồng chính khi ghi nhật ký lỗi, nhưng vẫn ghi lại lỗi để dễ truy vết (không nuốt im lặng)
+                System.Diagnostics.Trace.TraceError("Lỗi ghi nhật ký thao tác đơn vị tính ({0}, mã {1}): {2}", thaoTac, maDoiTuong, ex.Message);
             }
         }
 

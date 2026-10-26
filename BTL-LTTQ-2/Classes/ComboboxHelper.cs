@@ -14,7 +14,8 @@ namespace BTL_LTTQ_2.Classes
     /// Tiện ích hỗ trợ tìm kiếm trực tiếp trong danh sách ComboBox WinForms.
     /// Ban đầu hiển thị đầy đủ danh sách; khi gõ phím thì các phần tử trong ComboBox tự lọc theo từ khóa chứa ký tự (hỗ trợ có dấu và không dấu).
     /// Khi tìm thấy: ấn Enter tự động chọn phần tử đầu tiên (không cần bấm mũi tên xuống).
-    /// Khi không tìm thấy: ấn Enter tự động khôi phục toàn bộ danh sách và chọn phần tử đầu tiên (-- Tất cả --).
+    /// Khi không tìm thấy: ấn Enter tự động khôi phục toàn bộ danh sách; combobox bộ lọc chọn phần tử đầu tiên (-- Tất cả --),
+    /// combobox nhập liệu (không có mục "-- Tất cả --") khôi phục lại lựa chọn trước đó.
     /// Giới hạn hiển thị tối đa MaxDropDownItems (mặc định 8 mục) và tự động bật thanh cuộn (scrollbar) để tránh tràn màn hình.
     /// Quản lý dọn dẹp các sự kiện cũ để tránh lặp sự kiện khi nạp lại dữ liệu ComboBox nhiều lần.
     /// </summary>
@@ -101,6 +102,47 @@ namespace BTL_LTTQ_2.Classes
         }
 
         /// <summary>
+        /// Thoát ký tự đặc biệt cho giá trị đặt trong mệnh đề LIKE '...' của DataView.RowFilter.
+        /// Bọc các ký tự [ ] * % trong cặp ngoặc vuông (khớp đúng ký tự, không phải ký tự đại diện)
+        /// và nhân đôi dấu nháy đơn để tránh lỗi cú pháp biểu thức khi người dùng gõ ký tự đặc biệt.
+        /// </summary>
+        public static string ThoatKyTuLikeRowFilter(string giaTri)
+        {
+            if (string.IsNullOrEmpty(giaTri)) return string.Empty;
+
+            StringBuilder sb = new StringBuilder(giaTri.Length + 8);
+            foreach (char c in giaTri)
+            {
+                switch (c)
+                {
+                    case '[':
+                    case ']':
+                    case '*':
+                    case '%':
+                        sb.Append('[').Append(c).Append(']');
+                        break;
+                    case '\'':
+                        sb.Append("''");
+                        break;
+                    default:
+                        sb.Append(c);
+                        break;
+                }
+            }
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Kiểm tra một mục hiển thị có phải mục giữ chỗ dạng "-- Tất cả ... --" của combobox bộ lọc hay không
+        /// </summary>
+        private static bool LaMucTatCa(string text)
+        {
+            if (string.IsNullOrEmpty(text)) return false;
+            string lower = text.ToLower();
+            return text.StartsWith("--") || lower.Contains("tất cả") || lower.Contains("tat ca");
+        }
+
+        /// <summary>
         /// Lớp quản lý vòng đời sự kiện tìm kiếm ComboBox cho nguồn dữ liệu DataTable
         /// </summary>
         private class DataTableSearchBinder : IDisposable
@@ -109,27 +151,44 @@ namespace BTL_LTTQ_2.Classes
             private readonly DataView _dv;
             private readonly string _searchCol;
             private readonly Action _onCommitted;
+            private readonly bool _chonMucDauKhiKhongKhop;
             private bool _isFiltering = false;
+
+            // Lựa chọn hợp lệ gần nhất (khôi phục khi gõ từ khóa không khớp mục nào ở combobox nhập liệu)
+            private int _chiSoTruoc = -1;
+            private object _giaTriTruoc = null;
+            private string _textTruoc = string.Empty;
 
             private readonly EventHandler _onDropDown;
             private readonly EventHandler _onTextUpdate;
             private readonly EventHandler _onDropDownClosed;
             private readonly EventHandler _onSelectionChangeCommitted;
+            private readonly EventHandler _onSelectedIndexChanged;
             private readonly KeyEventHandler _onKeyDown;
             private readonly EventHandler _onLeave;
             private readonly EventHandler _onEnter;
 
-            public DataTableSearchBinder(ComboBox cbo, DataView dv, string searchCol, Action onCommitted)
+            public DataTableSearchBinder(ComboBox cbo, DataView dv, string searchCol, Action onCommitted, bool chonMucDauKhiKhongKhop)
             {
                 _cbo = cbo;
                 _dv = dv;
                 _searchCol = searchCol;
                 _onCommitted = onCommitted;
+                _chonMucDauKhiKhongKhop = chonMucDauKhiKhongKhop;
+                GhiNhoLuaChon();
 
                 _onDropDown = (s, e) => CapNhatDoCaoDropdown(_cbo, _dv.Count);
                 _onTextUpdate = (s, e) => XuLyTextUpdate();
                 _onDropDownClosed = (s, e) => ApDungLuaChon();
                 _onSelectionChangeCommitted = (s, e) => XuLySelectionChangeCommitted();
+                _onSelectedIndexChanged = (s, e) =>
+                {
+                    // Chỉ ghi nhớ khi lựa chọn được gán từ code (không phải lúc người dùng đang gõ lọc)
+                    if (!_isFiltering && !_cbo.Focused && string.IsNullOrEmpty(_dv.RowFilter))
+                    {
+                        GhiNhoLuaChon();
+                    }
+                };
                 _onKeyDown = (s, e) =>
                 {
                     if (e.KeyCode == Keys.Enter)
@@ -151,6 +210,10 @@ namespace BTL_LTTQ_2.Classes
                 };
                 _onEnter = (s, e) =>
                 {
+                    if (string.IsNullOrEmpty(_dv.RowFilter))
+                    {
+                        GhiNhoLuaChon();
+                    }
                     _cbo.BeginInvoke(new Action(() => _cbo.SelectAll()));
                 };
 
@@ -158,9 +221,41 @@ namespace BTL_LTTQ_2.Classes
                 _cbo.TextUpdate += _onTextUpdate;
                 _cbo.DropDownClosed += _onDropDownClosed;
                 _cbo.SelectionChangeCommitted += _onSelectionChangeCommitted;
+                _cbo.SelectedIndexChanged += _onSelectedIndexChanged;
                 _cbo.KeyDown += _onKeyDown;
                 _cbo.Leave += _onLeave;
                 _cbo.Enter += _onEnter;
+            }
+
+            private void GhiNhoLuaChon()
+            {
+                _chiSoTruoc = _cbo.SelectedIndex;
+                _giaTriTruoc = _cbo.SelectedIndex >= 0 ? _cbo.SelectedValue : null;
+                _textTruoc = _cbo.Text ?? string.Empty;
+            }
+
+            /// <summary>
+            /// Không khớp mục nào: combobox bộ lọc chọn lại mục đầu (-- Tất cả --),
+            /// combobox nhập liệu khôi phục lựa chọn và nội dung trước đó (không tự chọn bừa mục đầu tiên).
+            /// </summary>
+            private void XuLyKhongKhop()
+            {
+                if (_chonMucDauKhiKhongKhop)
+                {
+                    if (_cbo.Items.Count > 0) _cbo.SelectedIndex = 0;
+                    return;
+                }
+
+                if (_chiSoTruoc >= 0 && _giaTriTruoc != null)
+                {
+                    _cbo.SelectedValue = _giaTriTruoc;
+                }
+                else
+                {
+                    _cbo.SelectedIndex = -1;
+                    if (_cbo.SelectedIndex != -1) _cbo.SelectedIndex = -1; // Khắc phục lỗi WinForms đôi khi cần gán 2 lần với combobox có DataSource
+                    _cbo.Text = _textTruoc ?? string.Empty;
+                }
             }
 
             private void XuLyTextUpdate()
@@ -168,34 +263,46 @@ namespace BTL_LTTQ_2.Classes
                 if (_isFiltering) return;
                 _isFiltering = true;
 
-                string text = _cbo.Text;
-                int selStart = _cbo.SelectionStart;
+                try
+                {
+                    string text = _cbo.Text;
+                    int selStart = _cbo.SelectionStart;
 
-                if (string.IsNullOrWhiteSpace(text))
-                {
-                    _dv.RowFilter = "";
-                }
-                else
-                {
-                    string clean = BoDauTiengViet(text.Trim()).ToLower().Replace("'", "''").Replace("[", "[[]").Replace("%", "[%]");
-                    if (!clean.StartsWith("tat ca") && !clean.StartsWith("all") && !clean.StartsWith("--"))
+                    if (string.IsNullOrWhiteSpace(text))
                     {
-                        _dv.RowFilter = $"{_searchCol} LIKE '%{clean}%' AND {_searchCol} <> 'tat ca all'";
+                        _dv.RowFilter = "";
                     }
                     else
                     {
-                        _dv.RowFilter = $"{_searchCol} LIKE '%{clean}%'";
+                        string tuKhoa = BoDauTiengViet(text.Trim()).ToLower();
+                        string clean = ThoatKyTuLikeRowFilter(tuKhoa);
+                        if (!tuKhoa.StartsWith("tat ca") && !tuKhoa.StartsWith("all") && !tuKhoa.StartsWith("--"))
+                        {
+                            _dv.RowFilter = $"{_searchCol} LIKE '%{clean}%' AND {_searchCol} <> 'tat ca all'";
+                        }
+                        else
+                        {
+                            _dv.RowFilter = $"{_searchCol} LIKE '%{clean}%'";
+                        }
                     }
+
+                    CapNhatDoCaoDropdown(_cbo, _dv.Count);
+                    _cbo.DroppedDown = true;
+                    Cursor.Current = Cursors.Default;
+                    _cbo.Text = text;
+                    _cbo.SelectionStart = selStart;
+                    _cbo.SelectionLength = 0;
                 }
-
-                CapNhatDoCaoDropdown(_cbo, _dv.Count);
-                _cbo.DroppedDown = true;
-                Cursor.Current = Cursors.Default;
-                _cbo.Text = text;
-                _cbo.SelectionStart = selStart;
-                _cbo.SelectionLength = 0;
-
-                _isFiltering = false;
+                catch
+                {
+                    // Biểu thức lọc lỗi: trả lại toàn bộ danh sách thay vì làm treo combobox
+                    _dv.RowFilter = "";
+                    CapNhatDoCaoDropdown(_cbo, _dv.Count);
+                }
+                finally
+                {
+                    _isFiltering = false;
+                }
             }
 
             private void XuLySelectionChangeCommitted()
@@ -215,6 +322,7 @@ namespace BTL_LTTQ_2.Classes
                     }
                 }
                 catch { }
+                GhiNhoLuaChon();
                 _onCommitted?.Invoke();
             }
 
@@ -244,13 +352,11 @@ namespace BTL_LTTQ_2.Classes
                 {
                     if (_dv.Count == 0)
                     {
-                        // 1. Không tìm thấy gì mà Enter/Đóng -> Trả lại tất cả, chọn mục đầu tiên (Tất cả)
+                        // 1. Không tìm thấy gì mà Enter/Đóng -> Trả lại tất cả.
+                        //    Combobox bộ lọc chọn mục đầu tiên (Tất cả); combobox nhập liệu khôi phục lựa chọn trước đó
                         _dv.RowFilter = "";
                         CapNhatDoCaoDropdown(_cbo, _dv.Count);
-                        if (_cbo.Items.Count > 0)
-                        {
-                            _cbo.SelectedIndex = 0;
-                        }
+                        XuLyKhongKhop();
                     }
                     else
                     {
@@ -271,12 +377,13 @@ namespace BTL_LTTQ_2.Classes
                             _cbo.SelectedValue = currentVal;
                         }
                     }
+                    GhiNhoLuaChon();
                 }
                 catch
                 {
                     _dv.RowFilter = "";
                     CapNhatDoCaoDropdown(_cbo, _dv.Count);
-                    if (_cbo.Items.Count > 0) _cbo.SelectedIndex = 0;
+                    XuLyKhongKhop();
                 }
                 finally
                 {
@@ -298,6 +405,7 @@ namespace BTL_LTTQ_2.Classes
                     _cbo.TextUpdate -= _onTextUpdate;
                     _cbo.DropDownClosed -= _onDropDownClosed;
                     _cbo.SelectionChangeCommitted -= _onSelectionChangeCommitted;
+                    _cbo.SelectedIndexChanged -= _onSelectedIndexChanged;
                     _cbo.KeyDown -= _onKeyDown;
                     _cbo.Leave -= _onLeave;
                     _cbo.Enter -= _onEnter;
@@ -313,26 +421,43 @@ namespace BTL_LTTQ_2.Classes
             private readonly ComboBox _cbo;
             private readonly List<string> _danhSachGoc;
             private readonly Action _onCommitted;
+            private readonly bool? _chonMucDauKhiKhongKhop;
             private bool _isFiltering = false;
+
+            // Lựa chọn hợp lệ gần nhất (khôi phục khi gõ từ khóa không khớp mục nào ở combobox nhập liệu)
+            private int _chiSoTruoc = -1;
+            private string _mucTruoc = null;
+            private string _textTruoc = string.Empty;
 
             private readonly EventHandler _onDropDown;
             private readonly EventHandler _onTextUpdate;
             private readonly EventHandler _onDropDownClosed;
             private readonly EventHandler _onSelectionChangeCommitted;
+            private readonly EventHandler _onSelectedIndexChanged;
             private readonly KeyEventHandler _onKeyDown;
             private readonly EventHandler _onLeave;
             private readonly EventHandler _onEnter;
 
-            public ListSearchBinder(ComboBox cbo, List<string> danhSachGoc, Action onCommitted)
+            public ListSearchBinder(ComboBox cbo, List<string> danhSachGoc, Action onCommitted, bool? chonMucDauKhiKhongKhop)
             {
                 _cbo = cbo;
                 _danhSachGoc = danhSachGoc;
                 _onCommitted = onCommitted;
+                _chonMucDauKhiKhongKhop = chonMucDauKhiKhongKhop;
+                GhiNhoLuaChon();
 
                 _onDropDown = (s, e) => CapNhatDoCaoDropdown(_cbo, _cbo.Items.Count);
                 _onTextUpdate = (s, e) => XuLyTextUpdate();
                 _onDropDownClosed = (s, e) => ApDungLuaChon();
                 _onSelectionChangeCommitted = (s, e) => XuLySelectionChangeCommitted();
+                _onSelectedIndexChanged = (s, e) =>
+                {
+                    // Chỉ ghi nhớ khi lựa chọn được gán từ code (không phải lúc người dùng đang gõ lọc)
+                    if (!_isFiltering && !_cbo.Focused && _cbo.Items.Count == _danhSachGoc.Count)
+                    {
+                        GhiNhoLuaChon();
+                    }
+                };
                 _onKeyDown = (s, e) =>
                 {
                     if (e.KeyCode == Keys.Enter)
@@ -354,6 +479,10 @@ namespace BTL_LTTQ_2.Classes
                 };
                 _onEnter = (s, e) =>
                 {
+                    if (_cbo.Items.Count == _danhSachGoc.Count)
+                    {
+                        GhiNhoLuaChon();
+                    }
                     _cbo.BeginInvoke(new Action(() => _cbo.SelectAll()));
                 };
 
@@ -361,9 +490,41 @@ namespace BTL_LTTQ_2.Classes
                 _cbo.TextUpdate += _onTextUpdate;
                 _cbo.DropDownClosed += _onDropDownClosed;
                 _cbo.SelectionChangeCommitted += _onSelectionChangeCommitted;
+                _cbo.SelectedIndexChanged += _onSelectedIndexChanged;
                 _cbo.KeyDown += _onKeyDown;
                 _cbo.Leave += _onLeave;
                 _cbo.Enter += _onEnter;
+            }
+
+            private void GhiNhoLuaChon()
+            {
+                _chiSoTruoc = _cbo.SelectedIndex;
+                _mucTruoc = _cbo.SelectedIndex >= 0 ? _cbo.SelectedItem?.ToString() : null;
+                _textTruoc = _cbo.Text ?? string.Empty;
+            }
+
+            /// <summary>
+            /// Không khớp mục nào: combobox bộ lọc (mục đầu dạng "-- Tất cả --") chọn lại mục đầu,
+            /// combobox nhập liệu khôi phục lựa chọn và nội dung trước đó (không tự chọn bừa mục đầu tiên).
+            /// </summary>
+            private void XuLyKhongKhop()
+            {
+                bool chonMucDau = _chonMucDauKhiKhongKhop ?? (_danhSachGoc.Count > 0 && LaMucTatCa(_danhSachGoc[0]));
+                if (chonMucDau)
+                {
+                    if (_cbo.Items.Count > 0) _cbo.SelectedIndex = 0;
+                    return;
+                }
+
+                if (_chiSoTruoc >= 0 && !string.IsNullOrEmpty(_mucTruoc) && _cbo.Items.Contains(_mucTruoc))
+                {
+                    _cbo.SelectedItem = _mucTruoc;
+                }
+                else
+                {
+                    _cbo.SelectedIndex = -1;
+                    _cbo.Text = _textTruoc ?? string.Empty;
+                }
             }
 
             private void XuLyTextUpdate()
@@ -371,40 +532,49 @@ namespace BTL_LTTQ_2.Classes
                 if (_isFiltering) return;
                 _isFiltering = true;
 
-                string text = _cbo.Text;
-                int selStart = _cbo.SelectionStart;
-
-                _cbo.BeginUpdate();
-                _cbo.Items.Clear();
-
-                if (string.IsNullOrWhiteSpace(text))
+                bool dangCapNhat = false;
+                try
                 {
-                    _cbo.Items.AddRange(_danhSachGoc.ToArray());
-                }
-                else
-                {
-                    string textClean = BoDauTiengViet(text.Trim()).ToLower();
-                    var matched = _danhSachGoc.Where(item =>
+                    string text = _cbo.Text;
+                    int selStart = _cbo.SelectionStart;
+
+                    _cbo.BeginUpdate();
+                    dangCapNhat = true;
+                    _cbo.Items.Clear();
+
+                    if (string.IsNullOrWhiteSpace(text))
                     {
-                        if ((item.StartsWith("--") || item.ToLower().Contains("tất cả") || item.ToLower().Contains("tat ca")) 
-                            && !textClean.StartsWith("tat ca") && !textClean.StartsWith("all") && !textClean.StartsWith("--"))
-                            return false;
-                        return item.IndexOf(text.Trim(), StringComparison.OrdinalIgnoreCase) >= 0 ||
-                               BoDauTiengViet(item).IndexOf(textClean, StringComparison.OrdinalIgnoreCase) >= 0;
-                    }).ToArray();
-                    _cbo.Items.AddRange(matched);
+                        _cbo.Items.AddRange(_danhSachGoc.ToArray());
+                    }
+                    else
+                    {
+                        string textClean = BoDauTiengViet(text.Trim()).ToLower();
+                        var matched = _danhSachGoc.Where(item =>
+                        {
+                            if ((item.StartsWith("--") || item.ToLower().Contains("tất cả") || item.ToLower().Contains("tat ca"))
+                                && !textClean.StartsWith("tat ca") && !textClean.StartsWith("all") && !textClean.StartsWith("--"))
+                                return false;
+                            return item.IndexOf(text.Trim(), StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                   BoDauTiengViet(item).IndexOf(textClean, StringComparison.OrdinalIgnoreCase) >= 0;
+                        }).ToArray();
+                        _cbo.Items.AddRange(matched);
+                    }
+
+                    _cbo.EndUpdate();
+                    dangCapNhat = false;
+                    CapNhatDoCaoDropdown(_cbo, _cbo.Items.Count);
+                    _cbo.DroppedDown = true;
+                    Cursor.Current = Cursors.Default;
+
+                    _cbo.Text = text;
+                    _cbo.SelectionStart = selStart;
+                    _cbo.SelectionLength = 0;
                 }
-
-                _cbo.EndUpdate();
-                CapNhatDoCaoDropdown(_cbo, _cbo.Items.Count);
-                _cbo.DroppedDown = true;
-                Cursor.Current = Cursors.Default;
-
-                _cbo.Text = text;
-                _cbo.SelectionStart = selStart;
-                _cbo.SelectionLength = 0;
-
-                _isFiltering = false;
+                finally
+                {
+                    if (dangCapNhat) _cbo.EndUpdate();
+                    _isFiltering = false;
+                }
             }
 
             private void XuLySelectionChangeCommitted()
@@ -427,6 +597,7 @@ namespace BTL_LTTQ_2.Classes
                     }
                 }
                 catch { }
+                GhiNhoLuaChon();
                 _onCommitted?.Invoke();
             }
 
@@ -459,16 +630,14 @@ namespace BTL_LTTQ_2.Classes
                 {
                     if (_cbo.Items.Count == 0)
                     {
-                        // 1. Không tìm thấy gì mà Enter -> Trả lại tất cả, chọn mục đầu tiên
+                        // 1. Không tìm thấy gì mà Enter -> Trả lại tất cả.
+                        //    Combobox bộ lọc chọn mục đầu tiên (Tất cả); combobox nhập liệu khôi phục lựa chọn trước đó
                         _cbo.BeginUpdate();
                         _cbo.Items.Clear();
                         _cbo.Items.AddRange(_danhSachGoc.ToArray());
                         _cbo.EndUpdate();
                         CapNhatDoCaoDropdown(_cbo, _cbo.Items.Count);
-                        if (_cbo.Items.Count > 0)
-                        {
-                            _cbo.SelectedIndex = 0;
-                        }
+                        XuLyKhongKhop();
                     }
                     else
                     {
@@ -491,6 +660,7 @@ namespace BTL_LTTQ_2.Classes
                             _cbo.SelectedItem = selectedVal;
                         }
                     }
+                    GhiNhoLuaChon();
                 }
                 catch
                 {
@@ -499,7 +669,7 @@ namespace BTL_LTTQ_2.Classes
                     _cbo.Items.AddRange(_danhSachGoc.ToArray());
                     _cbo.EndUpdate();
                     CapNhatDoCaoDropdown(_cbo, _cbo.Items.Count);
-                    if (_cbo.Items.Count > 0) _cbo.SelectedIndex = 0;
+                    XuLyKhongKhop();
                 }
                 finally
                 {
@@ -521,6 +691,7 @@ namespace BTL_LTTQ_2.Classes
                     _cbo.TextUpdate -= _onTextUpdate;
                     _cbo.DropDownClosed -= _onDropDownClosed;
                     _cbo.SelectionChangeCommitted -= _onSelectionChangeCommitted;
+                    _cbo.SelectedIndexChanged -= _onSelectedIndexChanged;
                     _cbo.KeyDown -= _onKeyDown;
                     _cbo.Leave -= _onLeave;
                     _cbo.Enter -= _onEnter;
@@ -531,7 +702,11 @@ namespace BTL_LTTQ_2.Classes
         /// <summary>
         /// Cài đặt tìm kiếm cho ComboBox có nguồn dữ liệu DataTable (sử dụng DataView để lọc trực tiếp các phần tử trong ComboBox).
         /// </summary>
-        public static void CaiDatTimKiem(ComboBox cbo, DataTable dt, string displayCol, string valueCol, Action onCommitted = null)
+        /// <param name="chonMucDauKhiKhongKhop">
+        /// Hành vi khi từ khóa gõ vào không khớp mục nào (Enter/rời ô): true = chọn mục đầu tiên; false = khôi phục lựa chọn trước đó.
+        /// Mặc định (null) tự nhận biết: mục đầu là "-- Tất cả ... --" (combobox bộ lọc) thì chọn mục đầu, ngược lại khôi phục lựa chọn trước đó.
+        /// </param>
+        public static void CaiDatTimKiem(ComboBox cbo, DataTable dt, string displayCol, string valueCol, Action onCommitted = null, bool? chonMucDauKhiKhongKhop = null)
         {
             if (cbo == null || dt == null) return;
 
@@ -575,14 +750,19 @@ namespace BTL_LTTQ_2.Classes
 
             CapNhatDoCaoDropdown(cbo, dv.Count);
 
-            DataTableSearchBinder binder = new DataTableSearchBinder(cbo, dv, searchCol, onCommitted);
+            bool chonMucDau = chonMucDauKhiKhongKhop ?? (dt.Rows.Count > 0 && dt.Rows[0][searchCol]?.ToString() == "tat ca all");
+            DataTableSearchBinder binder = new DataTableSearchBinder(cbo, dv, searchCol, onCommitted, chonMucDau);
             _binders.Add(cbo, binder);
         }
 
         /// <summary>
         /// Cài đặt tìm kiếm cho ComboBox dạng danh sách chuỗi Items (Unbound).
         /// </summary>
-        public static void CaiDatTimKiem(ComboBox cbo, List<string> danhSachGoc, Action onCommitted = null)
+        /// <param name="chonMucDauKhiKhongKhop">
+        /// Hành vi khi từ khóa gõ vào không khớp mục nào (Enter/rời ô): true = chọn mục đầu tiên; false = khôi phục lựa chọn trước đó.
+        /// Mặc định (null) tự nhận biết: mục đầu là "-- Tất cả ... --" (combobox bộ lọc) thì chọn mục đầu, ngược lại khôi phục lựa chọn trước đó.
+        /// </param>
+        public static void CaiDatTimKiem(ComboBox cbo, List<string> danhSachGoc, Action onCommitted = null, bool? chonMucDauKhiKhongKhop = null)
         {
             if (cbo == null || danhSachGoc == null) return;
 
@@ -607,7 +787,7 @@ namespace BTL_LTTQ_2.Classes
 
             CapNhatDoCaoDropdown(cbo, cbo.Items.Count);
 
-            ListSearchBinder binder = new ListSearchBinder(cbo, danhSachGoc, onCommitted);
+            ListSearchBinder binder = new ListSearchBinder(cbo, danhSachGoc, onCommitted, chonMucDauKhiKhongKhop);
             _binders.Add(cbo, binder);
         }
     }

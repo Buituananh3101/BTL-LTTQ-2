@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using BTL_LTTQ_2.Classes;
 
@@ -54,15 +56,35 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             }
             NapCombobox();
 
+            // Khóa ô tồn kho (cả thêm mới và sửa) vì tồn kho tính động qua chứng từ kho
+            txtTonKho.ReadOnly = true;
+            txtTonKho.BackColor = Color.FromArgb(243, 244, 246);
+            string goiYTonKho = SessionContext.MaKhoHienTai > 0
+                ? "Tồn kho tại kho đang làm việc, chỉ thay đổi qua chứng từ Nhập hàng / Kiểm kho."
+                : "Tổng tồn kho của tất cả các kho, chỉ thay đổi qua chứng từ Nhập hàng / Kiểm kho.";
+            toolTipAnh.SetToolTip(txtTonKho, goiYTonKho);
+            toolTipAnh.SetToolTip(lblTonKho, goiYTonKho);
+
+            // Chế độ "Tất cả kho": định mức tồn đặt theo từng kho nên khóa 2 ô định mức
+            if (SessionContext.MaKhoHienTai <= 0)
+            {
+                const string goiYDinhMuc = "Chọn một kho cụ thể (Đổi kho) để đặt định mức";
+                foreach (TextBox txt in new[] { txtDinhMucTonThapNhat, txtDinhMucTonCaoNhat })
+                {
+                    txt.ReadOnly = true;
+                    txt.TabStop = false;
+                    txt.BackColor = Color.FromArgb(243, 244, 246);
+                    toolTipAnh.SetToolTip(txt, goiYDinhMuc);
+                }
+                toolTipAnh.SetToolTip(lblDinhMucTonThapNhat, goiYDinhMuc);
+                toolTipAnh.SetToolTip(lblDinhMucTonCaoNhat, goiYDinhMuc);
+            }
+
             if (maHangHienTai > 0)
             {
                 lblTaoHangHoa.Text = "Cập nhật hàng hóa";
                 this.Text = "Cập nhật thông tin hàng hóa";
                 btnLuu.Text = "Sửa";
-
-                // Khóa ô tồn kho vì tồn kho tính động qua chứng từ kho
-                txtTonKho.ReadOnly = true;
-                txtTonKho.BackColor = Color.FromArgb(243, 244, 246);
 
                 NapThongTinHangHoa();
 
@@ -77,8 +99,8 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                 txtGiaVon.Text = "0";
                 txtGiaBan.Text = "0";
                 txtTrongLuong.Text = "0";
-                txtDinhMucTonThapNhat.Text = "0";
-                txtDinhMucTonCaoNhat.Text = "0";
+                txtDinhMucTonThapNhat.Text = SessionContext.MaKhoHienTai > 0 ? "0" : "";
+                txtDinhMucTonCaoNhat.Text = SessionContext.MaKhoHienTai > 0 ? "0" : "";
 
                 // Để trống các combobox khi tạo mới để người dùng chủ động chọn, tránh lưu nhầm mặc định
                 cboNhomHang.SelectedIndex = -1;
@@ -149,14 +171,58 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
         {
             try
             {
-                object result = DataProcessing.ReadValue("SELECT ISNULL(MAX(MaHang), 0) + 1 FROM HangHoa");
-                int nextId = result != null && int.TryParse(result.ToString(), out int id) ? id : 1;
-                txtMaHang.Text = $"HH{nextId:D4}";
+                // Sinh mã chuẩn "HH" + 6 chữ số dựa trên số thứ tự lớn nhất của các mã dạng HH + số (đồng bộ với Nhập file)
+                DataTable dtMa = DataProcessing.ReadData("SELECT MaHangNoiBo FROM HangHoa WHERE MaHangNoiBo LIKE 'HH%'");
+                HashSet<string> dsMaDaCo = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                foreach (DataRow r in dtMa.Rows)
+                {
+                    string ma = r["MaHangNoiBo"]?.ToString()?.Trim();
+                    if (!string.IsNullOrEmpty(ma)) dsMaDaCo.Add(ma);
+                }
+
+                long soLonNhat = LaySoMaHangLonNhat(dsMaDaCo);
+                txtMaHang.Text = TaoMaHangTiepTheo(ref soLonNhat, dsMaDaCo);
             }
             catch
             {
-                txtMaHang.Text = "HH0001";
+                txtMaHang.Text = "HH000001";
             }
+        }
+
+        /// <summary>
+        /// Lấy số thứ tự lớn nhất trong các mã hàng nội bộ có dạng ^HH[0-9]+$ (0 nếu chưa có)
+        /// </summary>
+        internal static long LaySoMaHangLonNhat(IEnumerable<string> dsMaHang)
+        {
+            long soLonNhat = 0;
+            if (dsMaHang == null) return soLonNhat;
+
+            foreach (string ma in dsMaHang)
+            {
+                string m = ma?.Trim();
+                if (string.IsNullOrEmpty(m) || !Regex.IsMatch(m, @"^HH[0-9]+$", RegexOptions.IgnoreCase)) continue;
+
+                if (long.TryParse(m.Substring(2), NumberStyles.None, CultureInfo.InvariantCulture, out long so) && so > soLonNhat)
+                {
+                    soLonNhat = so;
+                }
+            }
+            return soLonNhat;
+        }
+
+        /// <summary>
+        /// Sinh mã hàng tiếp theo dạng "HH" + 6 chữ số, tăng dần cho tới khi gặp mã chưa được sử dụng
+        /// </summary>
+        internal static string TaoMaHangTiepTheo(ref long soLonNhat, ICollection<string> dsMaDaCo)
+        {
+            string ma;
+            do
+            {
+                soLonNhat++;
+                ma = "HH" + soLonNhat.ToString("D6", CultureInfo.InvariantCulture);
+            }
+            while (dsMaDaCo != null && dsMaDaCo.Contains(ma));
+            return ma;
         }
 
         private void NapThongTinHangHoa()
@@ -166,13 +232,14 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                 string sql = @"
                     SELECT h.MaHang, h.MaHangNoiBo, h.TenHang, h.MaNhom, h.MaDVT, h.QuyCach,
                            h.GiaBanThamKhao, h.GiaVon, h.TrangThai, h.HinhAnh, h.ViTri, h.TrongLuong, h.DonViTrongLuong, h.MoTa,
-                           ISNULL(tk.SoLuongTon, 0) AS SoLuongTon,
+                           ISNULL((SELECT SUM(tk.SoLuongTon) FROM vw_TonKhoHienTai tk
+                                   WHERE tk.MaHang = h.MaHang AND (@MaKho = 0 OR tk.MaKho = @MaKho)), 0) AS SoLuongTon,
                            ISNULL(ntk.TonToiThieu, 0) AS TonToiThieu,
                            ISNULL(ntk.TonCaoNhat, 0) AS TonCaoNhat
                     FROM HangHoa h
-                    LEFT JOIN vw_TonKhoHienTai tk ON h.MaHang = tk.MaHang AND tk.MaKho = @MaKho
                     LEFT JOIN NguongTonKho ntk ON h.MaHang = ntk.MaHang AND ntk.MaKho = @MaKho
                     WHERE h.MaHang = @MaHang;";
+                // Chế độ "Tất cả kho" (MaKho = 0): tồn kho là tổng tồn của mọi kho, không có định mức theo kho
 
                 SqlParameter[] parameters = new SqlParameter[]
                 {
@@ -203,7 +270,8 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                     txtGiaVon.Text = Convert.ToDecimal(row["GiaVon"]).ToString("N0");
                     txtGiaBan.Text = Convert.ToDecimal(row["GiaBanThamKhao"]).ToString("N0");
                     txtTonKho.Text = Convert.ToDecimal(row["SoLuongTon"]).ToString("N0");
-                    txtTrongLuong.Text = row["TrongLuong"] != DBNull.Value ? Convert.ToDecimal(row["TrongLuong"]).ToString("N2") : "0";
+                    // Hiển thị trọng lượng dạng số thuần (không nhóm nghìn, dấu chấm thập phân) để đọc lại khi lưu không bị sai
+                    txtTrongLuong.Text = row["TrongLuong"] != DBNull.Value ? Convert.ToDecimal(row["TrongLuong"]).ToString("0.##", CultureInfo.InvariantCulture) : "0";
 
                     if (row["DonViTrongLuong"] != DBNull.Value && !string.IsNullOrWhiteSpace(row["DonViTrongLuong"].ToString()))
                     {
@@ -213,8 +281,16 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                     {
                         cboDonViTrongLuong.SelectedItem = "kg";
                     }
-                    txtDinhMucTonThapNhat.Text = Convert.ToDecimal(row["TonToiThieu"]).ToString("N0");
-                    txtDinhMucTonCaoNhat.Text = Convert.ToDecimal(row["TonCaoNhat"]).ToString("N0");
+                    if (SessionContext.MaKhoHienTai > 0)
+                    {
+                        txtDinhMucTonThapNhat.Text = Convert.ToDecimal(row["TonToiThieu"]).ToString("N0");
+                        txtDinhMucTonCaoNhat.Text = Convert.ToDecimal(row["TonCaoNhat"]).ToString("N0");
+                    }
+                    else
+                    {
+                        txtDinhMucTonThapNhat.Text = "";
+                        txtDinhMucTonCaoNhat.Text = "";
+                    }
 
                     // Hiển thị 5 ảnh hàng hóa
                     for (int i = 0; i < 5; i++)
@@ -831,17 +907,46 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // Chuyển đổi số tiền
             decimal.TryParse(txtGiaVon.Text.Replace(",", "").Replace(".", ""), out decimal giaVon);
             decimal.TryParse(txtGiaBan.Text.Replace(",", "").Replace(".", ""), out decimal giaBan);
-            decimal.TryParse(txtTrongLuong.Text.Replace(",", "."), out decimal trongLuong);
+            // Trọng lượng: đọc theo cùng quy tắc với Nhập file (không phụ thuộc thiết lập vùng miền của máy)
+            decimal trongLuong = 0;
+            if (!string.IsNullOrWhiteSpace(txtTrongLuong.Text))
+            {
+                trongLuong = frmNhapHangHoaFile.ChuyenDoiSoThapPhan(txtTrongLuong.Text, -1);
+                if (trongLuong < 0)
+                {
+                    MessageBox.Show("Trọng lượng không hợp lệ! Vui lòng nhập số, ví dụ: 12.5", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtTrongLuong.Focus();
+                    return;
+                }
+            }
             string donViTrongLuong = cboDonViTrongLuong.SelectedItem?.ToString() ?? "kg";
             decimal.TryParse(txtDinhMucTonThapNhat.Text.Replace(",", "").Replace(".", ""), out decimal tonThapNhat);
             decimal.TryParse(txtDinhMucTonCaoNhat.Text.Replace(",", "").Replace(".", ""), out decimal tonCaoNhat);
 
+            // Form không có ô Quy cách: chỉ gán NULL khi thêm mới, khi sửa giữ nguyên giá trị Quy cách đang có trong CSDL
             string quyCach = null;
             string moTa = txtMoTa.Text.Trim();
             string viTri = cboViTri.Text.Trim();
 
+            // Ô ảnh chính (ô to) trống nhưng các ô phụ có ảnh -> lấy ảnh phụ đầu tiên làm ảnh chính
+            if (danhSachByteAnh[0] == null)
+            {
+                for (int i = 1; i < 5; i++)
+                {
+                    if (danhSachByteAnh[i] != null && danhSachByteAnh[i].Length > 0)
+                    {
+                        HoanDoiAnhVoiOTo(i);
+                        break;
+                    }
+                }
+            }
+
             // Luôn lấy dữ liệu ảnh ở ô to (slot 0) để lưu vào cơ sở dữ liệu
             duLieuAnhHienTai = danhSachByteAnh[0];
+
+            bool laThemMoi = maHangHienTai == 0;
+            int maHangLuu = maHangHienTai;
+            int maKhoHienTai = SessionContext.MaKhoHienTai;
 
             try
             {
@@ -863,7 +968,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                 // Thực hiện lưu với Transaction
                 DataProcessing.ChangeDataTransaction((conn, trans) =>
                 {
-                    if (maHangHienTai == 0) // THÊM MỚI
+                    if (laThemMoi) // THÊM MỚI
                     {
                         string sqlInsert = @"
                             INSERT INTO HangHoa (
@@ -896,20 +1001,20 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                             paramHinhAnh.Value = duLieuAnhHienTai != null ? (object)duLieuAnhHienTai : DBNull.Value;
                             cmd.Parameters.Add(paramHinhAnh);
 
+                            // Chỉ gán vào biến cục bộ; maHangHienTai được cập nhật sau khi giao dịch commit thành công
                             object newId = cmd.ExecuteScalar();
-                            maHangHienTai = Convert.ToInt32(newId);
+                            maHangLuu = Convert.ToInt32(newId);
                         }
                     }
-                    else // CẬP NHẬT
+                    else // CẬP NHẬT (không ghi đè QuyCach / ThuocTinh vì form không hiển thị các trường này)
                     {
                         string sqlUpdate = @"
-                            UPDATE HangHoa 
-                            SET MaNhom = @MaNhom, 
-                                MaDVT = @MaDVT, 
-                                MaHangNoiBo = @MaHangNoiBo, 
-                                TenHang = @TenHang, 
-                                QuyCach = @QuyCach, 
-                                GiaBanThamKhao = @GiaBan, 
+                            UPDATE HangHoa
+                            SET MaNhom = @MaNhom,
+                                MaDVT = @MaDVT,
+                                MaHangNoiBo = @MaHangNoiBo,
+                                TenHang = @TenHang,
+                                GiaBanThamKhao = @GiaBan,
                                 GiaVon = @GiaVon, 
                                 ViTri = @ViTri, 
                                 TrongLuong = @TrongLuong, 
@@ -920,12 +1025,11 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
 
                         using (SqlCommand cmd = new SqlCommand(sqlUpdate, conn, trans))
                         {
-                            cmd.Parameters.AddWithValue("@MaHang", maHangHienTai);
+                            cmd.Parameters.AddWithValue("@MaHang", maHangLuu);
                             cmd.Parameters.AddWithValue("@MaNhom", maNhom);
                             cmd.Parameters.AddWithValue("@MaDVT", maDVT);
                             cmd.Parameters.AddWithValue("@MaHangNoiBo", maHangNoiBo);
                             cmd.Parameters.AddWithValue("@TenHang", tenHang);
-                            cmd.Parameters.AddWithValue("@QuyCach", string.IsNullOrEmpty(quyCach) ? (object)DBNull.Value : quyCach);
                             cmd.Parameters.AddWithValue("@GiaBan", giaBan);
                             cmd.Parameters.AddWithValue("@GiaVon", giaVon);
                             cmd.Parameters.AddWithValue("@ViTri", string.IsNullOrEmpty(viTri) ? (object)DBNull.Value : viTri);
@@ -945,12 +1049,12 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                     }
 
                     // Lưu toàn bộ 5 ảnh vào bảng HinhAnhHangHoa
-                    if (daChonAnhMoi || maHangHienTai == 0)
+                    if (daChonAnhMoi || laThemMoi)
                     {
                         string sqlXoaAnh = "DELETE FROM HinhAnhHangHoa WHERE MaHang = @MaHang;";
                         using (SqlCommand cmdXoa = new SqlCommand(sqlXoaAnh, conn, trans))
                         {
-                            cmdXoa.Parameters.AddWithValue("@MaHang", maHangHienTai);
+                            cmdXoa.Parameters.AddWithValue("@MaHang", maHangLuu);
                             cmdXoa.ExecuteNonQuery();
                         }
 
@@ -964,7 +1068,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                             {
                                 using (SqlCommand cmdAnh = new SqlCommand(sqlChenAnh, conn, trans))
                                 {
-                                    cmdAnh.Parameters.AddWithValue("@MaHang", maHangHienTai);
+                                    cmdAnh.Parameters.AddWithValue("@MaHang", maHangLuu);
                                     cmdAnh.Parameters.AddWithValue("@ThuTu", i + 1);
                                     cmdAnh.Parameters.AddWithValue("@LaAnhChinh", (i == 0));
 
@@ -978,28 +1082,37 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                         }
                     }
 
-                    // Lưu định mức tồn kho (NguongTonKho)
-                    if (tonThapNhat > 0 || tonCaoNhat > 0)
+                    // Lưu định mức tồn kho (NguongTonKho) - chỉ khi đang làm việc tại một kho cụ thể (MaKho > 0)
+                    // Đã có dòng: cả 2 định mức = 0 thì xóa, ngược lại cập nhật (cho phép đặt lại về 0). Chưa có dòng: chỉ thêm khi > 0
+                    if (maKhoHienTai > 0)
                     {
                         string sqlNguong = @"
                             IF EXISTS (SELECT 1 FROM NguongTonKho WHERE MaKho = @MaKho AND MaHang = @MaHang)
-                                UPDATE NguongTonKho 
-                                SET TonToiThieu = @TonThapNhat, TonCaoNhat = @TonCaoNhat 
-                                WHERE MaKho = @MaKho AND MaHang = @MaHang;
-                            ELSE
-                                INSERT INTO NguongTonKho (MaKho, MaHang, TonToiThieu, TonCaoNhat) 
+                            BEGIN
+                                IF (@TonThapNhat = 0 AND @TonCaoNhat = 0)
+                                    DELETE FROM NguongTonKho WHERE MaKho = @MaKho AND MaHang = @MaHang;
+                                ELSE
+                                    UPDATE NguongTonKho
+                                    SET TonToiThieu = @TonThapNhat, TonCaoNhat = @TonCaoNhat
+                                    WHERE MaKho = @MaKho AND MaHang = @MaHang;
+                            END
+                            ELSE IF (@TonThapNhat > 0 OR @TonCaoNhat > 0)
+                                INSERT INTO NguongTonKho (MaKho, MaHang, TonToiThieu, TonCaoNhat)
                                 VALUES (@MaKho, @MaHang, @TonThapNhat, @TonCaoNhat);";
 
                         using (SqlCommand cmd = new SqlCommand(sqlNguong, conn, trans))
                         {
-                            cmd.Parameters.AddWithValue("@MaKho", SessionContext.MaKhoHienTai);
-                            cmd.Parameters.AddWithValue("@MaHang", maHangHienTai);
+                            cmd.Parameters.AddWithValue("@MaKho", maKhoHienTai);
+                            cmd.Parameters.AddWithValue("@MaHang", maHangLuu);
                             cmd.Parameters.AddWithValue("@TonThapNhat", tonThapNhat);
                             cmd.Parameters.AddWithValue("@TonCaoNhat", tonCaoNhat);
                             cmd.ExecuteNonQuery();
                         }
                     }
                 });
+
+                // Giao dịch đã commit thành công mới ghi nhận mã hàng (tránh giữ mã đã bị rollback)
+                maHangHienTai = maHangLuu;
 
                 this.DialogResult = DialogResult.OK;
                 this.Close();

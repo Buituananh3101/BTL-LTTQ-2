@@ -222,7 +222,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             try
             {
                 // Kiểm tra trùng tên vị trí
-                string sqlCheck = "SELECT COUNT(1) FROM ViTri WHERE TenViTri = @TenViTri AND TrangThai = 'HOAT_DONG'";
+                string sqlCheck = "SELECT COUNT(1) FROM ViTri WHERE UPPER(LTRIM(RTRIM(TenViTri))) = UPPER(@TenViTri)";
                 object res = DataProcessing.ReadValue(sqlCheck, new SqlParameter[] { new SqlParameter("@TenViTri", tenViTri) });
                 if (res != null && int.TryParse(res.ToString(), out int count) && count > 0)
                 {
@@ -273,7 +273,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             try
             {
                 // Kiểm tra trùng tên với vị trí khác
-                string sqlCheck = "SELECT COUNT(1) FROM ViTri WHERE TenViTri = @TenViTri AND MaViTri <> @MaViTri AND TrangThai = 'HOAT_DONG'";
+                string sqlCheck = "SELECT COUNT(1) FROM ViTri WHERE UPPER(LTRIM(RTRIM(TenViTri))) = UPPER(@TenViTri) AND MaViTri <> @MaViTri";
                 object res = DataProcessing.ReadValue(sqlCheck, new SqlParameter[] {
                     new SqlParameter("@TenViTri", tenMoi),
                     new SqlParameter("@MaViTri", maViTriDangChon)
@@ -370,7 +370,8 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
         private void txtTimKiem_TextChanged(object sender, EventArgs e)
         {
             if (dtViTri == null) return;
-            string kw = txtTimKiem.Text.Trim().Replace("'", "''").Replace("[", "[[]").Replace("%", "[%]");
+            // Thoát ký tự đặc biệt (' [ ] * %) để RowFilter không lỗi khi gõ ký tự đại diện
+            string kw = ComboboxHelper.ThoatKyTuLikeRowFilter(txtTimKiem.Text.Trim());
             if (string.IsNullOrEmpty(kw))
             {
                 dtViTri.DefaultView.RowFilter = "";
@@ -498,7 +499,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                         }
 
                         // Lấy danh sách vị trí hiện có trong CSDL để đối chiếu trùng
-                        DataTable dtHienCo = DataProcessing.ReadData("SELECT TenViTri FROM ViTri WHERE TrangThai = 'HOAT_DONG'");
+                        DataTable dtHienCo = DataProcessing.ReadData("SELECT TenViTri FROM ViTri");
                         HashSet<string> tapHopHienCo = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                         foreach (DataRow r in dtHienCo.Rows)
                         {
