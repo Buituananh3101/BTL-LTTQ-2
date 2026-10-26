@@ -2,8 +2,6 @@
 using System;
 using System.Data;
 using System.Data.SqlClient;
-using System.Security.Cryptography;
-using System.Text;
 using System.Windows.Forms;
 
 namespace BTL_LTTQ_2.GUI.Forms.DangNhap
@@ -76,6 +74,13 @@ namespace BTL_LTTQ_2.GUI.Forms.DangNhap
                 return;
             }
 
+            if (matKhauMoi.Length < 6)
+            {
+                MessageBox.Show("Mật khẩu mới phải có tối thiểu 6 ký tự.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtMatKhauMoi.Focus();
+                return;
+            }
+
             if (matKhauMoi != xacNhan)
             {
                 MessageBox.Show("Xác nhận mật khẩu mới không khớp.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -105,7 +110,8 @@ namespace BTL_LTTQ_2.GUI.Forms.DangNhap
                     }
 
                     string dbMatKhau = dt.Rows[0]["MatKhauHash"] != DBNull.Value ? dt.Rows[0]["MatKhauHash"].ToString() : string.Empty;
-                    bool hopLe = (matKhauCu == dbMatKhau) || string.Equals(TinhSha256(matKhauCu), dbMatKhau, StringComparison.OrdinalIgnoreCase);
+                    // Dùng chung logic kiểm tra mật khẩu với màn hình đăng nhập
+                    bool hopLe = PasswordHelper.KiemTraMatKhau(matKhauCu, dbMatKhau);
 
                     if (!hopLe)
                     {
@@ -115,10 +121,10 @@ namespace BTL_LTTQ_2.GUI.Forms.DangNhap
                         return;
                     }
 
-                    // Cập nhật mật khẩu mới (chuỗi plain-text theo chuẩn yêu cầu)
+                    // Cập nhật mật khẩu mới dưới dạng chuỗi băm SHA-256
                     string sqlUpdate = "UPDATE TaiKhoan SET MatKhauHash = @MatKhauMoi WHERE MaTaiKhoan = @MaTaiKhoan";
                     SqlParameter[] pUpdate = {
-                        new SqlParameter("@MatKhauMoi", matKhauMoi),
+                        new SqlParameter("@MatKhauMoi", PasswordHelper.HashPassword(matKhauMoi)),
                         new SqlParameter("@MaTaiKhoan", SessionContext.MaTaiKhoan)
                     };
                     DataProcessing.ChangeData(sqlUpdate, pUpdate);
@@ -132,21 +138,6 @@ namespace BTL_LTTQ_2.GUI.Forms.DangNhap
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi khi cập nhật mật khẩu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private static string TinhSha256(string chuoi)
-        {
-            if (string.IsNullOrEmpty(chuoi)) return string.Empty;
-            using (SHA256 sha256 = SHA256.Create())
-            {
-                byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(chuoi));
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < bytes.Length; i++)
-                {
-                    sb.Append(bytes[i].ToString("x2"));
-                }
-                return sb.ToString();
             }
         }
     }

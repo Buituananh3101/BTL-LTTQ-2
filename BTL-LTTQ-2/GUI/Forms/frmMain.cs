@@ -108,9 +108,14 @@ namespace BTL_LTTQ_2.GUI.Forms
                 mnuNhaCungCap.Visible = false;
                 mnuBaoCaoTheKho.Visible = false;
             }
+
+            // Ẩn các đường phân cách bị treo khi mục menu đi kèm bị ẩn
+            // (dùng Available vì Visible của mục con trả về false khi menu cha chưa mở)
+            toolStripSeparator4.Available = mnuNhaCungCap.Available;
+            toolStripSeparator2.Available = mnuDoiKho.Available;
         }
 
-                private void mnuNguoiDung_Click(object sender, EventArgs e)
+        private void mnuNguoiDung_Click(object sender, EventArgs e)
         {
             foreach (Form form in this.MdiChildren)
             {
