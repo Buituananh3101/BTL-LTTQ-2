@@ -77,7 +77,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NguoiDung
             dgvNguoiDung.AllowUserToAddRows = false;
             dgvNguoiDung.AllowUserToDeleteRows = false;
             dgvNguoiDung.AllowUserToResizeRows = false;
-            dgvNguoiDung.ReadOnly = false; // Để cột CheckBox có thể thao tác
+            dgvNguoiDung.ReadOnly = true; // Cột CheckBox được đảo giá trị bằng code ở CellClick/Space (giống frmDanhSachHangHoa), tránh lưới tự đảo thêm lần nữa
             dgvNguoiDung.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvNguoiDung.MultiSelect = false;
             dgvNguoiDung.RowHeadersVisible = false;
@@ -94,8 +94,8 @@ namespace BTL_LTTQ_2.GUI.Forms.NguoiDung
             dgvNguoiDung.DefaultCellStyle.SelectionBackColor = Color.FromArgb(224, 231, 255);
             dgvNguoiDung.DefaultCellStyle.SelectionForeColor = Color.FromArgb(30, 41, 59);
 
-            // Đặt các cột văn bản thành ReadOnly = true (chỉ cột colChon là cho phép tick)
-            colChon.ReadOnly = false;
+            // Đặt toàn bộ các cột thành ReadOnly = true (cột colChon được tick bằng code)
+            colChon.ReadOnly = true;
             colMaTaiKhoan.ReadOnly = true;
             colTenDangNhap.ReadOnly = true;
             colHoTen.ReadOnly = true;
@@ -228,9 +228,9 @@ namespace BTL_LTTQ_2.GUI.Forms.NguoiDung
                 }
                 else
                 {
-                    // 'KHOA' -> Đã khóa (màu đỏ trầm)
+                    // 'KHOA' -> Đã khóa (nhóm Đã hủy / Ngừng: màu xám nhạt theo Điều luật 15b)
                     e.Value = "Đã khóa";
-                    e.CellStyle.ForeColor = Color.FromArgb(185, 28, 28);
+                    e.CellStyle.ForeColor = Color.FromArgb(100, 116, 139);
                 }
                 e.FormattingApplied = true;
             }

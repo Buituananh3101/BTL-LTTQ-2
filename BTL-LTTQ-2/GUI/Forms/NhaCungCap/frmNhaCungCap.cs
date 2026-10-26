@@ -257,7 +257,8 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                 {
                     cboNhomNCC.SelectedValue = maNhomChon;
                 }
-                else
+                // Nhóm cần chọn không còn tồn tại (vd vừa bị xóa) -> quay về "Tất cả các nhóm"
+                if (maNhomChon <= 0 || cboNhomNCC.SelectedIndex < 0)
                 {
                     cboNhomNCC.SelectedIndex = 0;
                 }
@@ -304,8 +305,9 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
             });
             cboTrangThai.SelectedIndex = 0;
 
-            // 5. Khoảng thời gian tạo (Mặc định từ đầu năm đến ngày hiện tại, đồng bộ frmDanhSachHangHoa)
-            dtpTuNgay.Value = new DateTime(DateTime.Now.Year, 1, 1);
+            // 5. Khoảng thời gian tạo (Mặc định từ ngày tạo NCC sớm nhất đến ngày hiện tại, đồng bộ frmDanhSachHangHoa)
+            //    Không mặc định từ đầu năm để các NCC tạo từ năm trước không bị ẩn khỏi danh sách
+            dtpTuNgay.Value = LayNgayTaoNhaCungCapSomNhat();
             dtpDenNgay.Value = DateTime.Today;
 
             // 6. Số dòng mỗi trang
@@ -313,6 +315,28 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
             {
                 cboSoDongMoiTrang.SelectedItem = "20";
             }
+        }
+
+        /// <summary>
+        /// Lấy ngày tạo sớm nhất trong DonViCapHang (01/01/2000 nếu chưa có dữ liệu) làm mặc định "Từ ngày"
+        /// </summary>
+        private DateTime LayNgayTaoNhaCungCapSomNhat()
+        {
+            DateTime macDinh = new DateTime(2000, 1, 1);
+            try
+            {
+                object result = DataProcessing.ReadValue("SELECT MIN(NgayTao) FROM DonViCapHang");
+                if (result != null && result != DBNull.Value)
+                {
+                    DateTime ngay = Convert.ToDateTime(result).Date;
+                    if (ngay >= dtpTuNgay.MinDate && ngay <= DateTime.Today) return ngay;
+                }
+            }
+            catch
+            {
+                // Lỗi đọc CSDL: dùng mốc mặc định
+            }
+            return macDinh;
         }
 
         #endregion
@@ -800,12 +824,19 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
         // Bấm nút + tạo mới/quản lý nhóm nhà cung cấp ngay cạnh ComboBox
         private void btnThemNhomNCC_Click(object sender, EventArgs e)
         {
+            // Ghi nhớ nhóm đang lọc để giữ nguyên khi người dùng không tạo nhóm mới
+            int maNhomDangLoc = cboNhomNCC.SelectedValue != null && int.TryParse(cboNhomNCC.SelectedValue.ToString(), out int maNhomCu) ? maNhomCu : 0;
+
             using (frmNhomNhaCungCap frmNhom = new frmNhomNhaCungCap())
             {
                 frmNhom.ShowDialog(this);
                 int maNhomMoi = frmNhom.MaNhomVuaTao;
-                NapDanhSachNhomNCC(maNhomMoi);
+                NapDanhSachNhomNCC(maNhomMoi > 0 ? maNhomMoi : maNhomDangLoc);
             }
+
+            // Gán SelectedValue bằng code không kích hoạt lọc -> nạp lại danh sách cho khớp nhóm đang chọn
+            trangHienTai = 1;
+            HienThiDanhSach();
         }
 
         private void MoFormThemNhaCungCap()
@@ -815,6 +846,8 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                 frm.StartPosition = FormStartPosition.CenterParent;
                 if (frm.ShowDialog(this) == DialogResult.OK)
                 {
+                    // NCC mới nằm đầu danh sách (sắp xếp mã giảm dần) -> về trang 1 để thấy ngay
+                    trangHienTai = 1;
                     HienThiDanhSach();
                 }
             }

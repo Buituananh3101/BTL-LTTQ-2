@@ -305,8 +305,9 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
 
                 // Lọc theo khoảng thời gian tạo
                 DateTime tuNgay = dtpTuNgay.Value.Date;
-                DateTime denNgay = dtpDenNgay.Value.Date.AddDays(1).AddSeconds(-1);
-                whereClause += " AND (pkk.ThoiDiemChot BETWEEN @TuNgay AND @DenNgay) ";
+                // Cận trên là đầu ngày hôm sau (không dùng 23:59:59 vì ThoiDiemChot là DATETIME2 có phần lẻ giây)
+                DateTime denNgay = dtpDenNgay.Value.Date.AddDays(1);
+                whereClause += " AND (pkk.ThoiDiemChot >= @TuNgay AND pkk.ThoiDiemChot < @DenNgay) ";
                 listParams.Add(new SqlParameter("@TuNgay", tuNgay));
                 listParams.Add(new SqlParameter("@DenNgay", denNgay));
 
@@ -578,12 +579,17 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
         {
             if (e.RowIndex >= 0 && e.ColumnIndex >= 0 && dgvKiemKho.Columns[e.ColumnIndex].Name == "colChon")
             {
-                bool currentVal = Convert.ToBoolean(dgvKiemKho.Rows[e.RowIndex].Cells["colChon"].Value ?? false);
+                DataGridViewRow dongChon = dgvKiemKho.Rows[e.RowIndex];
+                bool currentVal = Convert.ToBoolean(dongChon.Cells["colChon"].Value ?? false);
                 bool newVal = !currentVal;
-                dgvKiemKho.Rows[e.RowIndex].Cells["colChon"].Value = newVal;
-                if (dgvKiemKho.DataSource is DataTable dt && e.RowIndex < dt.Rows.Count)
+                // Ghi qua DataRowView của chính dòng (đúng dòng kể cả khi lưới đang sắp xếp theo cột khác)
+                if (dongChon.DataBoundItem is DataRowView drvChon)
                 {
-                    dt.Rows[e.RowIndex]["Chon"] = newVal;
+                    drvChon["Chon"] = newVal;
+                }
+                else
+                {
+                    dongChon.Cells["colChon"].Value = newVal;
                 }
                 CapNhatTrangThaiHeaderCheckBox();
             }
@@ -620,10 +626,14 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                 {
                     bool currentVal = Convert.ToBoolean(cell.Value ?? false);
                     bool newVal = !currentVal;
-                    cell.Value = newVal;
-                    if (dgvKiemKho.DataSource is DataTable dt && dgvKiemKho.CurrentRow.Index < dt.Rows.Count)
+                    // Ghi qua DataRowView của chính dòng (đúng dòng kể cả khi lưới đang sắp xếp theo cột khác)
+                    if (dgvKiemKho.CurrentRow.DataBoundItem is DataRowView drvChon)
                     {
-                        dt.Rows[dgvKiemKho.CurrentRow.Index]["Chon"] = newVal;
+                        drvChon["Chon"] = newVal;
+                    }
+                    else
+                    {
+                        cell.Value = newVal;
                     }
                     CapNhatTrangThaiHeaderCheckBox();
                     e.Handled = true;
@@ -865,7 +875,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             sb.AppendLine("</head>");
             sb.AppendLine("<body>");
             sb.AppendLine("<h2>DANH SÁCH PHIẾU KIỂM KHO</h2>");
-            sb.AppendLine($"<p>Thời gian xuất: {DateTime.Now:dd/MM/yyyy HH:mm} | Tổng số: {tongSoBanGhi} phiếu</p>");
+            sb.AppendLine($"<p>Thời gian xuất: {DateTime.Now:dd/MM/yyyy HH:mm} | Tổng số: {new List<DataRow>(danhSach).Count} phiếu</p>");
             sb.AppendLine("<table>");
             sb.AppendLine("<tr>");
             sb.AppendLine("<th>Mã kiểm kho</th>");
@@ -888,7 +898,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                 sb.AppendLine($"<td class=\"num\">{Convert.ToDecimal(r["SlLechTang"]):N0}</td>");
                 sb.AppendLine($"<td class=\"num\">{Convert.ToDecimal(r["SlLechGiam"]):N0}</td>");
                 sb.AppendLine($"<td class=\"num\">{Convert.ToDecimal(r["TongSlThucTe"]):N0}</td>");
-                sb.AppendLine($"<td>{r["GhiChu"]}</td>");
+                sb.AppendLine($"<td>{System.Net.WebUtility.HtmlEncode(r["GhiChu"].ToString())}</td>");
                 sb.AppendLine($"<td class=\"num\">{Convert.ToDecimal(r["TongGiaTriThucTe"]):N0}</td>");
                 sb.AppendLine($"<td class=\"num\">{Convert.ToDecimal(r["TongGiaTriChenhLech"]):N0}</td>");
                 sb.AppendLine($"<td class=\"center\">{r["ThoiGian"]}</td>");

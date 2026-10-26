@@ -112,7 +112,7 @@
             this.btnHuongDanSuDung.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnHuongDanSuDung.Location = new System.Drawing.Point(1711, 21);
             this.btnHuongDanSuDung.Name = "btnHuongDanSuDung";
-            this.btnHuongDanSuDung.Size = new System.Drawing.Size(43, 29);
+            this.btnHuongDanSuDung.Size = new System.Drawing.Size(43, 33);
             this.btnHuongDanSuDung.TabIndex = 5;
             this.btnHuongDanSuDung.Text = "?";
             this.btnHuongDanSuDung.UseVisualStyleBackColor = true;
@@ -123,7 +123,7 @@
             this.btnHienCot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnHienCot.Location = new System.Drawing.Point(1600, 21);
             this.btnHienCot.Name = "btnHienCot";
-            this.btnHienCot.Size = new System.Drawing.Size(95, 29);
+            this.btnHienCot.Size = new System.Drawing.Size(95, 33);
             this.btnHienCot.TabIndex = 4;
             this.btnHienCot.Text = "Hiện cột";
             this.btnHienCot.UseVisualStyleBackColor = true;
@@ -134,7 +134,7 @@
             this.btnXuatFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnXuatFile.Location = new System.Drawing.Point(1474, 21);
             this.btnXuatFile.Name = "btnXuatFile";
-            this.btnXuatFile.Size = new System.Drawing.Size(110, 29);
+            this.btnXuatFile.Size = new System.Drawing.Size(110, 33);
             this.btnXuatFile.TabIndex = 3;
             this.btnXuatFile.Text = "Xuất file";
             this.btnXuatFile.UseVisualStyleBackColor = true;
@@ -143,9 +143,9 @@
             // btnThemTraHang
             // 
             this.btnThemTraHang.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnThemTraHang.Location = new System.Drawing.Point(1315, 21);
+            this.btnThemTraHang.Location = new System.Drawing.Point(1288, 21);
             this.btnThemTraHang.Name = "btnThemTraHang";
-            this.btnThemTraHang.Size = new System.Drawing.Size(145, 29);
+            this.btnThemTraHang.Size = new System.Drawing.Size(172, 33);
             this.btnThemTraHang.TabIndex = 2;
             this.btnThemTraHang.Text = "+ Trả hàng nhập";
             this.btnThemTraHang.UseVisualStyleBackColor = true;
@@ -154,7 +154,7 @@
             // lblTimKiem
             // 
             this.lblTimKiem.AutoSize = true;
-            this.lblTimKiem.Location = new System.Drawing.Point(385, 25);
+            this.lblTimKiem.Location = new System.Drawing.Point(372, 25);
             this.lblTimKiem.Name = "lblTimKiem";
             this.lblTimKiem.Size = new System.Drawing.Size(60, 17);
             this.lblTimKiem.TabIndex = 1;
@@ -162,9 +162,9 @@
             // 
             // txtTimKiem
             // 
-            this.txtTimKiem.Location = new System.Drawing.Point(465, 21);
+            this.txtTimKiem.Location = new System.Drawing.Point(470, 21);
             this.txtTimKiem.Name = "txtTimKiem";
-            this.txtTimKiem.Size = new System.Drawing.Size(602, 24);
+            this.txtTimKiem.Size = new System.Drawing.Size(597, 24);
             this.txtTimKiem.TabIndex = 0;
             this.txtTimKiem.TextChanged += new System.EventHandler(this.txtTimKiem_TextChanged);
             // 
@@ -228,18 +228,18 @@
             // dtpTuNgay
             // 
             this.dtpTuNgay.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpTuNgay.Location = new System.Drawing.Point(92, 23);
+            this.dtpTuNgay.Location = new System.Drawing.Point(112, 23);
             this.dtpTuNgay.Name = "dtpTuNgay";
-            this.dtpTuNgay.Size = new System.Drawing.Size(215, 24);
+            this.dtpTuNgay.Size = new System.Drawing.Size(200, 24);
             this.dtpTuNgay.TabIndex = 1;
             this.dtpTuNgay.ValueChanged += new System.EventHandler(this.BoLoc_SelectedIndexChanged);
             // 
             // dtpDenNgay
             // 
             this.dtpDenNgay.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpDenNgay.Location = new System.Drawing.Point(92, 63);
+            this.dtpDenNgay.Location = new System.Drawing.Point(112, 63);
             this.dtpDenNgay.Name = "dtpDenNgay";
-            this.dtpDenNgay.Size = new System.Drawing.Size(215, 24);
+            this.dtpDenNgay.Size = new System.Drawing.Size(200, 24);
             this.dtpDenNgay.TabIndex = 3;
             this.dtpDenNgay.ValueChanged += new System.EventHandler(this.BoLoc_SelectedIndexChanged);
             // 
@@ -351,7 +351,7 @@
             // 
             this.lblSoDongMoiTrang.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSoDongMoiTrang.AutoSize = true;
-            this.lblSoDongMoiTrang.Location = new System.Drawing.Point(932, 13);
+            this.lblSoDongMoiTrang.Location = new System.Drawing.Point(855, 9);
             this.lblSoDongMoiTrang.Name = "lblSoDongMoiTrang";
             this.lblSoDongMoiTrang.Size = new System.Drawing.Size(61, 17);
             this.lblSoDongMoiTrang.TabIndex = 6;
@@ -367,7 +367,7 @@
             "20",
             "50",
             "100"});
-            this.cboSoDongMoiTrang.Location = new System.Drawing.Point(1008, 10);
+            this.cboSoDongMoiTrang.Location = new System.Drawing.Point(947, 5);
             this.cboSoDongMoiTrang.Name = "cboSoDongMoiTrang";
             this.cboSoDongMoiTrang.Size = new System.Drawing.Size(70, 25);
             this.cboSoDongMoiTrang.TabIndex = 7;
@@ -376,9 +376,9 @@
             // btnTrangTruoc
             // 
             this.btnTrangTruoc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnTrangTruoc.Location = new System.Drawing.Point(1117, 6);
+            this.btnTrangTruoc.Location = new System.Drawing.Point(1027, 5);
             this.btnTrangTruoc.Name = "btnTrangTruoc";
-            this.btnTrangTruoc.Size = new System.Drawing.Size(80, 31);
+            this.btnTrangTruoc.Size = new System.Drawing.Size(100, 33);
             this.btnTrangTruoc.TabIndex = 8;
             this.btnTrangTruoc.Text = "◀ Trước";
             this.btnTrangTruoc.UseVisualStyleBackColor = true;
@@ -387,19 +387,19 @@
             // lblTrangHienTai
             // 
             this.lblTrangHienTai.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblTrangHienTai.AutoSize = true;
-            this.lblTrangHienTai.Location = new System.Drawing.Point(1214, 13);
+            this.lblTrangHienTai.Location = new System.Drawing.Point(1135, 5);
             this.lblTrangHienTai.Name = "lblTrangHienTai";
-            this.lblTrangHienTai.Size = new System.Drawing.Size(72, 17);
+            this.lblTrangHienTai.Size = new System.Drawing.Size(140, 33);
             this.lblTrangHienTai.TabIndex = 9;
             this.lblTrangHienTai.Text = "Trang 1 / 1";
+            this.lblTrangHienTai.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // btnTrangSau
             // 
             this.btnTrangSau.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnTrangSau.Location = new System.Drawing.Point(1303, 6);
+            this.btnTrangSau.Location = new System.Drawing.Point(1283, 5);
             this.btnTrangSau.Name = "btnTrangSau";
-            this.btnTrangSau.Size = new System.Drawing.Size(80, 31);
+            this.btnTrangSau.Size = new System.Drawing.Size(100, 33);
             this.btnTrangSau.TabIndex = 10;
             this.btnTrangSau.Text = "Sau ▶";
             this.btnTrangSau.UseVisualStyleBackColor = true;
@@ -408,7 +408,7 @@
             // lblTongSoPhieu
             // 
             this.lblTongSoPhieu.AutoSize = true;
-            this.lblTongSoPhieu.Location = new System.Drawing.Point(22, 12);
+            this.lblTongSoPhieu.Location = new System.Drawing.Point(22, 9);
             this.lblTongSoPhieu.Name = "lblTongSoPhieu";
             this.lblTongSoPhieu.Size = new System.Drawing.Size(159, 17);
             this.lblTongSoPhieu.TabIndex = 0;

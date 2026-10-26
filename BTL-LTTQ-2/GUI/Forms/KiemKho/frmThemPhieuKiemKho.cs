@@ -531,10 +531,12 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                 rMoi["TenHang"] = rowHang["TenHang"];
                 rMoi["TenDVT"] = rowHang["TenDVT"];
                 rMoi["TonKho"] = tonKho;
-                rMoi["SoLuongThucTe"] = tonKho; // Mặc định khớp tồn sổ sách, người dùng chỉnh sửa trực tiếp trên lưới
-                rMoi["SlChenhLech"] = 0;
+                // Mặc định khớp tồn sổ sách (không âm do CHECK SoLuongThucTe >= 0), người dùng chỉnh sửa trực tiếp trên lưới
+                decimal slMacDinh = Math.Max(0m, tonKho);
+                rMoi["SoLuongThucTe"] = slMacDinh;
+                rMoi["SlChenhLech"] = slMacDinh - tonKho;
                 rMoi["DonGia"] = donGia;
-                rMoi["GiaTriChenhLech"] = 0;
+                rMoi["GiaTriChenhLech"] = (slMacDinh - tonKho) * donGia;
                 dtHangKiem.Rows.Add(rMoi);
 
                 TinhToanTongKet();
@@ -965,6 +967,14 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                         {
                             tonKho = Convert.ToDecimal(hangTrongKho[0]["TonKho"]);
                             if (donGia == 0) donGia = Convert.ToDecimal(hangTrongKho[0]["DonGia"]);
+                        }
+                        else
+                        {
+                            // Hàng không có trong danh sách chọn (ví dụ đã ngừng bán): đọc tồn sổ sách trực tiếp tại kho đang kiểm
+                            object tonDoc = DataProcessing.ReadValue(
+                                "SELECT SoLuongTon FROM vw_TonKhoHienTai WHERE MaKho = @MaKho AND MaHang = @MaHang",
+                                new SqlParameter[] { new SqlParameter("@MaKho", maKhoDangChon), new SqlParameter("@MaHang", maHang) });
+                            if (tonDoc != null && tonDoc != DBNull.Value) tonKho = Convert.ToDecimal(tonDoc);
                         }
 
                         // Tìm trong dtHangKiem

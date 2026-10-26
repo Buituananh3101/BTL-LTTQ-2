@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -174,7 +175,8 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
         {
             try
             {
-                string sql = "SELECT MaDonViCapHang, TenDonVi FROM DonViCapHang WHERE TrangThai = 'HOAT_DONG' OR TrangThai = 'ACTIVE' OR TrangThai IS NULL ORDER BY TenDonVi ASC";
+                // Bộ lọc lấy tất cả NCC (kể cả đã ngừng giao dịch) để vẫn lọc được các phiếu nhập cũ của NCC đó
+                string sql = "SELECT MaDonViCapHang, TenDonVi FROM DonViCapHang ORDER BY TenDonVi ASC";
                 DataTable dt = DataProcessing.ReadData(sql);
                 DataRow drAll = dt.NewRow();
                 drAll["MaDonViCapHang"] = 0;
@@ -462,7 +464,8 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                                 decimal tongTien = Convert.ToDecimal(row["TongTien"]);
                                 string trangThai = row["TenTrangThai"]?.ToString() ?? "";
 
-                                sb.AppendLine($"{maPhieu},{thoiGian},{maNcc},{tenNcc},{canTra},{tongTien},{trangThai}");
+                                // Ghi số thô không phụ thuộc vùng miền (tránh dấu ',' thập phân làm lệch cột CSV)
+                                sb.AppendLine($"{maPhieu},{thoiGian},{maNcc},{tenNcc},{canTra.ToString("0.##", CultureInfo.InvariantCulture)},{tongTien.ToString("0.##", CultureInfo.InvariantCulture)},{trangThai}");
                             }
                         }
 
@@ -544,10 +547,12 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                 }
             }
 
-            // Bôi đỏ nếu còn nợ cần trả NCC
+            // Bôi đỏ nếu còn nợ cần trả NCC (chỉ với phiếu đã nhập hàng; phiếu tạm / đã hủy không phát sinh công nợ)
             if (dgvNhapHang.Columns[e.ColumnIndex].Name == "colCanTraNcc" && e.Value != null)
             {
-                if (decimal.TryParse(e.Value.ToString(), out decimal canTra) && canTra > 0)
+                DataRowView drvDong = dgvNhapHang.Rows[e.RowIndex].DataBoundItem as DataRowView;
+                bool daNhapHang = drvDong != null && drvDong["TrangThai"]?.ToString() == "DA_XAC_NHAN";
+                if (daNhapHang && decimal.TryParse(e.Value.ToString(), out decimal canTra) && canTra > 0)
                 {
                     e.CellStyle.ForeColor = Color.FromArgb(220, 38, 38);
                     e.CellStyle.Font = new Font(dgvNhapHang.Font, FontStyle.Bold);

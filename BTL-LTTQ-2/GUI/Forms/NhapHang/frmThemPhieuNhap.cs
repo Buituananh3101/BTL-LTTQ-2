@@ -312,7 +312,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                         h.TenHang, 
                         ISNULL(d.TenDVT, N'Cái') AS TenDVT, 
                         ISNULL(h.GiaVon, 0) AS DonGiaNhap,
-                        N'[' + h.MaHangNoiBo + N'] ' + h.TenHang + N' (' + ISNULL(d.TenDVT, N'Cái') + N') [Giá vốn: ' + CAST(CAST(ISNULL(h.GiaVon, 0) AS INT) AS NVARCHAR(15)) + N']' AS HienThi
+                        N'[' + h.MaHangNoiBo + N'] ' + h.TenHang + N' (' + ISNULL(d.TenDVT, N'Cái') + N') [Giá vốn: ' + CAST(CAST(ISNULL(h.GiaVon, 0) AS BIGINT) AS NVARCHAR(20)) + N']' AS HienThi
                     FROM HangHoa h
                     LEFT JOIN DonViTinh d ON h.MaDVT = d.MaDVT
                     WHERE ISNULL(h.TrangThai, '') NOT IN ('NGUNG_BAN', 'NGUNG_KINH_DOANH', 'DA_XOA')
@@ -373,7 +373,9 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                     decimal slHienCo = Convert.ToDecimal(daCo[0]["SoLuong"]) + 1;
                     daCo[0]["SoLuong"] = slHienCo;
                     decimal ggDong = Convert.ToDecimal(daCo[0]["GiamGia"]);
-                    decimal ttDong = (slHienCo * donGia) - ggDong;
+                    // Dùng đơn giá đang có trên dòng (người dùng có thể đã sửa), không lấy lại giá vốn danh mục
+                    decimal dgDong = daCo[0]["DonGiaNhap"] != DBNull.Value ? Convert.ToDecimal(daCo[0]["DonGiaNhap"]) : donGia;
+                    decimal ttDong = (slHienCo * dgDong) - ggDong;
                     daCo[0]["ThanhTien"] = ttDong > 0 ? ttDong : 0;
                     CapNhatTongKet();
 
@@ -614,6 +616,8 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                 {
                     isCalculating = false;
                 }
+                // CapNhatTongKet bị bỏ qua khi isCalculating = true -> tính lại tổng kết sau khi rời ô (Tab/click chuột)
+                CapNhatTongKet();
             }
         }
 

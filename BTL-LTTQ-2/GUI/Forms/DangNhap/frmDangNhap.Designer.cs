@@ -35,9 +35,9 @@
             // lblTieuDe
             // 
             this.lblTieuDe.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.lblTieuDe.Location = new System.Drawing.Point(83, 22);
+            this.lblTieuDe.Location = new System.Drawing.Point(83, 17);
             this.lblTieuDe.Name = "lblTieuDe";
-            this.lblTieuDe.Size = new System.Drawing.Size(410, 25);
+            this.lblTieuDe.Size = new System.Drawing.Size(410, 36);
             this.lblTieuDe.TabIndex = 0;
             this.lblTieuDe.Text = "HỆ THỐNG QUẢN LÍ KHO";
             this.lblTieuDe.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -117,7 +117,7 @@
             // 
             // btnDangNhap
             // 
-            this.btnDangNhap.Location = new System.Drawing.Point(435, 20);
+            this.btnDangNhap.Location = new System.Drawing.Point(435, 19);
             this.btnDangNhap.Name = "btnDangNhap";
             this.btnDangNhap.Size = new System.Drawing.Size(125, 36);
             this.btnDangNhap.TabIndex = 9;

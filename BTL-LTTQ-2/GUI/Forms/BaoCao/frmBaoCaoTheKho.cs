@@ -248,6 +248,12 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                 Width = 140
             };
             dgvTheKho.Columns.Add(colGhiChu);
+
+            // Thẻ kho phải giữ đúng trình tự thời gian (dòng đầu/cuối kỳ, tồn lũy kế) nên không cho sắp xếp cột
+            foreach (DataGridViewColumn col in dgvTheKho.Columns)
+            {
+                col.SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
         }
 
         private void KhoiTaoBoLoc()
@@ -333,7 +339,10 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                     lblXuatKyVal.Text = "0";
                     lblTonCuoiVal.Text = "0";
                     lblTongSoGiaoDich.Text = "Tổng số: 0 giao dịch phát sinh";
+                    lblTonCuoiVal.ForeColor = SystemColors.ControlText;
                     dgvTheKho.DataSource = null;
+                    // Bỏ dữ liệu của mặt hàng trước để Xuất file không xuất nhầm
+                    dtTheKhoHienThi = null;
                     return;
                 }
 
@@ -353,7 +362,7 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                     string ten = rH["TenHang"] != null ? rH["TenHang"].ToString() : "";
                     string dvt = rH["TenDVT"] != null ? rH["TenDVT"].ToString() : "";
                     string nhom = rH["TenNhom"] != null ? rH["TenNhom"].ToString() : "";
-                    string vitri = rH["ViTri"] != null ? rH["ViTri"].ToString() : "--";
+                    string vitri = rH["ViTri"] != DBNull.Value && !string.IsNullOrWhiteSpace(rH["ViTri"].ToString()) ? rH["ViTri"].ToString() : "--";
                     decimal giaVon = Convert.ToDecimal(rH["GiaVon"]);
 
                     lblTenHangHienThi.Text = $"[{sku}] {ten}";
@@ -414,15 +423,16 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                     LEFT JOIN PhieuKiemKe pkk ON bd.LoaiChungTu = 'KIEM_KE' AND bd.MaChungTu = pkk.MaPhieuKiemKe
                     WHERE bd.MaHang = @MaHang
                       AND (@MaKho = 0 OR bd.MaKho = @MaKho)
-                      AND bd.NgayGiaoDich >= @TuNgay AND bd.NgayGiaoDich <= @DenNgay
+                      AND bd.NgayGiaoDich >= @TuNgay AND bd.NgayGiaoDich < @DenNgayKe
                 ");
 
+                // Mốc 0h ngày kế tiếp (so sánh "<") để bao trọn cả ngày cuối, kể cả phần mili giây
                 List<SqlParameter> pGd = new List<SqlParameter>
                 {
                     new SqlParameter("@MaHang", maHang),
                     new SqlParameter("@MaKho", maKho),
                     new SqlParameter("@TuNgay", tuNgay),
-                    new SqlParameter("@DenNgay", denNgay)
+                    new SqlParameter("@DenNgayKe", dtpDenNgay.Value.Date.AddDays(1))
                 };
 
                 // Lọc theo loại chứng từ: KHÔNG lọc trong SQL để tồn lũy kế và tồn cuối kỳ luôn tính trên
@@ -523,6 +533,12 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                                 maHienThi = "PX" + maCt.ToString("D6");
                                 tenLoai = "Xuất hủy";
                                 doiTac = "Xuất hủy hao hụt";
+                                ghiChu = r["PxGhiChu"] != DBNull.Value ? r["PxGhiChu"].ToString() : "";
+                                break;
+                            case "XUAT_NOI_BO":
+                                maHienThi = "PX" + maCt.ToString("D6");
+                                tenLoai = "Xuất nội bộ";
+                                doiTac = "Xuất dùng nội bộ";
                                 ghiChu = r["PxGhiChu"] != DBNull.Value ? r["PxGhiChu"].ToString() : "";
                                 break;
                             default:
@@ -737,7 +753,8 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
         {
             foreach (Form openForm in Application.OpenForms)
             {
-                if (openForm is frmHienCotBaoCao)
+                // Chỉ dùng lại popup của chính form này (popup dùng chung với Báo cáo tồn kho)
+                if (openForm is frmHienCotBaoCao && openForm.Tag == this)
                 {
                     openForm.Activate();
                     openForm.BringToFront();
@@ -746,6 +763,7 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
             }
 
             frmHienCotBaoCao frm = new frmHienCotBaoCao(dgvTheKho);
+            frm.Tag = this;
             frm.StartPosition = FormStartPosition.Manual;
 
             // Tính toạ \u0111\u1ED9 hi\u1EC3n th\u1ECB ngay ph\u00EDa d\u01B0\u1EDBi n\u00FAt btnHienCot (c\u0103n th\u1EB3ng m\u00E9p ph\u1EA3i n\u00FAt)

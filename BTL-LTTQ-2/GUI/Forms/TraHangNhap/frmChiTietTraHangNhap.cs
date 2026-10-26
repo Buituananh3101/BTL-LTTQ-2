@@ -231,7 +231,17 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                 {
                     if (currentTrangThai == "NHAP")
                     {
-                        // Phiếu tạm: Xóa hoàn toàn trong CSDL
+                        // Phiếu tạm: Xóa hoàn toàn trong CSDL (kiểm tra lại trạng thái, phiếu có thể vừa được hoàn thành ở máy khác)
+                        using (SqlCommand cmdKt = new SqlCommand("SELECT TrangThai FROM PhieuTraHangNhap WITH (UPDLOCK, ROWLOCK) WHERE MaPhieuTraHang = @MaPhieuTraHang", conn, trans))
+                        {
+                            cmdKt.Parameters.AddWithValue("@MaPhieuTraHang", maPhieuTraHang);
+                            object ttHienTai = cmdKt.ExecuteScalar();
+                            if (ttHienTai == null || ttHienTai == DBNull.Value || ttHienTai.ToString() != "NHAP")
+                            {
+                                throw new InvalidOperationException("Phiếu trả hàng không còn ở trạng thái phiếu tạm. Vui lòng tải lại phiếu.");
+                            }
+                        }
+
                         string sqlDelCt = "DELETE FROM ChiTietPhieuTraHangNhap WHERE MaPhieuTraHang = @MaPhieuTraHang";
                         using (SqlCommand cmdCt = new SqlCommand(sqlDelCt, conn, trans))
                         {
@@ -480,6 +490,91 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                         {
                             throw new InvalidOperationException(
                                 $"Không thể hoàn thành phiếu trả hàng vì mặt hàng '{r["MaHangNoiBo"]} - {r["TenHang"]}' không đủ số lượng tồn trong kho (Tồn hiện tại: {tonKt:N0}, Cần trả: {slTraKt:N0})!\nNếu hoàn thành sẽ dẫn đến âm kho.");
+                        }
+                    }
+
+                    // Phiếu trả lập theo phiếu nhập: kiểm tra lại SL còn được trả và trừ nợ cần trả NCC của phiếu nhập gốc
+                    // (khi hủy sẽ hoàn lại đúng phần TongTienHang - GiamGia - CanThuNcc đã trừ)
+                    object maPhieuNhapGoc = DBNull.Value;
+                    decimal tienTraHang = 0;
+                    using (SqlCommand cmdDoc = new SqlCommand("SELECT MaPhieuNhap, TongTienHang - GiamGia AS TienTraHang FROM PhieuTraHangNhap WITH (UPDLOCK, ROWLOCK) WHERE MaPhieuTraHang = @MaPhieuTraHang AND TrangThai = 'NHAP'", conn, trans))
+                    {
+                        cmdDoc.Parameters.AddWithValue("@MaPhieuTraHang", maPhieuTraHang);
+                        using (SqlDataReader rd = cmdDoc.ExecuteReader())
+                        {
+                            if (!rd.Read())
+                            {
+                                throw new InvalidOperationException("Phiếu trả hàng không còn ở trạng thái phiếu tạm. Vui lòng tải lại phiếu.");
+                            }
+                            maPhieuNhapGoc = rd["MaPhieuNhap"];
+                            tienTraHang = Math.Max(0, Convert.ToDecimal(rd["TienTraHang"]));
+                        }
+                    }
+
+                    if (maPhieuNhapGoc != DBNull.Value)
+                    {
+                        decimal canTraNccGoc;
+                        using (SqlCommand cmdGoc = new SqlCommand("SELECT TrangThai, CanTraNcc FROM PhieuNhap WITH (UPDLOCK, ROWLOCK) WHERE MaPhieuNhap = @MaPhieuNhap", conn, trans))
+                        {
+                            cmdGoc.Parameters.AddWithValue("@MaPhieuNhap", maPhieuNhapGoc);
+                            using (SqlDataReader rd = cmdGoc.ExecuteReader())
+                            {
+                                if (!rd.Read() || rd["TrangThai"].ToString() != "DA_XAC_NHAN")
+                                {
+                                    throw new InvalidOperationException("Phiếu nhập gốc không còn ở trạng thái 'Đã nhập hàng', không thể hoàn thành phiếu trả hàng.");
+                                }
+                                canTraNccGoc = Convert.ToDecimal(rd["CanTraNcc"]);
+                            }
+                        }
+
+                        string sqlConDuocTra = @"
+                            SELECT ct.MaHang, h.MaHangNoiBo, h.TenHang, SUM(ct.SoLuong) AS SoLuongTra,
+                                   ISNULL((SELECT SUM(ctn.SoLuong) FROM ChiTietPhieuNhap ctn
+                                           WHERE ctn.MaPhieuNhap = @MaPhieuNhap AND ctn.MaHang = ct.MaHang), 0) AS SoLuongNhap,
+                                   ISNULL((SELECT SUM(ctt.SoLuong) FROM ChiTietPhieuTraHangNhap ctt
+                                           JOIN PhieuTraHangNhap pt ON ctt.MaPhieuTraHang = pt.MaPhieuTraHang
+                                           WHERE pt.MaPhieuNhap = @MaPhieuNhap AND pt.TrangThai IN ('NHAP', 'DA_TRA_HANG')
+                                             AND pt.MaPhieuTraHang <> @MaPhieuTraHang AND ctt.MaHang = ct.MaHang), 0) AS SoLuongDaTraKhac
+                            FROM ChiTietPhieuTraHangNhap ct
+                            JOIN HangHoa h ON ct.MaHang = h.MaHang
+                            WHERE ct.MaPhieuTraHang = @MaPhieuTraHang
+                            GROUP BY ct.MaHang, h.MaHangNoiBo, h.TenHang";
+                        DataTable dtConDuocTra = new DataTable();
+                        using (SqlCommand cmdCon = new SqlCommand(sqlConDuocTra, conn, trans))
+                        {
+                            cmdCon.Parameters.AddWithValue("@MaPhieuNhap", maPhieuNhapGoc);
+                            cmdCon.Parameters.AddWithValue("@MaPhieuTraHang", maPhieuTraHang);
+                            using (SqlDataAdapter da = new SqlDataAdapter(cmdCon))
+                            {
+                                da.Fill(dtConDuocTra);
+                            }
+                        }
+                        foreach (DataRow r in dtConDuocTra.Rows)
+                        {
+                            decimal slTraKt = Convert.ToDecimal(r["SoLuongTra"]);
+                            decimal slConDuocTra = Convert.ToDecimal(r["SoLuongNhap"]) - Convert.ToDecimal(r["SoLuongDaTraKhac"]);
+                            if (slTraKt > slConDuocTra)
+                            {
+                                throw new InvalidOperationException(
+                                    $"Mặt hàng '{r["MaHangNoiBo"]} - {r["TenHang"]}' chỉ còn được trả tối đa {Math.Max(0, slConDuocTra):N0} theo phiếu nhập gốc (Cần trả: {slTraKt:N0}).");
+                            }
+                        }
+
+                        decimal truNo = Math.Min(tienTraHang, Math.Max(0, canTraNccGoc));
+                        decimal canThuNccMoi = tienTraHang - truNo;
+
+                        using (SqlCommand cmdTruNo = new SqlCommand("UPDATE PhieuNhap SET CanTraNcc = CanTraNcc - @TruNo WHERE MaPhieuNhap = @MaPhieuNhap", conn, trans))
+                        {
+                            cmdTruNo.Parameters.AddWithValue("@TruNo", truNo);
+                            cmdTruNo.Parameters.AddWithValue("@MaPhieuNhap", maPhieuNhapGoc);
+                            cmdTruNo.ExecuteNonQuery();
+                        }
+
+                        using (SqlCommand cmdCanThu = new SqlCommand("UPDATE PhieuTraHangNhap SET CanThuNcc = @CanThuNcc, DaThuNcc = CASE WHEN DaThuNcc > @CanThuNcc THEN @CanThuNcc ELSE DaThuNcc END WHERE MaPhieuTraHang = @MaPhieuTraHang", conn, trans))
+                        {
+                            cmdCanThu.Parameters.AddWithValue("@CanThuNcc", canThuNccMoi);
+                            cmdCanThu.Parameters.AddWithValue("@MaPhieuTraHang", maPhieuTraHang);
+                            cmdCanThu.ExecuteNonQuery();
                         }
                     }
 

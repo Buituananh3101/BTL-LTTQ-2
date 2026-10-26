@@ -94,7 +94,7 @@
             // lblNgayCanBang
             // 
             this.lblNgayCanBang.AutoSize = true;
-            this.lblNgayCanBang.Location = new System.Drawing.Point(260, 82);
+            this.lblNgayCanBang.Location = new System.Drawing.Point(340, 82);
             this.lblNgayCanBang.Name = "lblNgayCanBang";
             this.lblNgayCanBang.Size = new System.Drawing.Size(205, 17);
             this.lblNgayCanBang.TabIndex = 5;
@@ -112,7 +112,7 @@
             // lblNgayTao
             // 
             this.lblNgayTao.AutoSize = true;
-            this.lblNgayTao.Location = new System.Drawing.Point(260, 55);
+            this.lblNgayTao.Location = new System.Drawing.Point(340, 55);
             this.lblNgayTao.Name = "lblNgayTao";
             this.lblNgayTao.Size = new System.Drawing.Size(170, 17);
             this.lblNgayTao.TabIndex = 3;
@@ -374,7 +374,7 @@
             this.lblTongLechGiamVal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTongLechGiamVal.Location = new System.Drawing.Point(240, 68);
             this.lblTongLechGiamVal.Name = "lblTongLechGiamVal";
-            this.lblTongLechGiamVal.Size = new System.Drawing.Size(255, 21);
+            this.lblTongLechGiamVal.Size = new System.Drawing.Size(255, 25);
             this.lblTongLechGiamVal.TabIndex = 5;
             this.lblTongLechGiamVal.Text = "0 | 0 đ";
             this.lblTongLechGiamVal.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -393,7 +393,7 @@
             this.lblTongLechTangVal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTongLechTangVal.Location = new System.Drawing.Point(240, 38);
             this.lblTongLechTangVal.Name = "lblTongLechTangVal";
-            this.lblTongLechTangVal.Size = new System.Drawing.Size(255, 21);
+            this.lblTongLechTangVal.Size = new System.Drawing.Size(255, 25);
             this.lblTongLechTangVal.TabIndex = 3;
             this.lblTongLechTangVal.Text = "0 | 0 đ";
             this.lblTongLechTangVal.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -412,7 +412,7 @@
             this.lblTongThucTeVal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTongThucTeVal.Location = new System.Drawing.Point(240, 8);
             this.lblTongThucTeVal.Name = "lblTongThucTeVal";
-            this.lblTongThucTeVal.Size = new System.Drawing.Size(255, 21);
+            this.lblTongThucTeVal.Size = new System.Drawing.Size(255, 25);
             this.lblTongThucTeVal.TabIndex = 1;
             this.lblTongThucTeVal.Text = "0 | 0 đ";
             this.lblTongThucTeVal.TextAlign = System.Drawing.ContentAlignment.MiddleRight;

@@ -361,6 +361,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
             {
                 dtNhomHang.DefaultView.RowFilter = $"TenNhom LIKE '%{kw}%'";
             }
+            CapNhatTongSo();
         }
 
         // Bấm nút Hủy để trở về chế độ thêm mới
@@ -630,9 +631,18 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                     // Fallback đọc text nếu là plain text nhưng đổi đuôi .xls
                     try
                     {
-                        string[] lines = File.ReadAllLines(filePath, Encoding.UTF8);
-                        if (lines.Length > 0 && !lines[0].StartsWith("\xD0\xCF\x11\xE0"))
+                        // Kiểm tra chữ ký nhị phân theo byte: file Excel thật (.xls OLE: D0 CF 11 E0, .xlsx ZIP: 50 4B)
+                        // không được đọc dạng text, tránh nhập chuỗi rác thành tên nhóm
+                        byte[] dauFile = new byte[4];
+                        using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                         {
+                            fs.Read(dauFile, 0, dauFile.Length);
+                        }
+                        bool laFileNhiPhan = (dauFile[0] == 0xD0 && dauFile[1] == 0xCF && dauFile[2] == 0x11 && dauFile[3] == 0xE0)
+                            || (dauFile[0] == 0x50 && dauFile[1] == 0x4B);
+                        if (!laFileNhiPhan)
+                        {
+                            string[] lines = File.ReadAllLines(filePath, Encoding.UTF8);
                             return DocTuDongTextLines(lines);
                         }
                     }
@@ -665,11 +675,12 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                 char separator = ',';
                 if (line.Contains("\t")) separator = '\t';
                 else if (line.Contains(";")) separator = ';';
-                string[] parts = line.Split(separator);
-                if (parts.Length == 0) continue;
+                // Tách có hỗ trợ ô trong dấu nháy kép (vd "Bao bì, màng co" do chính form này xuất ra)
+                List<string> parts = DanhSachHangHoa.frmNhapHangHoaFile.TachDongCsv(line, separator);
+                if (parts.Count == 0) continue;
                 if (!daXacDinhCot)
                 {
-                    for (int i = 0; i < parts.Length; i++)
+                    for (int i = 0; i < parts.Count; i++)
                     {
                         string p = BoDauTiengViet(parts[i].Trim('\"', ' ', '\t'));
                         if (p.Contains("ten") || p.Contains("tên") || p.Contains("nhom") || p.Contains("nhóm"))
@@ -686,7 +697,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                         continue;
                     }
                 }
-                if (colIndex < parts.Length)
+                if (colIndex < parts.Count)
                 {
                     string val = parts[colIndex].Trim('\"', ' ', '\t');
                     if (!string.IsNullOrEmpty(val) && !IsHeaderTitle(val))
@@ -719,6 +730,9 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
             if (string.IsNullOrWhiteSpace(text)) return true;
             string t = BoDauTiengViet(text);
             return t == "ten nhom"
+                || t == "ten nhom nha cung cap"
+                || t == "ten nhom ncc"
+                || t == "nhom nha cung cap"
                 || t == "ten nhom hang"
                 || t == "nhom hang"
                 || t == "ten"

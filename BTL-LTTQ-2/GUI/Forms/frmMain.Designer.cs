@@ -238,7 +238,8 @@
             this.mnuHuongDan.Name = "mnuHuongDan";
             this.mnuHuongDan.Size = new System.Drawing.Size(197, 22);
             this.mnuHuongDan.Text = "Hướng dẫn sử dụng";
-            // 
+            this.mnuHuongDan.Click += new System.EventHandler(this.mnuHuongDan_Click);
+            //
             // mnuThongTin
             // 
             this.mnuThongTin.Name = "mnuThongTin";

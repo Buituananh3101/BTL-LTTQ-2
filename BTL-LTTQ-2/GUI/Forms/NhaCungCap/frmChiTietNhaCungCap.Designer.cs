@@ -78,7 +78,7 @@
             // 
             this.lblNoHienTaiVal.AutoSize = true;
             this.lblNoHienTaiVal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
-            this.lblNoHienTaiVal.Location = new System.Drawing.Point(624, 62);
+            this.lblNoHienTaiVal.Location = new System.Drawing.Point(634, 62);
             this.lblNoHienTaiVal.Name = "lblNoHienTaiVal";
             this.lblNoHienTaiVal.Size = new System.Drawing.Size(32, 21);
             this.lblNoHienTaiVal.TabIndex = 0;
@@ -146,7 +146,7 @@
             this.lblTieuDeCongNo.Name = "lblTieuDeCongNo";
             this.lblTieuDeCongNo.Size = new System.Drawing.Size(154, 21);
             this.lblTieuDeCongNo.TabIndex = 0;
-            this.lblTieuDeCongNo.Text = "Giao dịch & Công nợ";
+            this.lblTieuDeCongNo.Text = "Giao dịch && Công nợ";
             // 
             // cboNhomNcc
             // 
@@ -419,7 +419,7 @@
             // lblTongMuaVal
             // 
             this.lblTongMuaVal.AutoSize = true;
-            this.lblTongMuaVal.Location = new System.Drawing.Point(184, 62);
+            this.lblTongMuaVal.Location = new System.Drawing.Point(218, 62);
             this.lblTongMuaVal.Name = "lblTongMuaVal";
             this.lblTongMuaVal.Size = new System.Drawing.Size(32, 21);
             this.lblTongMuaVal.TabIndex = 0;

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
@@ -454,8 +455,8 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                     }
                 });
 
+                // Không gán DialogResult để form ở lại hiển thị phiếu đã khóa; danh sách làm mới theo DaThayDoiDuLieu
                 DaThayDoiDuLieu = true;
-                this.DialogResult = DialogResult.OK;
                 MessageBox.Show(ketQua.TaoThongBao(this.maPhieu), "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 NapThongTinPhieu();
             }
@@ -670,23 +671,45 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             sb.AppendLine($"{lblNguoiTao.Text} - {lblNgayTao.Text}");
             sb.AppendLine($"{lblNguoiCanBang.Text} - {lblNgayCanBang.Text}");
             sb.AppendLine($"{lblKho.Text}");
-            sb.AppendLine($"Ghi chú: {txtGhiChu.Text}");
+            sb.AppendLine(ChuoiCsv($"Ghi chú: {txtGhiChu.Text}"));
             sb.AppendLine();
             sb.AppendLine("STT,Mã hàng,Tên hàng,ĐVT,Tồn kho (sổ sách),Thực tế,SL lệch,Đơn giá,Giá trị lệch");
 
+            // Số ghi theo định dạng bất biến (không phụ thuộc vùng miền, tránh dấu phẩy thập phân làm lệch cột CSV)
             foreach (DataRow r in dtChiTietData.Rows)
             {
-                string thucTe = r["SoLuongThucTe"] != DBNull.Value ? r["SoLuongThucTe"].ToString() : "Chưa kiểm";
-                sb.AppendLine($"{r["STT"]},\"{r["MaHangNoiBo"]}\",\"{r["TenHang"]}\",\"{r["TenDVT"]}\",{r["TonKho"]},{thucTe},{r["SlChenhLech"]},{r["DonGia"]},{r["GiaTriChenhLech"]}");
+                string thucTe = r["SoLuongThucTe"] != DBNull.Value ? SoCsv(r["SoLuongThucTe"]) : "Chưa kiểm";
+                sb.AppendLine(string.Join(",",
+                    r["STT"].ToString(),
+                    ChuoiCsv(r["MaHangNoiBo"]),
+                    ChuoiCsv(r["TenHang"]),
+                    ChuoiCsv(r["TenDVT"]),
+                    SoCsv(r["TonKho"]),
+                    thucTe,
+                    SoCsv(r["SlChenhLech"]),
+                    SoCsv(r["DonGia"]),
+                    SoCsv(r["GiaTriChenhLech"])));
             }
 
             sb.AppendLine();
-            sb.AppendLine($"Tổng thực tế: {lblTongThucTeVal.Text}");
-            sb.AppendLine($"Tổng lệch tăng: {lblTongLechTangVal.Text}");
-            sb.AppendLine($"Tổng lệch giảm: {lblTongLechGiamVal.Text}");
-            sb.AppendLine($"Tổng chênh lệch: {lblTongChenhLechVal.Text}");
+            sb.AppendLine(ChuoiCsv($"Tổng thực tế: {lblTongThucTeVal.Text}"));
+            sb.AppendLine(ChuoiCsv($"Tổng lệch tăng: {lblTongLechTangVal.Text}"));
+            sb.AppendLine(ChuoiCsv($"Tổng lệch giảm: {lblTongLechGiamVal.Text}"));
+            sb.AppendLine(ChuoiCsv($"Tổng chênh lệch: {lblTongChenhLechVal.Text}"));
 
             File.WriteAllText(filePath, sb.ToString(), new UTF8Encoding(true));
+        }
+
+        private static string ChuoiCsv(object giaTri)
+        {
+            string s = giaTri == null || giaTri == DBNull.Value ? "" : giaTri.ToString();
+            return "\"" + s.Replace("\"", "\"\"") + "\"";
+        }
+
+        private static string SoCsv(object giaTri)
+        {
+            if (giaTri == null || giaTri == DBNull.Value) return "";
+            return Convert.ToDecimal(giaTri).ToString("0.##", CultureInfo.InvariantCulture);
         }
 
         private void XuatExcelHtmlChiTiet(string filePath)
@@ -710,7 +733,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             sb.AppendLine($"<p><b>Trạng thái:</b> {lblTrangThaiBadge.Text} | <b>{lblKho.Text}</b></p>");
             sb.AppendLine($"<p>{lblNguoiTao.Text} | {lblNgayTao.Text}</p>");
             sb.AppendLine($"<p>{lblNguoiCanBang.Text} | {lblNgayCanBang.Text}</p>");
-            sb.AppendLine($"<p><b>Ghi chú:</b> {txtGhiChu.Text}</p>");
+            sb.AppendLine($"<p><b>Ghi chú:</b> {System.Net.WebUtility.HtmlEncode(txtGhiChu.Text)}</p>");
             sb.AppendLine("<br/>");
 
             sb.AppendLine("<table>");
@@ -732,7 +755,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                 sb.AppendLine("<tr>");
                 sb.AppendLine($"<td class=\"center\">{r["STT"]}</td>");
                 sb.AppendLine($"<td class=\"center\">{r["MaHangNoiBo"]}</td>");
-                sb.AppendLine($"<td>{r["TenHang"]}</td>");
+                sb.AppendLine($"<td>{System.Net.WebUtility.HtmlEncode(r["TenHang"].ToString())}</td>");
                 sb.AppendLine($"<td class=\"center\">{r["TenDVT"]}</td>");
                 sb.AppendLine($"<td class=\"num\">{Convert.ToDecimal(r["TonKho"]):N0}</td>");
                 // Dòng chưa kiểm: để trống chênh lệch

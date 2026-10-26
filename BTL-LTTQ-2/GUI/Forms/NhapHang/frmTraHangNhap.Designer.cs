@@ -373,7 +373,7 @@
             this.grpTinhToan.Size = new System.Drawing.Size(1010, 115);
             this.grpTinhToan.TabIndex = 3;
             this.grpTinhToan.TabStop = false;
-            this.grpTinhToan.Text = "Tính toán số tiền & công nợ";
+            this.grpTinhToan.Text = "Tính toán số tiền && công nợ";
             // 
             // txtTienNccTraLai
             // 

@@ -880,6 +880,14 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                 return;
             }
 
+            // Độ dài tối đa theo CSDL: MaHangNoiBo VARCHAR(30), TenHang NVARCHAR(150)
+            if (maHangNoiBo.Length > 30 || tenHang.Length > 150)
+            {
+                MessageBox.Show("Mã hàng tối đa 30 ký tự và Tên hàng tối đa 150 ký tự!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                (maHangNoiBo.Length > 30 ? txtMaHang : txtTenHang).Focus();
+                return;
+            }
+
             if (cboNhomHang.SelectedIndex < 0 && !string.IsNullOrWhiteSpace(cboNhomHang.Text))
             {
                 int idx = cboNhomHang.FindStringExact(cboNhomHang.Text.Trim());
@@ -922,6 +930,26 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             string donViTrongLuong = cboDonViTrongLuong.SelectedItem?.ToString() ?? "kg";
             decimal.TryParse(txtDinhMucTonThapNhat.Text.Replace(",", "").Replace(".", ""), out decimal tonThapNhat);
             decimal.TryParse(txtDinhMucTonCaoNhat.Text.Replace(",", "").Replace(".", ""), out decimal tonCaoNhat);
+
+            // Chặn số âm trước khi lưu (CSDL ràng buộc GiaBanThamKhao >= 0 và TonToiThieu >= 0)
+            if (giaVon < 0 || giaBan < 0)
+            {
+                MessageBox.Show("Giá vốn và giá bán không được là số âm!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                (giaVon < 0 ? txtGiaVon : txtGiaBan).Focus();
+                return;
+            }
+            if (tonThapNhat < 0 || tonCaoNhat < 0)
+            {
+                MessageBox.Show("Định mức tồn không được là số âm!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                (tonThapNhat < 0 ? txtDinhMucTonThapNhat : txtDinhMucTonCaoNhat).Focus();
+                return;
+            }
+            if (tonCaoNhat > 0 && tonThapNhat > tonCaoNhat)
+            {
+                MessageBox.Show("Định mức tồn thấp nhất không được lớn hơn định mức tồn cao nhất!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtDinhMucTonThapNhat.Focus();
+                return;
+            }
 
             // Form không có ô Quy cách: chỉ gán NULL khi thêm mới, khi sửa giữ nguyên giá trị Quy cách đang có trong CSDL
             string quyCach = null;

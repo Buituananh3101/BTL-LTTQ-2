@@ -648,8 +648,14 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                     }
                 }
             }
-            catch
+            catch (Exception exOleDb)
             {
+                // File Excel nhị phân (.xls/.xlsx có byte 0) mà máy thiếu OLEDB driver: báo lỗi, không đọc nhị phân như văn bản (tránh nhập ĐVT rác)
+                if (Array.IndexOf(File.ReadAllBytes(filePath), (byte)0) >= 0)
+                {
+                    throw new Exception("Máy chưa có trình đọc file Excel này. Vui lòng lưu file sang định dạng .csv (UTF-8) rồi nhập lại! Chi tiết: " + exOleDb.Message);
+                }
+
                 string[] lines = File.ReadAllLines(filePath, Encoding.Default);
                 bool header = false;
                 foreach (string l in lines)

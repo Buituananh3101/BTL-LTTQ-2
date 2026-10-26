@@ -94,7 +94,7 @@
             this.lblLoTrinh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblLoTrinh.AutoSize = true;
             this.lblLoTrinh.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblLoTrinh.Location = new System.Drawing.Point(730, 20);
+            this.lblLoTrinh.Location = new System.Drawing.Point(600, 20);
             this.lblLoTrinh.Name = "lblLoTrinh";
             this.lblLoTrinh.Size = new System.Drawing.Size(130, 17);
             this.lblLoTrinh.TabIndex = 2;
@@ -150,7 +150,7 @@
             // 
             this.lblThoiDiemNhanVal.AutoSize = true;
             this.lblThoiDiemNhanVal.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.lblThoiDiemNhanVal.Location = new System.Drawing.Point(835, 55);
+            this.lblThoiDiemNhanVal.Location = new System.Drawing.Point(816, 66);
             this.lblThoiDiemNhanVal.Name = "lblThoiDiemNhanVal";
             this.lblThoiDiemNhanVal.Size = new System.Drawing.Size(23, 17);
             this.lblThoiDiemNhanVal.TabIndex = 15;
@@ -160,7 +160,7 @@
             // 
             this.lblThoiDiemNhan.AutoSize = true;
             this.lblThoiDiemNhan.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.lblThoiDiemNhan.Location = new System.Drawing.Point(735, 55);
+            this.lblThoiDiemNhan.Location = new System.Drawing.Point(700, 66);
             this.lblThoiDiemNhan.Name = "lblThoiDiemNhan";
             this.lblThoiDiemNhan.Size = new System.Drawing.Size(74, 17);
             this.lblThoiDiemNhan.TabIndex = 14;
@@ -170,7 +170,7 @@
             // 
             this.lblNguoiNhanVal.AutoSize = true;
             this.lblNguoiNhanVal.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.lblNguoiNhanVal.Location = new System.Drawing.Point(835, 20);
+            this.lblNguoiNhanVal.Location = new System.Drawing.Point(484, 66);
             this.lblNguoiNhanVal.Name = "lblNguoiNhanVal";
             this.lblNguoiNhanVal.Size = new System.Drawing.Size(23, 17);
             this.lblNguoiNhanVal.TabIndex = 13;
@@ -180,7 +180,7 @@
             // 
             this.lblNguoiNhan.AutoSize = true;
             this.lblNguoiNhan.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.lblNguoiNhan.Location = new System.Drawing.Point(735, 20);
+            this.lblNguoiNhan.Location = new System.Drawing.Point(360, 66);
             this.lblNguoiNhan.Name = "lblNguoiNhan";
             this.lblNguoiNhan.Size = new System.Drawing.Size(80, 17);
             this.lblNguoiNhan.TabIndex = 12;
@@ -190,7 +190,7 @@
             // 
             this.lblThoiDiemXuatVal.AutoSize = true;
             this.lblThoiDiemXuatVal.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.lblThoiDiemXuatVal.Location = new System.Drawing.Point(595, 55);
+            this.lblThoiDiemXuatVal.Location = new System.Drawing.Point(816, 38);
             this.lblThoiDiemXuatVal.Name = "lblThoiDiemXuatVal";
             this.lblThoiDiemXuatVal.Size = new System.Drawing.Size(23, 17);
             this.lblThoiDiemXuatVal.TabIndex = 11;
@@ -200,7 +200,7 @@
             // 
             this.lblThoiDiemXuat.AutoSize = true;
             this.lblThoiDiemXuat.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.lblThoiDiemXuat.Location = new System.Drawing.Point(505, 55);
+            this.lblThoiDiemXuat.Location = new System.Drawing.Point(700, 38);
             this.lblThoiDiemXuat.Name = "lblThoiDiemXuat";
             this.lblThoiDiemXuat.Size = new System.Drawing.Size(70, 17);
             this.lblThoiDiemXuat.TabIndex = 10;
@@ -210,7 +210,7 @@
             // 
             this.lblNguoiXuatVal.AutoSize = true;
             this.lblNguoiXuatVal.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.lblNguoiXuatVal.Location = new System.Drawing.Point(595, 20);
+            this.lblNguoiXuatVal.Location = new System.Drawing.Point(484, 38);
             this.lblNguoiXuatVal.Name = "lblNguoiXuatVal";
             this.lblNguoiXuatVal.Size = new System.Drawing.Size(23, 17);
             this.lblNguoiXuatVal.TabIndex = 9;
@@ -220,7 +220,7 @@
             // 
             this.lblNguoiXuat.AutoSize = true;
             this.lblNguoiXuat.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.lblNguoiXuat.Location = new System.Drawing.Point(505, 20);
+            this.lblNguoiXuat.Location = new System.Drawing.Point(360, 38);
             this.lblNguoiXuat.Name = "lblNguoiXuat";
             this.lblNguoiXuat.Size = new System.Drawing.Size(76, 17);
             this.lblNguoiXuat.TabIndex = 8;
@@ -230,7 +230,7 @@
             // 
             this.lblNgayLapVal.AutoSize = true;
             this.lblNgayLapVal.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.lblNgayLapVal.Location = new System.Drawing.Point(345, 55);
+            this.lblNgayLapVal.Location = new System.Drawing.Point(816, 10);
             this.lblNgayLapVal.Name = "lblNgayLapVal";
             this.lblNgayLapVal.Size = new System.Drawing.Size(23, 17);
             this.lblNgayLapVal.TabIndex = 7;
@@ -240,7 +240,7 @@
             // 
             this.lblNgayLap.AutoSize = true;
             this.lblNgayLap.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.lblNgayLap.Location = new System.Drawing.Point(265, 55);
+            this.lblNgayLap.Location = new System.Drawing.Point(700, 10);
             this.lblNgayLap.Name = "lblNgayLap";
             this.lblNgayLap.Size = new System.Drawing.Size(64, 17);
             this.lblNgayLap.TabIndex = 6;
@@ -250,7 +250,7 @@
             // 
             this.lblNguoiLapVal.AutoSize = true;
             this.lblNguoiLapVal.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.lblNguoiLapVal.Location = new System.Drawing.Point(345, 20);
+            this.lblNguoiLapVal.Location = new System.Drawing.Point(484, 10);
             this.lblNguoiLapVal.Name = "lblNguoiLapVal";
             this.lblNguoiLapVal.Size = new System.Drawing.Size(23, 17);
             this.lblNguoiLapVal.TabIndex = 5;
@@ -260,7 +260,7 @@
             // 
             this.lblNguoiLap.AutoSize = true;
             this.lblNguoiLap.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.lblNguoiLap.Location = new System.Drawing.Point(265, 20);
+            this.lblNguoiLap.Location = new System.Drawing.Point(360, 10);
             this.lblNguoiLap.Name = "lblNguoiLap";
             this.lblNguoiLap.Size = new System.Drawing.Size(70, 17);
             this.lblNguoiLap.TabIndex = 4;
@@ -269,7 +269,7 @@
             // lblKhoDichVal
             // 
             this.lblKhoDichVal.AutoSize = true;
-            this.lblKhoDichVal.Location = new System.Drawing.Point(85, 55);
+            this.lblKhoDichVal.Location = new System.Drawing.Point(121, 38);
             this.lblKhoDichVal.Name = "lblKhoDichVal";
             this.lblKhoDichVal.Size = new System.Drawing.Size(23, 17);
             this.lblKhoDichVal.TabIndex = 3;
@@ -279,7 +279,7 @@
             // 
             this.lblKhoDich.AutoSize = true;
             this.lblKhoDich.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.lblKhoDich.Location = new System.Drawing.Point(16, 55);
+            this.lblKhoDich.Location = new System.Drawing.Point(16, 38);
             this.lblKhoDich.Name = "lblKhoDich";
             this.lblKhoDich.Size = new System.Drawing.Size(66, 17);
             this.lblKhoDich.TabIndex = 2;
@@ -288,7 +288,7 @@
             // lblKhoNguonVal
             // 
             this.lblKhoNguonVal.AutoSize = true;
-            this.lblKhoNguonVal.Location = new System.Drawing.Point(85, 20);
+            this.lblKhoNguonVal.Location = new System.Drawing.Point(121, 10);
             this.lblKhoNguonVal.Name = "lblKhoNguonVal";
             this.lblKhoNguonVal.Size = new System.Drawing.Size(23, 17);
             this.lblKhoNguonVal.TabIndex = 1;
@@ -298,7 +298,7 @@
             // 
             this.lblKhoNguon.AutoSize = true;
             this.lblKhoNguon.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.lblKhoNguon.Location = new System.Drawing.Point(16, 20);
+            this.lblKhoNguon.Location = new System.Drawing.Point(16, 10);
             this.lblKhoNguon.Name = "lblKhoNguon";
             this.lblKhoNguon.Size = new System.Drawing.Size(57, 17);
             this.lblKhoNguon.TabIndex = 0;
@@ -433,11 +433,11 @@
             // 
             // lblGhiChuNhanVal
             // 
-            this.lblGhiChuNhanVal.AutoSize = true;
+            this.lblGhiChuNhanVal.AutoEllipsis = true;
             this.lblGhiChuNhanVal.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.lblGhiChuNhanVal.Location = new System.Drawing.Point(125, 50);
+            this.lblGhiChuNhanVal.Location = new System.Drawing.Point(171, 50);
             this.lblGhiChuNhanVal.Name = "lblGhiChuNhanVal";
-            this.lblGhiChuNhanVal.Size = new System.Drawing.Size(48, 17);
+            this.lblGhiChuNhanVal.Size = new System.Drawing.Size(290, 25);
             this.lblGhiChuNhanVal.TabIndex = 11;
             this.lblGhiChuNhanVal.Text = "(trống)";
             // 
@@ -452,11 +452,11 @@
             // 
             // lblGhiChuChuyenVal
             // 
-            this.lblGhiChuChuyenVal.AutoSize = true;
+            this.lblGhiChuChuyenVal.AutoEllipsis = true;
             this.lblGhiChuChuyenVal.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.lblGhiChuChuyenVal.Location = new System.Drawing.Point(125, 18);
+            this.lblGhiChuChuyenVal.Location = new System.Drawing.Point(171, 18);
             this.lblGhiChuChuyenVal.Name = "lblGhiChuChuyenVal";
-            this.lblGhiChuChuyenVal.Size = new System.Drawing.Size(48, 17);
+            this.lblGhiChuChuyenVal.Size = new System.Drawing.Size(290, 25);
             this.lblGhiChuChuyenVal.TabIndex = 9;
             this.lblGhiChuChuyenVal.Text = "(trống)";
             // 
@@ -473,7 +473,7 @@
             // 
             this.lblTongGiaTriVal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTongGiaTriVal.AutoSize = true;
-            this.lblTongGiaTriVal.Location = new System.Drawing.Point(895, 50);
+            this.lblTongGiaTriVal.Location = new System.Drawing.Point(857, 50);
             this.lblTongGiaTriVal.Name = "lblTongGiaTriVal";
             this.lblTongGiaTriVal.Size = new System.Drawing.Size(46, 17);
             this.lblTongGiaTriVal.TabIndex = 7;
@@ -484,7 +484,7 @@
             this.lblTongGiaTri.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTongGiaTri.AutoSize = true;
             this.lblTongGiaTri.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.lblTongGiaTri.Location = new System.Drawing.Point(790, 52);
+            this.lblTongGiaTri.Location = new System.Drawing.Point(720, 50);
             this.lblTongGiaTri.Name = "lblTongGiaTri";
             this.lblTongGiaTri.Size = new System.Drawing.Size(79, 17);
             this.lblTongGiaTri.TabIndex = 6;
@@ -494,7 +494,7 @@
             // 
             this.lblTongHaoHutVal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTongHaoHutVal.AutoSize = true;
-            this.lblTongHaoHutVal.Location = new System.Drawing.Point(895, 18);
+            this.lblTongHaoHutVal.Location = new System.Drawing.Point(857, 18);
             this.lblTongHaoHutVal.Name = "lblTongHaoHutVal";
             this.lblTongHaoHutVal.Size = new System.Drawing.Size(15, 17);
             this.lblTongHaoHutVal.TabIndex = 5;
@@ -505,7 +505,7 @@
             this.lblTongHaoHut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTongHaoHut.AutoSize = true;
             this.lblTongHaoHut.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.lblTongHaoHut.Location = new System.Drawing.Point(790, 18);
+            this.lblTongHaoHut.Location = new System.Drawing.Point(720, 18);
             this.lblTongHaoHut.Name = "lblTongHaoHut";
             this.lblTongHaoHut.Size = new System.Drawing.Size(89, 17);
             this.lblTongHaoHut.TabIndex = 4;
@@ -515,7 +515,7 @@
             // 
             this.lblTongSlNhanVal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTongSlNhanVal.AutoSize = true;
-            this.lblTongSlNhanVal.Location = new System.Drawing.Point(690, 52);
+            this.lblTongSlNhanVal.Location = new System.Drawing.Point(627, 50);
             this.lblTongSlNhanVal.Name = "lblTongSlNhanVal";
             this.lblTongSlNhanVal.Size = new System.Drawing.Size(15, 17);
             this.lblTongSlNhanVal.TabIndex = 3;
@@ -526,7 +526,7 @@
             this.lblTongSlNhan.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTongSlNhan.AutoSize = true;
             this.lblTongSlNhan.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.lblTongSlNhan.Location = new System.Drawing.Point(580, 52);
+            this.lblTongSlNhan.Location = new System.Drawing.Point(470, 50);
             this.lblTongSlNhan.Name = "lblTongSlNhan";
             this.lblTongSlNhan.Size = new System.Drawing.Size(102, 17);
             this.lblTongSlNhan.TabIndex = 2;
@@ -536,7 +536,7 @@
             // 
             this.lblTongSlChuyenVal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTongSlChuyenVal.AutoSize = true;
-            this.lblTongSlChuyenVal.Location = new System.Drawing.Point(690, 18);
+            this.lblTongSlChuyenVal.Location = new System.Drawing.Point(627, 18);
             this.lblTongSlChuyenVal.Name = "lblTongSlChuyenVal";
             this.lblTongSlChuyenVal.Size = new System.Drawing.Size(15, 17);
             this.lblTongSlChuyenVal.TabIndex = 1;
@@ -547,7 +547,7 @@
             this.lblTongSlChuyen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTongSlChuyen.AutoSize = true;
             this.lblTongSlChuyen.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.lblTongSlChuyen.Location = new System.Drawing.Point(580, 18);
+            this.lblTongSlChuyen.Location = new System.Drawing.Point(470, 18);
             this.lblTongSlChuyen.Name = "lblTongSlChuyen";
             this.lblTongSlChuyen.Size = new System.Drawing.Size(102, 17);
             this.lblTongSlChuyen.TabIndex = 0;
@@ -571,7 +571,7 @@
             // 
             this.btnNhanHang.Location = new System.Drawing.Point(235, 12);
             this.btnNhanHang.Name = "btnNhanHang";
-            this.btnNhanHang.Size = new System.Drawing.Size(120, 32);
+            this.btnNhanHang.Size = new System.Drawing.Size(130, 32);
             this.btnNhanHang.TabIndex = 0;
             this.btnNhanHang.Text = "Nhận hàng";
             this.btnNhanHang.UseVisualStyleBackColor = true;
@@ -604,7 +604,7 @@
             // 
             this.btnHoanThanh.Location = new System.Drawing.Point(235, 12);
             this.btnHoanThanh.Name = "btnHoanThanh";
-            this.btnHoanThanh.Size = new System.Drawing.Size(120, 32);
+            this.btnHoanThanh.Size = new System.Drawing.Size(144, 32);
             this.btnHoanThanh.TabIndex = 4;
             this.btnHoanThanh.Text = "Chuyển hàng";
             this.btnHoanThanh.UseVisualStyleBackColor = true;

@@ -181,6 +181,18 @@ namespace BTL_LTTQ_2.GUI.Forms
             MessageBox.Show("Hệ thống quản lí kho - BTL Lập trình trực quan\nPhiên bản: 1.0\nNền tảng: Windows Forms .NET Framework", "Thông tin phần mềm", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        private void mnuHuongDan_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(
+                "1. Hệ thống: Đổi mật khẩu, Đăng xuất; Quản lý có thêm Người dùng.\n" +
+                "2. Kho hàng: Kiểm kho, Chuyển kho (Xuất kho ➜ Nhận kho); Quản lý dùng Đổi kho để chọn kho làm việc.\n" +
+                "3. Hàng hóa: Danh sách hàng hóa (nhóm hàng, đơn vị tính, vị trí).\n" +
+                "4. Mua hàng: Nhà cung cấp, Nhập hàng, Trả hàng nhập.\n" +
+                "5. Báo cáo: Báo cáo tồn kho, Báo cáo thẻ kho.\n\n" +
+                "Phiếu tạm có thể xóa hoặc hoàn thành; phiếu đã hoàn thành chỉ được hủy. Nhấp đúp một dòng trên danh sách để xem chi tiết.",
+                "Hướng dẫn sử dụng", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
         private void mnuNhaCungCap_Click(object sender, EventArgs e)
         {
             // Kiểm tra xem form danh sách nhà cung cấp đã mở chưa, nếu đã mở thì kích hoạt (Active) lên trước

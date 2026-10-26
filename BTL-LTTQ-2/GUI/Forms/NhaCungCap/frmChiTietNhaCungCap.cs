@@ -54,6 +54,16 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                 btnXoa.Cursor = Cursors.Hand;
             }
 
+            // Giới hạn độ dài nhập theo cấu trúc cột bảng DonViCapHang (tránh lỗi cắt chuỗi khi lưu)
+            txtMaNcc.MaxLength = 30;
+            txtTenDonVi.MaxLength = 150;
+            txtDienThoai.MaxLength = 15;
+            txtEmail.MaxLength = 100;
+            txtDiaChi.MaxLength = 255;
+            txtKhuVuc.MaxLength = 100;
+            txtMaSoThue.MaxLength = 30;
+            txtGhiChu.MaxLength = 500;
+
             lblTieuDe.Text = "Chi tiết nhà cung cấp";
             this.Text = "Chi tiết thông tin nhà cung cấp";
 
@@ -441,6 +451,23 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                 {
                     MessageBox.Show($"Mã nhà cung cấp '{maNcc}' đã được sử dụng bởi nhà cung cấp khác. Vui lòng nhập mã khác!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     txtMaNcc.Focus();
+                    return;
+                }
+
+                // Tên nhà cung cấp là UNIQUE trong bảng DonViCapHang: kiểm tra trước để báo lỗi rõ ràng thay vì lỗi SQL
+                string sqlCheckTen = @"
+                    SELECT TOP 1 ISNULL(MaNcc, '') FROM DonViCapHang
+                    WHERE TenDonVi = @TenDonVi AND MaDonViCapHang <> @MaDonViCapHang";
+                object valTen = DataProcessing.ReadValue(sqlCheckTen, new SqlParameter[] {
+                    new SqlParameter("@TenDonVi", tenDonVi),
+                    new SqlParameter("@MaDonViCapHang", maDonViCapHangHienTai)
+                });
+
+                if (valTen != null && valTen != DBNull.Value)
+                {
+                    string maTrungTen = valTen.ToString();
+                    MessageBox.Show($"Tên nhà cung cấp '{tenDonVi}' đã được sử dụng bởi nhà cung cấp khác" + (string.IsNullOrEmpty(maTrungTen) ? "" : $" (mã {maTrungTen})") + ". Vui lòng nhập tên khác!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtTenDonVi.Focus();
                     return;
                 }
 

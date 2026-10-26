@@ -82,9 +82,9 @@
             // 
             // btnTaiFileMauExcel
             // 
-            this.btnTaiFileMauExcel.Location = new System.Drawing.Point(28, 21);
+            this.btnTaiFileMauExcel.Location = new System.Drawing.Point(28, 19);
             this.btnTaiFileMauExcel.Name = "btnTaiFileMauExcel";
-            this.btnTaiFileMauExcel.Size = new System.Drawing.Size(160, 29);
+            this.btnTaiFileMauExcel.Size = new System.Drawing.Size(180, 33);
             this.btnTaiFileMauExcel.TabIndex = 1;
             this.btnTaiFileMauExcel.Text = "Tải file mẫu Excel";
             this.btnTaiFileMauExcel.UseVisualStyleBackColor = true;
@@ -103,9 +103,9 @@
             // 
             // btnChonFile
             // 
-            this.btnChonFile.Location = new System.Drawing.Point(720, 38);
+            this.btnChonFile.Location = new System.Drawing.Point(700, 38);
             this.btnChonFile.Name = "btnChonFile";
-            this.btnChonFile.Size = new System.Drawing.Size(100, 29);
+            this.btnChonFile.Size = new System.Drawing.Size(120, 33);
             this.btnChonFile.TabIndex = 1;
             this.btnChonFile.Text = "Chọn file...";
             this.btnChonFile.UseVisualStyleBackColor = true;
@@ -117,7 +117,7 @@
             this.txtDuongDanFile.Location = new System.Drawing.Point(15, 38);
             this.txtDuongDanFile.Name = "txtDuongDanFile";
             this.txtDuongDanFile.ReadOnly = true;
-            this.txtDuongDanFile.Size = new System.Drawing.Size(687, 29);
+            this.txtDuongDanFile.Size = new System.Drawing.Size(670, 29);
             this.txtDuongDanFile.TabIndex = 0;
             // 
             // grpTuyChon
@@ -163,9 +163,9 @@
             // 
             // btnThucHien
             // 
-            this.btnThucHien.Location = new System.Drawing.Point(635, 21);
+            this.btnThucHien.Location = new System.Drawing.Point(600, 19);
             this.btnThucHien.Name = "btnThucHien";
-            this.btnThucHien.Size = new System.Drawing.Size(130, 29);
+            this.btnThucHien.Size = new System.Drawing.Size(165, 33);
             this.btnThucHien.TabIndex = 6;
             this.btnThucHien.Text = "Thực hiện nhập";
             this.btnThucHien.UseVisualStyleBackColor = true;
@@ -173,9 +173,9 @@
             // 
             // btnDong
             // 
-            this.btnDong.Location = new System.Drawing.Point(775, 21);
+            this.btnDong.Location = new System.Drawing.Point(775, 19);
             this.btnDong.Name = "btnDong";
-            this.btnDong.Size = new System.Drawing.Size(95, 29);
+            this.btnDong.Size = new System.Drawing.Size(95, 33);
             this.btnDong.TabIndex = 7;
             this.btnDong.Text = "Đóng";
             this.btnDong.UseVisualStyleBackColor = true;

@@ -3,6 +3,7 @@ using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
@@ -68,8 +69,8 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                                            pc.GhiChu, pc.GhiChuNhan,
                                            pc.TongSoLuongChuyen, pc.TongSoLuongNhan, pc.TongGiaTriChuyen,
                                            ISNULL(nvLap.HoTen, N'Chưa rõ') AS TenNvLap,
-                                           ISNULL(nvXuat.HoTen, N'Chưa rõ') AS TenNvXuat,
-                                           ISNULL(nvNhan.HoTen, N'Chưa rõ') AS TenNvNhan
+                                           nvXuat.HoTen AS TenNvXuat,
+                                           nvNhan.HoTen AS TenNvNhan
                                     FROM PhieuChuyenKho pc
                                     JOIN Kho kn ON pc.MaKhoNguon = kn.MaKho
                                     JOIN Kho kd ON pc.MaKhoDich = kd.MaKho
@@ -427,32 +428,33 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
 
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
+                    // Chuỗi được bọc nháy kép, số ghi theo định dạng bất biến để dấu phẩy (tên kho, số thập phân, phân cách nghìn) không làm lệch cột CSV
                     StringBuilder sb = new StringBuilder();
-                    sb.AppendLine(string.Format("Phiếu chuyển kho: {0},Trạng thái: {1}", this.maPhieu, lblTrangThai.Text));
-                    sb.AppendLine(string.Format("Kho gửi: {0},Kho nhận: {1}", this.tenKhoNguon, this.tenKhoDich));
-                    sb.AppendLine(string.Format("Người lập: {0},Ngày lập: {1}", lblNguoiLapVal.Text, lblNgayLapVal.Text));
-                    sb.AppendLine(string.Format("Người xuất: {0},Ngày xuất: {1}", lblNguoiXuatVal.Text, lblThoiDiemXuatVal.Text));
-                    sb.AppendLine(string.Format("Người nhận: {0},Ngày nhận: {1}", lblNguoiNhanVal.Text, lblThoiDiemNhanVal.Text));
+                    sb.AppendLine("Phiếu chuyển kho:," + ChuoiCsv(this.maPhieu) + ",Trạng thái:," + ChuoiCsv(lblTrangThai.Text));
+                    sb.AppendLine("Kho gửi:," + ChuoiCsv(this.tenKhoNguon) + ",Kho nhận:," + ChuoiCsv(this.tenKhoDich));
+                    sb.AppendLine("Người lập:," + ChuoiCsv(lblNguoiLapVal.Text) + ",Ngày lập:," + ChuoiCsv(lblNgayLapVal.Text));
+                    sb.AppendLine("Người xuất:," + ChuoiCsv(lblNguoiXuatVal.Text) + ",Ngày xuất:," + ChuoiCsv(lblThoiDiemXuatVal.Text));
+                    sb.AppendLine("Người nhận:," + ChuoiCsv(lblNguoiNhanVal.Text) + ",Ngày nhận:," + ChuoiCsv(lblThoiDiemNhanVal.Text));
                     sb.AppendLine();
                     sb.AppendLine("STT,Mã hàng,Tên hàng,ĐVT,SL chuyển,SL nhận,Hao hụt,Đơn giá chuyển,Thành tiền");
 
                     foreach (DataRow r in dtChiTiet.Rows)
                     {
-                        sb.AppendLine(string.Format("{0},{1},\"{2}\",{3},{4},{5},{6},{7},{8}",
-                            r["STT"],
-                            r["MaHangNoiBo"],
-                            r["TenHang"].ToString().Replace("\"", "\"\""),
-                            r["TenDVT"],
-                            r["SoLuong"],
-                            r["SoLuongNhan"] != DBNull.Value ? r["SoLuongNhan"] : 0,
-                            r["HaoHut"],
-                            r["DonGiaChuyen"],
-                            r["ThanhTien"]));
+                        sb.AppendLine(string.Join(",",
+                            r["STT"].ToString(),
+                            ChuoiCsv(r["MaHangNoiBo"]),
+                            ChuoiCsv(r["TenHang"]),
+                            ChuoiCsv(r["TenDVT"]),
+                            SoCsv(r["SoLuong"]),
+                            SoCsv(r["SoLuongNhan"]),
+                            this.trangThai == "DA_NHAN" ? SoCsv(r["HaoHut"]) : "",
+                            SoCsv(r["DonGiaChuyen"]),
+                            SoCsv(r["ThanhTien"])));
                     }
 
                     sb.AppendLine();
-                    sb.AppendLine(string.Format("Tổng SL chuyển:,{0},Tổng SL nhận:,{1},Tổng hao hụt:,{2},Tổng giá trị:,{3}",
-                        lblTongSlChuyenVal.Text, lblTongSlNhanVal.Text, lblTongHaoHutVal.Text, lblTongGiaTriVal.Text));
+                    sb.AppendLine("Tổng SL chuyển:," + ChuoiCsv(lblTongSlChuyenVal.Text) + ",Tổng SL nhận:," + ChuoiCsv(lblTongSlNhanVal.Text) +
+                        ",Tổng hao hụt:," + ChuoiCsv(lblTongHaoHutVal.Text) + ",Tổng giá trị:," + ChuoiCsv(lblTongGiaTriVal.Text));
 
                     // Lưu file với UTF-8 BOM
                     File.WriteAllText(sfd.FileName, sb.ToString(), new UTF8Encoding(true));
@@ -463,6 +465,18 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
             {
                 MessageBox.Show("Lỗi xuất file: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private static string ChuoiCsv(object giaTri)
+        {
+            string s = giaTri == null || giaTri == DBNull.Value ? "" : giaTri.ToString();
+            return "\"" + s.Replace("\"", "\"\"") + "\"";
+        }
+
+        private static string SoCsv(object giaTri)
+        {
+            if (giaTri == null || giaTri == DBNull.Value) return "";
+            return Convert.ToDecimal(giaTri).ToString("0.##", CultureInfo.InvariantCulture);
         }
 
         private void btnHoanThanh_Click(object sender, EventArgs e)

@@ -148,6 +148,8 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
             dtHangTra.Columns.Add("SoLuongTra", typeof(decimal));
             dtHangTra.Columns.Add("DonGiaTra", typeof(decimal));
             dtHangTra.Columns.Add("ThanhTien", typeof(decimal));
+            // Giá vốn tham chiếu lúc chọn hàng (đơn giá trả có thể sửa trên lưới nên lưu riêng)
+            dtHangTra.Columns.Add("GiaVon", typeof(decimal));
         }
 
         private void CauHinhDataGridView()
@@ -469,6 +471,7 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                     rMoi["SoLuongTra"] = 1;
                     rMoi["DonGiaTra"] = donGia;
                     rMoi["ThanhTien"] = donGia;
+                    rMoi["GiaVon"] = donGia;
 
                     dtHangTra.Rows.Add(rMoi);
                     TinhToanTongKet();
@@ -610,7 +613,17 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
 
                 if (dgvHangTra.IsCurrentCellInEditMode)
                 {
-                    dgvHangTra.EndEdit();
+                    // Chặn CellEndEdit gọi lại hàm này (tránh hiện cảnh báo 2 lần với cùng giá trị vừa nhập)
+                    bool dangTinhToan = isCalculating;
+                    isCalculating = true;
+                    try
+                    {
+                        dgvHangTra.EndEdit();
+                    }
+                    finally
+                    {
+                        isCalculating = dangTinhToan;
+                    }
                 }
 
                 if (drv != null)
@@ -661,6 +674,9 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                 {
                     isCalculating = false;
                 }
+
+                // ApDungSoLuongNhap chạy khi isCalculating = true nên chưa tính lại tổng -> tính lại sau khi kết thúc
+                TinhToanTongKet();
             }
         }
 
@@ -928,6 +944,10 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                                 nr["DonGiaTra"] = dg;
                                 nr["ThanhTien"] = sl * dg;
 
+                                // Giá vốn tham chiếu lấy từ danh mục hàng của kho (không theo giá trả trong file)
+                                DataRow[] hangGoc = dtDanhSachHang != null ? dtDanhSachHang.Select($"MaHang = {maH}") : new DataRow[0];
+                                nr["GiaVon"] = hangGoc.Length > 0 ? hangGoc[0]["GiaNhap"] : (object)dg;
+
                                 dtHangTra.Rows.Add(nr);
                                 demThemMoi++;
                             }
@@ -1172,7 +1192,7 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                             cmdCt.Parameters.AddWithValue("@MaPhieuTraHang", maPhieuTraHangMoi);
                             cmdCt.Parameters.AddWithValue("@MaHang", Convert.ToInt32(r["MaHang"]));
                             cmdCt.Parameters.AddWithValue("@SoLuong", Convert.ToDecimal(r["SoLuongTra"]));
-                            cmdCt.Parameters.AddWithValue("@GiaVon", Convert.ToDecimal(r["DonGiaTra"]));
+                            cmdCt.Parameters.AddWithValue("@GiaVon", Convert.ToDecimal(r["GiaVon"] != DBNull.Value ? r["GiaVon"] : r["DonGiaTra"]));
                             cmdCt.Parameters.AddWithValue("@DonGiaTra", Convert.ToDecimal(r["DonGiaTra"]));
                             cmdCt.Parameters.AddWithValue("@ThanhTien", Convert.ToDecimal(r["ThanhTien"]));
                             cmdCt.Parameters.AddWithValue("@GhiChu", DBNull.Value);

@@ -35,7 +35,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             using (OpenFileDialog ofd = new OpenFileDialog())
             {
                 ofd.Title = "Chọn file dữ liệu hàng hóa để nhập";
-                ofd.Filter = "File Excel (*.xlsx;*.xls)|*.xlsx;*.xls|File Excel OpenXML (*.xlsx)|*.xlsx|File Excel 97-2003 (*.xls)|*.xls|Tất cả các file (*.*)|*.*";
+                ofd.Filter = "File Excel / CSV (*.xlsx;*.xls;*.csv)|*.xlsx;*.xls;*.csv|File Excel OpenXML (*.xlsx)|*.xlsx|File Excel 97-2003 (*.xls)|*.xls|File CSV (*.csv)|*.csv|Tất cả các file (*.*)|*.*";
                 ofd.Multiselect = false;
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
@@ -364,6 +364,30 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                             continue;
                         }
 
+                        // 1b. Kiểm tra độ dài / số âm theo ràng buộc CSDL (tránh một dòng lỗi làm rollback toàn bộ file)
+                        string maTrongFile = d.MaHang?.Trim();
+                        string loiDong = null;
+                        if (tenHang.Length > 150) loiDong = "Tên hàng vượt quá 150 ký tự.";
+                        else if (!string.IsNullOrEmpty(maTrongFile) && maTrongFile.Length > 30) loiDong = "Mã hàng vượt quá 30 ký tự.";
+                        else if (!string.IsNullOrEmpty(maTrongFile) && Regex.IsMatch(maTrongFile, @"[^\x20-\x7E]")) loiDong = "Mã hàng chỉ được gồm chữ không dấu, chữ số và ký hiệu.";
+                        else if ((d.NhomHang?.Trim().Length ?? 0) > 100) loiDong = "Tên nhóm hàng vượt quá 100 ký tự.";
+                        else if ((d.DonViTinh?.Trim().Length ?? 0) > 50) loiDong = "Đơn vị tính vượt quá 50 ký tự.";
+                        else if ((d.ViTri?.Trim().Length ?? 0) > 100) loiDong = "Vị trí vượt quá 100 ký tự.";
+                        else if ((d.DonViTrongLuong?.Trim().Length ?? 0) > 10) loiDong = "Đơn vị trọng lượng vượt quá 10 ký tự.";
+                        else if ((d.QuyCach?.Trim().Length ?? 0) > 255) loiDong = "Quy cách vượt quá 255 ký tự.";
+                        else if (ChuyenDoiSoThapPhan(d.GiaVonRaw, 0) < 0 || ChuyenDoiSoThapPhan(d.GiaBanRaw, 0) < 0 || ChuyenDoiSoThapPhan(d.TrongLuongRaw, 0) < 0)
+                            loiDong = "Giá vốn, giá bán, trọng lượng không được là số âm.";
+
+                        if (loiDong != null)
+                        {
+                            soLoi++;
+                            if (dsChiTietLoi.Count < 5)
+                            {
+                                dsChiTietLoi.Add($"Dòng {d.SoThuTuDong}: {loiDong}");
+                            }
+                            continue;
+                        }
+
                         // 2. Xác định mã hàng
                         string maHang = d.MaHang?.Trim();
                         bool laMaTuSinh = false;
@@ -575,7 +599,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             if (soBoQua > 0) msg.AppendLine($"• Bỏ qua: {soBoQua} dòng (đã tồn tại mã hàng)");
             if (soLoi > 0)
             {
-                msg.AppendLine($"• Bỏ qua lỗi: {soLoi} dòng (thiếu tên hàng hóa bắt buộc)");
+                msg.AppendLine($"• Bỏ qua lỗi: {soLoi} dòng (thiếu tên hàng hóa hoặc dữ liệu không hợp lệ)");
                 if (dsChiTietLoi.Count > 0)
                 {
                     msg.AppendLine("\nChi tiết lỗi:");
@@ -917,8 +941,14 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                     }
                 }
             }
-            catch
+            catch (Exception exOleDb)
             {
+                // File Excel nhị phân thật (có byte 0) mà máy thiếu OLEDB driver: báo lỗi rõ ràng, không đọc nhị phân như văn bản (tránh nhập dữ liệu rác)
+                if (Array.IndexOf(File.ReadAllBytes(filePath), (byte)0) >= 0)
+                {
+                    throw new Exception("Máy chưa có trình đọc file Excel 97-2003 (.xls). Vui lòng lưu file sang định dạng .xlsx hoặc .csv (UTF-8) rồi nhập lại! Chi tiết: " + exOleDb.Message);
+                }
+
                 // Fallback nếu không có OLEDB driver: đọc file theo text UTF-8
                 string[] lines = File.ReadAllLines(filePath, Encoding.UTF8);
                 foreach (string l in lines)

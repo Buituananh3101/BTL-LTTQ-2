@@ -350,6 +350,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             {
                 dtNhomHang.DefaultView.RowFilter = $"TenNhom LIKE '%{kw}%'";
             }
+            CapNhatTongSo();
         }
 
         // Bấm nút Hủy để trở về chế độ thêm mới
@@ -617,10 +618,11 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                 catch (Exception exOleDb)
                 {
                     // Fallback đọc text nếu là plain text nhưng đổi đuôi .xls
+                    // (file Excel nhị phân .xls/.xlsx luôn chứa byte 0 -> không đọc như văn bản để tránh nhập tên nhóm rác)
                     try
                     {
                         string[] lines = File.ReadAllLines(filePath, Encoding.UTF8);
-                        if (lines.Length > 0 && !lines[0].StartsWith("\xD0\xCF\x11\xE0"))
+                        if (lines.Length > 0 && Array.IndexOf(File.ReadAllBytes(filePath), (byte)0) < 0)
                         {
                             return DocTuDongTextLines(lines);
                         }

@@ -361,7 +361,8 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                 int tieuChiTonIndex = cboTieuChiTon.SelectedIndex;
                 string trangThai = cboTrangThai.SelectedItem?.ToString() ?? "-- Tất cả trạng thái --";
                 DateTime tuNgay = dtpTuNgay.Value.Date;
-                DateTime denNgay = dtpDenNgay.Value.Date.AddDays(1).AddSeconds(-1);
+                // Mốc 0h ngày kế tiếp (so sánh "<") để bao trọn cả ngày cuối, kể cả phần mili giây
+                DateTime denNgay = dtpDenNgay.Value.Date.AddDays(1);
 
                 List<SqlParameter> parameters = new List<SqlParameter>();
                 StringBuilder whereSql = new StringBuilder(" WHERE 1=1 ");
@@ -392,7 +393,7 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                 }
 
                 // Lọc thời gian tạo
-                whereSql.Append(" AND h.NgayTao >= @TuNgay AND h.NgayTao <= @DenNgay ");
+                whereSql.Append(" AND h.NgayTao >= @TuNgay AND h.NgayTao < @DenNgay ");
                 parameters.Add(new SqlParameter("@TuNgay", tuNgay));
                 parameters.Add(new SqlParameter("@DenNgay", denNgay));
 
@@ -404,6 +405,10 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                 string duoiDinhMucExp = (maKho > 0)
                     ? $"({tonKhoExpression} < {tonToiThieuExp})"
                     : "(ISNULL(cb.DuoiDinhMuc, 0) = 1)";
+                // Vượt định mức: tương tự, xét theo từng kho (không so tổng tồn với tổng định mức các kho)
+                string vuotDinhMucExp = (maKho > 0)
+                    ? $"({tonKhoExpression} > {tonToiDaExp} AND {tonToiDaExp} > 0)"
+                    : "(ISNULL(cb.VuotDinhMuc, 0) = 1)";
 
                 if (tieuChiTonIndex == 1) // Còn tồn (> 0)
                 {
@@ -423,7 +428,7 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                 }
                 else if (tieuChiTonIndex == 5) // Vượt định mức tối đa
                 {
-                    whereSql.Append($" AND {tonKhoExpression} > {tonToiDaExp} AND {tonToiDaExp} > 0 ");
+                    whereSql.Append($" AND {vuotDinhMucExp} ");
                 }
 
                 // Xây dựng câu truy vấn theo MaKho
@@ -458,7 +463,8 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                         ) ntk ON h.MaHang = ntk.MaHang
                         LEFT JOIN (
                             SELECT n.MaHang,
-                                   MAX(CASE WHEN ISNULL(t.SoLuongTon, 0) < ISNULL(n.TonToiThieu, 0) THEN 1 ELSE 0 END) AS DuoiDinhMuc
+                                   MAX(CASE WHEN ISNULL(t.SoLuongTon, 0) < ISNULL(n.TonToiThieu, 0) THEN 1 ELSE 0 END) AS DuoiDinhMuc,
+                                   MAX(CASE WHEN ISNULL(n.TonCaoNhat, 0) > 0 AND ISNULL(t.SoLuongTon, 0) > n.TonCaoNhat THEN 1 ELSE 0 END) AS VuotDinhMuc
                             FROM NguongTonKho n
                             LEFT JOIN vw_TonKhoHienTai t ON t.MaHang = n.MaHang AND t.MaKho = n.MaKho
                             GROUP BY n.MaHang
@@ -787,7 +793,8 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
         {
             foreach (Form openForm in Application.OpenForms)
             {
-                if (openForm is frmHienCotBaoCao)
+                // Chỉ dùng lại popup của chính form này (popup dùng chung với Báo cáo thẻ kho)
+                if (openForm is frmHienCotBaoCao && openForm.Tag == this)
                 {
                     openForm.Activate();
                     openForm.BringToFront();
@@ -796,6 +803,7 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
             }
 
             frmHienCotBaoCao frm = new frmHienCotBaoCao(dgvBaoCaoTonKho);
+            frm.Tag = this;
             frm.StartPosition = FormStartPosition.Manual;
 
             // Tính toạ \u0111\u1ED9 hi\u1EC3n th\u1ECB ngay ph\u00EDa d\u01B0\u1EDBi n\u00FAt btnHienCot (c\u0103n th\u1EB3ng m\u00E9p ph\u1EA3i n\u00FAt)

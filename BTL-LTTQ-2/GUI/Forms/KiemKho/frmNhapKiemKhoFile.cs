@@ -107,9 +107,9 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                             foreach (DataRow r in dtHang.Rows)
                             {
                                 html.AppendLine("<tr>");
-                                html.AppendLine($"<td class=\"text\">{r["MaHangNoiBo"]}</td>");
-                                html.AppendLine($"<td>{r["TenHang"]}</td>");
-                                html.AppendLine($"<td>{r["TenDVT"]}</td>");
+                                html.AppendLine($"<td class=\"text\">{System.Net.WebUtility.HtmlEncode(r["MaHangNoiBo"].ToString())}</td>");
+                                html.AppendLine($"<td>{System.Net.WebUtility.HtmlEncode(r["TenHang"].ToString())}</td>");
+                                html.AppendLine($"<td>{System.Net.WebUtility.HtmlEncode(r["TenDVT"].ToString())}</td>");
                                 html.AppendLine($"<td class=\"number\">{sl}</td>");
                                 html.AppendLine("<td>Kiểm kho định kỳ</td>");
                                 html.AppendLine("</tr>");
@@ -457,6 +457,16 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                                     {
                                         val = sharedStrings[idx];
                                     }
+                                    else if (type == "inlineStr")
+                                    {
+                                        // Chuỗi nhúng trực tiếp trong ô (<is><t>...</t></is>), không có thẻ <v>
+                                        StringBuilder sbInline = new StringBuilder();
+                                        foreach (XElement t in c.Descendants(ns + "t"))
+                                        {
+                                            sbInline.Append(t.Value);
+                                        }
+                                        val = sbInline.ToString();
+                                    }
                                     cellValues[colRef] = val;
                                 }
 
@@ -507,23 +517,37 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                     {
                         DataRow r = dt.NewRow();
                         r["DongSo"] = dongSo;
-                        r["MaHang"] = Regex.Replace(cells[0].Groups[1].Value, @"<[^>]+>", "").Trim();
+                        r["MaHang"] = LayNoiDungO(cells[0]);
                         if (cells.Count >= 4)
                         {
-                            r["TenHang"] = Regex.Replace(cells[1].Groups[1].Value, @"<[^>]+>", "").Trim();
-                            r["DonViTinh"] = Regex.Replace(cells[2].Groups[1].Value, @"<[^>]+>", "").Trim();
-                            r["SoLuongThucTe"] = Regex.Replace(cells[3].Groups[1].Value, @"<[^>]+>", "").Trim();
-                            r["GhiChu"] = cells.Count > 4 ? Regex.Replace(cells[4].Groups[1].Value, @"<[^>]+>", "").Trim() : "";
+                            r["TenHang"] = LayNoiDungO(cells[1]);
+                            r["DonViTinh"] = LayNoiDungO(cells[2]);
+                            r["SoLuongThucTe"] = LayNoiDungO(cells[3]);
+                            r["GhiChu"] = cells.Count > 4 ? LayNoiDungO(cells[4]) : "";
                         }
                         else
                         {
-                            r["SoLuongThucTe"] = Regex.Replace(cells[1].Groups[1].Value, @"<[^>]+>", "").Trim();
-                            r["GhiChu"] = cells.Count > 2 ? Regex.Replace(cells[2].Groups[1].Value, @"<[^>]+>", "").Trim() : "";
+                            r["SoLuongThucTe"] = LayNoiDungO(cells[1]);
+                            r["GhiChu"] = cells.Count > 2 ? LayNoiDungO(cells[2]) : "";
                         }
                         dt.Rows.Add(r);
                     }
                 }
             }
+            else
+            {
+                // File .xls nhị phân (Excel 97-2003) không đọc được khi không dùng thư viện ngoài
+                throw new InvalidOperationException("File .xls định dạng Excel 97-2003 chưa được hỗ trợ. Vui lòng lưu lại file dưới dạng .xlsx hoặc .csv rồi nhập lại.");
+            }
+        }
+
+        /// <summary>
+        /// Lấy nội dung text của 1 ô HTML: bỏ thẻ con và giải mã ký tự HTML (&amp;amp;, &amp;nbsp;...)
+        /// </summary>
+        private static string LayNoiDungO(Match o)
+        {
+            string text = Regex.Replace(o.Groups[1].Value, @"<[^>]+>", "");
+            return System.Net.WebUtility.HtmlDecode(text).Trim();
         }
 
         #endregion

@@ -432,13 +432,13 @@ namespace BTL_LTTQ_2.GUI.Forms
                     parameters.Add(new SqlParameter("@MaDVT", maDVT));
                 }
 
-                // Lọc nhà cung cấp (hàng từng nhập từ NCC này)
+                // Lọc nhà cung cấp (hàng từng nhập từ NCC này, chỉ tính phiếu nhập đã xác nhận - bỏ phiếu tạm/đã hủy)
                 if (cboNhaCungCap.SelectedValue != null && int.TryParse(cboNhaCungCap.SelectedValue.ToString(), out int maNCC) && maNCC > 0)
                 {
                     whereSql.Append(@" AND EXISTS (
-                        SELECT 1 FROM ChiTietPhieuNhap ctpn 
-                        JOIN PhieuNhap pn ON ctpn.MaPhieuNhap = pn.MaPhieuNhap 
-                        WHERE ctpn.MaHang = h.MaHang AND pn.MaDonViCapHang = @MaNCC
+                        SELECT 1 FROM ChiTietPhieuNhap ctpn
+                        JOIN PhieuNhap pn ON ctpn.MaPhieuNhap = pn.MaPhieuNhap
+                        WHERE ctpn.MaHang = h.MaHang AND pn.MaDonViCapHang = @MaNCC AND pn.TrangThai = 'DA_XAC_NHAN'
                     ) ");
                     parameters.Add(new SqlParameter("@MaNCC", maNCC));
                 }
@@ -737,9 +737,10 @@ namespace BTL_LTTQ_2.GUI.Forms
                 bool currentVal = Convert.ToBoolean(dgvHangHoa.Rows[e.RowIndex].Cells["colChon"].Value ?? false);
                 bool newVal = !currentVal;
                 dgvHangHoa.Rows[e.RowIndex].Cells["colChon"].Value = newVal;
-                if (dgvHangHoa.DataSource is DataTable dt && e.RowIndex < dt.Rows.Count)
+                // Lấy đúng DataRow gắn với dòng lưới (chỉ số dòng lưới khác chỉ số DataTable khi người dùng đã sắp xếp cột)
+                if (dgvHangHoa.Rows[e.RowIndex].DataBoundItem is DataRowView drv)
                 {
-                    dt.Rows[e.RowIndex]["Chon"] = newVal;
+                    drv.Row["Chon"] = newVal;
                 }
                 CapNhatTrangThaiHeaderCheckBox();
             }
@@ -777,9 +778,9 @@ namespace BTL_LTTQ_2.GUI.Forms
                     bool currentVal = Convert.ToBoolean(cell.Value ?? false);
                     bool newVal = !currentVal;
                     cell.Value = newVal;
-                    if (dgvHangHoa.DataSource is DataTable dt && dgvHangHoa.CurrentRow.Index < dt.Rows.Count)
+                    if (dgvHangHoa.CurrentRow.DataBoundItem is DataRowView drv)
                     {
-                        dt.Rows[dgvHangHoa.CurrentRow.Index]["Chon"] = newVal;
+                        drv.Row["Chon"] = newVal;
                     }
                     CapNhatTrangThaiHeaderCheckBox();
                     e.Handled = true;
@@ -861,6 +862,8 @@ namespace BTL_LTTQ_2.GUI.Forms
                 frm.StartPosition = FormStartPosition.CenterParent;
                 frm.ShowDialog(this);
                 NapDanhSachDonViTinh();
+                // Làm mới lưới để hiện đúng tên ĐVT vừa sửa
+                HienThiDanhSach();
             }
         }
 
@@ -908,6 +911,8 @@ namespace BTL_LTTQ_2.GUI.Forms
                 frm.StartPosition = FormStartPosition.CenterParent;
                 frm.ShowDialog(this);
                 NapDanhSachNhomHang();
+                // Làm mới lưới để hiện đúng tên nhóm vừa sửa
+                HienThiDanhSach();
             }
         }
 
@@ -956,6 +961,8 @@ namespace BTL_LTTQ_2.GUI.Forms
                 frm.StartPosition = FormStartPosition.CenterParent;
                 frm.ShowDialog(this);
                 NapDanhSachViTri();
+                // Làm mới lưới để hiện đúng tên vị trí vừa sửa (frmViTri đồng bộ cả HangHoa.ViTri)
+                HienThiDanhSach();
             }
         }
 

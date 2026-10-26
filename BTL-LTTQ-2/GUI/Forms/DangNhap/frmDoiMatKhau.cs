@@ -21,6 +21,28 @@ namespace BTL_LTTQ_2.GUI.Forms.DangNhap
             txtXacNhanMatKhau.UseSystemPasswordChar = !hien;
         }
 
+        /// <summary>
+        /// Phím Enter ở ô Mật khẩu hiện tại / Mật khẩu mới: chuyển sang ô kế tiếp thay vì kích hoạt nút Lưu
+        /// (AcceptButton xử lý Enter trước nên sự kiện KeyDown của ô nhập không bao giờ nhận được phím Enter)
+        /// </summary>
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Enter)
+            {
+                if (txtMatKhauCu.Focused)
+                {
+                    txtMatKhauMoi.Focus();
+                    return true;
+                }
+                if (txtMatKhauMoi.Focused)
+                {
+                    txtXacNhanMatKhau.Focus();
+                    return true;
+                }
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
         private void txtMatKhauCu_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)

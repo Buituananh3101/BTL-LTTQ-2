@@ -243,6 +243,13 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                     string tenHang = hInfo["TenHang"]?.ToString() ?? "";
                     string tenDvt = hInfo["TenDVT"]?.ToString() ?? "";
 
+                    // Hàng không còn tồn tại kho xuất trả thì không được trả (đồng bộ với nút '+ Thêm')
+                    if (tonKho <= 0)
+                    {
+                        dsBoQua.Add($"Dòng {dongSo}: Mã hàng '{maHangNoiBo}' không còn tồn trong kho xuất trả (Tồn: {tonKho:N0})");
+                        continue;
+                    }
+
                     // Số lượng trả phải là số nguyên dương
                     string slText = row["SoLuongTra"]?.ToString() ?? "";
                     if (!TryDocSo(slText, out decimal slTra) || slTra <= 0)

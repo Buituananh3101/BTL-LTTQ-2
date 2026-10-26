@@ -82,6 +82,8 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
 
             dgvHangChuyen.EditMode = DataGridViewEditMode.EditOnEnter;
             dgvHangChuyen.EditingControlShowing += dgvHangChuyen_EditingControlShowing;
+            // Chặn hộp thoại lỗi mặc định (tiếng Anh) khi dán chuỗi không phải số vào ô SL chuyển; ApDungSoLuongNhap sẽ chuẩn hóa lại
+            dgvHangChuyen.DataError += (s, e) => { e.ThrowException = false; };
             dgvHangChuyen.Leave += (s, e) =>
             {
                 if (dgvHangChuyen.IsCurrentCellInEditMode)
@@ -583,9 +585,19 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                 decimal thanhTien = slChuyen * donGia;
 
                 // 2. Kết thúc edit trên DataGridView
+                //    (bật cờ isCalculating để CellEndEdit không gọi lại hàm này, tránh hiện cảnh báo SL 2 lần)
                 if (dgvHangChuyen.IsCurrentCellInEditMode)
                 {
-                    dgvHangChuyen.EndEdit();
+                    bool dangTinhTruoc = isCalculating;
+                    isCalculating = true;
+                    try
+                    {
+                        dgvHangChuyen.EndEdit();
+                    }
+                    finally
+                    {
+                        isCalculating = dangTinhTruoc;
+                    }
                 }
 
                 // 3. Cập nhật dữ liệu vào DataRow / DataRowView

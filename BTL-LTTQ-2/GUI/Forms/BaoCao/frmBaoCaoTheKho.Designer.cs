@@ -288,9 +288,9 @@
             // 
             // btnQuayLai
             // 
-            this.btnQuayLai.Location = new System.Drawing.Point(180, 15);
+            this.btnQuayLai.Location = new System.Drawing.Point(232, 21);
             this.btnQuayLai.Name = "btnQuayLai";
-            this.btnQuayLai.Size = new System.Drawing.Size(95, 29);
+            this.btnQuayLai.Size = new System.Drawing.Size(105, 33);
             this.btnQuayLai.TabIndex = 7;
             this.btnQuayLai.Text = "Quay lại";
             this.btnQuayLai.UseVisualStyleBackColor = true;
@@ -300,7 +300,7 @@
             // lblTimKiem
             // 
             this.lblTimKiem.AutoSize = true;
-            this.lblTimKiem.Location = new System.Drawing.Point(385, 25);
+            this.lblTimKiem.Location = new System.Drawing.Point(372, 25);
             this.lblTimKiem.Name = "lblTimKiem";
             this.lblTimKiem.Size = new System.Drawing.Size(60, 17);
             this.lblTimKiem.TabIndex = 1;
@@ -308,18 +308,18 @@
             // 
             // txtTimKiem
             // 
-            this.txtTimKiem.Location = new System.Drawing.Point(465, 21);
+            this.txtTimKiem.Location = new System.Drawing.Point(470, 21);
             this.txtTimKiem.Name = "txtTimKiem";
-            this.txtTimKiem.Size = new System.Drawing.Size(520, 24);
+            this.txtTimKiem.Size = new System.Drawing.Size(515, 24);
             this.txtTimKiem.TabIndex = 2;
             this.txtTimKiem.TextChanged += new System.EventHandler(this.txtTimKiem_TextChanged);
             // 
             // btnXuatFile
             // 
             this.btnXuatFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnXuatFile.Location = new System.Drawing.Point(1465, 18);
+            this.btnXuatFile.Location = new System.Drawing.Point(1465, 21);
             this.btnXuatFile.Name = "btnXuatFile";
-            this.btnXuatFile.Size = new System.Drawing.Size(110, 29);
+            this.btnXuatFile.Size = new System.Drawing.Size(110, 33);
             this.btnXuatFile.TabIndex = 3;
             this.btnXuatFile.Text = "Xuất file";
             this.btnXuatFile.UseVisualStyleBackColor = true;
@@ -328,9 +328,9 @@
             // btnHienCot
             // 
             this.btnHienCot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnHienCot.Location = new System.Drawing.Point(1590, 18);
+            this.btnHienCot.Location = new System.Drawing.Point(1590, 21);
             this.btnHienCot.Name = "btnHienCot";
-            this.btnHienCot.Size = new System.Drawing.Size(95, 29);
+            this.btnHienCot.Size = new System.Drawing.Size(95, 33);
             this.btnHienCot.TabIndex = 5;
             this.btnHienCot.Text = "Hiện cột";
             this.btnHienCot.UseVisualStyleBackColor = true;
@@ -339,9 +339,9 @@
             // btnHuongDanSuDung
             // 
             this.btnHuongDanSuDung.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnHuongDanSuDung.Location = new System.Drawing.Point(1705, 18);
+            this.btnHuongDanSuDung.Location = new System.Drawing.Point(1705, 21);
             this.btnHuongDanSuDung.Name = "btnHuongDanSuDung";
-            this.btnHuongDanSuDung.Size = new System.Drawing.Size(43, 29);
+            this.btnHuongDanSuDung.Size = new System.Drawing.Size(43, 33);
             this.btnHuongDanSuDung.TabIndex = 6;
             this.btnHuongDanSuDung.Text = "?";
             this.btnHuongDanSuDung.UseVisualStyleBackColor = true;
@@ -443,9 +443,9 @@
             // dtpTuNgay
             // 
             this.dtpTuNgay.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpTuNgay.Location = new System.Drawing.Point(92, 23);
+            this.dtpTuNgay.Location = new System.Drawing.Point(112, 23);
             this.dtpTuNgay.Name = "dtpTuNgay";
-            this.dtpTuNgay.Size = new System.Drawing.Size(227, 24);
+            this.dtpTuNgay.Size = new System.Drawing.Size(200, 24);
             this.dtpTuNgay.TabIndex = 1;
             this.dtpTuNgay.ValueChanged += new System.EventHandler(this.BoLoc_SelectedIndexChanged);
             // 
@@ -461,9 +461,9 @@
             // dtpDenNgay
             // 
             this.dtpDenNgay.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpDenNgay.Location = new System.Drawing.Point(92, 63);
+            this.dtpDenNgay.Location = new System.Drawing.Point(112, 63);
             this.dtpDenNgay.Name = "dtpDenNgay";
-            this.dtpDenNgay.Size = new System.Drawing.Size(227, 24);
+            this.dtpDenNgay.Size = new System.Drawing.Size(200, 24);
             this.dtpDenNgay.TabIndex = 3;
             this.dtpDenNgay.ValueChanged += new System.EventHandler(this.BoLoc_SelectedIndexChanged);
             // 

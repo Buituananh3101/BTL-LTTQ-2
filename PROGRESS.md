@@ -1,6 +1,6 @@
 ﻿# Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-26 – Rà soát, sửa toàn bộ lỗi logic/nghiệp vụ và đóng gói script tạo CSDL đầy đủ (Phiên 57)
+**Cập nhật lần cuối**: 2026-10-26 – Kiểm thử tự động toàn bộ giao diện theo 3 vai trò, sửa lỗi logic và lỗi bố cục ở màn hình 150% (Phiên 58)
 ---
 
 ## Đang làm
@@ -51,6 +51,14 @@
 ---
 
 ## Nhật ký phiên (Session Logs)
+- **Phiên 58 (2026-10-26) – Kiểm thử toàn bộ chức năng/giao diện, sửa lỗi logic và bố cục**:
+  - **Nhu cầu**: Đọc toàn bộ project, chạy và kiểm thử tất cả chức năng, giao diện; sửa lỗi; đẩy lên nhánh `khue/v01`.
+  - **Cách kiểm thử**: tạo CSDL thử `QuanLyKhoPhuQuocLTTQ_Test` từ `docs/TaoCSDL_DayDu.sql` (chạy thành công); bộ kiểm thử tự động đăng nhập bằng `frmDangNhap` (đúng/sai mật khẩu, để trống, nhập chuỗi băm, SQL injection), rồi với từng vai trò quanly (tất cả kho / 1 kho), thukho, nvkho mở mọi menu, bấm mọi nút, đổi mọi combobox, nhấp đúp lưới, mở các form modal lồng nhau; ghi lại mọi MessageBox/exception, đo chữ tràn và control đè nhau ở 144 DPI. Chạy thêm chế độ bấm "Có" ở mọi hộp xác nhận để thử các luồng ghi (hoàn thành, hủy, xóa, cân bằng, chuyển kho) rồi đối chiếu CSDL: không tồn âm, tổng phiếu khớp chi tiết, không trùng mã.
+  - **Lỗi logic đã sửa** (khoảng 60 lỗi, theo phân hệ): tích checkbox sai dòng sau khi sắp xếp lưới (Hàng hóa, Kiểm kho, Chuyển kho, Nhận chuyển kho); tổng kết không cập nhật khi rời ô số lượng (Thêm phiếu nhập/trả); cảnh báo vượt tồn hiện 2 lần; lọc "Đến ngày" bỏ sót giao dịch có mili giây; xóa phiếu tạm không kiểm tra lại trạng thái trong transaction (Phiếu nhập, Trả hàng); hoàn thành phiếu trả tạm có liên kết phiếu nhập không trừ `CanTraNcc`; "Tiền đã trả NCC" tăng ảo sau khi trả hàng; `GiaVon` phiếu trả lưu theo đơn giá trả; SL thực tế mặc định âm vi phạm CHECK (Kiểm kho); form chi tiết kiểm kho tự đóng sau khi cân bằng; trùng tên NCC báo lỗi SQL tiếng Anh, ô nhập không giới hạn độ dài; nhập file Excel nhị phân khi thiếu OLEDB sinh bản ghi rác; xuất CSV lệch cột theo vùng miền; báo cáo tồn "vượt định mức" so tổng nhiều kho; thẻ kho sắp xếp được làm sai tồn lũy kế; Enter ở ô tên đăng nhập/mật khẩu cũ kích hoạt nút mặc định; menu "Hướng dẫn sử dụng" chưa có xử lý; ký tự `&` trong tiêu đề bị ẩn.
+  - **Lỗi bố cục đã sửa**: ở 150% (144 DPI) các form không tự co giãn nên chữ bị cắt/đè (nút "+ Nhà cung cấp", "Thực hiện nhập", "Chọn file...", "Hoàn thành", "◀ Trước"; nhãn tiêu đề bị ô/nhãn giá trị che ở form chi tiết và form thêm phiếu; "Số dòng", "Đến ngày"). Đã chỉnh Location/Size trong Designer của ~35 form, không đổi kích thước form, font, màu; `frmDoiKho` đổi thứ tự nút theo luật 19b. Kiểm thử lại: 0 exception, 0 MessageBox lỗi, 0 control đè nhau, 0 chữ tràn ở cả 4 vai trò.
+  - **Kiểm tra**: MSBuild 0 lỗi 0 cảnh báo; `tools/KiemTraMaHoa.ps1` 100% UTF-8 BOM, 0 Mojibake.
+  - **Còn tồn đọng (cần người dùng quyết định)**: chưa có chức năng mở lại phiếu tạm để sửa tiếp (Nhập hàng, Trả hàng, Kiểm kho, Chuyển kho); phím tắt F3 ở 8 form danh sách trái luật 15c; `frmThemPhieuChuyenKho` (bản cũ) không còn dùng; các form `GUI/Forms/DonViTinh` không có đường mở; file mẫu nhập NCC dùng mã NCC00001/NCC00002 trùng dữ liệu thật (mặc định "Cập nhật" sẽ ghi đè); dữ liệu mẫu PN-SEED-K2 lệch quy ước `TongTien`, PKK000005/009/011 thiếu `PhieuDieuChinh`; nhiều file `docs/specs` vẫn mô tả bản web cũ.
+
 - **Phiên 57 (2026-10-26) – Rà soát và sửa toàn bộ lỗi logic/nghiệp vụ, đóng gói CSDL**:
   - **Nhu cầu**: Rà soát toàn dự án tìm lỗi logic, nghiệp vụ; sửa toàn bộ để chạy hoàn chỉnh; đóng gói để người khác clone về chạy được.
   - **Kết quả thực hiện**:

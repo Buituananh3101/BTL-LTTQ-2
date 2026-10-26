@@ -4,6 +4,7 @@ using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
@@ -36,6 +37,8 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                 null, dgvChiTiet, new object[] { true });
 
             dgvChiTiet.AutoGenerateColumns = false;
+            // Cột STT trong Designer chưa gắn nguồn dữ liệu -> gắn vào cột STT (ROW_NUMBER) của truy vấn
+            colStt.DataPropertyName = "STT";
             dgvChiTiet.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
             dgvChiTiet.DefaultCellStyle.SelectionBackColor = Color.FromArgb(224, 231, 255);
             dgvChiTiet.DefaultCellStyle.SelectionForeColor = Color.FromArgb(30, 41, 59);
@@ -84,7 +87,12 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                         ISNULL(pn.GhiChu, '') AS GhiChu,
                         pn.GiamGia,
                         pn.TongTien,
-                        pn.CanTraNcc
+                        pn.CanTraNcc,
+                        -- Phần tiền trả hàng đã trừ vào nợ phiếu nhập (để tính đúng tiền đã trả NCC)
+                        ISNULL((SELECT SUM(CASE WHEN pt.TongTienHang - pt.GiamGia - pt.CanThuNcc > 0
+                                                THEN pt.TongTienHang - pt.GiamGia - pt.CanThuNcc ELSE 0 END)
+                                FROM PhieuTraHangNhap pt
+                                WHERE pt.MaPhieuNhap = pn.MaPhieuNhap AND pt.TrangThai = 'DA_TRA_HANG'), 0) AS TienTruNoTraHang
                     FROM PhieuNhap pn
                     LEFT JOIN Kho k ON pn.MaKho = k.MaKho
                     LEFT JOIN DonViCapHang ncc ON pn.MaDonViCapHang = ncc.MaDonViCapHang
@@ -183,7 +191,8 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                 decimal giamGia = Convert.ToDecimal(row["GiamGia"]);
                 decimal tongCong = Convert.ToDecimal(row["TongTien"]);
                 decimal canTra = Convert.ToDecimal(row["CanTraNcc"]);
-                decimal daTra = tongCong - canTra;
+                // Trả hàng theo đơn đã giảm CanTraNcc -> không tính phần đó là tiền đã trả NCC
+                decimal daTra = tongCong - canTra - Convert.ToDecimal(row["TienTruNoTraHang"]);
                 if (daTra < 0) daTra = 0;
 
                 lblSoLuongMatHangVal.Text = $"Số lượng mặt hàng: {dtChiTietData.Rows.Count}";
@@ -193,7 +202,8 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                 lblTienDaTraVal.Text = daTra.ToString("N0");
                 lblCanTraNccVal.Text = canTra.ToString("N0");
 
-                if (canTra > 0)
+                // Chỉ cảnh báo đỏ khi phiếu đã nhập hàng (phiếu tạm / đã hủy không phát sinh công nợ)
+                if (canTra > 0 && currentTrangThai == "DA_XAC_NHAN")
                 {
                     lblCanTraNccVal.ForeColor = Color.Red;
                 }
@@ -232,6 +242,16 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                     {
                         DataProcessing.ChangeDataTransaction((conn, trans) =>
                         {
+                            // Đọc lại trạng thái (khóa dòng): chỉ xóa cứng khi phiếu vẫn là phiếu tạm (tránh xóa phiếu người khác vừa hoàn thành)
+                            using (SqlCommand cmdTt = new SqlCommand("SELECT TrangThai FROM PhieuNhap WITH (UPDLOCK, ROWLOCK) WHERE MaPhieuNhap = @MaPhieuNhap", conn, trans))
+                            {
+                                cmdTt.Parameters.AddWithValue("@MaPhieuNhap", maPhieuNhap);
+                                if (Convert.ToString(cmdTt.ExecuteScalar()) != "NHAP")
+                                {
+                                    throw new InvalidOperationException("Phiếu nhập không còn ở trạng thái phiếu tạm nên không thể xóa. Vui lòng tải lại phiếu.");
+                                }
+                            }
+
                             SqlCommand cmd1 = new SqlCommand("DELETE FROM ChiTietPhieuNhap WHERE MaPhieuNhap = @MaPhieuNhap", conn, trans);
                             cmd1.Parameters.AddWithValue("@MaPhieuNhap", maPhieuNhap);
                             cmd1.ExecuteNonQuery();
@@ -253,6 +273,11 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                         MessageBox.Show("Đã xóa phiếu tạm thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         this.DialogResult = DialogResult.OK;
                         this.Close();
+                    }
+                    catch (InvalidOperationException exNghiepVu)
+                    {
+                        MessageBox.Show(exNghiepVu.Message, "Không thể xóa phiếu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        NapThongTinPhieu();
                     }
                     catch (Exception ex)
                     {
@@ -367,7 +392,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
-                sfd.Filter = "CSV File (*.csv)|*.csv|All Files (*.*)|*.*";
+                sfd.Filter = "File CSV (*.csv)|*.csv|Tất cả tệp (*.*)|*.*";
                 sfd.FileName = $"ChiTiet_{maPhieu}_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
@@ -395,15 +420,19 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                             decimal gg = Convert.ToDecimal(r["GiamGia"]);
                             decimal tt = Convert.ToDecimal(r["ThanhTien"]);
 
-                            sb.AppendLine($"{stt},{sku},{ten},{dvt},{sl},{dg},{gg},{tt}");
+                            // Ghi số thô không phụ thuộc vùng miền (tránh dấu ',' thập phân làm lệch cột CSV)
+                            sb.AppendLine(string.Join(",", stt, sku, ten, dvt,
+                                sl.ToString("0.##", CultureInfo.InvariantCulture), dg.ToString("0.##", CultureInfo.InvariantCulture),
+                                gg.ToString("0.##", CultureInfo.InvariantCulture), tt.ToString("0.##", CultureInfo.InvariantCulture)));
                         }
 
+                        // Nhãn tổng kết định dạng N0 -> bỏ cả dấu phân cách nghìn ',' và '.'
                         sb.AppendLine("");
-                        sb.AppendLine($",,,,,Tổng tiền hàng:,{lblTongTienHangVal.Text.Replace(",", "")}");
-                        sb.AppendLine($",,,,,Giảm giá:,{lblGiamGiaVal.Text.Replace(",", "")}");
-                        sb.AppendLine($",,,,,Tổng cộng:,{lblTongCongVal.Text.Replace(",", "")}");
-                        sb.AppendLine($",,,,,Tiền đã trả NCC:,{lblTienDaTraVal.Text.Replace(",", "")}");
-                        sb.AppendLine($",,,,,Cần trả NCC:,{lblCanTraNccVal.Text.Replace(",", "")}");
+                        sb.AppendLine($",,,,,Tổng tiền hàng:,{lblTongTienHangVal.Text.Replace(",", "").Replace(".", "")}");
+                        sb.AppendLine($",,,,,Giảm giá:,{lblGiamGiaVal.Text.Replace(",", "").Replace(".", "")}");
+                        sb.AppendLine($",,,,,Tổng cộng:,{lblTongCongVal.Text.Replace(",", "").Replace(".", "")}");
+                        sb.AppendLine($",,,,,Tiền đã trả NCC:,{lblTienDaTraVal.Text.Replace(",", "").Replace(".", "")}");
+                        sb.AppendLine($",,,,,Cần trả NCC:,{lblCanTraNccVal.Text.Replace(",", "").Replace(".", "")}");
 
                         File.WriteAllText(sfd.FileName, sb.ToString(), new UTF8Encoding(true));
                         MessageBox.Show("Xuất file chi tiết đơn nhập thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);

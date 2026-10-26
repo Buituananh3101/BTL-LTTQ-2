@@ -708,8 +708,14 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                     }
                 }
             }
-            catch
+            catch (Exception exOleDb)
             {
+                // File Excel nhị phân (có byte 0) mà máy thiếu OLEDB driver: báo lỗi rõ ràng thay vì báo "không có dữ liệu"
+                if (Array.IndexOf(File.ReadAllBytes(filePath), (byte)0) >= 0)
+                {
+                    throw new Exception("Máy chưa có trình đọc file Excel này. Vui lòng lưu file sang định dạng .csv (UTF-8) rồi nhập lại! Chi tiết: " + exOleDb.Message);
+                }
+
                 // Nếu OleDb thiếu driver, fallback sang đọc dạng văn bản
                 list = DocFileExcelXmlHtml(filePath);
             }

@@ -18,6 +18,14 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
         public frmHienCotBaoCao(DataGridView dgv) : this()
         {
             this.targetDgv = dgv;
+            // Đóng popup khi form báo cáo chứa lưới bị đóng (tránh thao tác trên lưới đã giải phóng)
+            if (dgv != null)
+            {
+                dgv.Disposed += (s, e) =>
+                {
+                    if (!this.IsDisposed) this.Close();
+                };
+            }
             KhoiTaoDanhSachCot();
         }
 

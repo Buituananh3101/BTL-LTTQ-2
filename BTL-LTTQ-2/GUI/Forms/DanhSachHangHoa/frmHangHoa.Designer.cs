@@ -205,9 +205,9 @@
             // btnXoaAnhChinh
             // 
             this.btnXoaAnhChinh.Font = new System.Drawing.Font(".VnTime", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnXoaAnhChinh.Location = new System.Drawing.Point(1036, 32);
+            this.btnXoaAnhChinh.Location = new System.Drawing.Point(1030, 32);
             this.btnXoaAnhChinh.Name = "btnXoaAnhChinh";
-            this.btnXoaAnhChinh.Size = new System.Drawing.Size(23, 23);
+            this.btnXoaAnhChinh.Size = new System.Drawing.Size(29, 29);
             this.btnXoaAnhChinh.TabIndex = 4;
             this.btnXoaAnhChinh.Text = "x";
             this.btnXoaAnhChinh.UseVisualStyleBackColor = true;
@@ -310,7 +310,7 @@
             // 
             this.lblMoTa.AutoSize = true;
             this.lblMoTa.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.lblMoTa.Location = new System.Drawing.Point(458, 104);
+            this.lblMoTa.Location = new System.Drawing.Point(458, 101);
             this.lblMoTa.Name = "lblMoTa";
             this.lblMoTa.Size = new System.Drawing.Size(50, 21);
             this.lblMoTa.TabIndex = 0;

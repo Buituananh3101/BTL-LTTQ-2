@@ -154,9 +154,12 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
 
         private void dgvHangNhan_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex < 0) return;
+            if (e.RowIndex < 0 || e.RowIndex >= dgvHangNhan.Rows.Count) return;
 
-            DataRow row = dtChiTiet.Rows[e.RowIndex];
+            // Lấy đúng dòng dữ liệu gắn với dòng lưới (chỉ số dòng lưới lệch chỉ số DataTable khi đã bấm sắp xếp cột)
+            DataRowView drv = dgvHangNhan.Rows[e.RowIndex].DataBoundItem as DataRowView;
+            if (drv == null) return;
+            DataRow row = drv.Row;
             decimal soLuongChuyen = Convert.ToDecimal(row["SoLuong"]);
             decimal soLuongNhan = 0;
 

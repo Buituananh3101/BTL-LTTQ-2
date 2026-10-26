@@ -48,9 +48,9 @@
             // btnXacNhan
             // 
             this.btnXacNhan.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.btnXacNhan.Location = new System.Drawing.Point(268, 20);
+            this.btnXacNhan.Location = new System.Drawing.Point(353, 17);
             this.btnXacNhan.Name = "btnXacNhan";
-            this.btnXacNhan.Size = new System.Drawing.Size(95, 30);
+            this.btnXacNhan.Size = new System.Drawing.Size(115, 33);
             this.btnXacNhan.TabIndex = 2;
             this.btnXacNhan.Text = "Xác nhận";
             this.btnXacNhan.UseVisualStyleBackColor = true;
@@ -60,9 +60,9 @@
             // 
             this.btnHuy.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnHuy.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.btnHuy.Location = new System.Drawing.Point(373, 20);
+            this.btnHuy.Location = new System.Drawing.Point(248, 17);
             this.btnHuy.Name = "btnHuy";
-            this.btnHuy.Size = new System.Drawing.Size(95, 30);
+            this.btnHuy.Size = new System.Drawing.Size(95, 33);
             this.btnHuy.TabIndex = 3;
             this.btnHuy.Text = "Hủy";
             this.btnHuy.UseVisualStyleBackColor = true;

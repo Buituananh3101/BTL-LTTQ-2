@@ -145,9 +145,9 @@
             // 
             this.lblTongGiaTriVal.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblTongGiaTriVal.Location = new System.Drawing.Point(136, 565);
+            this.lblTongGiaTriVal.Location = new System.Drawing.Point(164,565);
             this.lblTongGiaTriVal.Name = "lblTongGiaTriVal";
-            this.lblTongGiaTriVal.Size = new System.Drawing.Size(218, 20);
+            this.lblTongGiaTriVal.Size = new System.Drawing.Size(190, 25);
             this.lblTongGiaTriVal.TabIndex = 70;
             this.lblTongGiaTriVal.Text = "0 đ";
             this.lblTongGiaTriVal.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -165,9 +165,9 @@
             // 
             this.lblTongSoLuongVal.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblTongSoLuongVal.Location = new System.Drawing.Point(136, 515);
+            this.lblTongSoLuongVal.Location = new System.Drawing.Point(164,515);
             this.lblTongSoLuongVal.Name = "lblTongSoLuongVal";
-            this.lblTongSoLuongVal.Size = new System.Drawing.Size(218, 20);
+            this.lblTongSoLuongVal.Size = new System.Drawing.Size(190, 25);
             this.lblTongSoLuongVal.TabIndex = 66;
             this.lblTongSoLuongVal.Text = "0";
             this.lblTongSoLuongVal.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -185,9 +185,9 @@
             // 
             this.lblSoMatHangVal.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSoMatHangVal.Location = new System.Drawing.Point(151, 465);
+            this.lblSoMatHangVal.Location = new System.Drawing.Point(164, 465);
             this.lblSoMatHangVal.Name = "lblSoMatHangVal";
-            this.lblSoMatHangVal.Size = new System.Drawing.Size(203, 20);
+            this.lblSoMatHangVal.Size = new System.Drawing.Size(190, 25);
             this.lblSoMatHangVal.TabIndex = 62;
             this.lblSoMatHangVal.Text = "0";
             this.lblSoMatHangVal.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -227,9 +227,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboKhoDich.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboKhoDich.FormattingEnabled = true;
-            this.cboKhoDich.Location = new System.Drawing.Point(125, 222);
+            this.cboKhoDich.Location = new System.Drawing.Point(160,222);
             this.cboKhoDich.Name = "cboKhoDich";
-            this.cboKhoDich.Size = new System.Drawing.Size(229, 29);
+            this.cboKhoDich.Size = new System.Drawing.Size(194, 29);
             this.cboKhoDich.TabIndex = 58;
             // 
             // lblKhoDich
@@ -247,9 +247,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboKhoNguon.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboKhoNguon.FormattingEnabled = true;
-            this.cboKhoNguon.Location = new System.Drawing.Point(125, 176);
+            this.cboKhoNguon.Location = new System.Drawing.Point(160,176);
             this.cboKhoNguon.Name = "cboKhoNguon";
-            this.cboKhoNguon.Size = new System.Drawing.Size(229, 29);
+            this.cboKhoNguon.Size = new System.Drawing.Size(194, 29);
             this.cboKhoNguon.TabIndex = 56;
             this.cboKhoNguon.SelectedIndexChanged += new System.EventHandler(this.cboKhoNguon_SelectedIndexChanged);
             // 
@@ -266,9 +266,9 @@
             // 
             this.txtMaPhieu.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtMaPhieu.Location = new System.Drawing.Point(125, 130);
+            this.txtMaPhieu.Location = new System.Drawing.Point(160,130);
             this.txtMaPhieu.Name = "txtMaPhieu";
-            this.txtMaPhieu.Size = new System.Drawing.Size(229, 29);
+            this.txtMaPhieu.Size = new System.Drawing.Size(194, 29);
             this.txtMaPhieu.TabIndex = 54;
             // 
             // lblMaPhieu
@@ -286,9 +286,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dtpNgayChuyen.CustomFormat = "dd/MM/yyyy HH:mm";
             this.dtpNgayChuyen.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpNgayChuyen.Location = new System.Drawing.Point(125, 78);
+            this.dtpNgayChuyen.Location = new System.Drawing.Point(160,78);
             this.dtpNgayChuyen.Name = "dtpNgayChuyen";
-            this.dtpNgayChuyen.Size = new System.Drawing.Size(229, 29);
+            this.dtpNgayChuyen.Size = new System.Drawing.Size(194, 29);
             this.dtpNgayChuyen.TabIndex = 52;
             // 
             // lblNgayChuyen
@@ -306,9 +306,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboNguoiChuyen.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboNguoiChuyen.FormattingEnabled = true;
-            this.cboNguoiChuyen.Location = new System.Drawing.Point(125, 31);
+            this.cboNguoiChuyen.Location = new System.Drawing.Point(160,31);
             this.cboNguoiChuyen.Name = "cboNguoiChuyen";
-            this.cboNguoiChuyen.Size = new System.Drawing.Size(229, 29);
+            this.cboNguoiChuyen.Size = new System.Drawing.Size(194, 29);
             this.cboNguoiChuyen.TabIndex = 48;
             // 
             // lblNguoiChuyen
@@ -368,9 +368,9 @@
             this.cboHangHoa.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboHangHoa.FormattingEnabled = true;
-            this.cboHangHoa.Location = new System.Drawing.Point(111, 77);
+            this.cboHangHoa.Location = new System.Drawing.Point(133, 77);
             this.cboHangHoa.Name = "cboHangHoa";
-            this.cboHangHoa.Size = new System.Drawing.Size(450, 29);
+            this.cboHangHoa.Size = new System.Drawing.Size(428, 29);
             this.cboHangHoa.TabIndex = 20;
             // 
             // lblChonHang
@@ -521,7 +521,7 @@
             // 
             this.lblSoDongMoiTrang.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSoDongMoiTrang.AutoSize = true;
-            this.lblSoDongMoiTrang.Location = new System.Drawing.Point(297, 12);
+            this.lblSoDongMoiTrang.Location = new System.Drawing.Point(383, 12);
             this.lblSoDongMoiTrang.Name = "lblSoDongMoiTrang";
             this.lblSoDongMoiTrang.Size = new System.Drawing.Size(71, 21);
             this.lblSoDongMoiTrang.TabIndex = 6;
@@ -537,7 +537,7 @@
             "20",
             "50",
             "100"});
-            this.cboSoDongMoiTrang.Location = new System.Drawing.Point(373, 8);
+            this.cboSoDongMoiTrang.Location = new System.Drawing.Point(475, 8);
             this.cboSoDongMoiTrang.Name = "cboSoDongMoiTrang";
             this.cboSoDongMoiTrang.Size = new System.Drawing.Size(70, 29);
             this.cboSoDongMoiTrang.TabIndex = 7;
@@ -548,7 +548,7 @@
             this.btnTrangTruoc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnTrangTruoc.Location = new System.Drawing.Point(15, 7);
             this.btnTrangTruoc.Name = "btnTrangTruoc";
-            this.btnTrangTruoc.Size = new System.Drawing.Size(80, 31);
+            this.btnTrangTruoc.Size = new System.Drawing.Size(100, 31);
             this.btnTrangTruoc.TabIndex = 8;
             this.btnTrangTruoc.Text = "◀ Trước";
             this.btnTrangTruoc.UseVisualStyleBackColor = true;
@@ -557,19 +557,19 @@
             // lblTrangHienTai
             // 
             this.lblTrangHienTai.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblTrangHienTai.AutoSize = true;
-            this.lblTrangHienTai.Location = new System.Drawing.Point(106, 12);
+            this.lblTrangHienTai.Location = new System.Drawing.Point(119, 10);
             this.lblTrangHienTai.Name = "lblTrangHienTai";
-            this.lblTrangHienTai.Size = new System.Drawing.Size(85, 21);
+            this.lblTrangHienTai.Size = new System.Drawing.Size(140, 25);
             this.lblTrangHienTai.TabIndex = 9;
             this.lblTrangHienTai.Text = "Trang 1 / 1";
+            this.lblTrangHienTai.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // btnTrangSau
             // 
             this.btnTrangSau.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnTrangSau.Location = new System.Drawing.Point(201, 7);
+            this.btnTrangSau.Location = new System.Drawing.Point(263, 7);
             this.btnTrangSau.Name = "btnTrangSau";
-            this.btnTrangSau.Size = new System.Drawing.Size(80, 31);
+            this.btnTrangSau.Size = new System.Drawing.Size(100, 31);
             this.btnTrangSau.TabIndex = 10;
             this.btnTrangSau.Text = "Sau ▶";
             this.btnTrangSau.UseVisualStyleBackColor = true;

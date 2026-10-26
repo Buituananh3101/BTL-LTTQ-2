@@ -33,6 +33,8 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                 null, dgvHangTra, new object[] { true });
 
             dgvHangTra.AutoGenerateColumns = false;
+            // Cột STT trong Designer chưa gắn nguồn dữ liệu -> gắn vào cột STT (ROW_NUMBER) của truy vấn
+            colStt.DataPropertyName = "STT";
             dgvHangTra.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
             dgvHangTra.DefaultCellStyle.SelectionBackColor = Color.FromArgb(224, 231, 255);
             dgvHangTra.DefaultCellStyle.SelectionForeColor = Color.FromArgb(30, 41, 59);
@@ -748,7 +750,8 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                 }
 
                 // 5. Vẽ giá trị số lượng căn phải bên trong hộp
-                string valStr = e.FormattedValue != null ? Convert.ToDecimal(e.Value ?? 0).ToString("N0") : "0";
+                // Ô bị xóa trắng có giá trị DBNull -> hiển thị 0 (tránh InvalidCastException khi vẽ)
+                string valStr = (e.Value != null && e.Value != DBNull.Value) ? Convert.ToDecimal(e.Value).ToString("N0") : "0";
                 Rectangle textRect = new Rectangle(boxRect.X, boxRect.Y, boxRect.Width - 8, boxRect.Height);
                 TextRenderer.DrawText(e.Graphics, valStr, e.CellStyle.Font, textRect, Color.FromArgb(30, 41, 59),
                     TextFormatFlags.Right | TextFormatFlags.VerticalCenter);

@@ -334,6 +334,9 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
         {
             if (dangNapDuLieu) return;
 
+            // Đồng bộ lại bộ lọc hướng chuyển theo kho làm việc (frmMain gọi lại hàm này sau khi Đổi kho)
+            cboHuongChuyen.Enabled = SessionContext.MaKhoHienTai > 0;
+
             try
             {
                 // 1-6. Điều kiện lọc (dùng chung với chức năng xuất file)
@@ -495,9 +498,10 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                 bool currentVal = Convert.ToBoolean(dgvChuyenKho.Rows[e.RowIndex].Cells["colChon"].Value ?? false);
                 bool newVal = !currentVal;
                 dgvChuyenKho.Rows[e.RowIndex].Cells["colChon"].Value = newVal;
-                if (dgvChuyenKho.DataSource is DataTable dt && e.RowIndex < dt.Rows.Count)
+                // Cập nhật đúng dòng dữ liệu gắn với dòng lưới (chỉ số dòng lưới lệch chỉ số DataTable khi đã bấm sắp xếp cột)
+                if (dgvChuyenKho.Rows[e.RowIndex].DataBoundItem is DataRowView drv)
                 {
-                    dt.Rows[e.RowIndex]["Chon"] = newVal;
+                    drv["Chon"] = newVal;
                 }
                 CapNhatTrangThaiHeaderCheckBox();
             }
@@ -535,9 +539,9 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                     bool currentVal = Convert.ToBoolean(cell.Value ?? false);
                     bool newVal = !currentVal;
                     cell.Value = newVal;
-                    if (dgvChuyenKho.DataSource is DataTable dt && dgvChuyenKho.CurrentRow.Index < dt.Rows.Count)
+                    if (dgvChuyenKho.CurrentRow.DataBoundItem is DataRowView drv)
                     {
-                        dt.Rows[dgvChuyenKho.CurrentRow.Index]["Chon"] = newVal;
+                        drv["Chon"] = newVal;
                     }
                     CapNhatTrangThaiHeaderCheckBox();
                     e.Handled = true;

@@ -173,6 +173,21 @@ namespace BTL_LTTQ_2.GUI.Forms.DangNhap
             CapNhatDanhSachKhoTheoTaiKhoan(txtTenDangNhap.Text.Trim());
         }
 
+        /// <summary>
+        /// Phím Enter ở ô Tên đăng nhập: chuyển sang ô Mật khẩu thay vì kích hoạt nút Đăng nhập
+        /// (AcceptButton xử lý Enter trước nên sự kiện KeyDown của ô nhập không bao giờ nhận được phím Enter)
+        /// </summary>
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Enter && txtTenDangNhap.Focused)
+            {
+                CapNhatDanhSachKhoTheoTaiKhoan(txtTenDangNhap.Text.Trim());
+                txtMatKhau.Focus();
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
         private void txtTenDangNhap_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)

@@ -153,7 +153,7 @@
             // 
             this.chkHienMatKhau.AutoSize = true;
             this.chkHienMatKhau.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.chkHienMatKhau.Location = new System.Drawing.Point(219, 128);
+            this.chkHienMatKhau.Location = new System.Drawing.Point(240, 128);
             this.chkHienMatKhau.Name = "chkHienMatKhau";
             this.chkHienMatKhau.Size = new System.Drawing.Size(133, 25);
             this.chkHienMatKhau.TabIndex = 13;
@@ -172,9 +172,9 @@
             // 
             // txtMatKhau
             // 
-            this.txtMatKhau.Location = new System.Drawing.Point(219, 95);
+            this.txtMatKhau.Location = new System.Drawing.Point(240, 95);
             this.txtMatKhau.Name = "txtMatKhau";
-            this.txtMatKhau.Size = new System.Drawing.Size(320, 29);
+            this.txtMatKhau.Size = new System.Drawing.Size(299, 29);
             this.txtMatKhau.TabIndex = 12;
             this.txtMatKhau.UseSystemPasswordChar = true;
             // 
@@ -189,9 +189,9 @@
             // 
             // txtTenDangNhap
             // 
-            this.txtTenDangNhap.Location = new System.Drawing.Point(219, 38);
+            this.txtTenDangNhap.Location = new System.Drawing.Point(240, 38);
             this.txtTenDangNhap.Name = "txtTenDangNhap";
-            this.txtTenDangNhap.Size = new System.Drawing.Size(320, 29);
+            this.txtTenDangNhap.Size = new System.Drawing.Size(299, 29);
             this.txtTenDangNhap.TabIndex = 10;
             // 
             // grpPhanQuyenKho
@@ -272,10 +272,10 @@
             // 
             this.txtDiaChi.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtDiaChi.Location = new System.Drawing.Point(154, 157);
+            this.txtDiaChi.Location = new System.Drawing.Point(185, 157);
             this.txtDiaChi.Multiline = true;
             this.txtDiaChi.Name = "txtDiaChi";
-            this.txtDiaChi.Size = new System.Drawing.Size(284, 93);
+            this.txtDiaChi.Size = new System.Drawing.Size(253, 93);
             this.txtDiaChi.TabIndex = 7;
             // 
             // lblEmail
@@ -297,7 +297,7 @@
             // lblDienThoai
             // 
             this.lblDienThoai.AutoSize = true;
-            this.lblDienThoai.Location = new System.Drawing.Point(44, 102);
+            this.lblDienThoai.Location = new System.Drawing.Point(44, 105);
             this.lblDienThoai.Name = "lblDienThoai";
             this.lblDienThoai.Size = new System.Drawing.Size(104, 21);
             this.lblDienThoai.TabIndex = 2;
@@ -305,9 +305,9 @@
             // 
             // txtDienThoai
             // 
-            this.txtDienThoai.Location = new System.Drawing.Point(154, 102);
+            this.txtDienThoai.Location = new System.Drawing.Point(185, 102);
             this.txtDienThoai.Name = "txtDienThoai";
-            this.txtDienThoai.Size = new System.Drawing.Size(284, 29);
+            this.txtDienThoai.Size = new System.Drawing.Size(253, 29);
             this.txtDienThoai.TabIndex = 3;
             // 
             // lblHoTen
@@ -321,9 +321,9 @@
             // 
             // txtHoTen
             // 
-            this.txtHoTen.Location = new System.Drawing.Point(154, 41);
+            this.txtHoTen.Location = new System.Drawing.Point(185, 41);
             this.txtHoTen.Name = "txtHoTen";
-            this.txtHoTen.Size = new System.Drawing.Size(284, 29);
+            this.txtHoTen.Size = new System.Drawing.Size(253, 29);
             this.txtHoTen.TabIndex = 1;
             // 
             // pnlBottom

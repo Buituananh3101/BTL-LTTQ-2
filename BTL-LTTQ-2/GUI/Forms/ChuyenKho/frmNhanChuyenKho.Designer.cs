@@ -51,14 +51,14 @@
             this.pnlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlTop.Location = new System.Drawing.Point(0, 0);
             this.pnlTop.Name = "pnlTop";
-            this.pnlTop.Size = new System.Drawing.Size(864, 60);
+            this.pnlTop.Size = new System.Drawing.Size(864, 70);
             this.pnlTop.TabIndex = 0;
             // 
             // lblThongTinPhieu
             // 
             this.lblThongTinPhieu.AutoSize = true;
             this.lblThongTinPhieu.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.lblThongTinPhieu.Location = new System.Drawing.Point(16, 34);
+            this.lblThongTinPhieu.Location = new System.Drawing.Point(16, 40);
             this.lblThongTinPhieu.Name = "lblThongTinPhieu";
             this.lblThongTinPhieu.Size = new System.Drawing.Size(294, 17);
             this.lblThongTinPhieu.TabIndex = 1;
@@ -68,7 +68,7 @@
             // 
             this.lblTieuDe.AutoSize = true;
             this.lblTieuDe.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.lblTieuDe.Location = new System.Drawing.Point(14, 9);
+            this.lblTieuDe.Location = new System.Drawing.Point(14, 6);
             this.lblTieuDe.Name = "lblTieuDe";
             this.lblTieuDe.Size = new System.Drawing.Size(259, 21);
             this.lblTieuDe.TabIndex = 0;
@@ -90,11 +90,11 @@
             this.colSoLuongNhan,
             this.colHaoHut});
             this.dgvHangNhan.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvHangNhan.Location = new System.Drawing.Point(0, 60);
+            this.dgvHangNhan.Location = new System.Drawing.Point(0, 70);
             this.dgvHangNhan.Name = "dgvHangNhan";
             this.dgvHangNhan.RowHeadersVisible = false;
             this.dgvHangNhan.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvHangNhan.Size = new System.Drawing.Size(864, 311);
+            this.dgvHangNhan.Size = new System.Drawing.Size(864, 301);
             this.dgvHangNhan.TabIndex = 1;
             this.dgvHangNhan.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvHangNhan_CellEndEdit);
             this.dgvHangNhan.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvHangNhan_CellFormatting);
@@ -181,7 +181,7 @@
             // 
             this.btnHuy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnHuy.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnHuy.Location = new System.Drawing.Point(595, 68);
+            this.btnHuy.Location = new System.Drawing.Point(543, 68);
             this.btnHuy.Name = "btnHuy";
             this.btnHuy.Size = new System.Drawing.Size(95, 30);
             this.btnHuy.TabIndex = 5;
@@ -192,9 +192,9 @@
             // btnXacNhanNhan
             // 
             this.btnXacNhanNhan.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnXacNhanNhan.Location = new System.Drawing.Point(700, 68);
+            this.btnXacNhanNhan.Location = new System.Drawing.Point(644, 68);
             this.btnXacNhanNhan.Name = "btnXacNhanNhan";
-            this.btnXacNhanNhan.Size = new System.Drawing.Size(150, 30);
+            this.btnXacNhanNhan.Size = new System.Drawing.Size(206, 30);
             this.btnXacNhanNhan.TabIndex = 6;
             this.btnXacNhanNhan.Text = "Xác nhận nhận hàng";
             this.btnXacNhanNhan.UseVisualStyleBackColor = true;
@@ -204,7 +204,7 @@
             // 
             this.lblTongHaoHut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTongHaoHut.AutoSize = true;
-            this.lblTongHaoHut.Location = new System.Drawing.Point(670, 38);
+            this.lblTongHaoHut.Location = new System.Drawing.Point(655, 38);
             this.lblTongHaoHut.Name = "lblTongHaoHut";
             this.lblTongHaoHut.Size = new System.Drawing.Size(100, 17);
             this.lblTongHaoHut.TabIndex = 4;
@@ -214,7 +214,7 @@
             // 
             this.lblTongThucNhan.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTongThucNhan.AutoSize = true;
-            this.lblTongThucNhan.Location = new System.Drawing.Point(670, 14);
+            this.lblTongThucNhan.Location = new System.Drawing.Point(655, 10);
             this.lblTongThucNhan.Name = "lblTongThucNhan";
             this.lblTongThucNhan.Size = new System.Drawing.Size(113, 17);
             this.lblTongThucNhan.TabIndex = 3;
@@ -225,7 +225,7 @@
             this.lblTongChuyen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTongChuyen.AutoSize = true;
             this.lblTongChuyen.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.lblTongChuyen.Location = new System.Drawing.Point(500, 14);
+            this.lblTongChuyen.Location = new System.Drawing.Point(465, 10);
             this.lblTongChuyen.Name = "lblTongChuyen";
             this.lblTongChuyen.Size = new System.Drawing.Size(96, 17);
             this.lblTongChuyen.TabIndex = 2;
@@ -236,13 +236,13 @@
             this.txtGhiChuNhan.Location = new System.Drawing.Point(18, 35);
             this.txtGhiChuNhan.Multiline = true;
             this.txtGhiChuNhan.Name = "txtGhiChuNhan";
-            this.txtGhiChuNhan.Size = new System.Drawing.Size(460, 60);
+            this.txtGhiChuNhan.Size = new System.Drawing.Size(440, 60);
             this.txtGhiChuNhan.TabIndex = 1;
             // 
             // lblGhiChuNhan
             // 
             this.lblGhiChuNhan.AutoSize = true;
-            this.lblGhiChuNhan.Location = new System.Drawing.Point(15, 14);
+            this.lblGhiChuNhan.Location = new System.Drawing.Point(15, 10);
             this.lblGhiChuNhan.Name = "lblGhiChuNhan";
             this.lblGhiChuNhan.Size = new System.Drawing.Size(274, 17);
             this.lblGhiChuNhan.TabIndex = 0;

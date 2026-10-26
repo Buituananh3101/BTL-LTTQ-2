@@ -59,7 +59,8 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                     {
                         StringBuilder sb = new StringBuilder();
                         sb.AppendLine("<html xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:x=\"urn:schemas-microsoft-com:office:excel\" xmlns=\"http://www.w3.org/TR/REC-html40\">");
-                        sb.AppendLine("<head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"></head>");
+                        // Ô dạng văn bản (.text) giữ số 0 đầu của điện thoại / mã số thuế khi mở bằng Excel
+                        sb.AppendLine("<head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><style>.text { mso-number-format: \"\\@\"; }</style></head>");
                         sb.AppendLine("<body><table border=\"1\">");
 
                         // Dòng tiêu đề cột
@@ -80,11 +81,11 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                         sb.AppendLine("<td>NCC00001</td>");
                         sb.AppendLine("<td>Công ty Cổ phần Sữa Việt Nam (Vinamilk)</td>");
                         sb.AppendLine("<td>Thực phẩm & Đồ uống</td>");
-                        sb.AppendLine("<td>02854155555</td>");
+                        sb.AppendLine("<td class=\"text\">02854155555</td>");
                         sb.AppendLine("<td>vinamilk@vinamilk.com.vn</td>");
                         sb.AppendLine("<td>10 Tân Trào, Tân Phú, Quận 7, TP.HCM</td>");
                         sb.AppendLine("<td>Miền Nam</td>");
-                        sb.AppendLine("<td>0300588569</td>");
+                        sb.AppendLine("<td class=\"text\">0300588569</td>");
                         sb.AppendLine("<td>Nhà cung cấp sữa tươi và các chế phẩm từ sữa</td>");
                         sb.AppendLine("</tr>");
 
@@ -93,11 +94,11 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                         sb.AppendLine("<td>NCC00002</td>");
                         sb.AppendLine("<td>Tập đoàn Masan Consumer</td>");
                         sb.AppendLine("<td>Gia vị & Tiêu dùng nhanh</td>");
-                        sb.AppendLine("<td>02862563862</td>");
+                        sb.AppendLine("<td class=\"text\">02862563862</td>");
                         sb.AppendLine("<td>contact@masangroup.com</td>");
                         sb.AppendLine("<td>Tòa nhà Central Plaza, 17 Lê Duẩn, Quận 1, TP.HCM</td>");
                         sb.AppendLine("<td>Miền Nam</td>");
-                        sb.AppendLine("<td>0302017440</td>");
+                        sb.AppendLine("<td class=\"text\">0302017440</td>");
                         sb.AppendLine("<td>Cung ứng nước tương, nước mắm, mì gói</td>");
                         sb.AppendLine("</tr>");
 
@@ -643,8 +644,19 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                     }
                 }
             }
-            catch
+            catch (Exception exOleDb)
             {
+                // File Excel nhị phân thật (OLE: D0 CF 11 E0) mà không mở được bằng OLEDB thì không đọc dạng text (tránh nhập chuỗi rác)
+                byte[] dauFile = new byte[4];
+                using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                {
+                    fs.Read(dauFile, 0, dauFile.Length);
+                }
+                if (dauFile[0] == 0xD0 && dauFile[1] == 0xCF && dauFile[2] == 0x11 && dauFile[3] == 0xE0)
+                {
+                    throw new Exception("Không thể đọc file Excel 97-2003 (.xls) này trên máy hiện tại. Vui lòng lưu file sang định dạng .xlsx hoặc CSV (UTF-8) rồi nhập lại! Chi tiết: " + exOleDb.Message);
+                }
+
                 string[] lines = File.ReadAllLines(filePath, Encoding.UTF8);
                 foreach (string l in lines)
                 {
