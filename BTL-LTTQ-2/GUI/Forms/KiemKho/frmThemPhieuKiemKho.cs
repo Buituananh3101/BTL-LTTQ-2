@@ -50,9 +50,14 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             dgvHangKiem.DefaultCellStyle.SelectionBackColor = Color.FromArgb(224, 231, 255);
             dgvHangKiem.DefaultCellStyle.SelectionForeColor = Color.FromArgb(30, 41, 59);
 
+            dgvHangKiem.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.False;
+            dgvHangKiem.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
+            dgvHangKiem.ColumnHeadersHeight = 36;
+
             colStt.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colMaHangNoiBo.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colDonViTinh.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colDonViTinh.Visible = false;
             colTonKho.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             colSoLuongThucTe.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             colSlChenhLech.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;

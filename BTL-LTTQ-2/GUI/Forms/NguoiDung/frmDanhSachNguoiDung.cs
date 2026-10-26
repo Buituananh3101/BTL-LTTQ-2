@@ -50,7 +50,10 @@ namespace BTL_LTTQ_2.GUI.Forms.NguoiDung
             dgvNguoiDung.RowTemplate.Height = 36;
             dgvNguoiDung.BackgroundColor = Color.White;
             dgvNguoiDung.BorderStyle = BorderStyle.None;
-            dgvNguoiDung.GridColor = Color.FromArgb(226, 232, 240);
+            dgvNguoiDung.CellBorderStyle = DataGridViewCellBorderStyle.Single;
+            dgvNguoiDung.GridColor = SystemColors.ControlDark;
+            dgvNguoiDung.EnableHeadersVisualStyles = true;
+            dgvNguoiDung.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Raised;
 
             // Màu dòng xen kẽ và màu chọn hiện đại theo frmDanhSachHangHoa
             dgvNguoiDung.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);

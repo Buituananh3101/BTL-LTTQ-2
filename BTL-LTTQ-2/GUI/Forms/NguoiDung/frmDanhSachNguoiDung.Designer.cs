@@ -172,14 +172,9 @@
             this.dgvNguoiDung.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle11;
             this.dgvNguoiDung.BackgroundColor = System.Drawing.Color.White;
             this.dgvNguoiDung.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.dgvNguoiDung.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
+            this.dgvNguoiDung.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Raised;
             dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle12.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(245)))), ((int)(((byte)(249)))));
             dataGridViewCellStyle12.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
-            dataGridViewCellStyle12.Padding = new System.Windows.Forms.Padding(0, 4, 0, 4);
-            dataGridViewCellStyle12.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(245)))), ((int)(((byte)(249)))));
-            dataGridViewCellStyle12.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
             dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dgvNguoiDung.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle12;
             this.dgvNguoiDung.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
@@ -199,8 +194,8 @@
             dataGridViewCellStyleDefault.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(41)))), ((int)(((byte)(59)))));
             this.dgvNguoiDung.DefaultCellStyle = dataGridViewCellStyleDefault;
             this.dgvNguoiDung.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvNguoiDung.EnableHeadersVisualStyles = false;
-            this.dgvNguoiDung.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
+            this.dgvNguoiDung.EnableHeadersVisualStyles = true;
+            this.dgvNguoiDung.GridColor = System.Drawing.SystemColors.ControlDark;
             this.dgvNguoiDung.Location = new System.Drawing.Point(387, 84);
             this.dgvNguoiDung.MultiSelect = false;
             this.dgvNguoiDung.Name = "dgvNguoiDung";

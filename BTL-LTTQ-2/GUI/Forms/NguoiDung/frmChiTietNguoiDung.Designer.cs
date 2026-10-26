@@ -49,7 +49,7 @@
             this.btnKhoaTaiKhoan = new System.Windows.Forms.Button();
             this.btnXoa = new System.Windows.Forms.Button();
             this.btnBoQua = new System.Windows.Forms.Button();
-                        this.pnlTop.SuspendLayout();
+            this.pnlTop.SuspendLayout();
             this.grpTieuDe.SuspendLayout();
             this.pnlThongTinCoBan.SuspendLayout();
             this.grpPhanQuyenKho.SuspendLayout();
@@ -168,9 +168,9 @@
             this.lblMatKhau.AutoSize = true;
             this.lblMatKhau.Location = new System.Drawing.Point(62, 98);
             this.lblMatKhau.Name = "lblMatKhau";
-            this.lblMatKhau.Size = new System.Drawing.Size(99, 21);
+            this.lblMatKhau.Size = new System.Drawing.Size(110, 21);
             this.lblMatKhau.TabIndex = 11;
-            this.lblMatKhau.Text = "Mật khẩu (*):";
+            this.lblMatKhau.Text = "Mật khẩu mới:";
             // 
             // txtMatKhau
             // 
@@ -341,7 +341,7 @@
             // 
             this.grpThaoTac.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-                        this.grpThaoTac.Controls.Add(this.btnLuu);
+            this.grpThaoTac.Controls.Add(this.btnLuu);
             this.grpThaoTac.Controls.Add(this.btnKhoaTaiKhoan);
             this.grpThaoTac.Controls.Add(this.btnXoa);
             this.grpThaoTac.Controls.Add(this.btnBoQua);
@@ -373,6 +373,17 @@
             this.btnKhoaTaiKhoan.UseVisualStyleBackColor = true;
             this.btnKhoaTaiKhoan.Click += new System.EventHandler(this.btnKhoaTaiKhoan_Click);
             // 
+            // btnXoa
+            // 
+            this.btnXoa.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnXoa.Location = new System.Drawing.Point(159, 19);
+            this.btnXoa.Name = "btnXoa";
+            this.btnXoa.Size = new System.Drawing.Size(110, 32);
+            this.btnXoa.TabIndex = 2;
+            this.btnXoa.Text = "Xóa";
+            this.btnXoa.UseVisualStyleBackColor = true;
+            this.btnXoa.Click += new System.EventHandler(this.btnXoa_Click);
+            // 
             // btnBoQua
             // 
             this.btnBoQua.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -384,17 +395,6 @@
             this.btnBoQua.Text = "Bỏ qua";
             this.btnBoQua.UseVisualStyleBackColor = true;
             this.btnBoQua.Click += new System.EventHandler(this.btnBoQua_Click);
-            // 
-            // btnXoa
-            // 
-            this.btnXoa.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnXoa.Location = new System.Drawing.Point(159, 19);
-            this.btnXoa.Name = "btnXoa";
-            this.btnXoa.Size = new System.Drawing.Size(110, 32);
-            this.btnXoa.TabIndex = 2;
-            this.btnXoa.Text = "Xóa";
-            this.btnXoa.UseVisualStyleBackColor = true;
-            this.btnXoa.Click += new System.EventHandler(this.btnXoa_Click);
             // 
             // frmChiTietNguoiDung
             // 

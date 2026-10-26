@@ -470,7 +470,8 @@
             this.dgvHangKiem.AllowUserToDeleteRows = false;
             this.dgvHangKiem.BackgroundColor = System.Drawing.Color.White;
             this.dgvHangKiem.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.dgvHangKiem.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvHangKiem.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
+            this.dgvHangKiem.ColumnHeadersHeight = 36;
             this.dgvHangKiem.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colStt,
             this.colMaHangNoiBo,
@@ -509,7 +510,7 @@
             this.colMaHangNoiBo.MinimumWidth = 6;
             this.colMaHangNoiBo.Name = "colMaHangNoiBo";
             this.colMaHangNoiBo.ReadOnly = true;
-            this.colMaHangNoiBo.Width = 85;
+            this.colMaHangNoiBo.Width = 110;
             // 
             // colTenHang
             // 
@@ -527,7 +528,8 @@
             this.colDonViTinh.MinimumWidth = 6;
             this.colDonViTinh.Name = "colDonViTinh";
             this.colDonViTinh.ReadOnly = true;
-            this.colDonViTinh.Width = 55;
+            this.colDonViTinh.Visible = false;
+            this.colDonViTinh.Width = 65;
             // 
             // colTonKho
             // 
@@ -536,12 +538,12 @@
             this.colTonKho.MinimumWidth = 6;
             this.colTonKho.Name = "colTonKho";
             this.colTonKho.ReadOnly = true;
-            this.colTonKho.Width = 75;
+            this.colTonKho.Width = 90;
             // 
             // colSoLuongThucTe
             // 
             this.colSoLuongThucTe.DataPropertyName = "SoLuongThucTe";
-            this.colSoLuongThucTe.HeaderText = "SL thực tế (nhập)";
+            this.colSoLuongThucTe.HeaderText = "SL thực tế";
             this.colSoLuongThucTe.MinimumWidth = 6;
             this.colSoLuongThucTe.Name = "colSoLuongThucTe";
             this.colSoLuongThucTe.Width = 110;
@@ -553,7 +555,7 @@
             this.colSlChenhLech.MinimumWidth = 6;
             this.colSlChenhLech.Name = "colSlChenhLech";
             this.colSlChenhLech.ReadOnly = true;
-            this.colSlChenhLech.Width = 75;
+            this.colSlChenhLech.Width = 90;
             // 
             // colDonGia
             // 
@@ -562,7 +564,7 @@
             this.colDonGia.MinimumWidth = 6;
             this.colDonGia.Name = "colDonGia";
             this.colDonGia.ReadOnly = true;
-            this.colDonGia.Width = 85;
+            this.colDonGia.Width = 100;
             // 
             // colGiaTriChenhLech
             // 

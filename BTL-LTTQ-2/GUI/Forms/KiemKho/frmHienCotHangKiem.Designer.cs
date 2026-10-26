@@ -72,8 +72,8 @@
             // chkDonViTinh
             // 
             this.chkDonViTinh.AutoSize = true;
-            this.chkDonViTinh.Checked = true;
-            this.chkDonViTinh.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkDonViTinh.Checked = false;
+            this.chkDonViTinh.CheckState = System.Windows.Forms.CheckState.Unchecked;
             this.chkDonViTinh.Cursor = System.Windows.Forms.Cursors.Hand;
             this.chkDonViTinh.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.chkDonViTinh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
