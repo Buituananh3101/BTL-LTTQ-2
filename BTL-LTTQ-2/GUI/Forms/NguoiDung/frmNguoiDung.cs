@@ -30,8 +30,6 @@ namespace BTL_LTTQ_2.GUI.Forms.NguoiDung
             {
                 cboVaiTro.SelectedItem = vaiTro;
             }
-
-            btnXoa.Visible = true;
         }
 
         private void frmNguoiDung_Load(object sender, EventArgs e)
@@ -41,14 +39,11 @@ namespace BTL_LTTQ_2.GUI.Forms.NguoiDung
             if (!isEditMode)
             {
                 lblTieuDe.Text = "Tạo người dùng";
-                btnXoa.Visible = false;
                 cboVaiTro.SelectedIndex = 1; // Mặc định Thủ kho
                 cboTrangThai.SelectedIndex = 0; // Đang hoạt động
             }
-            else
-            {
-                btnXoa.Visible = true;
-            }
+
+            CapNhatPhanQuyenKhoTheoVaiTro();
         }
 
         private void NapDanhSachKhoDemo()
@@ -75,40 +70,29 @@ namespace BTL_LTTQ_2.GUI.Forms.NguoiDung
 
         private void cboVaiTro_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cboVaiTro.SelectedItem != null && cboVaiTro.SelectedItem.ToString() == "Quản lý")
+            CapNhatPhanQuyenKhoTheoVaiTro();
+        }
+
+        private void CapNhatPhanQuyenKhoTheoVaiTro()
+        {
+            bool laQuanLy = cboVaiTro.SelectedItem != null && cboVaiTro.SelectedItem.ToString() == "Quản lý";
+            if (laQuanLy)
             {
-                chkToanQuyenKho.Checked = true;
-                chkToanQuyenKho.Enabled = false;
+                for (int i = 0; i < clbDanhSachKho.Items.Count; i++)
+                {
+                    clbDanhSachKho.SetItemChecked(i, true);
+                }
+                clbDanhSachKho.Enabled = false;
             }
             else
             {
-                chkToanQuyenKho.Enabled = true;
+                clbDanhSachKho.Enabled = true;
             }
-        }
-
-        private void chkToanQuyenKho_CheckedChanged(object sender, EventArgs e)
-        {
-            bool toanQuyen = chkToanQuyenKho.Checked;
-            for (int i = 0; i < clbDanhSachKho.Items.Count; i++)
-            {
-                clbDanhSachKho.SetItemChecked(i, toanQuyen);
-            }
-            clbDanhSachKho.Enabled = !toanQuyen;
         }
 
         private void btnBoQua_Click(object sender, EventArgs e)
         {
             this.Close();
-        }
-
-        private void btnXoa_Click(object sender, EventArgs e)
-        {
-            DialogResult dr = MessageBox.Show($"Bạn có chắc chắn muốn khóa tài khoản '{editUsername}'?", "Xác nhận khóa tài khoản", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (dr == DialogResult.Yes)
-            {
-                this.DialogResult = DialogResult.OK;
-                this.Close();
-            }
         }
 
         private void btnLuu_Click(object sender, EventArgs e)

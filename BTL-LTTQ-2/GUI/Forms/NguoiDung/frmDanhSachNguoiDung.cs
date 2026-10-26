@@ -88,7 +88,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NguoiDung
             string sdt = row.Cells["colDienThoai"].Value?.ToString() ?? "";
             string matKhau = row.Cells["colMatKhau"].Value?.ToString() ?? "";
 
-            using (frmNguoiDung frm = new frmNguoiDung(tenDangNhap, hoTen, vaiTro, sdt, matKhau))
+            using (frmChiTietNguoiDung frm = new frmChiTietNguoiDung(tenDangNhap, hoTen, vaiTro, sdt, matKhau))
             {
                 frm.ShowDialog();
             }
