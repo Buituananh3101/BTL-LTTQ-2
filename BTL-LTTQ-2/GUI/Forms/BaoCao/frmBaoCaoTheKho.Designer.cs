@@ -100,7 +100,6 @@
             this.grpTop.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.grpTop.Controls.Add(this.lblTieuDe);
-            this.grpTop.Controls.Add(this.btnQuayLai);
             this.grpTop.Controls.Add(this.lblTimKiem);
             this.grpTop.Controls.Add(this.txtTimKiem);
             this.grpTop.Controls.Add(this.btnXuatFile);
@@ -124,7 +123,7 @@
             // 
             // btnQuayLai
             // 
-            this.btnQuayLai.Location = new System.Drawing.Point(180, 15);
+            this.btnQuayLai.Location = new System.Drawing.Point(12, 735);
             this.btnQuayLai.Name = "btnQuayLai";
             this.btnQuayLai.Size = new System.Drawing.Size(95, 29);
             this.btnQuayLai.TabIndex = 7;
@@ -186,6 +185,7 @@
             // pnlBoLoc
             // 
             this.pnlBoLoc.Controls.Add(this.grpBoLoc);
+            this.pnlBoLoc.Controls.Add(this.btnQuayLai);
             this.pnlBoLoc.Dock = System.Windows.Forms.DockStyle.Left;
             this.pnlBoLoc.Location = new System.Drawing.Point(0, 74);
             this.pnlBoLoc.Name = "pnlBoLoc";
@@ -194,9 +194,6 @@
             // 
             // grpBoLoc
             // 
-            this.grpBoLoc.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.grpBoLoc.Controls.Add(this.lblHangHoa);
             this.grpBoLoc.Controls.Add(this.cboHangHoa);
             this.grpBoLoc.Controls.Add(this.lblLoaiChungTu);
@@ -205,14 +202,14 @@
             this.grpBoLoc.Controls.Add(this.grpThoiGianTao);
             this.grpBoLoc.Location = new System.Drawing.Point(12, 9);
             this.grpBoLoc.Name = "grpBoLoc";
-            this.grpBoLoc.Size = new System.Drawing.Size(360, 728);
+            this.grpBoLoc.Size = new System.Drawing.Size(360, 717);
             this.grpBoLoc.TabIndex = 0;
             this.grpBoLoc.TabStop = false;
             // 
             // lblHangHoa
             // 
             this.lblHangHoa.AutoSize = true;
-            this.lblHangHoa.Location = new System.Drawing.Point(14, 45);
+            this.lblHangHoa.Location = new System.Drawing.Point(18, 30);
             this.lblHangHoa.Name = "lblHangHoa";
             this.lblHangHoa.Size = new System.Drawing.Size(97, 21);
             this.lblHangHoa.TabIndex = 0;
@@ -221,7 +218,7 @@
             // cboHangHoa
             // 
             this.cboHangHoa.FormattingEnabled = true;
-            this.cboHangHoa.Location = new System.Drawing.Point(18, 79);
+            this.cboHangHoa.Location = new System.Drawing.Point(18, 58);
             this.cboHangHoa.Name = "cboHangHoa";
             this.cboHangHoa.Size = new System.Drawing.Size(322, 29);
             this.cboHangHoa.TabIndex = 1;
@@ -229,7 +226,7 @@
             // lblLoaiChungTu
             // 
             this.lblLoaiChungTu.AutoSize = true;
-            this.lblLoaiChungTu.Location = new System.Drawing.Point(14, 153);
+            this.lblLoaiChungTu.Location = new System.Drawing.Point(18, 170);
             this.lblLoaiChungTu.Name = "lblLoaiChungTu";
             this.lblLoaiChungTu.Size = new System.Drawing.Size(106, 21);
             this.lblLoaiChungTu.TabIndex = 4;
@@ -239,7 +236,7 @@
             // 
             this.cboLoaiChungTu.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboLoaiChungTu.FormattingEnabled = true;
-            this.cboLoaiChungTu.Location = new System.Drawing.Point(18, 187);
+            this.cboLoaiChungTu.Location = new System.Drawing.Point(18, 198);
             this.cboLoaiChungTu.Name = "cboLoaiChungTu";
             this.cboLoaiChungTu.Size = new System.Drawing.Size(322, 29);
             this.cboLoaiChungTu.TabIndex = 5;
@@ -248,7 +245,7 @@
             // lblThoiGianTao
             // 
             this.lblThoiGianTao.AutoSize = true;
-            this.lblThoiGianTao.Location = new System.Drawing.Point(14, 268);
+            this.lblThoiGianTao.Location = new System.Drawing.Point(18, 565);
             this.lblThoiGianTao.Name = "lblThoiGianTao";
             this.lblThoiGianTao.Size = new System.Drawing.Size(143, 21);
             this.lblThoiGianTao.TabIndex = 6;
@@ -260,7 +257,7 @@
             this.grpThoiGianTao.Controls.Add(this.dtpTuNgay);
             this.grpThoiGianTao.Controls.Add(this.lblDenNgay);
             this.grpThoiGianTao.Controls.Add(this.dtpDenNgay);
-            this.grpThoiGianTao.Location = new System.Drawing.Point(18, 302);
+            this.grpThoiGianTao.Location = new System.Drawing.Point(18, 593);
             this.grpThoiGianTao.Name = "grpThoiGianTao";
             this.grpThoiGianTao.Size = new System.Drawing.Size(322, 108);
             this.grpThoiGianTao.TabIndex = 6;
@@ -519,8 +516,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1782, 853);
-            this.Controls.Add(this.panel1);
             this.Controls.Add(this.dgvTheKho);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.pnlPhanTrang);
             this.Controls.Add(this.pnlBoLoc);
             this.Controls.Add(this.pnlTop);
