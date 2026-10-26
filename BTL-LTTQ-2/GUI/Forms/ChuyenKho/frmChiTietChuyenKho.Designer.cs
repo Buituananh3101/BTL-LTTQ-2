@@ -17,9 +17,9 @@
 
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.pnlTop = new System.Windows.Forms.Panel();
             this.lblLoTrinh = new System.Windows.Forms.Label();
             this.lblTrangThai = new System.Windows.Forms.Label();
@@ -308,6 +308,7 @@
             // 
             this.dgvChiTiet.AllowUserToAddRows = false;
             this.dgvChiTiet.AllowUserToDeleteRows = false;
+            this.dgvChiTiet.AllowUserToResizeRows = false;
             this.dgvChiTiet.BackgroundColor = System.Drawing.Color.White;
             this.dgvChiTiet.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvChiTiet.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -365,9 +366,9 @@
             // colSoLuongChuyen
             // 
             this.colSoLuongChuyen.DataPropertyName = "SoLuong";
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle4.Format = "N0";
-            this.colSoLuongChuyen.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle1.Format = "N0";
+            this.colSoLuongChuyen.DefaultCellStyle = dataGridViewCellStyle1;
             this.colSoLuongChuyen.HeaderText = "SL chuyển";
             this.colSoLuongChuyen.Name = "colSoLuongChuyen";
             this.colSoLuongChuyen.ReadOnly = true;
@@ -375,8 +376,8 @@
             // colSoLuongNhan
             // 
             this.colSoLuongNhan.DataPropertyName = "SoLuongNhanHienThi";
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.colSoLuongNhan.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.colSoLuongNhan.DefaultCellStyle = dataGridViewCellStyle2;
             this.colSoLuongNhan.HeaderText = "SL thực nhận";
             this.colSoLuongNhan.Name = "colSoLuongNhan";
             this.colSoLuongNhan.ReadOnly = true;
@@ -393,9 +394,9 @@
             // colDonGia
             // 
             this.colDonGia.DataPropertyName = "DonGiaChuyen";
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle6.Format = "N0";
-            this.colDonGia.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle3.Format = "N0";
+            this.colDonGia.DefaultCellStyle = dataGridViewCellStyle3;
             this.colDonGia.HeaderText = "Đơn giá chuyển";
             this.colDonGia.Name = "colDonGia";
             this.colDonGia.ReadOnly = true;
@@ -568,7 +569,6 @@
             // 
             // btnNhanHang
             // 
-            // btnNhanHang
             this.btnNhanHang.Location = new System.Drawing.Point(235, 12);
             this.btnNhanHang.Name = "btnNhanHang";
             this.btnNhanHang.Size = new System.Drawing.Size(120, 32);
@@ -592,7 +592,6 @@
             // 
             // btnXuatFile
             // 
-            // btnXuatFile
             this.btnXuatFile.Location = new System.Drawing.Point(125, 12);
             this.btnXuatFile.Name = "btnXuatFile";
             this.btnXuatFile.Size = new System.Drawing.Size(100, 32);

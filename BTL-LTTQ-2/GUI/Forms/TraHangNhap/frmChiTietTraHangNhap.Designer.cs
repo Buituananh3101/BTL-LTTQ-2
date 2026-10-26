@@ -85,7 +85,7 @@
             this.lblKhoChiNhanh.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblKhoChiNhanh.Location = new System.Drawing.Point(830, 20);
             this.lblKhoChiNhanh.Name = "lblKhoChiNhanh";
-            this.lblKhoChiNhanh.Size = new System.Drawing.Size(117, 17);
+            this.lblKhoChiNhanh.Size = new System.Drawing.Size(122, 17);
             this.lblKhoChiNhanh.TabIndex = 2;
             this.lblKhoChiNhanh.Text = "Kho: Kho trung tâm";
             // 
@@ -96,7 +96,7 @@
             this.lblTrangThai.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(163)))), ((int)(((byte)(74)))));
             this.lblTrangThai.Location = new System.Drawing.Point(165, 18);
             this.lblTrangThai.Name = "lblTrangThai";
-            this.lblTrangThai.Size = new System.Drawing.Size(81, 19);
+            this.lblTrangThai.Size = new System.Drawing.Size(82, 19);
             this.lblTrangThai.TabIndex = 1;
             this.lblTrangThai.Text = "Đã trả hàng";
             // 
@@ -106,7 +106,7 @@
             this.lblMaPhieuHienThi.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblMaPhieuHienThi.Location = new System.Drawing.Point(20, 16);
             this.lblMaPhieuHienThi.Name = "lblMaPhieuHienThi";
-            this.lblMaPhieuHienThi.Size = new System.Drawing.Size(109, 21);
+            this.lblMaPhieuHienThi.Size = new System.Drawing.Size(98, 21);
             this.lblMaPhieuHienThi.TabIndex = 0;
             this.lblMaPhieuHienThi.Text = "THN000001";
             // 
@@ -135,7 +135,7 @@
             this.lblMaNhapHangVal.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblMaNhapHangVal.Location = new System.Drawing.Point(475, 52);
             this.lblMaNhapHangVal.Name = "lblMaNhapHangVal";
-            this.lblMaNhapHangVal.Size = new System.Drawing.Size(64, 17);
+            this.lblMaNhapHangVal.Size = new System.Drawing.Size(67, 17);
             this.lblMaNhapHangVal.TabIndex = 9;
             this.lblMaNhapHangVal.Text = "PN000046";
             // 
@@ -145,7 +145,7 @@
             this.lblMaNhapHang.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblMaNhapHang.Location = new System.Drawing.Point(380, 52);
             this.lblMaNhapHang.Name = "lblMaNhapHang";
-            this.lblMaNhapHang.Size = new System.Drawing.Size(95, 17);
+            this.lblMaNhapHang.Size = new System.Drawing.Size(96, 17);
             this.lblMaNhapHang.TabIndex = 8;
             this.lblMaNhapHang.Text = "Mã nhập hàng:";
             // 
@@ -175,7 +175,7 @@
             this.lblNgayTraVal.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblNgayTraVal.Location = new System.Drawing.Point(745, 18);
             this.lblNgayTraVal.Name = "lblNgayTraVal";
-            this.lblNgayTraVal.Size = new System.Drawing.Size(111, 17);
+            this.lblNgayTraVal.Size = new System.Drawing.Size(109, 17);
             this.lblNgayTraVal.TabIndex = 5;
             this.lblNgayTraVal.Text = "22/10/2026 17:13";
             // 
@@ -195,7 +195,7 @@
             this.lblNguoiTraVal.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblNguoiTraVal.Location = new System.Drawing.Point(475, 18);
             this.lblNguoiTraVal.Name = "lblNguoiTraVal";
-            this.lblNguoiTraVal.Size = new System.Drawing.Size(91, 17);
+            this.lblNguoiTraVal.Size = new System.Drawing.Size(93, 17);
             this.lblNguoiTraVal.TabIndex = 3;
             this.lblNguoiTraVal.Text = "Phạm Văn Hảo";
             // 
@@ -205,7 +205,7 @@
             this.lblNguoiTra.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblNguoiTra.Location = new System.Drawing.Point(380, 18);
             this.lblNguoiTra.Name = "lblNguoiTra";
-            this.lblNguoiTra.Size = new System.Drawing.Size(66, 17);
+            this.lblNguoiTra.Size = new System.Drawing.Size(68, 17);
             this.lblNguoiTra.TabIndex = 2;
             this.lblNguoiTra.Text = "Người trả:";
             // 
@@ -215,7 +215,7 @@
             this.lblNguoiTaoVal.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblNguoiTaoVal.Location = new System.Drawing.Point(100, 18);
             this.lblNguoiTaoVal.Name = "lblNguoiTaoVal";
-            this.lblNguoiTaoVal.Size = new System.Drawing.Size(91, 17);
+            this.lblNguoiTaoVal.Size = new System.Drawing.Size(93, 17);
             this.lblNguoiTaoVal.TabIndex = 1;
             this.lblNguoiTaoVal.Text = "Phạm Văn Hảo";
             // 
@@ -225,7 +225,7 @@
             this.lblNguoiTao.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblNguoiTao.Location = new System.Drawing.Point(20, 18);
             this.lblNguoiTao.Name = "lblNguoiTao";
-            this.lblNguoiTao.Size = new System.Drawing.Size(70, 17);
+            this.lblNguoiTao.Size = new System.Drawing.Size(71, 17);
             this.lblNguoiTao.TabIndex = 0;
             this.lblNguoiTao.Text = "Người tạo:";
             // 
@@ -233,6 +233,7 @@
             // 
             this.dgvChiTiet.AllowUserToAddRows = false;
             this.dgvChiTiet.AllowUserToDeleteRows = false;
+            this.dgvChiTiet.AllowUserToResizeRows = false;
             this.dgvChiTiet.BackgroundColor = System.Drawing.Color.White;
             this.dgvChiTiet.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvChiTiet.ColumnHeadersHeight = 36;
@@ -299,7 +300,6 @@
             this.colSoLuong.MinimumWidth = 6;
             this.colSoLuong.Name = "colSoLuong";
             this.colSoLuong.ReadOnly = true;
-            this.colSoLuong.Width = 100;
             // 
             // colGiaNhap
             // 
@@ -412,7 +412,7 @@
             this.lblCanThuNcc.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblCanThuNcc.Location = new System.Drawing.Point(680, 90);
             this.lblCanThuNcc.Name = "lblCanThuNcc";
-            this.lblCanThuNcc.Size = new System.Drawing.Size(84, 17);
+            this.lblCanThuNcc.Size = new System.Drawing.Size(81, 17);
             this.lblCanThuNcc.TabIndex = 6;
             this.lblCanThuNcc.Text = "NCC cần trả:";
             // 
@@ -456,7 +456,7 @@
             this.lblTongTienHang.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblTongTienHang.Location = new System.Drawing.Point(680, 38);
             this.lblTongTienHang.Name = "lblTongTienHang";
-            this.lblTongTienHang.Size = new System.Drawing.Size(107, 17);
+            this.lblTongTienHang.Size = new System.Drawing.Size(99, 17);
             this.lblTongTienHang.TabIndex = 2;
             this.lblTongTienHang.Text = "Tổng tiền hàng:";
             // 
@@ -478,7 +478,7 @@
             this.lblSoLuongMatHang.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblSoLuongMatHang.Location = new System.Drawing.Point(680, 14);
             this.lblSoLuongMatHang.Name = "lblSoLuongMatHang";
-            this.lblSoLuongMatHang.Size = new System.Drawing.Size(126, 17);
+            this.lblSoLuongMatHang.Size = new System.Drawing.Size(123, 17);
             this.lblSoLuongMatHang.TabIndex = 0;
             this.lblSoLuongMatHang.Text = "Số lượng mặt hàng:";
             // 
@@ -508,6 +508,16 @@
             this.btnDong.UseVisualStyleBackColor = true;
             this.btnDong.Click += new System.EventHandler(this.btnDong_Click);
             // 
+            // btnXuatFile
+            // 
+            this.btnXuatFile.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.btnXuatFile.Location = new System.Drawing.Point(135, 10);
+            this.btnXuatFile.Name = "btnXuatFile";
+            this.btnXuatFile.Size = new System.Drawing.Size(100, 35);
+            this.btnXuatFile.TabIndex = 1;
+            this.btnXuatFile.Text = "Xuất file";
+            this.btnXuatFile.UseVisualStyleBackColor = true;
+            this.btnXuatFile.Click += new System.EventHandler(this.btnXuatFile_Click);
             // 
             // btnHoanThanh
             // 
@@ -520,17 +530,6 @@
             this.btnHoanThanh.UseVisualStyleBackColor = true;
             this.btnHoanThanh.Visible = false;
             this.btnHoanThanh.Click += new System.EventHandler(this.btnHoanThanh_Click);
-            // 
-            // btnXuatFile
-            // 
-            this.btnXuatFile.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.btnXuatFile.Location = new System.Drawing.Point(135, 10);
-            this.btnXuatFile.Name = "btnXuatFile";
-            this.btnXuatFile.Size = new System.Drawing.Size(100, 35);
-            this.btnXuatFile.TabIndex = 1;
-            this.btnXuatFile.Text = "Xuất file";
-            this.btnXuatFile.UseVisualStyleBackColor = true;
-            this.btnXuatFile.Click += new System.EventHandler(this.btnXuatFile_Click);
             // 
             // btnXoa
             // 
@@ -547,7 +546,6 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-
             this.CancelButton = this.btnDong;
             this.ClientSize = new System.Drawing.Size(1034, 720);
             this.Controls.Add(this.dgvChiTiet);

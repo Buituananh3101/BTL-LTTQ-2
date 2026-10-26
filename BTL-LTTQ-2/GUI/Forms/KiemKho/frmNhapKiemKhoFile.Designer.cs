@@ -63,7 +63,7 @@
             this.lblTieuDe.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblTieuDe.Location = new System.Drawing.Point(14, 12);
             this.lblTieuDe.Name = "lblTieuDe";
-            this.lblTieuDe.Size = new System.Drawing.Size(325, 30);
+            this.lblTieuDe.Size = new System.Drawing.Size(235, 21);
             this.lblTieuDe.TabIndex = 0;
             this.lblTieuDe.Text = "Nhập dữ liệu kiểm kho từ file";
             // 
@@ -86,7 +86,7 @@
             this.lblHuongDanMau.AutoSize = true;
             this.lblHuongDanMau.Location = new System.Drawing.Point(15, 30);
             this.lblHuongDanMau.Name = "lblHuongDanMau";
-            this.lblHuongDanMau.Size = new System.Drawing.Size(460, 21);
+            this.lblHuongDanMau.Size = new System.Drawing.Size(384, 17);
             this.lblHuongDanMau.TabIndex = 0;
             this.lblHuongDanMau.Text = "Tải file mẫu để điền số lượng kiểm thực tế đúng theo quy chuẩn:";
             // 
@@ -134,7 +134,7 @@
             this.txtDuongDanFile.Location = new System.Drawing.Point(15, 29);
             this.txtDuongDanFile.Name = "txtDuongDanFile";
             this.txtDuongDanFile.ReadOnly = true;
-            this.txtDuongDanFile.Size = new System.Drawing.Size(560, 29);
+            this.txtDuongDanFile.Size = new System.Drawing.Size(560, 24);
             this.txtDuongDanFile.TabIndex = 0;
             // 
             // btnChonFile
@@ -176,6 +176,7 @@
             // 
             this.dgvXemTruoc.AllowUserToAddRows = false;
             this.dgvXemTruoc.AllowUserToDeleteRows = false;
+            this.dgvXemTruoc.AllowUserToResizeRows = false;
             this.dgvXemTruoc.BackgroundColor = System.Drawing.Color.White;
             this.dgvXemTruoc.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvXemTruoc.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -187,14 +188,14 @@
             this.colGhiChu,
             this.colTrangThai});
             this.dgvXemTruoc.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvXemTruoc.Location = new System.Drawing.Point(3, 25);
+            this.dgvXemTruoc.Location = new System.Drawing.Point(3, 20);
             this.dgvXemTruoc.Name = "dgvXemTruoc";
             this.dgvXemTruoc.ReadOnly = true;
             this.dgvXemTruoc.RowHeadersVisible = false;
             this.dgvXemTruoc.RowHeadersWidth = 51;
             this.dgvXemTruoc.RowTemplate.Height = 24;
             this.dgvXemTruoc.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvXemTruoc.Size = new System.Drawing.Size(850, 292);
+            this.dgvXemTruoc.Size = new System.Drawing.Size(850, 297);
             this.dgvXemTruoc.TabIndex = 0;
             // 
             // colStt
@@ -276,7 +277,7 @@
             this.lblThongKe.AutoSize = true;
             this.lblThongKe.Location = new System.Drawing.Point(14, 17);
             this.lblThongKe.Name = "lblThongKe";
-            this.lblThongKe.Size = new System.Drawing.Size(262, 21);
+            this.lblThongKe.Size = new System.Drawing.Size(193, 17);
             this.lblThongKe.TabIndex = 0;
             this.lblThongKe.Text = "Tổng: 0 dòng | Hợp lệ: 0 | Lỗi: 0";
             // 
@@ -305,9 +306,8 @@
             // 
             // frmNhapKiemKhoFile
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-
             this.ClientSize = new System.Drawing.Size(884, 610);
             this.Controls.Add(this.grpXemTruoc);
             this.Controls.Add(this.grpChonFile);

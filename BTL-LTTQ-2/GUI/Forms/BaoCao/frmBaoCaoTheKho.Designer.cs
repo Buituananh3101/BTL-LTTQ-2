@@ -47,14 +47,13 @@
             this.lblTenHangHienThi = new System.Windows.Forms.Label();
             this.grpTop = new System.Windows.Forms.GroupBox();
             this.lblTieuDe = new System.Windows.Forms.Label();
+            this.btnQuayLai = new System.Windows.Forms.Button();
             this.lblTimKiem = new System.Windows.Forms.Label();
             this.txtTimKiem = new System.Windows.Forms.TextBox();
-            this.btnQuayLai = new System.Windows.Forms.Button();
             this.btnXuatFile = new System.Windows.Forms.Button();
             this.btnHienCot = new System.Windows.Forms.Button();
             this.btnHuongDanSuDung = new System.Windows.Forms.Button();
             this.pnlBoLoc = new System.Windows.Forms.Panel();
-            this.splitterBoLoc = new System.Windows.Forms.Splitter();
             this.grpBoLoc = new System.Windows.Forms.GroupBox();
             this.lblHangHoa = new System.Windows.Forms.Label();
             this.cboHangHoa = new System.Windows.Forms.ComboBox();
@@ -66,6 +65,7 @@
             this.dtpTuNgay = new System.Windows.Forms.DateTimePicker();
             this.lblDenNgay = new System.Windows.Forms.Label();
             this.dtpDenNgay = new System.Windows.Forms.DateTimePicker();
+            this.splitterBoLoc = new System.Windows.Forms.Splitter();
             this.pnlPhanTrang = new System.Windows.Forms.Panel();
             this.lblTongSoGiaoDich = new System.Windows.Forms.Label();
             this.dgvTheKho = new System.Windows.Forms.DataGridView();
@@ -125,7 +125,7 @@
             this.lblTonCuoiVal.AutoSize = true;
             this.lblTonCuoiVal.Location = new System.Drawing.Point(8, 38);
             this.lblTonCuoiVal.Name = "lblTonCuoiVal";
-            this.lblTonCuoiVal.Size = new System.Drawing.Size(20, 23);
+            this.lblTonCuoiVal.Size = new System.Drawing.Size(15, 17);
             this.lblTonCuoiVal.TabIndex = 1;
             this.lblTonCuoiVal.Text = "0";
             // 
@@ -135,7 +135,7 @@
             this.lblTonCuoiTitle.Font = new System.Drawing.Font("Segoe UI", 8.5F);
             this.lblTonCuoiTitle.Location = new System.Drawing.Point(8, 10);
             this.lblTonCuoiTitle.Name = "lblTonCuoiTitle";
-            this.lblTonCuoiTitle.Size = new System.Drawing.Size(70, 15);
+            this.lblTonCuoiTitle.Size = new System.Drawing.Size(69, 15);
             this.lblTonCuoiTitle.TabIndex = 0;
             this.lblTonCuoiTitle.Text = "Tồn cuối kỳ";
             // 
@@ -155,7 +155,7 @@
             this.lblXuatKyVal.AutoSize = true;
             this.lblXuatKyVal.Location = new System.Drawing.Point(8, 38);
             this.lblXuatKyVal.Name = "lblXuatKyVal";
-            this.lblXuatKyVal.Size = new System.Drawing.Size(20, 23);
+            this.lblXuatKyVal.Size = new System.Drawing.Size(15, 17);
             this.lblXuatKyVal.TabIndex = 1;
             this.lblXuatKyVal.Text = "0";
             // 
@@ -165,7 +165,7 @@
             this.lblXuatKyTitle.Font = new System.Drawing.Font("Segoe UI", 8.5F);
             this.lblXuatKyTitle.Location = new System.Drawing.Point(8, 10);
             this.lblXuatKyTitle.Name = "lblXuatKyTitle";
-            this.lblXuatKyTitle.Size = new System.Drawing.Size(127, 15);
+            this.lblXuatKyTitle.Size = new System.Drawing.Size(123, 15);
             this.lblXuatKyTitle.TabIndex = 0;
             this.lblXuatKyTitle.Text = "Tổng xuất trong kỳ (-)";
             // 
@@ -185,7 +185,7 @@
             this.lblNhapKyVal.AutoSize = true;
             this.lblNhapKyVal.Location = new System.Drawing.Point(8, 38);
             this.lblNhapKyVal.Name = "lblNhapKyVal";
-            this.lblNhapKyVal.Size = new System.Drawing.Size(20, 23);
+            this.lblNhapKyVal.Size = new System.Drawing.Size(15, 17);
             this.lblNhapKyVal.TabIndex = 1;
             this.lblNhapKyVal.Text = "0";
             // 
@@ -215,7 +215,7 @@
             this.lblTonDauVal.AutoSize = true;
             this.lblTonDauVal.Location = new System.Drawing.Point(8, 38);
             this.lblTonDauVal.Name = "lblTonDauVal";
-            this.lblTonDauVal.Size = new System.Drawing.Size(20, 23);
+            this.lblTonDauVal.Size = new System.Drawing.Size(15, 17);
             this.lblTonDauVal.TabIndex = 1;
             this.lblTonDauVal.Text = "0";
             // 
@@ -225,7 +225,7 @@
             this.lblTonDauTitle.Font = new System.Drawing.Font("Segoe UI", 8.5F);
             this.lblTonDauTitle.Location = new System.Drawing.Point(8, 10);
             this.lblTonDauTitle.Name = "lblTonDauTitle";
-            this.lblTonDauTitle.Size = new System.Drawing.Size(68, 15);
+            this.lblTonDauTitle.Size = new System.Drawing.Size(66, 15);
             this.lblTonDauTitle.TabIndex = 0;
             this.lblTonDauTitle.Text = "Tồn đầu kỳ";
             // 
@@ -246,7 +246,7 @@
             this.lblThongTinChiTiet.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.lblThongTinChiTiet.Location = new System.Drawing.Point(8, 42);
             this.lblThongTinChiTiet.Name = "lblThongTinChiTiet";
-            this.lblThongTinChiTiet.Size = new System.Drawing.Size(271, 15);
+            this.lblThongTinChiTiet.Size = new System.Drawing.Size(224, 15);
             this.lblThongTinChiTiet.TabIndex = 1;
             this.lblThongTinChiTiet.Text = "ĐVT: -- | Nhóm: -- | Vị trí: -- | Giá vốn: 0 đ";
             // 
@@ -255,7 +255,7 @@
             this.lblTenHangHienThi.AutoSize = true;
             this.lblTenHangHienThi.Location = new System.Drawing.Point(8, 10);
             this.lblTenHangHienThi.Name = "lblTenHangHienThi";
-            this.lblTenHangHienThi.Size = new System.Drawing.Size(189, 20);
+            this.lblTenHangHienThi.Size = new System.Drawing.Size(156, 17);
             this.lblTenHangHienThi.TabIndex = 0;
             this.lblTenHangHienThi.Text = "Vui lòng chọn mặt hàng...";
             // 
@@ -282,7 +282,7 @@
             this.lblTieuDe.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblTieuDe.Location = new System.Drawing.Point(24, 19);
             this.lblTieuDe.Name = "lblTieuDe";
-            this.lblTieuDe.Size = new System.Drawing.Size(139, 21);
+            this.lblTieuDe.Size = new System.Drawing.Size(132, 21);
             this.lblTieuDe.TabIndex = 0;
             this.lblTieuDe.Text = "Báo cáo thẻ kho";
             // 
@@ -354,18 +354,8 @@
             this.pnlBoLoc.Dock = System.Windows.Forms.DockStyle.Left;
             this.pnlBoLoc.Location = new System.Drawing.Point(0, 150);
             this.pnlBoLoc.Name = "pnlBoLoc";
-            this.pnlBoLoc.Size = new System.Drawing.Size(387, 661);
+            this.pnlBoLoc.Size = new System.Drawing.Size(387, 703);
             this.pnlBoLoc.TabIndex = 1;
-            // 
-            // splitterBoLoc
-            // 
-            this.splitterBoLoc.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.splitterBoLoc.Dock = System.Windows.Forms.DockStyle.Top;
-            this.splitterBoLoc.Location = new System.Drawing.Point(0, 0);
-            this.splitterBoLoc.Name = "splitterBoLoc";
-            this.splitterBoLoc.Size = new System.Drawing.Size(387, 1);
-            this.splitterBoLoc.TabIndex = 0;
-            this.splitterBoLoc.TabStop = false;
             // 
             // grpBoLoc
             // 
@@ -380,7 +370,7 @@
             this.grpBoLoc.Controls.Add(this.grpThoiGianTao);
             this.grpBoLoc.Location = new System.Drawing.Point(12, 9);
             this.grpBoLoc.Name = "grpBoLoc";
-            this.grpBoLoc.Size = new System.Drawing.Size(360, 643);
+            this.grpBoLoc.Size = new System.Drawing.Size(360, 685);
             this.grpBoLoc.TabIndex = 0;
             this.grpBoLoc.TabStop = false;
             // 
@@ -389,7 +379,7 @@
             this.lblHangHoa.AutoSize = true;
             this.lblHangHoa.Location = new System.Drawing.Point(14, 45);
             this.lblHangHoa.Name = "lblHangHoa";
-            this.lblHangHoa.Size = new System.Drawing.Size(91, 17);
+            this.lblHangHoa.Size = new System.Drawing.Size(81, 17);
             this.lblHangHoa.TabIndex = 0;
             this.lblHangHoa.Text = "Mặt hàng (*)";
             // 
@@ -406,7 +396,7 @@
             this.lblLoaiChungTu.AutoSize = true;
             this.lblLoaiChungTu.Location = new System.Drawing.Point(14, 189);
             this.lblLoaiChungTu.Name = "lblLoaiChungTu";
-            this.lblLoaiChungTu.Size = new System.Drawing.Size(94, 17);
+            this.lblLoaiChungTu.Size = new System.Drawing.Size(90, 17);
             this.lblLoaiChungTu.TabIndex = 4;
             this.lblLoaiChungTu.Text = "Loại giao dịch";
             // 
@@ -425,13 +415,13 @@
             this.lblThoiGianTao.AutoSize = true;
             this.lblThoiGianTao.Location = new System.Drawing.Point(14, 333);
             this.lblThoiGianTao.Name = "lblThoiGianTao";
-            this.lblThoiGianTao.Size = new System.Drawing.Size(120, 17);
+            this.lblThoiGianTao.Size = new System.Drawing.Size(119, 17);
             this.lblThoiGianTao.TabIndex = 6;
             this.lblThoiGianTao.Text = "Thời gian phát sinh";
             // 
             // grpThoiGianTao
             // 
-                        this.grpThoiGianTao.Controls.Add(this.lblTuNgay);
+            this.grpThoiGianTao.Controls.Add(this.lblTuNgay);
             this.grpThoiGianTao.Controls.Add(this.dtpTuNgay);
             this.grpThoiGianTao.Controls.Add(this.lblDenNgay);
             this.grpThoiGianTao.Controls.Add(this.dtpDenNgay);
@@ -440,7 +430,6 @@
             this.grpThoiGianTao.Size = new System.Drawing.Size(322, 108);
             this.grpThoiGianTao.TabIndex = 6;
             this.grpThoiGianTao.TabStop = false;
-            
             // 
             // lblTuNgay
             // 
@@ -478,6 +467,16 @@
             this.dtpDenNgay.TabIndex = 3;
             this.dtpDenNgay.ValueChanged += new System.EventHandler(this.BoLoc_SelectedIndexChanged);
             // 
+            // splitterBoLoc
+            // 
+            this.splitterBoLoc.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.splitterBoLoc.Dock = System.Windows.Forms.DockStyle.Top;
+            this.splitterBoLoc.Location = new System.Drawing.Point(0, 0);
+            this.splitterBoLoc.Name = "splitterBoLoc";
+            this.splitterBoLoc.Size = new System.Drawing.Size(387, 1);
+            this.splitterBoLoc.TabIndex = 0;
+            this.splitterBoLoc.TabStop = false;
+            // 
             // pnlPhanTrang
             // 
             this.pnlPhanTrang.Controls.Add(this.lblTongSoGiaoDich);
@@ -493,7 +492,7 @@
             this.lblTongSoGiaoDich.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.lblTongSoGiaoDich.Location = new System.Drawing.Point(22, 12);
             this.lblTongSoGiaoDich.Name = "lblTongSoGiaoDich";
-            this.lblTongSoGiaoDich.Size = new System.Drawing.Size(199, 19);
+            this.lblTongSoGiaoDich.Size = new System.Drawing.Size(193, 19);
             this.lblTongSoGiaoDich.TabIndex = 0;
             this.lblTongSoGiaoDich.Text = "Tổng số: 0 giao dịch phát sinh";
             // 

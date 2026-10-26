@@ -28,6 +28,8 @@
             this.txtTimKiem = new System.Windows.Forms.TextBox();
             this.pnlBoLoc = new System.Windows.Forms.Panel();
             this.grpBoLoc = new System.Windows.Forms.GroupBox();
+            this.cboNhaCungCap = new System.Windows.Forms.ComboBox();
+            this.lblNhaCungCap = new System.Windows.Forms.Label();
             this.grpThoiGianTao = new System.Windows.Forms.GroupBox();
             this.dtpTuNgay = new System.Windows.Forms.DateTimePicker();
             this.dtpDenNgay = new System.Windows.Forms.DateTimePicker();
@@ -60,8 +62,6 @@
             this.colDaThuNcc = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colTrangThai = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colMaPhieuTraHang = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cboNhaCungCap = new System.Windows.Forms.ComboBox();
-            this.lblNhaCungCap = new System.Windows.Forms.Label();
             this.pnlTop.SuspendLayout();
             this.grpTop.SuspendLayout();
             this.pnlBoLoc.SuspendLayout();
@@ -195,6 +195,23 @@
             this.grpBoLoc.Size = new System.Drawing.Size(360, 717);
             this.grpBoLoc.TabIndex = 1;
             this.grpBoLoc.TabStop = false;
+            // 
+            // cboNhaCungCap
+            // 
+            this.cboNhaCungCap.FormattingEnabled = true;
+            this.cboNhaCungCap.Location = new System.Drawing.Point(19, 295);
+            this.cboNhaCungCap.Name = "cboNhaCungCap";
+            this.cboNhaCungCap.Size = new System.Drawing.Size(322, 25);
+            this.cboNhaCungCap.TabIndex = 11;
+            // 
+            // lblNhaCungCap
+            // 
+            this.lblNhaCungCap.AutoSize = true;
+            this.lblNhaCungCap.Location = new System.Drawing.Point(15, 261);
+            this.lblNhaCungCap.Name = "lblNhaCungCap";
+            this.lblNhaCungCap.Size = new System.Drawing.Size(89, 17);
+            this.lblNhaCungCap.TabIndex = 10;
+            this.lblNhaCungCap.Text = "Nhà cung cấp";
             // 
             // grpThoiGianTao
             // 
@@ -401,6 +418,7 @@
             // 
             this.dgvTraHangNhap.AllowUserToAddRows = false;
             this.dgvTraHangNhap.AllowUserToDeleteRows = false;
+            this.dgvTraHangNhap.AllowUserToResizeRows = false;
             this.dgvTraHangNhap.BackgroundColor = System.Drawing.Color.White;
             this.dgvTraHangNhap.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvTraHangNhap.ColumnHeadersHeight = 36;
@@ -544,23 +562,6 @@
             this.colMaPhieuTraHang.ReadOnly = true;
             this.colMaPhieuTraHang.Visible = false;
             this.colMaPhieuTraHang.Width = 125;
-            // 
-            // cboNhaCungCap
-            // 
-            this.cboNhaCungCap.FormattingEnabled = true;
-            this.cboNhaCungCap.Location = new System.Drawing.Point(19, 295);
-            this.cboNhaCungCap.Name = "cboNhaCungCap";
-            this.cboNhaCungCap.Size = new System.Drawing.Size(322, 25);
-            this.cboNhaCungCap.TabIndex = 11;
-            // 
-            // lblNhaCungCap
-            // 
-            this.lblNhaCungCap.AutoSize = true;
-            this.lblNhaCungCap.Location = new System.Drawing.Point(15, 261);
-            this.lblNhaCungCap.Name = "lblNhaCungCap";
-            this.lblNhaCungCap.Size = new System.Drawing.Size(89, 17);
-            this.lblNhaCungCap.TabIndex = 10;
-            this.lblNhaCungCap.Text = "Nhà cung cấp";
             // 
             // frmTraHangNhap
             // 

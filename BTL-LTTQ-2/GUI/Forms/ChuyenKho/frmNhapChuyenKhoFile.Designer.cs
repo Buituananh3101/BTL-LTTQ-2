@@ -63,7 +63,7 @@
             this.lblTieuDe.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblTieuDe.Location = new System.Drawing.Point(14, 12);
             this.lblTieuDe.Name = "lblTieuDe";
-            this.lblTieuDe.Size = new System.Drawing.Size(260, 21);
+            this.lblTieuDe.Size = new System.Drawing.Size(253, 21);
             this.lblTieuDe.TabIndex = 0;
             this.lblTieuDe.Text = "Nhập dữ liệu chuyển kho từ file";
             // 
@@ -85,7 +85,7 @@
             this.lblHuongDanMau.AutoSize = true;
             this.lblHuongDanMau.Location = new System.Drawing.Point(15, 33);
             this.lblHuongDanMau.Name = "lblHuongDanMau";
-            this.lblHuongDanMau.Size = new System.Drawing.Size(430, 17);
+            this.lblHuongDanMau.Size = new System.Drawing.Size(435, 17);
             this.lblHuongDanMau.TabIndex = 0;
             this.lblHuongDanMau.Text = "Tải file mẫu chuẩn (.csv), nhập mã hàng và số lượng chuyển rồi chọn nạp:";
             // 
@@ -164,6 +164,7 @@
             // 
             this.dgvXemTruoc.AllowUserToAddRows = false;
             this.dgvXemTruoc.AllowUserToDeleteRows = false;
+            this.dgvXemTruoc.AllowUserToResizeRows = false;
             this.dgvXemTruoc.BackgroundColor = System.Drawing.Color.White;
             this.dgvXemTruoc.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvXemTruoc.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -198,7 +199,6 @@
             this.colMaHang.HeaderText = "Mã hàng";
             this.colMaHang.Name = "colMaHang";
             this.colMaHang.ReadOnly = true;
-            this.colMaHang.Width = 100;
             // 
             // colTenHang
             // 
@@ -230,7 +230,6 @@
             this.colDonGia.HeaderText = "Đơn giá";
             this.colDonGia.Name = "colDonGia";
             this.colDonGia.ReadOnly = true;
-            this.colDonGia.Width = 100;
             // 
             // colGhiChu
             // 
@@ -264,7 +263,7 @@
             this.lblThongKe.AutoSize = true;
             this.lblThongKe.Location = new System.Drawing.Point(15, 17);
             this.lblThongKe.Name = "lblThongKe";
-            this.lblThongKe.Size = new System.Drawing.Size(185, 17);
+            this.lblThongKe.Size = new System.Drawing.Size(173, 17);
             this.lblThongKe.TabIndex = 0;
             this.lblThongKe.Text = "Hợp lệ: 0 dòng | Lỗi: 0 dòng";
             // 

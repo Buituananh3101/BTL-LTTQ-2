@@ -60,7 +60,7 @@
             this.lblThongTinPhieu.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.lblThongTinPhieu.Location = new System.Drawing.Point(16, 34);
             this.lblThongTinPhieu.Name = "lblThongTinPhieu";
-            this.lblThongTinPhieu.Size = new System.Drawing.Size(376, 17);
+            this.lblThongTinPhieu.Size = new System.Drawing.Size(294, 17);
             this.lblThongTinPhieu.TabIndex = 1;
             this.lblThongTinPhieu.Text = "Mã phiếu: CK000000 | Kho gửi: ... -> Kho nhận: ...";
             // 
@@ -70,7 +70,7 @@
             this.lblTieuDe.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblTieuDe.Location = new System.Drawing.Point(14, 9);
             this.lblTieuDe.Name = "lblTieuDe";
-            this.lblTieuDe.Size = new System.Drawing.Size(256, 21);
+            this.lblTieuDe.Size = new System.Drawing.Size(259, 21);
             this.lblTieuDe.TabIndex = 0;
             this.lblTieuDe.Text = "Xác nhận nhận hàng chuyển kho";
             // 
@@ -78,6 +78,7 @@
             // 
             this.dgvHangNhan.AllowUserToAddRows = false;
             this.dgvHangNhan.AllowUserToDeleteRows = false;
+            this.dgvHangNhan.AllowUserToResizeRows = false;
             this.dgvHangNhan.BackgroundColor = System.Drawing.Color.White;
             this.dgvHangNhan.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvHangNhan.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -139,14 +140,13 @@
             this.colSoLuongChuyen.HeaderText = "SL chuyển";
             this.colSoLuongChuyen.Name = "colSoLuongChuyen";
             this.colSoLuongChuyen.ReadOnly = true;
-            this.colSoLuongChuyen.Width = 100;
             // 
             // colSoLuongNhan
             // 
             this.colSoLuongNhan.DataPropertyName = "SoLuongNhan";
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
             dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(204)))));
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular);
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             dataGridViewCellStyle2.Format = "N0";
             this.colSoLuongNhan.DefaultCellStyle = dataGridViewCellStyle2;
             this.colSoLuongNhan.HeaderText = "SL thực nhận";
@@ -206,7 +206,7 @@
             this.lblTongHaoHut.AutoSize = true;
             this.lblTongHaoHut.Location = new System.Drawing.Point(670, 38);
             this.lblTongHaoHut.Name = "lblTongHaoHut";
-            this.lblTongHaoHut.Size = new System.Drawing.Size(107, 17);
+            this.lblTongHaoHut.Size = new System.Drawing.Size(100, 17);
             this.lblTongHaoHut.TabIndex = 4;
             this.lblTongHaoHut.Text = "Tổng hao hụt: 0";
             // 
@@ -216,7 +216,7 @@
             this.lblTongThucNhan.AutoSize = true;
             this.lblTongThucNhan.Location = new System.Drawing.Point(670, 14);
             this.lblTongThucNhan.Name = "lblTongThucNhan";
-            this.lblTongThucNhan.Size = new System.Drawing.Size(124, 17);
+            this.lblTongThucNhan.Size = new System.Drawing.Size(113, 17);
             this.lblTongThucNhan.TabIndex = 3;
             this.lblTongThucNhan.Text = "Tổng thực nhận: 0";
             // 
@@ -227,7 +227,7 @@
             this.lblTongChuyen.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.lblTongChuyen.Location = new System.Drawing.Point(500, 14);
             this.lblTongChuyen.Name = "lblTongChuyen";
-            this.lblTongChuyen.Size = new System.Drawing.Size(102, 17);
+            this.lblTongChuyen.Size = new System.Drawing.Size(96, 17);
             this.lblTongChuyen.TabIndex = 2;
             this.lblTongChuyen.Text = "Tổng chuyển: 0";
             // 
@@ -244,7 +244,7 @@
             this.lblGhiChuNhan.AutoSize = true;
             this.lblGhiChuNhan.Location = new System.Drawing.Point(15, 14);
             this.lblGhiChuNhan.Name = "lblGhiChuNhan";
-            this.lblGhiChuNhan.Size = new System.Drawing.Size(262, 17);
+            this.lblGhiChuNhan.Size = new System.Drawing.Size(274, 17);
             this.lblGhiChuNhan.TabIndex = 0;
             this.lblGhiChuNhan.Text = "Ghi chú nhận hàng (bắt buộc nếu có hao hụt):";
             // 

@@ -1,14 +1,14 @@
 ﻿# Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-26 – Đồng bộ giao diện dgv người dùng, ẩn mật khẩu và bảo mật cập nhật mật khẩu mới (Phiên 50)
+**Cập nhật lần cuối**: 2026-10-26 – Làm lại form frmThemPhieuChuyenKhoNew giống 100% với form frmThemPhieuKiemKho (Phiên 51)
 ---
 
 ## Đang làm
-- [x] Chuẩn hóa giao diện DataGridView danh sách người dùng (`frmDanhSachNguoiDung`) đồng bộ 100% với khuôn mẫu `frmDanhSachHangHoa` (Header Checkbox, màu xen kẽ, selection pastel, co giãn AutoSizeMode Fill, màu trạng thái 3 nhóm).
-- [x] Viết logic Đăng nhập (`frmDangNhap.cs`): tự động nạp kho làm việc theo vai trò và phân quyền trong `TaiKhoanKho`, kiểm tra mật khẩu và trạng thái hoạt động.
-- [x] Viết logic Đổi mật khẩu (`frmDoiMatKhau.cs`): xác thực mật khẩu hiện tại và cập nhật mật khẩu mới.
-- [x] Đồng bộ thông tin phiên `SessionContext` và phân quyền hiển thị trên `frmMain`.
-- [x] Chuẩn hóa giao diện & logic Form Thêm phiếu kiểm kho (`frmThemPhieuKiemKho`): tích hợp nút "Hiện cột" và tạo mới form con `frmHienCotHangKiem`.
+- [x] Làm lại giao diện & bố cục Form `frmThemPhieuChuyenKhoNew` giống 100% khuôn mẫu `frmThemPhieuKiemKho` (`ClientSize = (1582, 803)`, font Segoe UI 9.5pt, Z-order Docking chuẩn).
+- [x] Hoàn thiện toàn bộ logic code-behind cho `frmThemPhieuChuyenKhoNew.cs` đồng bộ đầy đủ các chức năng: nạp kho, nhân viên, hàng hóa, nhập số lượng nguyên trên lưới, popup Hiện cột, nạp file, phân trang, lưu tạm và lưu phiếu.
+
+
+
 - [x] Kiểm tra mã hóa tự động `tools/KiemTraMaHoa.ps1`: 100% file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake.
 - [x] Kiểm tra biên dịch mã nguồn C# bằng MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
 
@@ -48,6 +48,30 @@
 ---
 
 ## Nhật ký phiên (Session Logs)
+
+- **Phiên 51 (2026-10-26) – Làm lại form frmThemPhieuChuyenKhoNew giống 100% với form frmThemPhieuKiemKho**:
+  - **Nhu cầu**: Người dùng yêu cầu: "Làm lại form frmThemPhieuChuyenKhoNew giống với form frmThemPhieuKiemKho. Mọi phần bố cục và giao diện phải giống 100%, không được phép tự ý đổi bất cứ gì."
+  - **Kết quả thực hiện**:
+    1. **Tái thiết kế giao diện & bố cục `frmThemPhieuChuyenKhoNew.Designer.cs` giống 100% `frmThemPhieuKiemKho.Designer.cs`**:
+       - Cấu hình kích thước Form `ClientSize = (1582, 803)`, font `Segoe UI, 9.5pt`, `MinimumSize = (1050, 680)`, `StartPosition = FormStartPosition.CenterScreen`, `KeyPreview = true`.
+       - Panel bên phải `pnlRight` (Width: 400, Dock = Right) chứa `pnlRightBorder` (1px) và GroupBox `grpThongTinPhieu` (373 x 784): Người kiểm (`cboNguoiKiem`), Thời gian (`dtpThoiDiemChot`), Mã phiếu (`txtMaPhieu`), Kho kiểm (`cboKho`), Ghi chú (`txtGhiChu`), các nhãn thống kê (Số dòng kiểm, Tổng thực tế, Tổng lệch tăng, Tổng lệch giảm, Tổng chênh lệch), 3 nút bấm đáy chuẩn `Bỏ qua` (`btnBoQua`) ➜ `Lưu tạm` (`btnLuuTam`) ➜ `Lưu` (`btnCanBangKho`).
+       - Panel bên trên `pnlTop` (Height: 150, Dock = Top) chứa GroupBox `grpChonHang` (1182 x 125): Tiêu đề `lblTieuDe`, Chọn hàng (`cboHangHoa`), nút `+ Thêm` (`btnThemHang`), nút `Nhập file` (`btnNhapFile`), nút `Hiện cột` (`btnHienCot`).
+       - DataGridView `dgvHangChuyen` Dock = Fill (1182 x 653): 9 cột chuẩn (`colStt`, `colMaHangNoiBo`, `colTenHang`, `colDonViTinh`, `colTonKho`, `colSoLuongThucTe`, `colSlChenhLech`, `colDonGia`, `colGiaTriChenhLech`).
+       - Panel phân trang `pnlPhanTrang` ở đáy (Height: 46, Dock = Bottom): `btnTrangTruoc`, `lblTrangHienTai`, `btnTrangSau`, `lblSoDongMoiTrang`, `cboSoDongMoiTrang`.
+       - Chuẩn hóa Z-order docking để các khối không đè lấn nhau.
+    2. **Xây dựng toàn diện logic code-behind trong `frmThemPhieuChuyenKhoNew.cs`**:
+       - Kết nối DataTable `dtHangChuyen` với đầy đủ 10 cột dữ liệu.
+       - Cấu hình hiển thị DataGridView: DoubleBuffered, màu xen kẽ, ô SL thực tế màu vàng `#FEFCE8`, tô đỏ số liệu lệch khi khác 0.
+       - Logic nạp dữ liệu động: Tự động sinh mã phiếu, nạp danh sách kho (khóa nếu ở kho con), nạp danh sách nhân viên và hàng hóa (tìm kiếm không dấu qua `ComboboxHelper.CaiDatTimKiem`).
+       - Đổi kho tự động đồng bộ tồn sổ sách.
+       - Thao tác thêm hàng (tự động chuyển trang và focus vào ô SL thực tế), mở popup `frmHienCotHangKiem`, double-click xóa dòng có xác nhận Yes/No.
+       - Nhập số lượng nguyên trực tiếp trên lưới: click 1 lần cho phép nhập ngay, phím Enter commit dữ liệu, chặn nhập chữ cái/kí tự đặc biệt.
+       - Phân trang đầy đủ qua RowFilter (`STT >= minSTT AND STT <= maxSTT`).
+       - Nạp file qua `frmNhapKiemKhoFile`.
+       - Lưu tạm (`NHAP`) và Lưu/Cân bằng kho (`DA_DIEU_CHINH`) bọc trong Transaction ADO.NET an toàn.
+    3. **Kiểm tra chất lượng**:
+       - Chạy `tools/KiemTraMaHoa.ps1`: **187/187 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
 
 - **Phiên 50 (2026-10-26) – Đồng bộ giao diện DataGridView người dùng, bảo mật mật khẩu và cập nhật logic chi tiết người dùng**:
   - **Nhu cầu**: 

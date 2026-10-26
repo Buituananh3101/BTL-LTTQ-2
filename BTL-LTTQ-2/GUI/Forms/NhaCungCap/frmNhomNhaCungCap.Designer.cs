@@ -48,7 +48,7 @@
             // 
             this.splitterThongTin.BackColor = System.Drawing.SystemColors.Control;
             this.splitterThongTin.Dock = System.Windows.Forms.DockStyle.Top;
-            this.splitterThongTin.Location = new System.Drawing.Point(3, 25);
+            this.splitterThongTin.Location = new System.Drawing.Point(3, 20);
             this.splitterThongTin.Name = "splitterThongTin";
             this.splitterThongTin.Size = new System.Drawing.Size(290, 1);
             this.splitterThongTin.TabIndex = 6;
@@ -78,7 +78,7 @@
             this.lblTenNhom.AutoSize = true;
             this.lblTenNhom.Location = new System.Drawing.Point(18, 46);
             this.lblTenNhom.Name = "lblTenNhom";
-            this.lblTenNhom.Size = new System.Drawing.Size(78, 21);
+            this.lblTenNhom.Size = new System.Drawing.Size(65, 17);
             this.lblTenNhom.TabIndex = 3;
             this.lblTenNhom.Text = "Tên nhóm";
             // 
@@ -119,7 +119,7 @@
             // 
             this.txtTenNhom.Location = new System.Drawing.Point(21, 74);
             this.txtTenNhom.Name = "txtTenNhom";
-            this.txtTenNhom.Size = new System.Drawing.Size(251, 29);
+            this.txtTenNhom.Size = new System.Drawing.Size(251, 24);
             this.txtTenNhom.TabIndex = 2;
             // 
             // pnlLeft
@@ -148,7 +148,7 @@
             this.lblTieuDe.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblTieuDe.Location = new System.Drawing.Point(13, 22);
             this.lblTieuDe.Name = "lblTieuDe";
-            this.lblTieuDe.Size = new System.Drawing.Size(202, 28);
+            this.lblTieuDe.Size = new System.Drawing.Size(164, 21);
             this.lblTieuDe.TabIndex = 4;
             this.lblTieuDe.Text = "Nhóm nhà cung cấp";
             // 
@@ -166,7 +166,7 @@
             // 
             this.txtTimKiem.Location = new System.Drawing.Point(413, 22);
             this.txtTimKiem.Name = "txtTimKiem";
-            this.txtTimKiem.Size = new System.Drawing.Size(351, 29);
+            this.txtTimKiem.Size = new System.Drawing.Size(351, 24);
             this.txtTimKiem.TabIndex = 2;
             // 
             // grpTimKiem
@@ -187,7 +187,7 @@
             this.lblTimKiem.AutoSize = true;
             this.lblTimKiem.Location = new System.Drawing.Point(324, 25);
             this.lblTimKiem.Name = "lblTimKiem";
-            this.lblTimKiem.Size = new System.Drawing.Size(74, 21);
+            this.lblTimKiem.Size = new System.Drawing.Size(60, 17);
             this.lblTimKiem.TabIndex = 3;
             this.lblTimKiem.Text = "Tìm kiếm";
             // 
@@ -206,12 +206,13 @@
             this.lblTongSoNhom.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblTongSoNhom.Location = new System.Drawing.Point(330, 9);
             this.lblTongSoNhom.Name = "lblTongSoNhom";
-            this.lblTongSoNhom.Size = new System.Drawing.Size(211, 20);
+            this.lblTongSoNhom.Size = new System.Drawing.Size(172, 15);
             this.lblTongSoNhom.TabIndex = 0;
             this.lblTongSoNhom.Text = "Tổng số: 0 nhóm nhà cung cấp";
             // 
             // dgvNhomHang
             // 
+            this.dgvNhomHang.AllowUserToResizeRows = false;
             this.dgvNhomHang.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvNhomHang.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvNhomHang.Location = new System.Drawing.Point(0, 0);
@@ -232,7 +233,7 @@
             // 
             // frmNhomNhaCungCap
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1082, 553);
             this.Controls.Add(this.pnlLeft);

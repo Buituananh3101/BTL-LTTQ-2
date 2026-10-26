@@ -93,11 +93,23 @@
     <Compile Include="GUI\Forms\frmMain.Designer.cs">
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="GUI\Forms\BaoCao\frmBaoCaoTheKho.resx">
+      <DependentUpon>frmBaoCaoTheKho.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\BaoCao\frmBaoCaoTonKho.resx">
       <DependentUpon>frmBaoCaoTonKho.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\BaoCao\frmHienCotBaoCao.resx">
       <DependentUpon>frmHienCotBaoCao.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Forms\ChuyenKho\frmNhanChuyenKho.resx">
+      <DependentUpon>frmNhanChuyenKho.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Forms\ChuyenKho\frmNhapChuyenKhoFile.resx">
+      <DependentUpon>frmNhapChuyenKhoFile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Forms\ChuyenKho\frmThemPhieuChuyenKho.resx">
+      <DependentUpon>frmThemPhieuChuyenKho.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\ChuyenKho\frmThemPhieuChuyenKhoNew.resx">
       <DependentUpon>frmThemPhieuChuyenKhoNew.cs</DependentUpon>
