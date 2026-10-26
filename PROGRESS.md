@@ -1,6 +1,6 @@
 ﻿# Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-26 – Hoàn thiện chức năng "Hiện cột" và chuẩn hóa logic form Thêm phiếu kiểm kho (Phiên 49)
+**Cập nhật lần cuối**: 2026-10-26 – Đồng bộ giao diện dgv người dùng, ẩn mật khẩu và bảo mật cập nhật mật khẩu mới (Phiên 50)
 ---
 
 ## Đang làm
@@ -48,6 +48,22 @@
 ---
 
 ## Nhật ký phiên (Session Logs)
+
+- **Phiên 50 (2026-10-26) – Đồng bộ giao diện DataGridView người dùng, bảo mật mật khẩu và cập nhật logic chi tiết người dùng**:
+  - **Nhu cầu**: 
+    1. Đồng bộ giao diện & viền của DataGridView trong danh sách người dùng (`frmDanhSachNguoiDung`) hoàn toàn theo khuôn mẫu `frmDanhSachHangHoa` (`ColumnHeadersBorderStyle = Raised`, `GridColor = SystemColors.ControlDark`, `CellBorderStyle = Single`).
+    2. Bỏ cột Mật khẩu khỏi danh sách người dùng (`frmDanhSachNguoiDung`) và popup "Hiện cột" (`frmHienCotNguoiDung`).
+    3. Trong form Chi tiết người dùng (`frmChiTietNguoiDung`): đổi nhãn thành "Mật khẩu mới:", khi mở lên sửa thì ô mật khẩu để trống hoàn toàn (`txtMatKhau.Text = ""`), tuyệt đối không lấy mật khẩu từ CSDL lên giao diện để bảo mật. Quản lý nếu muốn đổi mật khẩu thì nhập mật khẩu mới; nếu để trống thì giữ nguyên mật khẩu cũ trong CSDL.
+  - **Kết quả thực hiện**:
+    1. **Đồng bộ viền lưới `dgvNguoiDung`**: Cấu hình `EnableHeadersVisualStyles = true`, `ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Raised`, `GridColor = SystemColors.ControlDark`, `CellBorderStyle = DataGridViewCellBorderStyle.Single`, khớp 100% với `frmDanhSachHangHoa`.
+    2. **Loại bỏ cột Mật khẩu**: Bỏ `colMatKhau` khỏi `frmDanhSachNguoiDung.Designer.cs`, `ThemDong` và các sự kiện trong `frmDanhSachNguoiDung.cs`. Xóa bỏ `chkMatKhau` khỏi `frmHienCotNguoiDung` và cân đối lại kích thước popup.
+    3. **Bảo mật & Cập nhật `frmChiTietNguoiDung`**:
+       - Khởi tạo mặc định `txtMatKhau.Text = string.Empty; lblMatKhau.Text = "Mật khẩu mới:";` khi mở chế độ sửa.
+       - Lưu dữ liệu bằng Transaction (`DataProcessing.ChangeDataTransaction`): Nếu `txtMatKhau` có giá trị thì cập nhật `MatKhauHash`, nếu rỗng thì bỏ qua không ghi đè mật khẩu cũ.
+       - Nạp kho phân quyền từ CSDL `TaiKhoanKho` và lưu đồng bộ phân quyền kho khi cập nhật người dùng.
+    4. **Kiểm tra mã hóa & Biên dịch**:
+       - Chạy `tools/KiemTraMaHoa.ps1`: 180/180 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake.
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
 
 - **Phiên 49 (2026-10-26) – Chuẩn hóa logic Form Thêm phiếu kiểm kho và Xây dựng Form chức năng "Hiện cột" hàng kiểm**:
   - **Nhu cầu**: Người dùng đã cập nhật giao diện `frmThemPhieuKiemKho`: bỏ nút "Nạp tất cả hàng trong kho", thêm nút "Hiện cột" (`button2`), đổi tên nút thêm thành `+ Thêm`. Yêu cầu giữ nguyên 100% giao diện đã chỉnh, cấu hình lại tên và logic điều khiển, đồng thời tạo mới form popup "Hiện cột".

@@ -11,11 +11,6 @@ namespace BTL_LTTQ_2.GUI.Forms.NguoiDung
     public partial class frmDanhSachNguoiDung : Form
     {
         private bool isHeaderChecked = false;
-#pragma warning disable CS0414
-        private bool isLoaded = false;
-        private int trangHienTai = 1;
-        private int tongSoTrang = 1;
-#pragma warning restore CS0414
 
         public frmDanhSachNguoiDung()
         {
@@ -27,7 +22,6 @@ namespace BTL_LTTQ_2.GUI.Forms.NguoiDung
             DinhDangLuoi();
             NapBoLocGiaoDien();
             HienThiDanhSach();
-            isLoaded = true;
         }
 
         #region Định dạng giao diện & Cấu hình lưới chuẩn theo frmDanhSachHangHoa
@@ -64,7 +58,6 @@ namespace BTL_LTTQ_2.GUI.Forms.NguoiDung
             colChon.ReadOnly = false;
             colMaTaiKhoan.ReadOnly = true;
             colTenDangNhap.ReadOnly = true;
-            colMatKhau.ReadOnly = true;
             colHoTen.ReadOnly = true;
             colDienThoai.ReadOnly = true;
             colVaiTro.ReadOnly = true;
@@ -199,12 +192,6 @@ namespace BTL_LTTQ_2.GUI.Forms.NguoiDung
                     e.CellStyle.ForeColor = Color.FromArgb(100, 116, 139);
                 }
             }
-
-            // Hiển thị mật khẩu dưới dạng che ký tự ••••••••
-            if (colName == "colMatKhau" && e.Value != null)
-            {
-                e.Value = "••••••••";
-            }
         }
 
         #endregion
@@ -238,7 +225,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NguoiDung
                 dgvNguoiDung.Rows.Clear();
 
                 string sql = @"
-                    SELECT tk.MaTaiKhoan, tk.TenDangNhap, tk.MatKhauHash, nv.HoTen, nv.DienThoai, 
+                    SELECT tk.MaTaiKhoan, tk.TenDangNhap, nv.HoTen, nv.DienThoai, 
                            vt.TenVaiTro, tk.TrangThai, tk.LanDangNhapCuoi,
                            ISNULL((
                                SELECT STRING_AGG(k.TenKho, ', ')
@@ -258,7 +245,6 @@ namespace BTL_LTTQ_2.GUI.Forms.NguoiDung
                     {
                         int maTk = Convert.ToInt32(dr["MaTaiKhoan"]);
                         string tenDn = dr["TenDangNhap"] != DBNull.Value ? dr["TenDangNhap"].ToString() : "";
-                        string matKhau = dr["MatKhauHash"] != DBNull.Value ? dr["MatKhauHash"].ToString() : "";
                         string hoTen = dr["HoTen"] != DBNull.Value ? dr["HoTen"].ToString() : "";
                         string sdt = dr["DienThoai"] != DBNull.Value ? dr["DienThoai"].ToString() : "";
                         string vaiTro = dr["TenVaiTro"] != DBNull.Value ? dr["TenVaiTro"].ToString() : "";
@@ -266,7 +252,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NguoiDung
                         string ngayTao = dr["LanDangNhapCuoi"] != DBNull.Value ? Convert.ToDateTime(dr["LanDangNhapCuoi"]).ToString("dd/MM/yyyy HH:mm") : "20/10/2026 08:30";
                         string trangThai = dr["TrangThai"] != DBNull.Value ? dr["TrangThai"].ToString() : "HOAT_DONG";
 
-                        ThemDong(maTk, tenDn, matKhau, hoTen, sdt, vaiTro, kho, ngayTao, trangThai);
+                        ThemDong(maTk, tenDn, hoTen, sdt, vaiTro, kho, ngayTao, trangThai);
                     }
                     lblTongSoHang.Text = $"Tổng số người dùng: {dgvNguoiDung.Rows.Count}";
                     CapNhatTrangThaiHeaderCheckBox();
@@ -286,24 +272,24 @@ namespace BTL_LTTQ_2.GUI.Forms.NguoiDung
             dgvNguoiDung.Rows.Clear();
 
             // Mẫu 1: Tài khoản Quản lý
-            ThemDong(1, "quanly", "123456", "Nguyễn Văn Quản Trị", "0901000001", "Quản lý", "Toàn quyền tất cả các kho", "20/10/2026 08:30", "HOAT_DONG");
+            ThemDong(1, "quanly", "Nguyễn Văn Quản Trị", "0901000001", "Quản lý", "Toàn quyền tất cả các kho", "20/10/2026 08:30", "HOAT_DONG");
 
             // Mẫu 2: Tài khoản Thủ kho
-            ThemDong(2, "thukho", "123456", "Trần Đình Thủ Kho", "0901000002", "Thủ kho", "Kho trung tâm", "20/10/2026 09:15", "HOAT_DONG");
+            ThemDong(2, "thukho", "Trần Đình Thủ Kho", "0901000002", "Thủ kho", "Kho trung tâm", "20/10/2026 09:15", "HOAT_DONG");
 
             // Mẫu 3: Tài khoản Nhân viên kho 1
-            ThemDong(3, "nvkho", "123456", "Lê Văn Nhân Viên", "0901000003", "Nhân viên kho", "Kho An Thới", "21/10/2026 14:00", "HOAT_DONG");
+            ThemDong(3, "nvkho", "Lê Văn Nhân Viên", "0901000003", "Nhân viên kho", "Kho An Thới", "21/10/2026 14:00", "HOAT_DONG");
 
             // Mẫu 4: Tài khoản Bị khóa
-            ThemDong(4, "nvtamkhoa", "123456", "Phạm Văn Tạm", "0901000004", "Nhân viên kho", "Kho phụ kiện Tuna", "22/10/2026 10:20", "NGUNG_HOAT_DONG");
+            ThemDong(4, "nvtamkhoa", "Phạm Văn Tạm", "0901000004", "Nhân viên kho", "Kho phụ kiện Tuna", "22/10/2026 10:20", "NGUNG_HOAT_DONG");
 
             lblTongSoHang.Text = $"Tổng số người dùng: {dgvNguoiDung.Rows.Count}";
             CapNhatTrangThaiHeaderCheckBox();
         }
 
-        private void ThemDong(int maTk, string tenDn, string matKhau, string hoTen, string sdt, string vaiTro, string kho, string ngayTao, string trangThai)
+        private void ThemDong(int maTk, string tenDn, string hoTen, string sdt, string vaiTro, string kho, string ngayTao, string trangThai)
         {
-            dgvNguoiDung.Rows.Add(false, maTk, tenDn, matKhau, hoTen, sdt, vaiTro, kho, ngayTao, trangThai);
+            dgvNguoiDung.Rows.Add(false, maTk, tenDn, hoTen, sdt, vaiTro, kho, ngayTao, trangThai);
         }
 
         #endregion
@@ -331,9 +317,9 @@ namespace BTL_LTTQ_2.GUI.Forms.NguoiDung
             string hoTen = row.Cells["colHoTen"].Value?.ToString() ?? "";
             string vaiTro = row.Cells["colVaiTro"].Value?.ToString() ?? "";
             string sdt = row.Cells["colDienThoai"].Value?.ToString() ?? "";
-            string matKhau = row.Cells["colMatKhau"].Value?.ToString() ?? "";
 
-            using (frmChiTietNguoiDung frm = new frmChiTietNguoiDung(tenDangNhap, hoTen, vaiTro, sdt, matKhau))
+            // Mở form chi tiết người dùng: không truyền mật khẩu, lúc mở lên ô mật khẩu trắng tinh
+            using (frmChiTietNguoiDung frm = new frmChiTietNguoiDung(tenDangNhap, hoTen, vaiTro, sdt))
             {
                 if (frm.ShowDialog() == DialogResult.OK)
                 {

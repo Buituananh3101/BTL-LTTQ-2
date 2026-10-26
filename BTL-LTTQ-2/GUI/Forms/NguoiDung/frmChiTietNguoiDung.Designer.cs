@@ -369,7 +369,7 @@
             this.btnKhoaTaiKhoan.Name = "btnKhoaTaiKhoan";
             this.btnKhoaTaiKhoan.Size = new System.Drawing.Size(110, 32);
             this.btnKhoaTaiKhoan.TabIndex = 1;
-            this.btnKhoaTaiKhoan.Text = "Khóa tài khoản";
+            this.btnKhoaTaiKhoan.Text = "Khóa";
             this.btnKhoaTaiKhoan.UseVisualStyleBackColor = true;
             this.btnKhoaTaiKhoan.Click += new System.EventHandler(this.btnKhoaTaiKhoan_Click);
             // 
