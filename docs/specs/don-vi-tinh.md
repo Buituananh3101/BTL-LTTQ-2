@@ -7,13 +7,11 @@
 ## 1. Kiến trúc File & CSDL
 
 ### 1.1. Bản đồ File liên quan (File Map)
-- **Thư mục chức năng**: `BTL-LTTQ-2/GUI/Forms/DonViTinh/`
-  - `frmDonViTinh.cs`, `frmDonViTinh.Designer.cs`, `frmDonViTinh.resx`: Form chính hiển thị danh sách Đơn vị tính (kích thước chuẩn `1782x853`, `FixedSingle`, `MaximizeBox = false`, `StartPosition = CenterScreen`), thanh tìm kiếm F3, combobox bộ lọc bên trái (chiều rộng 340px), DataGridView định dạng chuẩn đệm đôi `DoubleBuffered`, thanh phân trang (tùy chọn 10, 20, 50, 100 dòng).
-  - `frmChiTietDonViTinh.cs`, `frmChiTietDonViTinh.Designer.cs`, `frmChiTietDonViTinh.resx`: Form phụ Modal Dialog Thêm mới / Chỉnh sửa đơn vị tính (cho phép nhập Tên ĐVT, ghi chú nếu có, hiển thị danh sách các mặt hàng đang áp dụng ĐVT này, bọc `ChangeDataTransaction`).
-  - `frmHienCotDvt.cs`, `frmHienCotDvt.Designer.cs`, `frmHienCotDvt.resx`: Form popup tùy chọn Ẩn / Hiện cột của DataGridView đơn vị tính.
-- **Tích hợp tạo nhanh**:
-  - `BTL-LTTQ-2/GUI/Forms/DanhSachHangHoa/frmHangHoa.cs`, `frmHangHoa.Designer.cs`: Bổ sung nút `+` cạnh `cboDonVi` để mở nhanh `frmChiTietDonViTinh` và tự động chọn ĐVT vừa tạo.
-- **Form cha MDI & Menu**: `BTL-LTTQ-2/GUI/Forms/frmMain.cs` (gắn sự kiện `mnuDonViTinh_Click` mở và kích hoạt form MDI Child).
+- **File chức năng**: `BTL-LTTQ-2/GUI/Forms/DanhSachHangHoa/frmDonViTinh.cs` (kèm `.Designer.cs`, `.resx`): Form popup quản lý Đơn vị tính (kích thước chuẩn khuôn mẫu `frmNhomHang` & `frmViTri`), gồm danh sách DataGridView (`colMaDVT`, `colTenDVT`, `colSoLuongHang`), tìm kiếm tức thì, chức năng Thêm / Sửa / Xóa (có kiểm tra ràng buộc hàng hóa đang dùng), nhập file / xuất file Excel/CSV.
+- **Tích hợp quản lý & lọc**:
+  - `BTL-LTTQ-2/GUI/Forms/DanhSachHangHoa/frmDanhSachHangHoa.cs`: Bộ lọc ComboBox `cboDonViTinh` bên trái kèm nút `+` (`btnThemDonViTinh`) mở `frmDonViTinh`.
+  - `BTL-LTTQ-2/GUI/Forms/DanhSachHangHoa/frmHangHoa.cs`: ComboBox chọn đơn vị tính khi tạo/sửa hàng hóa.
+- *(Lưu ý: Thư mục cũ `GUI/Forms/DonViTinh/` gồm 3 form MDI độc lập đã được loại bỏ hoàn toàn để đồng bộ kiến trúc quản lý danh mục con theo quy định tại Phiên 39 & 50).*
 - **Truy xuất dữ liệu (DAL)**: `BTL-LTTQ-2/Classes/DataProcessing.cs` (ADO.NET thuần: `ReadData`, `ReadValue`, `ChangeDataTransaction`).
 
 ### 1.2. Cơ sở dữ liệu

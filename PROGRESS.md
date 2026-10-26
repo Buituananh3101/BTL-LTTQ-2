@@ -41,7 +41,7 @@
 | 6 | **Danh mục Nhà cung cấp** | `frmNhaCungCap`, `frmDonViCapHang`, `frmNhomNhaCungCap`, `frmHienCotNcc`, `frmNhapNhaCungCapFile` | Hoàn thành 100% |
 | 7 | **Phiếu Nhập hàng** | `frmNhapHang`, `frmThemPhieuNhap`, `frmChiTietPhieuNhap`, `frmHienCotNhapHang`, `frmHienCotHangNhap`, `frmNhapHangNhapFile` | Hoàn thành 100% |
 | 8 | **Trả hàng nhập** | `frmTraHangNhap`, `frmThemPhieuTraHang`, `frmChiTietTraHangNhap`, `frmHienCotTraHang`, `frmHienCotHangTra`, `frmNhapHangTraFile` | Hoàn thành 100% |
-| 9 | **Danh mục Đơn vị tính** | `frmDonViTinh`, `frmChiTietDonViTinh`, `frmHienCotDvt`, tạo nhanh từ `frmHangHoa` | Hoàn thành 100% |
+| 9 | **Danh mục Đơn vị tính** | `frmDonViTinh` (trong `DanhSachHangHoa`), tích hợp filter & popup CRUD đồng bộ Nhóm hàng/Vị trí | Hoàn thành 100% |
 | 10 | **Danh mục Cơ bản khác** | CRUD Nhóm hàng, Vị trí, Chi nhánh Kho, Khách hàng | Chưa bắt đầu |
 | 11 | **Kiểm kê & Cân bằng kho** | `frmKiemKho`, nạp tồn sổ sách, sinh phiếu điều chỉnh, khóa vĩnh viễn, `frmThemPhieuKiemKho`, `frmHienCotHangKiem` | Hoàn thành 100% |
 | 12 | **Chuyển kho Liên chi nhánh & Đổi kho** | `frmChuyenKho`, 2 bước Xuất kho ➜ Nhận kho, chặn tồn âm kho nguồn, modal `frmDoiKho` | Hoàn thành 100% |
