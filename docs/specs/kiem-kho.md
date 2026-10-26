@@ -40,7 +40,8 @@
 | [`frmThemPhieuKiemKho`](../../BTL-LTTQ-2/GUI/Forms/KiemKho/frmThemPhieuKiemKho.cs) | Modal Dialog | Màn hình lập phiếu kiểm kho mới (nút `+ Kiểm kho`), hỗ trợ chọn hàng từ danh mục, sửa trực tiếp trên lưới, nhập file dữ liệu và thực hiện Lưu tạm / Cân bằng kho. |
 | [`frmChiTietKiemKho`](../../BTL-LTTQ-2/GUI/Forms/KiemKho/frmChiTietKiemKho.cs) | Modal Dialog | Màn hình chi tiết khi nhấn đúp vào 1 phiếu kiểm (theo ảnh mẫu 3), cung cấp các nút: **Xóa** (khóa vĩnh viễn phiếu đã cân bằng theo Luật 6), **Xuất file** và **Hoàn thành** (khi là phiếu tạm để cân bằng kho). |
 | [`frmNhapKiemKhoFile`](../../BTL-LTTQ-2/GUI/Forms/KiemKho/frmNhapKiemKhoFile.cs) | Modal Dialog | Màn hình nhập dữ liệu kiểm kho từ file (Excel/CSV), cung cấp tải file mẫu Excel/CSV chuẩn theo khuôn mẫu `frmNhapHangHoaFile`. |
-| [`frmHienCotKiemKho`](../../BTL-LTTQ-2/GUI/Forms/KiemKho/frmHienCotKiemKho.cs) | Tool Window | Popup tùy chọn ẩn/hiện các cột của bảng kiểm kho. |
+| [`frmHienCotKiemKho`](../../BTL-LTTQ-2/GUI/Forms/KiemKho/frmHienCotKiemKho.cs) | Tool Window | Popup tùy chọn ẩn/hiện các cột của bảng danh sách phiếu kiểm kho `dgvKiemKho`. |
+| [`frmHienCotHangKiem`](../../BTL-LTTQ-2/GUI/Forms/KiemKho/frmHienCotHangKiem.cs) | Tool Window | Popup tùy chọn ẩn/hiện các cột của bảng chi tiết hàng kiểm kê `dgvHangKiem` trong form thêm mới. |
 
 ---
 
@@ -85,7 +86,7 @@
 
 ### 3.3. Màn hình Thêm mới `frmThemPhieuKiemKho`
 - **Kích thước form**: Size Lớn `ClientSize = (1182, 803)` theo Điều luật 15e.
-- **Thanh tiêu đề trên (`pnlTopLeft`)**: Tiêu đề "Thêm phiếu kiểm kho", nút `Nhập file` ở góc phải, thanh chọn hàng nhanh gồm `cboHangHoa`, `nudSoLuongThucTe`, nút `+ Thêm hàng`, `Nạp tất cả hàng trong kho`.
+- **Thanh tiêu đề trên (`pnlTopLeft`)**: Tiêu đề "Thêm phiếu kiểm kho", nút `Nhập file` ở góc phải, thanh chọn hàng nhanh gồm `cboHangHoa`, `nudSoLuongThucTe`, nút `+ Thêm`, nút `Hiện cột` (mở popup `frmHienCotHangKiem`).
 - **Right Panel (`pnlRight`)**: Chứa thông tin Người kiểm, Ngày kiểm, Mã phiếu (không hiển thị trường trạng thái; trạng thái được quyết định khi người dùng ấn Lưu tạm hoặc Lưu), Kho kiểm, Ghi chú, tóm tắt kết quả (Số dòng kiểm, Tổng thực tế, Tổng lệch tăng, Tổng lệch giảm, Tổng chênh lệch). Ở đáy là thanh nút chuẩn: `Bỏ qua` ➜ `Lưu tạm` ➜ `Lưu`.
 - **Lưới kiểm kê `dgvHangKiem`**:
   - Độ rộng các cột được tối ưu hóa chuẩn xác đảm bảo cột `Xóa` luôn hiển thị đầy đủ, không bị che khuất.

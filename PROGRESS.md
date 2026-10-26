@@ -1,17 +1,21 @@
 ﻿# Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-25 – Xây dựng Form Đăng nhập hệ thống, Tiện ích băm mật khẩu SHA-256 an toàn và Phân quyền thao tác theo 3 vai trò chuẩn (Phiên 47)
+**Cập nhật lần cuối**: 2026-10-26 – Hoàn thiện chức năng "Hiện cột" và chuẩn hóa logic form Thêm phiếu kiểm kho (Phiên 49)
 ---
 
 ## Đang làm
-- [x] Tien ich bam mat khau Classes/PasswordHelper.cs (SHA-256).
-- [x] Thiet ke va hoan thien Form Dang nhap (frmDangNhap) ho tro chon chi nhanh kho lam viec.
-- [x] Hoan thien phan he Xac thuc & Phan quyen (frmDangNhap, PasswordHelper.cs SHA-256, phan quyen menu frmMain).
-- [x] Cau hinh vong lap dang nhap va luong Dang xuat tren Program.cs va frmMain.cs.
-- [x] Kiem tra ma hoa tu dong tools/KiemTraMaHoa.ps1: 100% file dat chuan UTF-8 with BOM, 0 loi Mojibake.
-- [x] Kiem tra bien dich ma nguon C# bang MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+- [x] Thiết kế và chuẩn hóa bộ Form Quản lý Người dùng: `frmDanhSachNguoiDung`, `frmNguoiDung`, `frmChiTietNguoiDung`, `frmHienCotNguoiDung`.
+- [x] Viết logic Đăng nhập (`frmDangNhap.cs`): tự động nạp kho làm việc theo vai trò và phân quyền trong `TaiKhoanKho`, kiểm tra mật khẩu và trạng thái hoạt động.
+- [x] Viết logic Đổi mật khẩu (`frmDoiMatKhau.cs`): xác thực mật khẩu hiện tại và cập nhật mật khẩu mới.
+- [x] Đồng bộ thông tin phiên `SessionContext` và phân quyền hiển thị trên `frmMain`.
+- [x] Chuẩn hóa giao diện & logic Form Thêm phiếu kiểm kho (`frmThemPhieuKiemKho`): tích hợp nút "Hiện cột" và tạo mới form con `frmHienCotHangKiem`.
+- [x] Kiểm tra mã hóa tự động `tools/KiemTraMaHoa.ps1`: 100% file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake.
+- [x] Kiểm tra biên dịch mã nguồn C# bằng MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+
 ## Việc kế tiếp
-1. **Xác thực & Phân quyền**: Hoàn tất `frmDangNhap` hỗ trợ chọn chi nhánh kho, tiện ích SHA-256 `PasswordHelper`, tích hợp phân quyền MenuStrip và StatusStrip trên `frmMain`.
+1. **Nghiệp vụ CRUD Người dùng**:
+   - Viết logic tìm kiếm, phân trang và lọc cho danh sách người dùng (`frmDanhSachNguoiDung`).
+   - Viết logic Tạo mới người dùng (`frmNguoiDung`) và Cập nhật/Khóa/Xóa tài khoản (`frmChiTietNguoiDung`) đồng bộ với `TaiKhoan` và `TaiKhoanKho`.
 2. **Quản lý Danh mục Cơ bản (Kế thừa khuôn mẫu Danh sách Hàng hóa)**:
    - Form Danh mục Nhóm hàng (`frmNhomHang`).
    - Form Danh mục Vị trí (`frmViTri`).
@@ -36,7 +40,7 @@
 | 8 | **Trả hàng nhập** | `frmTraHangNhap`, `frmThemPhieuTraHang`, `frmChiTietTraHangNhap`, `frmHienCotTraHang` | Hoàn thành 100% |
 | 9 | **Danh mục Đơn vị tính** | `frmDonViTinh`, `frmChiTietDonViTinh`, `frmHienCotDvt`, tạo nhanh từ `frmHangHoa` | Hoàn thành 100% |
 | 10 | **Danh mục Cơ bản khác** | CRUD Nhóm hàng, Vị trí, Chi nhánh Kho, Khách hàng | Chưa bắt đầu |
-| 11 | **Kiểm kê & Cân bằng kho** | `frmKiemKho`, nạp tồn sổ sách, sinh phiếu điều chỉnh, khóa vĩnh viễn | Hoàn thành 100% |
+| 11 | **Kiểm kê & Cân bằng kho** | `frmKiemKho`, nạp tồn sổ sách, sinh phiếu điều chỉnh, khóa vĩnh viễn, `frmThemPhieuKiemKho`, `frmHienCotHangKiem` | Hoàn thành 100% |
 | 12 | **Chuyển kho Liên chi nhánh & Đổi kho** | `frmChuyenKho`, 2 bước Xuất kho ➜ Nhận kho, chặn tồn âm kho nguồn, modal `frmDoiKho` | Hoàn thành 100% |
 | 13 | **Xuất hủy** | `frmXuatHuy` | Chưa bắt đầu |
 | 14 | **Báo cáo Tồn kho & Thẻ kho** | Báo cáo tồn đa kho (`frmBaoCaoTonKho`), Thẻ kho (`frmBaoCaoTheKho`) từ `vw_BienDongKho`, xuất CSV UTF-8 BOM | Hoàn thành 100% |
@@ -44,6 +48,50 @@
 ---
 
 ## Nhật ký phiên (Session Logs)
+
+- **Phiên 49 (2026-10-26) – Chuẩn hóa logic Form Thêm phiếu kiểm kho và Xây dựng Form chức năng "Hiện cột" hàng kiểm**:
+  - **Nhu cầu**: Người dùng đã cập nhật giao diện `frmThemPhieuKiemKho`: bỏ nút "Nạp tất cả hàng trong kho", thêm nút "Hiện cột" (`button2`), đổi tên nút thêm thành `+ Thêm`. Yêu cầu giữ nguyên 100% giao diện đã chỉnh, cấu hình lại tên và logic điều khiển, đồng thời tạo mới form popup "Hiện cột".
+  - **Kết quả thực hiện**:
+    1. **Tạo mới `frmHienCotHangKiem` (`frmHienCotHangKiem.cs`, `.Designer.cs`, `.resx`)**:
+       - Khung popup ẩn/hiện cột cho lưới chi tiết hàng kiểm `dgvHangKiem`.
+       - Danh sách 8 checkbox tương ứng các cột: Mã hàng nội bộ, Tên hàng, Đơn vị tính, Tồn kho, SL thực tế, SL lệch, Đơn giá, Giá trị lệch (cột STT và nút Xóa dòng cố định).
+       - Tự động gán vị trí neo thông minh ngay dưới nút `btnHienCot`, chống tràn màn hình, phím ESC và sự kiện Deactivate để đóng nhẹ nhàng.
+    2. **Cập nhật `frmThemPhieuKiemKho`**:
+       - Đổi tên `button2` thành `btnHienCot` trong `frmThemPhieuKiemKho.Designer.cs`, gán sự kiện `btnHienCot_Click`.
+       - Thay thế hàm `btnNapToanBoHang_Click` thành `btnHienCot_Click` gọi mở form `frmHienCotHangKiem`.
+       - Giữ nguyên 100% kích thước, vị trí tọa độ mà người dùng đã thiết kế.
+    3. **Kiểm tra mã hóa & biên dịch**:
+       - Đăng ký form mới đầy đủ trong `BTL-LTTQ-2.csproj`.
+       - Chạy `tools/KiemTraMaHoa.ps1`: **180/180 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+
+- **Phiên 48 (2026-10-26) – Chuẩn hóa phân hệ Quản lý Người dùng và Hoàn thiện toàn diện Logic Đăng nhập / Đổi mật khẩu**:
+  - **Nhu cầu**: Người dùng yêu cầu:
+    1. Kiểm tra và chuẩn hóa bộ Form Người dùng (`frmDanhSachNguoiDung`, `frmNguoiDung`, `frmChiTietNguoiDung`, `frmHienCotNguoiDung`): font Segoe UI 9.5pt, layout, thứ tự nút bấm theo Rule 19b và 15d.
+    2. Viết toàn bộ logic xác thực cho chức năng Đăng nhập (`frmDangNhap`): nạp kho tự động theo tài khoản/vai trò, so sánh mật khẩu, kiểm tra trạng thái tài khoản và khởi tạo `SessionContext`.
+    3. Đảm bảo hỗ trợ đăng nhập mật khẩu chuỗi thuần plain-text lẫn băm SHA-256 từ dữ liệu mẫu.
+  - **Kết quả thực hiện**:
+    1. **Tự động nhận diện tài khoản và tải kho làm việc (`CapNhatDanhSachKhoTheoTaiKhoan`)**:
+       - Bắt sự kiện khi người dùng gõ tên đăng nhập và rời ô (`txtTenDangNhap_Leave`) hoặc nhấn Enter (`KeyDown`).
+       - Truy vấn vai trò của tài khoản từ CSDL:
+         + Nếu là **Quản lý (`MaVaiTro = 1`)**: Tải toàn bộ kho đang hoạt động từ bảng `Kho`, chèn tùy chọn `"Tất cả kho"` (`MaKho = 0`) ở đầu danh sách, cho phép chuyển đổi kho (`cboKhoLamViec.Enabled = true`).
+         + Nếu là **Thủ kho (`MaVaiTro = 2`)** hoặc **Nhân viên kho (`MaVaiTro = 3`)**: Truy vấn các kho được phân công từ bảng `TaiKhoanKho`. Nếu chỉ có 1 kho duy nhất thì tự động chọn và khóa ComboBox (`cboKhoLamViec.Enabled = false`); nếu có nhiều kho được phân công thì cho phép chọn.
+    2. **Xác thực đăng nhập và nạp phiên làm việc (`btnDangNhap_Click`)**:
+       - Kiểm tra rỗng tên đăng nhập và mật khẩu với thông báo rõ ràng.
+       - Truy vấn thông tin tài khoản qua `SqlParameter` (chống SQL Injection 100%).
+       - Kiểm tra mật khẩu: So sánh trực tiếp chuỗi thuần plain-text hoặc SHA-256 đối với các tài khoản seed mặc định.
+       - Kiểm tra trạng thái tài khoản: Nếu không phải `HOAT_DONG` thì từ chối và cảnh báo.
+       - Cập nhật thời điểm `LanDangNhapCuoi = GETDATE()`.
+       - Gán đầy đủ thông tin vào `SessionContext` (`MaTaiKhoan`, `TenDangNhap`, `MaNV`, `HoTen`, `MaVaiTro`, `TenVaiTro`, `MaKhoHienTai`, `TenKhoHienTai`, `IsDangXuat = false`).
+       - Trả về `DialogResult.OK` để `Program.cs` khởi chạy `frmMain`.
+    3. **Hoàn thiện logic Đổi mật khẩu (`frmDoiMatKhau.cs`)**:
+       - Bắt buộc nhập mật khẩu cũ, mật khẩu mới, xác nhận mật khẩu mới.
+       - Kiểm tra mật khẩu cũ khớp với CSDL trước khi cho phép cập nhật.
+       - Lưu mật khẩu mới an toàn bằng `SqlParameter`.
+    4. **Kiểm tra chất lượng**:
+       - Chạy script kiểm thử logic trực tiếp trên CSDL: Xác thực thành công cho cả 4 tài khoản mẫu (`quanly`, `thukho`, `banhang`, `Tuna`).
+       - Chạy `tools/KiemTraMaHoa.ps1`: **177/177 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
 
 - **Phiên 47 (2026-10-25) – Xây dựng Form Đăng nhập hệ thống, Tiện ích băm mật khẩu SHA-256 an toàn và Phân quyền thao tác theo 3 vai trò chuẩn**:
   - **Nhu cầu**: Người dùng yêu cầu:

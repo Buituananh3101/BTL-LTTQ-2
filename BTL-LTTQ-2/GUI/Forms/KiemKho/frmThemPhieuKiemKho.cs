@@ -399,44 +399,31 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             }
         }
 
-        private void btnNapToanBoHang_Click(object sender, EventArgs e)
+        private void btnHienCot_Click(object sender, EventArgs e)
         {
-            if (dtDanhSachHang == null || dtDanhSachHang.Rows.Count == 0)
+            foreach (Form openForm in Application.OpenForms)
             {
-                MessageBox.Show("Kho hiện tại không có sản phẩm nào!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            DialogResult dr = MessageBox.Show(
-                $"Hệ thống sẽ nạp {dtDanhSachHang.Rows.Count} mặt hàng trong kho vào phiếu kiểm kê.\nBạn có muốn tiếp tục?",
-                "Xác nhận nạp toàn bộ hàng",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question);
-
-            if (dr == DialogResult.Yes)
-            {
-                dtHangKiem.Clear();
-                int stt = 1;
-                foreach (DataRow r in dtDanhSachHang.Rows)
+                if (openForm is frmHienCotHangKiem)
                 {
-                    DataRow rMoi = dtHangKiem.NewRow();
-                    rMoi["STT"] = stt++;
-                    rMoi["MaHang"] = r["MaHang"];
-                    rMoi["MaHangNoiBo"] = r["MaHangNoiBo"];
-                    rMoi["TenHang"] = r["TenHang"];
-                    rMoi["TenDVT"] = r["TenDVT"];
-                    decimal tonKho = Convert.ToDecimal(r["TonKho"]);
-                    rMoi["TonKho"] = tonKho;
-                    rMoi["SoLuongThucTe"] = tonKho; // Mặc định khớp tồn sổ sách
-                    rMoi["SlChenhLech"] = 0;
-                    decimal donGia = Convert.ToDecimal(r["DonGia"]);
-                    rMoi["DonGia"] = donGia;
-                    rMoi["GiaTriChenhLech"] = 0;
-                    dtHangKiem.Rows.Add(rMoi);
+                    openForm.BringToFront();
+                    openForm.Activate();
+                    return;
                 }
-
-                TinhToanTongKet();
             }
+
+            frmHienCotHangKiem frm = new frmHienCotHangKiem(dgvHangKiem);
+            Point btnPos = btnHienCot.PointToScreen(Point.Empty);
+            int posX = btnPos.X + btnHienCot.Width - frm.Width;
+            int posY = btnPos.Y + btnHienCot.Height + 2;
+
+            Rectangle workingArea = Screen.FromControl(btnHienCot).WorkingArea;
+            if (posX < workingArea.Left) posX = workingArea.Left;
+            if (posX + frm.Width > workingArea.Right) posX = workingArea.Right - frm.Width;
+            if (posY + frm.Height > workingArea.Bottom) posY = btnPos.Y - frm.Height - 2;
+
+            frm.StartPosition = FormStartPosition.Manual;
+            frm.Location = new Point(posX, posY);
+            frm.Show(this);
         }
 
         private void dgvHangKiem_CellContentClick(object sender, DataGridViewCellEventArgs e)

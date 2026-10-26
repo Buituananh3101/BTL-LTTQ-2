@@ -288,6 +288,15 @@
     <EmbeddedResource Include="GUI\Forms\KiemKho\frmHienCotKiemKho.resx">
       <DependentUpon>frmHienCotKiemKho.cs</DependentUpon>
     </EmbeddedResource>
+    <Compile Include="GUI\Forms\KiemKho\frmHienCotHangKiem.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\KiemKho\frmHienCotHangKiem.Designer.cs">
+      <DependentUpon>frmHienCotHangKiem.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="GUI\Forms\KiemKho\frmHienCotHangKiem.resx">
+      <DependentUpon>frmHienCotHangKiem.cs</DependentUpon>
+    </EmbeddedResource>
     <Compile Include="GUI\Forms\KiemKho\frmNhapKiemKhoFile.cs">
       <SubType>Form</SubType>
     </Compile>
