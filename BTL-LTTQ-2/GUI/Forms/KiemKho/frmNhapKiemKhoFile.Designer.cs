@@ -2,8 +2,15 @@
 {
     partial class frmNhapKiemKhoFile
     {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -15,290 +22,180 @@
 
         #region Windows Form Designer generated code
 
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
         private void InitializeComponent()
         {
-            this.pnlTop = new System.Windows.Forms.Panel();
+            this.pnlHeader = new System.Windows.Forms.Panel();
+            this.grpTieuDe = new System.Windows.Forms.GroupBox();
             this.lblTieuDe = new System.Windows.Forms.Label();
-            this.grpFileMau = new System.Windows.Forms.GroupBox();
-            this.lblHuongDanMau = new System.Windows.Forms.Label();
-            this.btnTaiFileMauExcel = new System.Windows.Forms.Button();
-            this.btnTaiFileMauCsv = new System.Windows.Forms.Button();
             this.grpChonFile = new System.Windows.Forms.GroupBox();
-            this.txtDuongDanFile = new System.Windows.Forms.TextBox();
             this.btnChonFile = new System.Windows.Forms.Button();
-            this.btnDocDuLieu = new System.Windows.Forms.Button();
-            this.grpXemTruoc = new System.Windows.Forms.GroupBox();
-            this.dgvXemTruoc = new System.Windows.Forms.DataGridView();
-            this.colStt = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colMaHang = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colTenHang = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colDonViTinh = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colSoLuongThucTe = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colGhiChu = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colTrangThai = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.txtDuongDanFile = new System.Windows.Forms.TextBox();
+            this.grpTuyChon = new System.Windows.Forms.GroupBox();
+            this.rdoBoQua = new System.Windows.Forms.RadioButton();
+            this.rdoCapNhat = new System.Windows.Forms.RadioButton();
+            this.prgTienTrinh = new System.Windows.Forms.ProgressBar();
             this.pnlBottom = new System.Windows.Forms.Panel();
-            this.lblThongKe = new System.Windows.Forms.Label();
-            this.btnDongY = new System.Windows.Forms.Button();
+            this.grpThaoTac = new System.Windows.Forms.GroupBox();
+            this.btnTaiFileMauExcel = new System.Windows.Forms.Button();
+            this.btnThucHien = new System.Windows.Forms.Button();
             this.btnDong = new System.Windows.Forms.Button();
-            this.pnlTop.SuspendLayout();
-            this.grpFileMau.SuspendLayout();
+            this.pnlHeader.SuspendLayout();
+            this.grpTieuDe.SuspendLayout();
             this.grpChonFile.SuspendLayout();
-            this.grpXemTruoc.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvXemTruoc)).BeginInit();
+            this.grpTuyChon.SuspendLayout();
             this.pnlBottom.SuspendLayout();
+            this.grpThaoTac.SuspendLayout();
             this.SuspendLayout();
             // 
-            // pnlTop
+            // pnlHeader
             // 
-            this.pnlTop.Controls.Add(this.lblTieuDe);
-            this.pnlTop.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlTop.Location = new System.Drawing.Point(0, 0);
-            this.pnlTop.Name = "pnlTop";
-            this.pnlTop.Size = new System.Drawing.Size(884, 50);
-            this.pnlTop.TabIndex = 0;
+            this.pnlHeader.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
+            this.pnlHeader.Controls.Add(this.grpTieuDe);
+            this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlHeader.Location = new System.Drawing.Point(0, 0);
+            this.pnlHeader.Name = "pnlHeader";
+            this.pnlHeader.Size = new System.Drawing.Size(882, 80);
+            this.pnlHeader.TabIndex = 0;
+            // 
+            // grpTieuDe
+            // 
+            this.grpTieuDe.Controls.Add(this.lblTieuDe);
+            this.grpTieuDe.Location = new System.Drawing.Point(0, 12);
+            this.grpTieuDe.Name = "grpTieuDe";
+            this.grpTieuDe.Size = new System.Drawing.Size(882, 50);
+            this.grpTieuDe.TabIndex = 0;
+            this.grpTieuDe.TabStop = false;
             // 
             // lblTieuDe
             // 
             this.lblTieuDe.AutoSize = true;
-            this.lblTieuDe.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.lblTieuDe.Location = new System.Drawing.Point(14, 12);
+            this.lblTieuDe.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.lblTieuDe.Location = new System.Drawing.Point(10, 16);
             this.lblTieuDe.Name = "lblTieuDe";
-            this.lblTieuDe.Size = new System.Drawing.Size(235, 21);
+            this.lblTieuDe.Size = new System.Drawing.Size(325, 28);
             this.lblTieuDe.TabIndex = 0;
             this.lblTieuDe.Text = "Nhập dữ liệu kiểm kho từ file";
             // 
-            // grpFileMau
-            // 
-            this.grpFileMau.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.grpFileMau.Controls.Add(this.lblHuongDanMau);
-            this.grpFileMau.Controls.Add(this.btnTaiFileMauExcel);
-            this.grpFileMau.Controls.Add(this.btnTaiFileMauCsv);
-            this.grpFileMau.Location = new System.Drawing.Point(14, 56);
-            this.grpFileMau.Name = "grpFileMau";
-            this.grpFileMau.Size = new System.Drawing.Size(856, 80);
-            this.grpFileMau.TabIndex = 1;
-            this.grpFileMau.TabStop = false;
-            this.grpFileMau.Text = "1. File dữ liệu mẫu chuẩn";
-            // 
-            // lblHuongDanMau
-            // 
-            this.lblHuongDanMau.AutoSize = true;
-            this.lblHuongDanMau.Location = new System.Drawing.Point(15, 30);
-            this.lblHuongDanMau.Name = "lblHuongDanMau";
-            this.lblHuongDanMau.Size = new System.Drawing.Size(384, 17);
-            this.lblHuongDanMau.TabIndex = 0;
-            this.lblHuongDanMau.Text = "Tải file mẫu để điền số lượng kiểm thực tế đúng theo quy chuẩn:";
-            // 
-            // btnTaiFileMauExcel
-            // 
-            this.btnTaiFileMauExcel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnTaiFileMauExcel.Location = new System.Drawing.Point(520, 25);
-            this.btnTaiFileMauExcel.Name = "btnTaiFileMauExcel";
-            this.btnTaiFileMauExcel.Size = new System.Drawing.Size(160, 32);
-            this.btnTaiFileMauExcel.TabIndex = 1;
-            this.btnTaiFileMauExcel.Text = "Tải file mẫu Excel";
-            this.btnTaiFileMauExcel.UseVisualStyleBackColor = true;
-            this.btnTaiFileMauExcel.Click += new System.EventHandler(this.btnTaiFileMauExcel_Click);
-            // 
-            // btnTaiFileMauCsv
-            // 
-            this.btnTaiFileMauCsv.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnTaiFileMauCsv.Location = new System.Drawing.Point(690, 25);
-            this.btnTaiFileMauCsv.Name = "btnTaiFileMauCsv";
-            this.btnTaiFileMauCsv.Size = new System.Drawing.Size(150, 32);
-            this.btnTaiFileMauCsv.TabIndex = 2;
-            this.btnTaiFileMauCsv.Text = "Tải file mẫu CSV";
-            this.btnTaiFileMauCsv.UseVisualStyleBackColor = true;
-            this.btnTaiFileMauCsv.Click += new System.EventHandler(this.btnTaiFileMauCsv_Click);
-            // 
             // grpChonFile
             // 
-            this.grpChonFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.grpChonFile.Controls.Add(this.txtDuongDanFile);
             this.grpChonFile.Controls.Add(this.btnChonFile);
-            this.grpChonFile.Controls.Add(this.btnDocDuLieu);
-            this.grpChonFile.Location = new System.Drawing.Point(14, 142);
+            this.grpChonFile.Controls.Add(this.txtDuongDanFile);
+            this.grpChonFile.Location = new System.Drawing.Point(28, 98);
             this.grpChonFile.Name = "grpChonFile";
-            this.grpChonFile.Size = new System.Drawing.Size(856, 75);
-            this.grpChonFile.TabIndex = 2;
+            this.grpChonFile.Size = new System.Drawing.Size(835, 90);
+            this.grpChonFile.TabIndex = 1;
             this.grpChonFile.TabStop = false;
-            this.grpChonFile.Text = "2. Chọn file kiểm kho cần nạp";
-            // 
-            // txtDuongDanFile
-            // 
-            this.txtDuongDanFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtDuongDanFile.BackColor = System.Drawing.Color.White;
-            this.txtDuongDanFile.Location = new System.Drawing.Point(15, 29);
-            this.txtDuongDanFile.Name = "txtDuongDanFile";
-            this.txtDuongDanFile.ReadOnly = true;
-            this.txtDuongDanFile.Size = new System.Drawing.Size(560, 24);
-            this.txtDuongDanFile.TabIndex = 0;
+            this.grpChonFile.Text = "1. Chọn file dữ liệu cần nhập";
             // 
             // btnChonFile
             // 
-            this.btnChonFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnChonFile.Location = new System.Drawing.Point(590, 27);
+            this.btnChonFile.Location = new System.Drawing.Point(720, 38);
             this.btnChonFile.Name = "btnChonFile";
-            this.btnChonFile.Size = new System.Drawing.Size(110, 32);
+            this.btnChonFile.Size = new System.Drawing.Size(100, 29);
             this.btnChonFile.TabIndex = 1;
             this.btnChonFile.Text = "Chọn file...";
             this.btnChonFile.UseVisualStyleBackColor = true;
             this.btnChonFile.Click += new System.EventHandler(this.btnChonFile_Click);
             // 
-            // btnDocDuLieu
+            // txtDuongDanFile
             // 
-            this.btnDocDuLieu.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDocDuLieu.Location = new System.Drawing.Point(710, 27);
-            this.btnDocDuLieu.Name = "btnDocDuLieu";
-            this.btnDocDuLieu.Size = new System.Drawing.Size(130, 32);
-            this.btnDocDuLieu.TabIndex = 2;
-            this.btnDocDuLieu.Text = "Đọc file";
-            this.btnDocDuLieu.UseVisualStyleBackColor = true;
-            this.btnDocDuLieu.Click += new System.EventHandler(this.btnDocDuLieu_Click);
+            this.txtDuongDanFile.BackColor = System.Drawing.Color.White;
+            this.txtDuongDanFile.Location = new System.Drawing.Point(15, 38);
+            this.txtDuongDanFile.Name = "txtDuongDanFile";
+            this.txtDuongDanFile.ReadOnly = true;
+            this.txtDuongDanFile.Size = new System.Drawing.Size(687, 29);
+            this.txtDuongDanFile.TabIndex = 0;
             // 
-            // grpXemTruoc
+            // grpTuyChon
             // 
-            this.grpXemTruoc.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.grpXemTruoc.Controls.Add(this.dgvXemTruoc);
-            this.grpXemTruoc.Location = new System.Drawing.Point(14, 225);
-            this.grpXemTruoc.Name = "grpXemTruoc";
-            this.grpXemTruoc.Size = new System.Drawing.Size(856, 320);
-            this.grpXemTruoc.TabIndex = 3;
-            this.grpXemTruoc.TabStop = false;
-            this.grpXemTruoc.Text = "3. Xem trước dữ liệu kiểm kho";
+            this.grpTuyChon.Controls.Add(this.rdoBoQua);
+            this.grpTuyChon.Controls.Add(this.rdoCapNhat);
+            this.grpTuyChon.Location = new System.Drawing.Point(28, 207);
+            this.grpTuyChon.Name = "grpTuyChon";
+            this.grpTuyChon.Size = new System.Drawing.Size(835, 121);
+            this.grpTuyChon.TabIndex = 2;
+            this.grpTuyChon.TabStop = false;
+            this.grpTuyChon.Text = "2. Tùy chọn xử lý khi trùng mã hàng";
             // 
-            // dgvXemTruoc
+            // rdoBoQua
             // 
-            this.dgvXemTruoc.AllowUserToAddRows = false;
-            this.dgvXemTruoc.AllowUserToDeleteRows = false;
-            this.dgvXemTruoc.AllowUserToResizeRows = false;
-            this.dgvXemTruoc.BackgroundColor = System.Drawing.Color.White;
-            this.dgvXemTruoc.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvXemTruoc.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.colStt,
-            this.colMaHang,
-            this.colTenHang,
-            this.colDonViTinh,
-            this.colSoLuongThucTe,
-            this.colGhiChu,
-            this.colTrangThai});
-            this.dgvXemTruoc.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvXemTruoc.Location = new System.Drawing.Point(3, 20);
-            this.dgvXemTruoc.Name = "dgvXemTruoc";
-            this.dgvXemTruoc.ReadOnly = true;
-            this.dgvXemTruoc.RowHeadersVisible = false;
-            this.dgvXemTruoc.RowHeadersWidth = 51;
-            this.dgvXemTruoc.RowTemplate.Height = 24;
-            this.dgvXemTruoc.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvXemTruoc.Size = new System.Drawing.Size(850, 297);
-            this.dgvXemTruoc.TabIndex = 0;
+            this.rdoBoQua.AutoSize = true;
+            this.rdoBoQua.Location = new System.Drawing.Point(15, 72);
+            this.rdoBoQua.Name = "rdoBoQua";
+            this.rdoBoQua.Size = new System.Drawing.Size(532, 25);
+            this.rdoBoQua.TabIndex = 1;
+            this.rdoBoQua.Text = "Bỏ qua không cập nhật nếu trùng mã hàng (Chỉ thêm các mặt hàng mới)";
+            this.rdoBoQua.UseVisualStyleBackColor = true;
             // 
-            // colStt
+            // rdoCapNhat
             // 
-            this.colStt.DataPropertyName = "STT";
-            this.colStt.HeaderText = "STT";
-            this.colStt.MinimumWidth = 6;
-            this.colStt.Name = "colStt";
-            this.colStt.ReadOnly = true;
-            this.colStt.Width = 50;
+            this.rdoCapNhat.AutoSize = true;
+            this.rdoCapNhat.Checked = true;
+            this.rdoCapNhat.Location = new System.Drawing.Point(15, 41);
+            this.rdoCapNhat.Name = "rdoCapNhat";
+            this.rdoCapNhat.Size = new System.Drawing.Size(554, 25);
+            this.rdoCapNhat.TabIndex = 0;
+            this.rdoCapNhat.TabStop = true;
+            this.rdoCapNhat.Text = "Cập nhật lại số lượng kiểm nếu trùng mã hàng (Phương án khuyến nghị)";
+            this.rdoCapNhat.UseVisualStyleBackColor = true;
             // 
-            // colMaHang
+            // prgTienTrinh
             // 
-            this.colMaHang.DataPropertyName = "MaHangNoiBo";
-            this.colMaHang.HeaderText = "Mã hàng";
-            this.colMaHang.MinimumWidth = 6;
-            this.colMaHang.Name = "colMaHang";
-            this.colMaHang.ReadOnly = true;
-            this.colMaHang.Width = 110;
-            // 
-            // colTenHang
-            // 
-            this.colTenHang.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.colTenHang.DataPropertyName = "TenHang";
-            this.colTenHang.HeaderText = "Tên hàng";
-            this.colTenHang.MinimumWidth = 6;
-            this.colTenHang.Name = "colTenHang";
-            this.colTenHang.ReadOnly = true;
-            // 
-            // colDonViTinh
-            // 
-            this.colDonViTinh.DataPropertyName = "TenDVT";
-            this.colDonViTinh.HeaderText = "ĐVT";
-            this.colDonViTinh.MinimumWidth = 6;
-            this.colDonViTinh.Name = "colDonViTinh";
-            this.colDonViTinh.ReadOnly = true;
-            this.colDonViTinh.Width = 80;
-            // 
-            // colSoLuongThucTe
-            // 
-            this.colSoLuongThucTe.DataPropertyName = "SoLuongThucTe";
-            this.colSoLuongThucTe.HeaderText = "SL thực tế";
-            this.colSoLuongThucTe.MinimumWidth = 6;
-            this.colSoLuongThucTe.Name = "colSoLuongThucTe";
-            this.colSoLuongThucTe.ReadOnly = true;
-            this.colSoLuongThucTe.Width = 110;
-            // 
-            // colGhiChu
-            // 
-            this.colGhiChu.DataPropertyName = "GhiChu";
-            this.colGhiChu.HeaderText = "Ghi chú";
-            this.colGhiChu.MinimumWidth = 6;
-            this.colGhiChu.Name = "colGhiChu";
-            this.colGhiChu.ReadOnly = true;
-            this.colGhiChu.Width = 120;
-            // 
-            // colTrangThai
-            // 
-            this.colTrangThai.DataPropertyName = "TrangThaiDong";
-            this.colTrangThai.HeaderText = "Trạng thái";
-            this.colTrangThai.MinimumWidth = 6;
-            this.colTrangThai.Name = "colTrangThai";
-            this.colTrangThai.ReadOnly = true;
-            this.colTrangThai.Width = 150;
+            this.prgTienTrinh.Location = new System.Drawing.Point(28, 344);
+            this.prgTienTrinh.Name = "prgTienTrinh";
+            this.prgTienTrinh.Size = new System.Drawing.Size(835, 16);
+            this.prgTienTrinh.TabIndex = 3;
+            this.prgTienTrinh.Visible = false;
             // 
             // pnlBottom
             // 
-            this.pnlBottom.Controls.Add(this.lblThongKe);
-            this.pnlBottom.Controls.Add(this.btnDongY);
-            this.pnlBottom.Controls.Add(this.btnDong);
+            this.pnlBottom.Controls.Add(this.grpThaoTac);
             this.pnlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlBottom.Location = new System.Drawing.Point(0, 555);
+            this.pnlBottom.Location = new System.Drawing.Point(0, 379);
             this.pnlBottom.Name = "pnlBottom";
-            this.pnlBottom.Size = new System.Drawing.Size(884, 55);
+            this.pnlBottom.Size = new System.Drawing.Size(882, 74);
             this.pnlBottom.TabIndex = 4;
             // 
-            // lblThongKe
+            // grpThaoTac
             // 
-            this.lblThongKe.AutoSize = true;
-            this.lblThongKe.Location = new System.Drawing.Point(14, 17);
-            this.lblThongKe.Name = "lblThongKe";
-            this.lblThongKe.Size = new System.Drawing.Size(193, 17);
-            this.lblThongKe.TabIndex = 0;
-            this.lblThongKe.Text = "Tổng: 0 dòng | Hợp lệ: 0 | Lỗi: 0";
+            this.grpThaoTac.Controls.Add(this.btnTaiFileMauExcel);
+            this.grpThaoTac.Controls.Add(this.btnDong);
+            this.grpThaoTac.Controls.Add(this.btnThucHien);
+            this.grpThaoTac.Location = new System.Drawing.Point(0, 3);
+            this.grpThaoTac.Name = "grpThaoTac";
+            this.grpThaoTac.Size = new System.Drawing.Size(882, 59);
+            this.grpThaoTac.TabIndex = 0;
+            this.grpThaoTac.TabStop = false;
             // 
-            // btnDongY
+            // btnTaiFileMauExcel
             // 
-            this.btnDongY.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDongY.Enabled = false;
-            this.btnDongY.Location = new System.Drawing.Point(620, 11);
-            this.btnDongY.Name = "btnDongY";
-            this.btnDongY.Size = new System.Drawing.Size(140, 34);
-            this.btnDongY.TabIndex = 1;
-            this.btnDongY.Text = "Đồng ý nhập";
-            this.btnDongY.UseVisualStyleBackColor = true;
-            this.btnDongY.Click += new System.EventHandler(this.btnDongY_Click);
+            this.btnTaiFileMauExcel.Location = new System.Drawing.Point(28, 21);
+            this.btnTaiFileMauExcel.Name = "btnTaiFileMauExcel";
+            this.btnTaiFileMauExcel.Size = new System.Drawing.Size(160, 29);
+            this.btnTaiFileMauExcel.TabIndex = 0;
+            this.btnTaiFileMauExcel.Text = "Tải file mẫu Excel";
+            this.btnTaiFileMauExcel.UseVisualStyleBackColor = true;
+            this.btnTaiFileMauExcel.Click += new System.EventHandler(this.btnTaiFileMauExcel_Click);
+            // 
+            // btnThucHien
+            // 
+            this.btnThucHien.Location = new System.Drawing.Point(635, 21);
+            this.btnThucHien.Name = "btnThucHien";
+            this.btnThucHien.Size = new System.Drawing.Size(130, 29);
+            this.btnThucHien.TabIndex = 1;
+            this.btnThucHien.Text = "Thực hiện nhập";
+            this.btnThucHien.UseVisualStyleBackColor = true;
+            this.btnThucHien.Click += new System.EventHandler(this.btnThucHien_Click);
             // 
             // btnDong
             // 
-            this.btnDong.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDong.Location = new System.Drawing.Point(770, 11);
+            this.btnDong.Location = new System.Drawing.Point(775, 21);
             this.btnDong.Name = "btnDong";
-            this.btnDong.Size = new System.Drawing.Size(100, 34);
+            this.btnDong.Size = new System.Drawing.Size(95, 29);
             this.btnDong.TabIndex = 2;
             this.btnDong.Text = "Đóng";
             this.btnDong.UseVisualStyleBackColor = true;
@@ -306,61 +203,53 @@
             // 
             // frmNhapKiemKhoFile
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(884, 610);
-            this.Controls.Add(this.grpXemTruoc);
-            this.Controls.Add(this.grpChonFile);
-            this.Controls.Add(this.grpFileMau);
-            this.Controls.Add(this.pnlTop);
+            this.ClientSize = new System.Drawing.Size(882, 453);
             this.Controls.Add(this.pnlBottom);
-            this.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.Controls.Add(this.prgTienTrinh);
+            this.Controls.Add(this.grpTuyChon);
+            this.Controls.Add(this.grpChonFile);
+            this.Controls.Add(this.pnlHeader);
+            this.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmNhapKiemKhoFile";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Nhập dữ liệu kiểm kho từ file";
-            this.Load += new System.EventHandler(this.frmNhapKiemKhoFile_Load);
-            this.pnlTop.ResumeLayout(false);
-            this.pnlTop.PerformLayout();
-            this.grpFileMau.ResumeLayout(false);
-            this.grpFileMau.PerformLayout();
+            this.pnlHeader.ResumeLayout(false);
+            this.grpTieuDe.ResumeLayout(false);
+            this.grpTieuDe.PerformLayout();
             this.grpChonFile.ResumeLayout(false);
             this.grpChonFile.PerformLayout();
-            this.grpXemTruoc.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvXemTruoc)).EndInit();
+            this.grpTuyChon.ResumeLayout(false);
+            this.grpTuyChon.PerformLayout();
             this.pnlBottom.ResumeLayout(false);
-            this.pnlBottom.PerformLayout();
+            this.grpThaoTac.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Panel pnlTop;
+        private System.Windows.Forms.Panel pnlHeader;
+        private System.Windows.Forms.GroupBox grpTieuDe;
         private System.Windows.Forms.Label lblTieuDe;
-        private System.Windows.Forms.GroupBox grpFileMau;
-        private System.Windows.Forms.Label lblHuongDanMau;
-        private System.Windows.Forms.Button btnTaiFileMauExcel;
-        private System.Windows.Forms.Button btnTaiFileMauCsv;
         private System.Windows.Forms.GroupBox grpChonFile;
-        private System.Windows.Forms.TextBox txtDuongDanFile;
         private System.Windows.Forms.Button btnChonFile;
-        private System.Windows.Forms.Button btnDocDuLieu;
-        private System.Windows.Forms.GroupBox grpXemTruoc;
-        private System.Windows.Forms.DataGridView dgvXemTruoc;
+        private System.Windows.Forms.TextBox txtDuongDanFile;
+        private System.Windows.Forms.GroupBox grpTuyChon;
+        private System.Windows.Forms.RadioButton rdoBoQua;
+        private System.Windows.Forms.RadioButton rdoCapNhat;
+        private System.Windows.Forms.ProgressBar prgTienTrinh;
         private System.Windows.Forms.Panel pnlBottom;
-        private System.Windows.Forms.Label lblThongKe;
-        private System.Windows.Forms.Button btnDongY;
+        private System.Windows.Forms.GroupBox grpThaoTac;
+        private System.Windows.Forms.Button btnTaiFileMauExcel;
+        private System.Windows.Forms.Button btnThucHien;
         private System.Windows.Forms.Button btnDong;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colStt;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colMaHang;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colTenHang;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colDonViTinh;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colSoLuongThucTe;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colGhiChu;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colTrangThai;
     }
 }

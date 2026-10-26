@@ -1,13 +1,13 @@
 ﻿# Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-26 – Chuẩn hóa toàn diện form Thêm phiếu nhập hàng và Thêm phiếu trả hàng nhập theo khuôn mẫu frmThemPhieuKiemKho (Phiên 53)
+**Cập nhật lần cuối**: 2026-10-26 – Đồng bộ giao diện và bố cục form nhập file của 4 chứng từ theo khuôn mẫu frmNhapHangHoaFile (Phiên 54)
 ---
 
 ## Đang làm
-- [x] Tái thiết kế toàn diện `frmThemPhieuNhap` và `frmThemPhieuTraHang` theo khuôn mẫu bố cục `frmThemPhieuKiemKho`.
-- [x] Xây dựng 2 popup Hiện cột riêng biệt: `frmHienCotHangNhap` (nhập hàng) và `frmHienCotHangTra` (trả hàng nhập), đăng ký vào `BTL-LTTQ-2.csproj`.
-- [x] Bắt lỗi an toàn khi thêm hàng mới hoặc nhập file mà cột dữ liệu 'Số lượng'/'Số lượng trả' đang bị ẩn, hiển thị `MessageBox.Show` cảnh báo người dùng.
-- [x] Đồng bộ đặc tả chức năng `docs/specs/nhap-hang.md` và `docs/specs/tra-hang-nhap.md`.
+- [x] Tái thiết kế toàn diện `frmNhapKiemKhoFile` (Kiểm kho) và `frmNhapChuyenKhoFile` (Chuyển kho) giống 100% bố cục và giao diện của `frmNhapHangHoaFile` (kích thước 882x453, FixedDialog, panel header, 1. Chọn file, 2. Tùy chọn xử lý trùng mã, thanh tiến trình, thanh thao tác đáy với Tải file mẫu Excel, Thực hiện nhập và Đóng).
+- [x] Xây dựng mới `frmNhapHangNhapFile` (Nhập hàng) và `frmNhapHangTraFile` (Trả hàng nhập) theo đúng 100% khuôn mẫu `frmNhapHangHoaFile`, đăng ký vào `BTL-LTTQ-2.csproj`.
+- [x] Kết nối `btnNhapFile_Click` trong `frmThemPhieuNhap` và `frmThemPhieuTraHang` gọi dialog nhập file chuyên biệt, đồng bộ dữ liệu vào bảng chi tiết.
+- [x] Đồng bộ đặc tả chức năng `docs/specs/nhap-hang.md`, `docs/specs/tra-hang-nhap.md` và `docs/specs/kiem-kho.md`.
 
 
 
@@ -39,8 +39,8 @@
 | 4 | **Xác thực & Phân quyền** | SessionContext, SHA-256 PasswordHelper, rmDangNhap, phân quyền menu theo 3 vai trò | Hoàn thành 100% |
 | 5 | **Danh mục Hàng hóa** | `frmDanhSachHangHoa` & `frmHangHoa` (**Khuôn mẫu Thiết kế chuẩn UI/UX toàn hệ thống**) | Hoàn thành 100% |
 | 6 | **Danh mục Nhà cung cấp** | `frmNhaCungCap`, `frmDonViCapHang`, `frmNhomNhaCungCap`, `frmHienCotNcc`, `frmNhapNhaCungCapFile` | Hoàn thành 100% |
-| 7 | **Phiếu Nhập hàng** | `frmNhapHang`, `frmThemPhieuNhap`, `frmChiTietPhieuNhap`, `frmHienCotNhapHang`, `frmHienCotHangNhap` | Hoàn thành 100% |
-| 8 | **Trả hàng nhập** | `frmTraHangNhap`, `frmThemPhieuTraHang`, `frmChiTietTraHangNhap`, `frmHienCotTraHang`, `frmHienCotHangTra` | Hoàn thành 100% |
+| 7 | **Phiếu Nhập hàng** | `frmNhapHang`, `frmThemPhieuNhap`, `frmChiTietPhieuNhap`, `frmHienCotNhapHang`, `frmHienCotHangNhap`, `frmNhapHangNhapFile` | Hoàn thành 100% |
+| 8 | **Trả hàng nhập** | `frmTraHangNhap`, `frmThemPhieuTraHang`, `frmChiTietTraHangNhap`, `frmHienCotTraHang`, `frmHienCotHangTra`, `frmNhapHangTraFile` | Hoàn thành 100% |
 | 9 | **Danh mục Đơn vị tính** | `frmDonViTinh`, `frmChiTietDonViTinh`, `frmHienCotDvt`, tạo nhanh từ `frmHangHoa` | Hoàn thành 100% |
 | 10 | **Danh mục Cơ bản khác** | CRUD Nhóm hàng, Vị trí, Chi nhánh Kho, Khách hàng | Chưa bắt đầu |
 | 11 | **Kiểm kê & Cân bằng kho** | `frmKiemKho`, nạp tồn sổ sách, sinh phiếu điều chỉnh, khóa vĩnh viễn, `frmThemPhieuKiemKho`, `frmHienCotHangKiem` | Hoàn thành 100% |
@@ -51,6 +51,19 @@
 ---
 
 ## Nhật ký phiên (Session Logs)
+
+- **Phiên 54 (2026-10-26) – Đồng bộ form nhập file của 4 chứng từ theo khuôn mẫu frmNhapHangHoaFile**:
+  - **Nhu cầu**: Người dùng yêu cầu: "tiếp tục sửa lại form nhập file của các form Thêm phiếu kiểm kho, Thêm phiếu chuyển kho, Thêm phiếu nhập hàng, Thêm phiếu trả hàng nhập theo đúng mẫu giao diện, bố cục và cách sắp xếp của form nhập file của form Danh sách hàng hóa (vẫn phải đảm bảo đúng nghiệp vụ của chức năng)".
+  - **Kết quả thực hiện**:
+    1. **Tái thiết kế `frmNhapKiemKhoFile` (Kiểm kho)**: Chuẩn hóa 100% theo khuôn mẫu `frmNhapHangHoaFile` (kích thước 882x453, FixedDialog, panel header `pnlHeader` 80px, `grpChonFile` 835x90, `grpTuyChon` 835x121 với tùy chọn Cập nhật lại SL kiểm vs Bỏ qua, thanh tiến trình `prgTienTrinh`, panel thanh thao tác `pnlBottom` 74px với 3 nút `Tải file mẫu Excel`, `Thực hiện nhập`, `Đóng`). Hỗ trợ đọc cả file Excel (.xlsx, .xls) và CSV (.csv).
+    2. **Tái thiết kế `frmNhapChuyenKhoFile` (Chuyển kho)**: Chuẩn hóa 100% theo khuôn mẫu `frmNhapHangHoaFile` (882x453), nhận `maKhoNguon`, kiểm tra tồn kho nguồn, hỗ trợ tùy chọn Cộng dồn SL chuyển vs Bỏ qua, tải file mẫu Excel/CSV, trả về `DtKetQuaNhap`.
+    3. **Xây dựng mới `frmNhapHangNhapFile` (Nhập hàng)**: Tạo mới bộ 3 file (`.cs`, `.Designer.cs`, `.resx`) theo đúng khuôn mẫu `frmNhapHangHoaFile` (882x453), nạp hàng hóa từ file Excel/CSV, tính toán thành tiền dòng theo đơn giá nhập hoặc giá vốn mặc định, hỗ trợ tùy chọn Cộng dồn SL nhập vs Bỏ qua. Cập nhật `btnNhapFile_Click` trong `frmThemPhieuNhap` để kết nối form nhập file này.
+    4. **Xây dựng mới `frmNhapHangTraFile` (Trả hàng nhập)**: Tạo mới bộ 3 file (`.cs`, `.Designer.cs`, `.resx`) theo đúng khuôn mẫu `frmNhapHangHoaFile` (882x453), nhận `maKhoXuat`, kiểm tra và chặn vượt tồn kho xuất trả, hỗ trợ tùy chọn Cộng dồn SL trả vs Bỏ qua. Cập nhật `btnNhapFile_Click` trong `frmThemPhieuTraHang` để kết nối form nhập file này.
+    5. **Đăng ký dự án & Kiểm tra chất lượng**:
+       - Đăng ký đầy đủ `frmNhapHangNhapFile` và `frmNhapHangTraFile` vào `BTL-LTTQ-2.csproj`.
+       - Đồng bộ tài liệu đặc tả `docs/specs/nhap-hang.md`, `docs/specs/tra-hang-nhap.md`, `docs/specs/kiem-kho.md`.
+       - Kiểm tra mã hóa UTF-8 with BOM: 202/202 file đạt chuẩn, 0 lỗi Mojibake.
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
 
 - **Phiên 53 (2026-10-26) – Chuẩn hóa form Thêm phiếu nhập hàng và Thêm phiếu trả hàng nhập theo khuôn mẫu frmThemPhieuKiemKho**:
   - **Nhu cầu**: Người dùng yêu cầu: "Tương tự với tất cả các yêu cầu trên về form Thêm phiếu chuyển kho, làm lại cho tôi form Thêm phiếu nhập hàng và thêm phiếu Trả hàng nhập theo đúng mẫu giao diện, bố cục và cách sắp xếp của form Thêm phiếu kiểm kho (vẫn phải đảm bảo đúng nghiệp vụ của chức năng)".

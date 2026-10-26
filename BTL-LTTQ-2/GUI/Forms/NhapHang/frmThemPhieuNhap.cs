@@ -726,65 +726,53 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                 return;
             }
 
-            using (OpenFileDialog ofd = new OpenFileDialog())
+            using (frmNhapHangNhapFile frm = new frmNhapHangNhapFile())
             {
-                ofd.Filter = "File CSV (*.csv)|*.csv|Tất cả tệp (*.*)|*.*";
-                ofd.Title = "Chọn tệp danh sách hàng nhập";
-                if (ofd.ShowDialog(this) == DialogResult.OK)
+                if (frm.ShowDialog(this) == DialogResult.OK && frm.DtKetQuaNhap != null && frm.DtKetQuaNhap.Rows.Count > 0)
                 {
-                    try
+                    int demThemMoi = 0;
+                    int demCapNhat = 0;
+
+                    foreach (DataRow r in frm.DtKetQuaNhap.Rows)
                     {
-                        string[] lines = File.ReadAllLines(ofd.FileName, Encoding.UTF8);
-                        int demThanhCong = 0;
-                        for (int i = 1; i < lines.Length; i++)
+                        int maH = Convert.ToInt32(r["MaHang"]);
+                        decimal sl = Convert.ToDecimal(r["SoLuong"]);
+                        decimal dg = Convert.ToDecimal(r["DonGiaNhap"]);
+                        decimal gg = Convert.ToDecimal(r["GiamGia"]);
+
+                        DataRow[] daCo = dtChiTietHang.Select($"MaHang = {maH}");
+                        if (daCo.Length > 0)
                         {
-                            string line = lines[i].Trim();
-                            if (string.IsNullOrEmpty(line)) continue;
-                            string[] parts = line.Split(',', ';');
-                            if (parts.Length >= 2)
-                            {
-                                string maHangNoiBo = parts[0].Trim();
-                                if (!decimal.TryParse(parts[1].Trim(), out decimal sl) || sl <= 0) continue;
+                            decimal slMoi = Convert.ToDecimal(daCo[0]["SoLuong"]) + sl;
+                            decimal ggMoi = Convert.ToDecimal(daCo[0]["GiamGia"]) + gg;
+                            decimal dgApDung = dg > 0 ? dg : Convert.ToDecimal(daCo[0]["DonGiaNhap"]);
 
-                                DataRow[] found = dtDanhSachHang != null ? dtDanhSachHang.Select($"MaHangNoiBo = '{maHangNoiBo.Replace("'", "''")}'") : new DataRow[0];
-                                if (found.Length > 0)
-                                {
-                                    int maH = Convert.ToInt32(found[0]["MaHang"]);
-                                    decimal dg = Convert.ToDecimal(found[0]["DonGiaNhap"]);
-
-                                    DataRow[] daCo = dtChiTietHang.Select($"MaHang = {maH}");
-                                    if (daCo.Length > 0)
-                                    {
-                                        daCo[0]["SoLuong"] = Convert.ToDecimal(daCo[0]["SoLuong"]) + sl;
-                                        daCo[0]["ThanhTien"] = Convert.ToDecimal(daCo[0]["SoLuong"]) * dg - Convert.ToDecimal(daCo[0]["GiamGia"]);
-                                    }
-                                    else
-                                    {
-                                        DataRow nr = dtChiTietHang.NewRow();
-                                        nr["STT"] = dtChiTietHang.Rows.Count + 1;
-                                        nr["MaHang"] = maH;
-                                        nr["MaHangNoiBo"] = found[0]["MaHangNoiBo"];
-                                        nr["TenHang"] = found[0]["TenHang"];
-                                        nr["TenDVT"] = found[0]["TenDVT"];
-                                        nr["SoLuong"] = sl;
-                                        nr["DonGiaNhap"] = dg;
-                                        nr["GiamGia"] = 0;
-                                        nr["ThanhTien"] = sl * dg;
-                                        dtChiTietHang.Rows.Add(nr);
-                                    }
-                                    demThanhCong++;
-                                }
-                            }
+                            daCo[0]["SoLuong"] = slMoi;
+                            daCo[0]["DonGiaNhap"] = dgApDung;
+                            daCo[0]["GiamGia"] = ggMoi;
+                            daCo[0]["ThanhTien"] = Math.Max(0, slMoi * dgApDung - ggMoi);
+                            demCapNhat++;
                         }
+                        else
+                        {
+                            DataRow nr = dtChiTietHang.NewRow();
+                            nr["STT"] = dtChiTietHang.Rows.Count + 1;
+                            nr["MaHang"] = maH;
+                            nr["MaHangNoiBo"] = r["MaHangNoiBo"];
+                            nr["TenHang"] = r["TenHang"];
+                            nr["TenDVT"] = r["TenDVT"];
+                            nr["SoLuong"] = sl;
+                            nr["DonGiaNhap"] = dg;
+                            nr["GiamGia"] = gg;
+                            nr["ThanhTien"] = Math.Max(0, sl * dg - gg);
 
-                        CapNhatTongKet();
-                        CapNhatPhanTrang();
-                        MessageBox.Show($"Đã nhập thành công {demThanhCong} dòng hàng từ file!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            dtChiTietHang.Rows.Add(nr);
+                            demThemMoi++;
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Lỗi khi đọc file: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+
+                    CapNhatTongKet();
+                    CapNhatPhanTrang();
                 }
             }
         }

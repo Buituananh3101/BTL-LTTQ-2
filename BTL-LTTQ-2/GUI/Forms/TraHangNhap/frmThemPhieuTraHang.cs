@@ -766,72 +766,66 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                 return;
             }
 
-            using (OpenFileDialog ofd = new OpenFileDialog())
+            int maKhoXuat = 0;
+            if (cboKho.SelectedValue is DataRowView drv)
             {
-                ofd.Filter = "File CSV (*.csv)|*.csv|Tất cả tệp (*.*)|*.*";
-                ofd.Title = "Chọn tệp danh sách hàng trả";
-                if (ofd.ShowDialog(this) == DialogResult.OK)
+                maKhoXuat = Convert.ToInt32(drv["MaKho"]);
+            }
+            else if (cboKho.SelectedValue != null && int.TryParse(cboKho.SelectedValue.ToString(), out int k))
+            {
+                maKhoXuat = k;
+            }
+
+            using (frmNhapHangTraFile frm = new frmNhapHangTraFile(maKhoXuat))
+            {
+                if (frm.ShowDialog(this) == DialogResult.OK && frm.DtKetQuaNhap != null && frm.DtKetQuaNhap.Rows.Count > 0)
                 {
-                    try
+                    int demThemMoi = 0;
+                    int demCapNhat = 0;
+
+                    foreach (DataRow r in frm.DtKetQuaNhap.Rows)
                     {
-                        string[] lines = File.ReadAllLines(ofd.FileName, Encoding.UTF8);
-                        int demThanhCong = 0;
-                        for (int i = 1; i < lines.Length; i++)
+                        int maH = Convert.ToInt32(r["MaHang"]);
+                        decimal sl = Convert.ToDecimal(r["SoLuongTra"]);
+                        decimal dg = Convert.ToDecimal(r["DonGiaTra"]);
+                        decimal ton = Convert.ToDecimal(r["TonKho"]);
+
+                        DataRow[] daCo = dtHangTra.Select($"MaHang = {maH}");
+                        if (daCo.Length > 0)
                         {
-                            string line = lines[i].Trim();
-                            if (string.IsNullOrEmpty(line)) continue;
-                            string[] parts = line.Split(',', ';');
-                            if (parts.Length >= 2)
+                            decimal slMoi = Convert.ToDecimal(daCo[0]["SoLuongTra"]) + sl;
+                            if (ton > 0 && slMoi > ton) slMoi = ton;
+                            decimal dgApDung = dg > 0 ? dg : Convert.ToDecimal(daCo[0]["DonGiaTra"]);
+
+                            daCo[0]["SoLuongTra"] = slMoi;
+                            daCo[0]["DonGiaTra"] = dgApDung;
+                            daCo[0]["ThanhTien"] = slMoi * dgApDung;
+                            demCapNhat++;
+                        }
+                        else
+                        {
+                            if (ton > 0 && sl > ton) sl = ton;
+                            if (sl > 0)
                             {
-                                string maHangNoiBo = parts[0].Trim();
-                                if (!decimal.TryParse(parts[1].Trim(), out decimal sl) || sl <= 0) continue;
+                                DataRow nr = dtHangTra.NewRow();
+                                nr["STT"] = dtHangTra.Rows.Count + 1;
+                                nr["MaHang"] = maH;
+                                nr["MaHangNoiBo"] = r["MaHangNoiBo"];
+                                nr["TenHang"] = r["TenHang"];
+                                nr["TenDVT"] = r["TenDVT"];
+                                nr["TonKho"] = ton;
+                                nr["SoLuongTra"] = sl;
+                                nr["DonGiaTra"] = dg;
+                                nr["ThanhTien"] = sl * dg;
 
-                                DataRow[] found = dtDanhSachHang != null ? dtDanhSachHang.Select($"MaHangNoiBo = '{maHangNoiBo.Replace("'", "''")}'") : new DataRow[0];
-                                if (found.Length > 0)
-                                {
-                                    int maH = Convert.ToInt32(found[0]["MaHang"]);
-                                    decimal ton = Convert.ToDecimal(found[0]["TonKho"]);
-                                    decimal dg = Convert.ToDecimal(found[0]["GiaNhap"]);
-
-                                    DataRow[] daCo = dtHangTra.Select($"MaHang = {maH}");
-                                    if (daCo.Length > 0)
-                                    {
-                                        decimal slMoi = Convert.ToDecimal(daCo[0]["SoLuongTra"]) + sl;
-                                        if (slMoi > ton) slMoi = ton;
-                                        daCo[0]["SoLuongTra"] = slMoi;
-                                        daCo[0]["ThanhTien"] = slMoi * dg;
-                                    }
-                                    else
-                                    {
-                                        if (sl > ton) sl = ton;
-                                        if (sl > 0)
-                                        {
-                                            DataRow nr = dtHangTra.NewRow();
-                                            nr["STT"] = dtHangTra.Rows.Count + 1;
-                                            nr["MaHang"] = maH;
-                                            nr["MaHangNoiBo"] = found[0]["MaHangNoiBo"];
-                                            nr["TenHang"] = found[0]["TenHang"];
-                                            nr["TenDVT"] = found[0]["TenDVT"];
-                                            nr["TonKho"] = ton;
-                                            nr["SoLuongTra"] = sl;
-                                            nr["DonGiaTra"] = dg;
-                                            nr["ThanhTien"] = sl * dg;
-                                            dtHangTra.Rows.Add(nr);
-                                        }
-                                    }
-                                    demThanhCong++;
-                                }
+                                dtHangTra.Rows.Add(nr);
+                                demThemMoi++;
                             }
                         }
+                    }
 
-                        TinhToanTongKet();
-                        CapNhatPhanTrang();
-                        MessageBox.Show($"Đã nhập thành công {demThanhCong} dòng hàng từ file!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Lỗi khi đọc file: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                    TinhToanTongKet();
+                    CapNhatPhanTrang();
                 }
             }
         }

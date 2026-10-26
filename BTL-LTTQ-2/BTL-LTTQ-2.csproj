@@ -81,6 +81,18 @@
     <Compile Include="GUI\Forms\TraHangNhap\frmHienCotHangTra.Designer.cs">
       <DependentUpon>frmHienCotHangTra.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\Forms\NhapHang\frmNhapHangNhapFile.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\NhapHang\frmNhapHangNhapFile.Designer.cs">
+      <DependentUpon>frmNhapHangNhapFile.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\TraHangNhap\frmNhapHangTraFile.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\TraHangNhap\frmNhapHangTraFile.Designer.cs">
+      <DependentUpon>frmNhapHangTraFile.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\Forms\DanhSachHangHoa\frmHienCot.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -140,6 +152,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\TraHangNhap\frmHienCotHangTra.resx">
       <DependentUpon>frmHienCotHangTra.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Forms\NhapHang\frmNhapHangNhapFile.resx">
+      <DependentUpon>frmNhapHangNhapFile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Forms\TraHangNhap\frmNhapHangTraFile.resx">
+      <DependentUpon>frmNhapHangTraFile.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\ChuyenKho\frmChiTietChuyenKho.resx">
       <DependentUpon>frmChiTietChuyenKho.cs</DependentUpon>
