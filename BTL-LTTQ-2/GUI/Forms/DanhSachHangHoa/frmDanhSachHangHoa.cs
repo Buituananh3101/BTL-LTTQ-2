@@ -26,13 +26,42 @@ namespace BTL_LTTQ_2.GUI.Forms
 
         // Cờ kiểm soát Header CheckBox (Chọn tất cả)
         private bool isHeaderChecked = false;
+        private Timer searchDebounceTimer;
 
         public frmDanhSachHangHoa()
         {
             InitializeComponent();
+            KhoiTaoDebounceTimer();
+            if (txtTimKiem != null)
+            {
+                txtTimKiem.KeyDown += txtTimKiem_KeyDown;
+            }
             if (btnNhapFile != null)
             {
                 btnNhapFile.Click += btnNhapFile_Click;
+            }
+        }
+
+        private void KhoiTaoDebounceTimer()
+        {
+            searchDebounceTimer = new Timer();
+            searchDebounceTimer.Interval = 300;
+            searchDebounceTimer.Tick += (s, e) =>
+            {
+                searchDebounceTimer.Stop();
+                trangHienTai = 1;
+                HienThiDanhSach();
+            };
+        }
+
+        private void txtTimKiem_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                searchDebounceTimer?.Stop();
+                trangHienTai = 1;
+                HienThiDanhSach();
             }
         }
 
@@ -513,8 +542,8 @@ namespace BTL_LTTQ_2.GUI.Forms
 
         private void txtTimKiem_TextChanged(object sender, EventArgs e)
         {
-            trangHienTai = 1;
-            HienThiDanhSach();
+            searchDebounceTimer?.Stop();
+            searchDebounceTimer?.Start();
         }
 
         private void BoLoc_SelectedIndexChanged(object sender, EventArgs e)

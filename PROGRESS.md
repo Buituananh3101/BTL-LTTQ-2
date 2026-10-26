@@ -1,6 +1,6 @@
 ﻿# Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-26 – Chuẩn hóa phím Enter/nhận SL kiểm kho và đồng bộ hành vi nút Bỏ qua của 4 form thêm chứng từ (Phiên 56)
+**Cập nhật lần cuối**: 2026-10-26 – Chuẩn hóa tìm kiếm tức thời Search Debounce Timer cho Danh sách Hàng hóa (Phiên 57)
 ---
 
 ## Đang làm
@@ -51,6 +51,7 @@
 ---
 
 ## Nhật ký phiên (Session Logs)
+- **Phiên 57 (2026-10-26) – Chuẩn hóa tìm kiếm tức thời Search Debounce Timer cho Danh sách Hàng hóa (rmDanhSachHangHoa)**:   - **Nhu cầu**: Rà soát độ đồng nhất giữa các đoạn code có logic tương tự trên toàn bộ hệ thống; tiến hành sửa điểm chưa nhất quán số 1 (Search Debounce Timer).   - **Kết quả thực hiện**:     1. Bổ sung searchDebounceTimer (300ms) và sự kiện 	xtTimKiem_KeyDown (phím Enter) vào [rmDanhSachHangHoa.cs](file:///d:/CODE/BTL-LTTQ-2/BTL-LTTQ-2/GUI/Forms/DanhSachHangHoa/frmDanhSachHangHoa.cs).     2. Cập nhật 	xtTimKiem_TextChanged sang cơ chế Stop() / Start() timer, khẮc phỤc triểt để hiện tưồng gửi truy vấn SQL Server liên tỤc theo tứng phím gõ, đồng nhất hoàn toàn với các form danh sách khác (rmNhapHang, rmChuyenKho, rmKiemKho, rmTraHangNhap, rmNhaCungCap, rmBaoCaoTonKho).     3. Kiểm tra tự động mã hóa 	ools/KiemTraMaHoa.ps1: 100% file UTF-8 with BOM, 0 lỗi Mojibake.     4. Biên dịch Rebuild bằng dotnet msbuild: **0 Warning(s), 0 Error(s)**.
 - **Phiên 56 (2026-10-26) – Chuẩn hóa phím Enter/nhận SL kiểm kho và đồng bộ hành vi nút Bỏ qua của 4 form thêm chứng từ**:
   - **Nhu cầu**: Người dùng phản ánh:
     1. Trong form `frmThemPhieuKiemKho`: khi thêm 1, 2 hàng hóa thủ công thì nhập số lượng và ấn Enter thì số lượng không nhận.

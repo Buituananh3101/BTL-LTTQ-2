@@ -1,5 +1,5 @@
 ﻿# Sơ Đồ Thực Thể - Mối Quan Hệ (ERD) & Lược Đồ Quan Hệ (RM)
-## Hệ Thống Quản Lý Kho Hàng Phú Quốc (`QuanLyKhoPhuQuocLTW`)
+## Hệ Thống Quản Lý Kho Hàng Phú Quốc (`QuanLyKhoPhuQuocLTTQ`)
 
 > **Mục đích tài liệu**: Cung cấp tài liệu mô hình hóa dữ liệu chính xác 100% theo chuẩn học thuật (Đại học GTVT / Đồ án Lập trình Web) và chuẩn công nghiệp, phục vụ báo cáo LaTeX, bảo vệ đồ án và tra cứu phát triển.
 
@@ -145,6 +145,12 @@ erDiagram
         int MaNhom PK
         string TenNhom
         string MoTa
+    }
+
+    ViTri {
+        int MaViTri PK
+        string TenViTri
+        string TrangThai
     }
 
     Kho {
@@ -453,6 +459,352 @@ erDiagram
 
 ---
 
+
+---
+
+## 1.3. Sơ Đồ ERD Toàn Thể 30 Bảng Đầy Đủ Thuộc Tính (Bản In Khổ Lớn A3)
+
+> **Mục đích**: Tích hợp 100% thuộc tính (khóa chính `PK`, khóa ngoại `FK`, kiểu dữ liệu) của toàn bộ 30 bảng trong một sơ đồ duy nhất, tối ưu cho việc in ấn khổ ngang A3 (Landscape), xuất ảnh độ phân giải cao hoặc chèn vào phụ lục báo cáo đồ án.
+
+```mermaid
+erDiagram
+    VaiTro {
+        int MaVaiTro PK
+        string TenVaiTro
+        string MoTa
+    }
+    NhanVien {
+        int MaNV PK
+        string HoTen
+        string DienThoai
+        string Email
+        string DiaChi
+        datetime NgayVaoLam
+        string TrangThai
+        string GhiChu
+    }
+    TaiKhoan {
+        int MaTaiKhoan PK
+        int MaNV FK
+        int MaVaiTro FK
+        string TenDangNhap
+        string MatKhauHash
+        string TrangThai
+        datetime LanDangNhapCuoi
+    }
+    TaiKhoanKho {
+        int MaTaiKhoan PK,FK
+        int MaKho PK,FK
+        datetime NgayPhanCong
+        string GhiChu
+    }
+    NhatKyThaoTac {
+        bigint MaNhatKy PK
+        int MaTaiKhoan FK
+        datetime ThoiDiem
+        string ThaoTac
+        string LoaiDoiTuong
+        string MaDoiTuong
+        string NoiDung
+    }
+    Kho {
+        int MaKho PK
+        string TenKho
+        string DiaChi
+        string MoTa
+        string TrangThai
+    }
+    DonViTinh {
+        int MaDVT PK
+        string TenDVT
+        string MoTa
+    }
+    NhomHang {
+        int MaNhom PK
+        string TenNhom
+        string MoTa
+        string TrangThai
+    }
+    ViTri {
+        int MaViTri PK
+        string TenViTri
+        string TrangThai
+    }
+    HangHoa {
+        int MaHang PK
+        int MaNhom FK
+        int MaDVT FK
+        string MaHangNoiBo
+        string TenHang
+        string QuyCach
+        decimal GiaBanThamKhao
+        string TrangThai
+        binary HinhAnh
+        datetime NgayTao
+        decimal GiaVon
+        boolean DaDanhDau
+        string ViTri FK
+        decimal TrongLuong
+        string DonViTrongLuong
+        string ThuocTinh
+        string MoTa
+    }
+    HinhAnhHangHoa {
+        int MaHinhAnh PK
+        int MaHang FK
+        binary DuLieuAnh
+        int ThuTu
+        boolean LaAnhChinh
+        datetime NgayTao
+    }
+    NguongTonKho {
+        int MaKho PK,FK
+        int MaHang PK,FK
+        decimal TonToiThieu
+        decimal TonCaoNhat
+    }
+    NhomNhaCungCap {
+        int MaNhomNcc PK
+        string TenNhom
+        string GhiChu
+    }
+    DonViCapHang {
+        int MaDonViCapHang PK
+        string TenDonVi
+        string DienThoai
+        string DiaChi
+        string TrangThai
+        string MaNcc
+        string Email
+        string KhuVuc
+        string PhuongXa
+        int MaNhomNcc
+        string GhiChu
+        string TenCongTy
+        string MaSoThue
+        string SoCccd
+        datetime NgayTao
+        string NguoiTao
+        boolean DaDanhDau
+    }
+    KhachHang {
+        int MaKH PK
+        string TenKH
+        string DienThoai
+        string DiaChi
+        string LoaiKhachHang
+        string TrangThai
+    }
+    PhieuNhap {
+        int MaPhieuNhap PK
+        int MaKho FK
+        int MaDonViCapHang FK
+        int MaNVLap FK
+        int MaNVXacNhan FK
+        datetime NgayLap
+        datetime NgayXacNhan
+        string LoaiPhieuNhap
+        string TrangThai
+        string GhiChu
+        string MaPhieu
+        boolean DaDanhDau
+        string SoHoaDon
+        decimal GiamGia
+        decimal TongTien
+        decimal CanTraNcc
+        string MaDatHangNhap
+    }
+    ChiTietPhieuNhap {
+        int MaCTPhieuNhap PK
+        int MaPhieuNhap FK
+        int MaHang FK
+        decimal SoLuong
+        decimal DonGiaNhap
+        decimal GiamGia
+        decimal ThanhTien
+    }
+    PhieuTraHangNhap {
+        int MaPhieuTraHang PK
+        string MaPhieu
+        int MaKho FK
+        int MaDonViCapHang FK
+        int MaNvlap FK
+        int MaNvtra FK
+        datetime NgayLap
+        datetime NgayTra
+        string TrangThai
+        decimal TongSoLuong
+        decimal TongTienHang
+        decimal GiamGia
+        decimal CanThuNcc
+        decimal DaThuNcc
+        string GhiChu
+        boolean DaDanhDau
+    }
+    ChiTietPhieuTraHangNhap {
+        int MaCtphieuTra PK
+        int MaPhieuTraHang FK
+        int MaHang FK
+        decimal SoLuong
+        decimal GiaVon
+        decimal DonGiaTra
+        decimal ThanhTien
+        string GhiChu
+    }
+    PhieuChuyenKho {
+        int MaPhieuChuyen PK
+        int MaKhoNguon FK
+        int MaKhoDich FK
+        int MaNVLap FK
+        int MaNVXuat FK
+        int MaNVNhan FK
+        datetime NgayLap
+        datetime ThoiDiemXuat
+        datetime ThoiDiemNhan
+        string TrangThai
+        string GhiChu
+        string MaPhieu
+        boolean DaDanhDau
+        string GhiChuNhan
+        decimal TongSoLuongChuyen
+        decimal TongSoLuongNhan
+        decimal TongGiaTriChuyen
+    }
+    ChiTietPhieuChuyenKho {
+        int MaCTPhieuChuyen PK
+        int MaPhieuChuyen FK
+        int MaHang FK
+        decimal SoLuong
+        decimal SoLuongNhan
+        decimal DonGiaChuyen
+        decimal ThanhTien
+    }
+    PhieuKiemKe {
+        int MaPhieuKiemKe PK
+        int MaKho FK
+        int MaNVLap FK
+        datetime ThoiDiemChot
+        string TrangThai
+        string GhiChu
+        string MaPhieu
+        boolean DaDanhDau
+    }
+    ChiTietPhieuKiemKe {
+        int MaCTKiemKe PK
+        int MaPhieuKiemKe FK
+        int MaHang FK
+        decimal SoLuongTheoSo
+        decimal SoLuongThucTe
+        decimal DonGia
+    }
+    PhieuDieuChinh {
+        int MaPhieuDieuChinh PK
+        int MaPhieuKiemKe FK
+        int MaNVLap FK
+        int MaNVDuyet FK
+        datetime NgayLap
+        datetime NgayDuyet
+        string TrangThai
+        string GhiChu
+    }
+    ChiTietPhieuDieuChinh {
+        int MaCTDieuChinh PK
+        int MaPhieuDieuChinh FK
+        int MaCTKiemKe FK
+        decimal SoLuongDieuChinh
+    }
+    PhieuXuat {
+        int MaPhieuXuat PK
+        int MaDonBan FK
+        int MaNVLap FK
+        int MaNVXacNhan FK
+        datetime NgayLap
+        datetime NgayXacNhan
+        string TrangThai
+        string GhiChu
+        string LoaiPhieuXuat
+        int MaKho FK
+        string MaPhieu
+        boolean DaDanhDau
+    }
+    ChiTietPhieuXuat {
+        int MaCTPhieuXuat PK
+        int MaPhieuXuat FK
+        int MaCTDonBan FK
+        decimal SoLuongXuat
+        int MaHang FK
+        decimal DonGiaXuat
+    }
+    DonBan {
+        int MaDonBan PK
+        int MaKH FK
+        int MaKho FK
+        int MaNVLap FK
+        datetime NgayLap
+        string TrangThai
+        string GhiChu
+    }
+    ChiTietDonBan {
+        int MaCTDonBan PK
+        int MaDonBan FK
+        int MaHang FK
+        decimal SoLuong
+        decimal DonGiaApDung
+        decimal ChietKhau
+    }
+    KhoanThu {
+        int MaKhoanThu PK
+        int MaDonBan FK
+        int MaNVThu FK
+        decimal SoTien
+        string PhuongThuc
+        datetime ThoiDiemThu
+        string GhiChu
+    }
+
+    %% --- MOI QUAN HE GIUA CAC BANG (RELATIONSHIPS) ---
+    VaiTro ||--o{ TaiKhoan : co
+    NhanVien ||--o| TaiKhoan : so_huu
+    TaiKhoan ||--o{ TaiKhoanKho : gan_kho
+    Kho ||--o{ TaiKhoanKho : thuoc_kho
+    TaiKhoan ||--o{ NhatKyThaoTac : ghi_nhat_ky
+    DonViTinh ||--o{ HangHoa : dvt
+    ViTri ||--o{ HangHoa : "dat_tai"
+    NhomHang ||--o{ HangHoa : nhom
+    HangHoa ||--o{ HinhAnhHangHoa : anh
+    HangHoa ||--o{ NguongTonKho : dinh_muc
+    Kho ||--o{ NguongTonKho : tai_kho
+    NhomNhaCungCap ||--o{ DonViCapHang : nhom_ncc
+    DonViCapHang ||--o{ PhieuNhap : cung_cap
+    DonViCapHang ||--o{ PhieuTraHangNhap : nhan_tra
+    Kho ||--o{ PhieuNhap : nhap_vao
+    PhieuNhap ||--|{ ChiTietPhieuNhap : gom
+    HangHoa ||--o{ ChiTietPhieuNhap : duoc_nhap
+    Kho ||--o{ PhieuTraHangNhap : tra_tu
+    PhieuTraHangNhap ||--|{ ChiTietPhieuTraHangNhap : gom
+    HangHoa ||--o{ ChiTietPhieuTraHangNhap : bi_tra
+    PhieuNhap ||--o{ PhieuTraHangNhap : tham_chieu_goc
+    Kho ||--o{ PhieuChuyenKho : kho_nguon
+    Kho ||--o{ PhieuChuyenKho : kho_dich
+    PhieuChuyenKho ||--|{ ChiTietPhieuChuyenKho : gom
+    HangHoa ||--o{ ChiTietPhieuChuyenKho : duoc_chuyen
+    Kho ||--o{ PhieuKiemKe : kiem_tai
+    PhieuKiemKe ||--|{ ChiTietPhieuKiemKe : gom
+    HangHoa ||--o{ ChiTietPhieuKiemKe : duoc_kiem
+    PhieuKiemKe ||--o| PhieuDieuChinh : sinh_can_bang
+    PhieuDieuChinh ||--|{ ChiTietPhieuDieuChinh : gom
+    ChiTietPhieuKiemKe ||--o| ChiTietPhieuDieuChinh : can_bang_dong
+    Kho ||--o{ PhieuXuat : xuat_tai
+    PhieuXuat ||--|{ ChiTietPhieuXuat : gom
+    HangHoa ||--o{ ChiTietPhieuXuat : xuat_hang
+    KhachHang ||--o{ DonBan : mua_hang
+    Kho ||--o{ DonBan : ban_tai
+    DonBan ||--|{ ChiTietDonBan : gom
+    HangHoa ||--o{ ChiTietDonBan : ban_hang
+    DonBan ||--o{ KhoanThu : thu_tien
+    DonBan ||--o| PhieuXuat : xuat_don_ban
+```
+
 # PHẦN 2: LƯỢC ĐỒ QUAN HỆ (RELATIONAL MODEL - RM)
 
 ## 2.1. Biểu Diễn Hình Thức Toán Học (Mathematical Relational Schema)
@@ -481,28 +833,28 @@ Theo quy ước chuẩn của học phần Cơ sở Dữ liệu & Lập trình W
 11. $\text{NGUONGTONKHO} (\underline{\text{MaNguong}}, \text{\textit{MaHang}}^\ast, \text{\textit{MaKho}}^\ast, \text{TonToiThieu}, \text{TonToiDa})$
 
 ### 3. Phân Hệ Đối Tác & Khách Hàng
-12. $\text{NHOMNHACUNGCAP} (\underline{\text{MaNhomNcc}}, \text{TenNhomNcc}, \text{MoTa})$
-13. $\text{DONVICAPHANG} (\underline{\text{MaNcc}}, \text{MaNccNoiBo}, \text{TenNcc}, \text{MaSoThue}, \text{SoDienThoai}, \text{Email}, \text{DiaChi}, \text{\textit{MaNhomNcc}}^\ast, \text{NoCanTraHienTai}, \text{TongTienMua}, \text{TrangThai}, \text{DaDanhDau}, \text{NgayTao})$
-14. $\text{KHACHHANG} (\underline{\text{MaKh}}, \text{MaKhNoiBo}, \text{TenKh}, \text{SoDienThoai}, \text{DiaChi}, \text{DiemTichLuy}, \text{TrangThai})$
+13. $\text{NHOMNHACUNGCAP} (\underline{\text{MaNhomNcc}}, \text{TenNhomNcc}, \text{MoTa})$
+14. $\text{DONVICAPHANG} (\underline{\text{MaNcc}}, \text{MaNccNoiBo}, \text{TenNcc}, \text{MaSoThue}, \text{SoDienThoai}, \text{Email}, \text{DiaChi}, \text{\textit{MaNhomNcc}}^\ast, \text{NoCanTraHienTai}, \text{TongTienMua}, \text{TrangThai}, \text{DaDanhDau}, \text{NgayTao})$
+15. $\text{KHACHHANG} (\underline{\text{MaKh}}, \text{MaKhNoiBo}, \text{TenKh}, \text{SoDienThoai}, \text{DiaChi}, \text{DiemTichLuy}, \text{TrangThai})$
 
 ### 4. Phân Hệ Giao Dịch Chứng Từ Nhập - Trả - Xuất - Chuyển - Kiểm
-15. $\text{PHIEUNHAP} (\underline{\text{MaPhieuNhap}}, \text{MaPhieu}, \text{\textit{MaKho}}^\ast, \text{\textit{MaNcc}}^\ast, \text{\textit{MaNvLap}}^\ast, \text{\textit{MaNvXacNhan}}^\ast, \text{NgayLap}, \text{NgayXacNhan}, \text{TongTien}, \text{TrangThai}, \text{GhiChu}, \text{DaDanhDau})$
-16. $\text{CHITIETPHIEUNHAP} (\underline{\text{MaCtphieuNhap}}, \text{\textit{MaPhieuNhap}}^\ast, \text{\textit{MaHang}}^\ast, \text{SoLuong}, \text{DonGiaNhap}, \text{ThanhTien})$
-17. $\text{PHIEUTRAHANGNHAP} (\underline{\text{MaPhieuTraHang}}, \text{MaPhieu}, \text{\textit{MaKho}}^\ast, \text{\textit{MaNcc}}^\ast, \text{\textit{MaNvLap}}^\ast, \text{\textit{MaNvTra}}^\ast, \text{NgayLap}, \text{NgayTra}, \text{TongTienHoanLai}, \text{TrangThai}, \text{GhiChu}, \text{DaDanhDau})$
-18. $\text{CHITIETPHIEUTRAHANGNHAP} (\underline{\text{MaCtphieuTra}}, \text{\textit{MaPhieuTraHang}}^\ast, \text{\textit{MaHang}}^\ast, \text{SoLuong}, \text{DonGiaTra}, \text{ThanhTien}, \text{LyDoTra})$
-19. $\text{PHIEUXUAT} (\underline{\text{MaPhieuXuat}}, \text{MaPhieu}, \text{\textit{MaKho}}^\ast, \text{LoaiPhieuXuat}, \text{\textit{MaDonBan}}^\ast, \text{\textit{MaNvLap}}^\ast, \text{\textit{MaNvXacNhan}}^\ast, \text{NgayLap}, \text{NgayXacNhan}, \text{TongGiaTriXuat}, \text{TrangThai}, \text{GhiChu}, \text{DaDanhDau})$
-20. $\text{CHITIETPHIEUXUAT} (\underline{\text{MaCtphieuXuat}}, \text{\textit{MaPhieuXuat}}^\ast, \text{\textit{MaHang}}^\ast, \text{SoLuongXuat}, \text{DonGiaVon}, \text{\textit{MaCtdonBan}}^\ast)$
-21. $\text{PHIEUCHUYENKHO} (\underline{\text{MaPhieuChuyen}}, \text{MaPhieu}, \text{\textit{MaKhoNguon}}^\ast, \text{\textit{MaKhoDich}}^\ast, \text{\textit{MaNvLap}}^\ast, \text{\textit{MaNvXuat}}^\ast, \text{\textit{MaNvNhan}}^\ast, \text{NgayLap}, \text{ThoiDiemXuat}, \text{ThoiDiemNhan}, \text{TongSoLuongChuyen}, \text{TongGiaTriChuyen}, \text{TrangThai}, \text{GhiChu}, \text{DaDanhDau})$
-22. $\text{CHITIETPHIEUCHUYENKHO} (\underline{\text{MaCtphieuChuyen}}, \text{\textit{MaPhieuChuyen}}^\ast, \text{\textit{MaHang}}^\ast, \text{SoLuong}, \text{SoLuongNhan}, \text{DonGiaChuyen}, \text{ThanhTien})$
-23. $\text{PHIEUKIEMKE} (\underline{\text{MaPhieuKiemKe}}, \text{MaPhieu}, \text{\textit{MaKho}}^\ast, \text{\textit{MaNvLap}}^\ast, \text{NgayTao}, \text{NgayKiemKe}, \text{TrangThai}, \text{GhiChu}, \text{DaDanhDau})$
-24. $\text{CHITIETPHIEUKIEMKE} (\underline{\text{MaCtkiemKe}}, \text{\textit{MaPhieuKiemKe}}^\ast, \text{\textit{MaHang}}^\ast, \text{SoLuongTonHeThong}, \text{SoLuongThucTe}, \text{DonGiaVon}, \text{GhiChu})$
-25. $\text{PHIEUDIEUCHINH} (\underline{\text{MaPhieuDieuChinh}}, \text{\textit{MaPhieuKiemKe}}^\ast, \text{\textit{MaNvLap}}^\ast, \text{\textit{MaNvDuyet}}^\ast, \text{NgayLap}, \text{NgayDuyet}, \text{LyDoDieuChinh}, \text{TrangThai})$
-26. $\text{CHITIETPHIEUDIEUCHINH} (\underline{\text{MaCtdieuChinh}}, \text{\textit{MaPhieuDieuChinh}}^\ast, \text{\textit{MaCtkiemKe}}^\ast, \text{SoLuongDieuChinh}, \text{GhiChu})$
+16. $\text{PHIEUNHAP} (\underline{\text{MaPhieuNhap}}, \text{MaPhieu}, \text{\textit{MaKho}}^\ast, \text{\textit{MaNcc}}^\ast, \text{\textit{MaNvLap}}^\ast, \text{\textit{MaNvXacNhan}}^\ast, \text{NgayLap}, \text{NgayXacNhan}, \text{TongTien}, \text{TrangThai}, \text{GhiChu}, \text{DaDanhDau})$
+17. $\text{CHITIETPHIEUNHAP} (\underline{\text{MaCtphieuNhap}}, \text{\textit{MaPhieuNhap}}^\ast, \text{\textit{MaHang}}^\ast, \text{SoLuong}, \text{DonGiaNhap}, \text{ThanhTien})$
+18. $\text{PHIEUTRAHANGNHAP} (\underline{\text{MaPhieuTraHang}}, \text{MaPhieu}, \text{\textit{MaKho}}^\ast, \text{\textit{MaNcc}}^\ast, \text{\textit{MaNvLap}}^\ast, \text{\textit{MaNvTra}}^\ast, \text{NgayLap}, \text{NgayTra}, \text{TongTienHoanLai}, \text{TrangThai}, \text{GhiChu}, \text{DaDanhDau})$
+19. $\text{CHITIETPHIEUTRAHANGNHAP} (\underline{\text{MaCtphieuTra}}, \text{\textit{MaPhieuTraHang}}^\ast, \text{\textit{MaHang}}^\ast, \text{SoLuong}, \text{DonGiaTra}, \text{ThanhTien}, \text{LyDoTra})$
+20. $\text{PHIEUXUAT} (\underline{\text{MaPhieuXuat}}, \text{MaPhieu}, \text{\textit{MaKho}}^\ast, \text{LoaiPhieuXuat}, \text{\textit{MaDonBan}}^\ast, \text{\textit{MaNvLap}}^\ast, \text{\textit{MaNvXacNhan}}^\ast, \text{NgayLap}, \text{NgayXacNhan}, \text{TongGiaTriXuat}, \text{TrangThai}, \text{GhiChu}, \text{DaDanhDau})$
+21. $\text{CHITIETPHIEUXUAT} (\underline{\text{MaCtphieuXuat}}, \text{\textit{MaPhieuXuat}}^\ast, \text{\textit{MaHang}}^\ast, \text{SoLuongXuat}, \text{DonGiaVon}, \text{\textit{MaCtdonBan}}^\ast)$
+22. $\text{PHIEUCHUYENKHO} (\underline{\text{MaPhieuChuyen}}, \text{MaPhieu}, \text{\textit{MaKhoNguon}}^\ast, \text{\textit{MaKhoDich}}^\ast, \text{\textit{MaNvLap}}^\ast, \text{\textit{MaNvXuat}}^\ast, \text{\textit{MaNvNhan}}^\ast, \text{NgayLap}, \text{ThoiDiemXuat}, \text{ThoiDiemNhan}, \text{TongSoLuongChuyen}, \text{TongGiaTriChuyen}, \text{TrangThai}, \text{GhiChu}, \text{DaDanhDau})$
+23. $\text{CHITIETPHIEUCHUYENKHO} (\underline{\text{MaCtphieuChuyen}}, \text{\textit{MaPhieuChuyen}}^\ast, \text{\textit{MaHang}}^\ast, \text{SoLuong}, \text{SoLuongNhan}, \text{DonGiaChuyen}, \text{ThanhTien})$
+24. $\text{PHIEUKIEMKE} (\underline{\text{MaPhieuKiemKe}}, \text{MaPhieu}, \text{\textit{MaKho}}^\ast, \text{\textit{MaNvLap}}^\ast, \text{NgayTao}, \text{NgayKiemKe}, \text{TrangThai}, \text{GhiChu}, \text{DaDanhDau})$
+25. $\text{CHITIETPHIEUKIEMKE} (\underline{\text{MaCtkiemKe}}, \text{\textit{MaPhieuKiemKe}}^\ast, \text{\textit{MaHang}}^\ast, \text{SoLuongTonHeThong}, \text{SoLuongThucTe}, \text{DonGiaVon}, \text{GhiChu})$
+26. $\text{PHIEUDIEUCHINH} (\underline{\text{MaPhieuDieuChinh}}, \text{\textit{MaPhieuKiemKe}}^\ast, \text{\textit{MaNvLap}}^\ast, \text{\textit{MaNvDuyet}}^\ast, \text{NgayLap}, \text{NgayDuyet}, \text{LyDoDieuChinh}, \text{TrangThai})$
+27. $\text{CHITIETPHIEUDIEUCHINH} (\underline{\text{MaCtdieuChinh}}, \text{\textit{MaPhieuDieuChinh}}^\ast, \text{\textit{MaCtkiemKe}}^\ast, \text{SoLuongDieuChinh}, \text{GhiChu})$
 
 ### 5. Phân Hệ Đơn Bán & Dòng Tiền
-27. $\text{DONBAN} (\underline{\text{MaDonBan}}, \text{MaDonBanNoiBo}, \text{\textit{MaKh}}^\ast, \text{\textit{MaKho}}^\ast, \text{\textit{MaNvLap}}^\ast, \text{NgayBan}, \text{TongTienHang}, \text{GiamGia}, \text{TongThanhToan}, \text{TrangThai}, \text{GhiChu})$
-28. $\text{CHITIETDONBAN} (\underline{\text{MaCtdonBan}}, \text{\textit{MaDonBan}}^\ast, \text{\textit{MaHang}}^\ast, \text{SoLuong}, \text{DonGiaApDung}, \text{ChietKhau})$
-29. $\text{KHOANTHU} (\underline{\text{MaKhoanThu}}, \text{\textit{MaDonBan}}^\ast, \text{\textit{MaNvNop}}^\ast, \text{SoTienThu}, \text{HinhThucThanhToan}, \text{NgayThu}, \text{GhiChu})$
+28. $\text{DONBAN} (\underline{\text{MaDonBan}}, \text{MaDonBanNoiBo}, \text{\textit{MaKh}}^\ast, \text{\textit{MaKho}}^\ast, \text{\textit{MaNvLap}}^\ast, \text{NgayBan}, \text{TongTienHang}, \text{GiamGia}, \text{TongThanhToan}, \text{TrangThai}, \text{GhiChu})$
+29. $\text{CHITIETDONBAN} (\underline{\text{MaCtdonBan}}, \text{\textit{MaDonBan}}^\ast, \text{\textit{MaHang}}^\ast, \text{SoLuong}, \text{DonGiaApDung}, \text{ChietKhau})$
+30. $\text{KHOANTHU} (\underline{\text{MaKhoanThu}}, \text{\textit{MaDonBan}}^\ast, \text{\textit{MaNvNop}}^\ast, \text{SoTienThu}, \text{HinhThucThanhToan}, \text{NgayThu}, \text{GhiChu})$
 
 ---
 
