@@ -1,4 +1,4 @@
--- =========================================================================================
+﻿-- =========================================================================================
 -- FILE CẬP NHẬT CƠ SỞ DỮ LIỆU: docs/database_update.sql
 -- Dự án: Quản lý kho hàng nhiều kho (QuanLyKhoPhuQuocLTW)
 -- Ngày thực hiện: 2026-10-13
@@ -234,7 +234,20 @@ FROM PhieuDieuChinh pdc
 JOIN PhieuKiemKe pkk ON pkk.MaPhieuKiemKe = pdc.MaPhieuKiemKe
 JOIN ChiTietPhieuDieuChinh ctpdc ON ctpdc.MaPhieuDieuChinh = pdc.MaPhieuDieuChinh
 JOIN ChiTietPhieuKiemKe ctpkk ON ctpkk.MaCTKiemKe = ctpdc.MaCTKiemKe
-WHERE pdc.TrangThai = 'DA_DUYET';
+WHERE pdc.TrangThai = 'DA_DUYET'
+
+UNION ALL
+-- 6. Trả hàng nhập đã xác nhận: Giảm tồn kho tại MaKho
+SELECT CAST(ISNULL(pth.NgayTra, pth.NgayLap) AS DATETIME) AS NgayGiaoDich,
+       pth.MaKho,
+       ctpth.MaHang,
+       CAST('TRA_HANG_NHAP' AS VARCHAR(30)) AS LoaiChungTu,
+       pth.MaPhieuTraHang AS MaChungTu,
+       CAST(0 AS DECIMAL(18,2)) AS SoLuongTang,
+       ctpth.SoLuong AS SoLuongGiam
+FROM PhieuTraHangNhap pth
+JOIN ChiTietPhieuTraHangNhap ctpth ON ctpth.MaPhieuTraHang = pth.MaPhieuTraHang
+WHERE pth.TrangThai = 'DA_TRA_HANG';
 GO
 
 -- 4.2. View Tồn kho hiện tại tổng hợp
@@ -283,5 +296,321 @@ JOIN HangHoa h ON h.MaHang = ctpkk.MaHang
 WHERE ctpkk.DonGia = 0;
 GO
 
+-- -----------------------------------------------------------------------------------------
+-- 7. BẢNG VITRI: Quản lý danh mục vị trí lưu kho
+-- Lý do: Quản lý vị trí kệ/dãy/ngăn và nạp danh mục gợi ý khi thêm/sửa hàng hóa (frmHangHoa, frmViTri)
+-- -----------------------------------------------------------------------------------------
+IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = N'ViTri')
+BEGIN
+    CREATE TABLE ViTri (
+        MaViTri INT IDENTITY(1,1) PRIMARY KEY,
+        TenViTri NVARCHAR(100) NOT NULL,
+        TrangThai VARCHAR(20) NOT NULL CONSTRAINT DF_ViTri_TrangThai DEFAULT ('HOAT_DONG')
+    );
+    PRINT N'[OK] Đã tạo bảng ViTri.';
+END
+ELSE
+BEGIN
+    PRINT N'[SKIP] Bảng ViTri đã tồn tại.';
+END
+GO
+
 PRINT N'=== HOÀN TẤT NÂNG CẤP CƠ SỞ DỮ LIỆU THÀNH CÔNG ===';
+GO
+
+-- -----------------------------------------------------------------------------------------
+-- 7. BẢNG NHOMNHACUNGCAP & BỔ SUNG CỘT BẢNG DONVICAPHANG
+-- Lý do: Quản lý phân nhóm nhà cung cấp, hồ sơ chi tiết (Mã NCC, Email, MST, Ghi chú) theo chuẩn KiotViet
+-- Tuân thủ: "Chỉ cộng, không phá" (Rule 8)
+-- -----------------------------------------------------------------------------------------
+-- 7.1. Tạo bảng NhomNhaCungCap nếu chưa có
+IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = N'NhomNhaCungCap')
+BEGIN
+    CREATE TABLE NhomNhaCungCap (
+        MaNhomNcc INT IDENTITY(1,1) PRIMARY KEY,
+        TenNhom NVARCHAR(150) NOT NULL,
+        GhiChu NVARCHAR(255) NULL
+    );
+    PRINT N'[OK] Đã tạo mới bảng NhomNhaCungCap.';
+
+    -- Thêm một số nhóm mẫu cơ bản
+    INSERT INTO NhomNhaCungCap (TenNhom, GhiChu)
+    VALUES 
+        (N'Nhà cung cấp Gas & Nhiên liệu', N'Các đơn vị cung ứng khí hóa lỏng, vỏ bình gas'),
+        (N'Nhà cung cấp Thiết bị & Phụ kiện', N'Cung cấp van, dây dẫn gas, bếp gas công nghiệp'),
+        (N'Nhà cung cấp Khí công nghiệp', N'Cung ứng oxy y tế, nito, argon');
+    PRINT N'[OK] Đã thêm nhóm nhà cung cấp mẫu mặc định.';
+END
+ELSE
+BEGIN
+    PRINT N'[SKIP] Bảng NhomNhaCungCap đã tồn tại.';
+END
+GO
+
+-- 7.2. Bổ sung các cột hồ sơ cho bảng DonViCapHang
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'DonViCapHang') AND name = N'MaNcc')
+BEGIN
+    ALTER TABLE DonViCapHang ADD MaNcc NVARCHAR(50) NULL;
+    PRINT N'[OK] Đã thêm cột MaNcc vào bảng DonViCapHang.';
+END
+GO
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'DonViCapHang') AND name = N'Email')
+BEGIN
+    ALTER TABLE DonViCapHang ADD Email NVARCHAR(150) NULL;
+    PRINT N'[OK] Đã thêm cột Email vào bảng DonViCapHang.';
+END
+GO
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'DonViCapHang') AND name = N'MaNhomNcc')
+BEGIN
+    ALTER TABLE DonViCapHang ADD MaNhomNcc INT NULL;
+    PRINT N'[OK] Đã thêm cột MaNhomNcc vào bảng DonViCapHang.';
+END
+GO
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'DonViCapHang') AND name = N'MaSoThue')
+BEGIN
+    ALTER TABLE DonViCapHang ADD MaSoThue NVARCHAR(50) NULL;
+    PRINT N'[OK] Đã thêm cột MaSoThue vào bảng DonViCapHang.';
+END
+GO
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'DonViCapHang') AND name = N'KhuVuc')
+BEGIN
+    ALTER TABLE DonViCapHang ADD KhuVuc NVARCHAR(150) NULL;
+    PRINT N'[OK] Đã thêm cột KhuVuc vào bảng DonViCapHang.';
+END
+GO
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'DonViCapHang') AND name = N'GhiChu')
+BEGIN
+    ALTER TABLE DonViCapHang ADD GhiChu NVARCHAR(500) NULL;
+    PRINT N'[OK] Đã thêm cột GhiChu vào bảng DonViCapHang.';
+END
+GO
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'DonViCapHang') AND name = N'DaDanhDau')
+BEGIN
+    ALTER TABLE DonViCapHang ADD DaDanhDau BIT NOT NULL CONSTRAINT DF_DonViCapHang_DaDanhDau DEFAULT (0);
+    PRINT N'[OK] Đã thêm cột DaDanhDau vào bảng DonViCapHang (DEFAULT 0).';
+END
+GO
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'DonViCapHang') AND name = N'NgayTao')
+BEGIN
+    ALTER TABLE DonViCapHang ADD NgayTao DATETIME NOT NULL CONSTRAINT DF_DonViCapHang_NgayTao DEFAULT (GETDATE());
+    PRINT N'[OK] Đã thêm cột NgayTao vào bảng DonViCapHang (DEFAULT GETDATE()).';
+END
+GO
+
+-- 7.3. Tạo khóa ngoại FK_DonViCapHang_NhomNcc nếu chưa có
+IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name = N'FK_DonViCapHang_NhomNcc')
+BEGIN
+    ALTER TABLE DonViCapHang ADD CONSTRAINT FK_DonViCapHang_NhomNcc FOREIGN KEY (MaNhomNcc) REFERENCES NhomNhaCungCap(MaNhomNcc);
+    PRINT N'[OK] Đã tạo khóa ngoại FK_DonViCapHang_NhomNcc.';
+END
+GO
+
+-- 7.4. Đồng bộ MaNcc tự động chuẩn định dạng NCC00001 cho các NCC đã có
+UPDATE DonViCapHang
+SET MaNcc = 'NCC' + RIGHT('00000' + CAST(MaDonViCapHang AS VARCHAR(10)), 5)
+WHERE MaNcc IS NULL OR LTRIM(RTRIM(MaNcc)) = '';
+PRINT N'[OK] Đã chuẩn hóa mã định danh NCC (NCC0000X) cho dữ liệu DonViCapHang hiện có.';
+GO
+
+
+-- -----------------------------------------------------------------------------------------
+-- 8. BẢNG PHIEUTRAHANGNHAP & CHITIETPHIEUTRAHANGNHAP: Quản lý trả hàng nhập cho NCC
+-- Lý do: Phục vụ chức năng Trả hàng nhập, tự động giảm tồn kho và khấu trừ công nợ
+-- -----------------------------------------------------------------------------------------
+IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = N'PhieuTraHangNhap')
+BEGIN
+    CREATE TABLE PhieuTraHangNhap (
+        MaPhieuTraHang INT IDENTITY(1,1) PRIMARY KEY,
+        MaPhieu VARCHAR(30) NOT NULL UNIQUE,
+        MaKho INT NOT NULL CONSTRAINT FK_PhieuTraHangNhap_Kho REFERENCES Kho(MaKho),
+        MaDonViCapHang INT NULL CONSTRAINT FK_PhieuTraHangNhap_NCC REFERENCES DonViCapHang(MaDonViCapHang),
+        MaNvlap INT NOT NULL CONSTRAINT FK_PhieuTraHangNhap_NvLap REFERENCES TaiKhoan(MaTaiKhoan),
+        MaNvtra INT NULL CONSTRAINT FK_PhieuTraHangNhap_NvTra REFERENCES TaiKhoan(MaTaiKhoan),
+        NgayLap DATETIME NOT NULL CONSTRAINT DF_PTHN_NgayLap DEFAULT (GETDATE()),
+        NgayTra DATETIME NOT NULL CONSTRAINT DF_PTHN_NgayTra DEFAULT (GETDATE()),
+        TrangThai VARCHAR(20) NOT NULL CONSTRAINT DF_PTHN_TrangThai DEFAULT ('NHAP')
+            CONSTRAINT CK_PTHN_TrangThai CHECK (TrangThai IN ('NHAP', 'DA_TRA_HANG', 'HUY')),
+        TongSoLuong DECIMAL(18,2) NOT NULL CONSTRAINT DF_PTHN_TongSL DEFAULT (0),
+        TongTienHang DECIMAL(18,2) NOT NULL CONSTRAINT DF_PTHN_TongTien DEFAULT (0),
+        GiamGia DECIMAL(18,2) NOT NULL CONSTRAINT DF_PTHN_GiamGia DEFAULT (0),
+        CanThuNcc DECIMAL(18,2) NOT NULL CONSTRAINT DF_PTHN_CanThu DEFAULT (0),
+        DaThuNcc DECIMAL(18,2) NOT NULL CONSTRAINT DF_PTHN_DaThu DEFAULT (0),
+        GhiChu NVARCHAR(500) NULL,
+        DaDanhDau BIT NOT NULL CONSTRAINT DF_PTHN_DaDanhDau DEFAULT (0)
+    );
+    PRINT N'[OK] Đã tạo mới bảng PhieuTraHangNhap.';
+END
+ELSE
+BEGIN
+    PRINT N'[SKIP] Bảng PhieuTraHangNhap đã tồn tại.';
+END
+GO
+
+IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = N'ChiTietPhieuTraHangNhap')
+BEGIN
+    CREATE TABLE ChiTietPhieuTraHangNhap (
+        MaCtphieuTra INT IDENTITY(1,1) PRIMARY KEY,
+        MaPhieuTraHang INT NOT NULL CONSTRAINT FK_CTPTHN_PhieuTra REFERENCES PhieuTraHangNhap(MaPhieuTraHang) ON DELETE CASCADE,
+        MaHang INT NOT NULL CONSTRAINT FK_CTPTHN_HangHoa REFERENCES HangHoa(MaHang),
+        SoLuong DECIMAL(18,2) NOT NULL CONSTRAINT CK_CTPTHN_SoLuong CHECK (SoLuong > 0),
+        GiaVon DECIMAL(18,2) NOT NULL CONSTRAINT DF_CTPTHN_GiaVon DEFAULT (0),
+        DonGiaTra DECIMAL(18,2) NOT NULL CONSTRAINT DF_CTPTHN_DonGiaTra DEFAULT (0),
+        ThanhTien DECIMAL(18,2) NOT NULL CONSTRAINT DF_CTPTHN_ThanhTien DEFAULT (0),
+        GhiChu NVARCHAR(255) NULL
+    );
+    PRINT N'[OK] Đã tạo mới bảng ChiTietPhieuTraHangNhap.';
+END
+ELSE
+BEGIN
+    PRINT N'[SKIP] Bảng ChiTietPhieuTraHangNhap đã tồn tại.';
+END
+GO
+
+
+-- 8.1. BẢNG PHIEUTRAHANGNHAP: Bổ sung cột MaPhieuNhap (Tham chiếu đơn nhập gốc nếu có)
+IF NOT EXISTS (
+    SELECT 1 FROM sys.columns 
+    WHERE object_id = OBJECT_ID(N'PhieuTraHangNhap') AND name = N'MaPhieuNhap'
+)
+BEGIN
+    ALTER TABLE PhieuTraHangNhap ADD MaPhieuNhap INT NULL 
+        CONSTRAINT FK_PhieuTraHangNhap_PhieuNhap REFERENCES PhieuNhap(MaPhieuNhap);
+    PRINT N'[OK] Đã thêm cột MaPhieuNhap vào bảng PhieuTraHangNhap.';
+END
+GO
+
+
+-- -----------------------------------------------------------------------------------------
+-- 9. PHÂN HỆ XÁC THỰC & PHÂN QUYỀN: Đồng bộ 3 vai trò và tài khoản demo chuẩn
+-- Ngày thực hiện: 2026-10-25
+-- Lý do: Hỗ trợ 3 vai trò người dùng chuẩn (Quản lý - quản lý mọi kho, Thủ kho - quản lý 1 kho, Nhân viên kho)
+-- -----------------------------------------------------------------------------------------
+-- 9.1. Đồng bộ bảng VaiTro
+IF NOT EXISTS (SELECT 1 FROM VaiTro WHERE MaVaiTro = 1)
+BEGIN
+    SET IDENTITY_INSERT VaiTro ON;
+    INSERT INTO VaiTro (MaVaiTro, TenVaiTro, MoTa) VALUES (1, N'Quản lý', N'Quản lý toàn bộ chi nhánh và mọi kho hàng');
+    SET IDENTITY_INSERT VaiTro OFF;
+END
+ELSE
+    UPDATE VaiTro SET TenVaiTro = N'Quản lý', MoTa = N'Quản lý toàn bộ chi nhánh và mọi kho hàng' WHERE MaVaiTro = 1;
+
+IF NOT EXISTS (SELECT 1 FROM VaiTro WHERE MaVaiTro = 2)
+BEGIN
+    SET IDENTITY_INSERT VaiTro ON;
+    INSERT INTO VaiTro (MaVaiTro, TenVaiTro, MoTa) VALUES (2, N'Thủ kho', N'Quản lý 1 chi nhánh kho duy nhất được phân công');
+    SET IDENTITY_INSERT VaiTro OFF;
+END
+ELSE
+    UPDATE VaiTro SET TenVaiTro = N'Thủ kho', MoTa = N'Quản lý 1 chi nhánh kho duy nhất được phân công' WHERE MaVaiTro = 2;
+
+IF NOT EXISTS (SELECT 1 FROM VaiTro WHERE MaVaiTro = 3)
+BEGIN
+    SET IDENTITY_INSERT VaiTro ON;
+    INSERT INTO VaiTro (MaVaiTro, TenVaiTro, MoTa) VALUES (3, N'Nhân viên kho', N'Nhân viên thực hiện thao tác nghiệp vụ tại kho');
+    SET IDENTITY_INSERT VaiTro OFF;
+END
+ELSE
+    UPDATE VaiTro SET TenVaiTro = N'Nhân viên kho', MoTa = N'Nhân viên thực hiện thao tác nghiệp vụ tại kho' WHERE MaVaiTro = 3;
+
+PRINT N'[OK] Đã cập nhật 3 vai trò chuẩn trong bảng VaiTro: Quản lý, Thủ kho, Nhân viên kho.';
+GO
+
+-- 9.2. Đồng bộ bảng NhanVien
+IF NOT EXISTS (SELECT 1 FROM NhanVien WHERE DienThoai = '0901000001')
+BEGIN
+    SET IDENTITY_INSERT NhanVien ON;
+    INSERT INTO NhanVien (MaNV, HoTen, DienThoai, Email, NgayVaoLam, TrangThai)
+    VALUES (1, N'Nguyễn Minh Quản', N'0901000001', N'quan.ly@khopro.vn', '2025-01-01', N'DANG_LAM');
+    SET IDENTITY_INSERT NhanVien OFF;
+END;
+
+IF NOT EXISTS (SELECT 1 FROM NhanVien WHERE DienThoai = '0901000002')
+BEGIN
+    SET IDENTITY_INSERT NhanVien ON;
+    INSERT INTO NhanVien (MaNV, HoTen, DienThoai, Email, NgayVaoLam, TrangThai)
+    VALUES (2, N'Trần Thị Kho', N'0901000002', N'thu.kho@khopro.vn', '2025-01-15', N'DANG_LAM');
+    SET IDENTITY_INSERT NhanVien OFF;
+END;
+
+IF NOT EXISTS (SELECT 1 FROM NhanVien WHERE DienThoai = '0901000003')
+BEGIN
+    SET IDENTITY_INSERT NhanVien ON;
+    INSERT INTO NhanVien (MaNV, HoTen, DienThoai, Email, NgayVaoLam, TrangThai)
+    VALUES (3, N'Lê Văn Kho', N'0901000003', N'nhanvien.kho@khopro.vn', '2025-02-01', N'DANG_LAM');
+    SET IDENTITY_INSERT NhanVien OFF;
+END
+ELSE
+    UPDATE NhanVien SET HoTen = N'Lê Văn Kho' WHERE DienThoai = '0901000003';
+
+PRINT N'[OK] Đã cập nhật hồ sơ 3 nhân viên tương ứng với 3 vai trò.';
+GO
+
+-- 9.3. Bảng TaiKhoan (Mật khẩu mặc định: 123456 - Băm SHA-256)
+DECLARE @PassHash VARCHAR(256) = '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92';
+
+DECLARE @nv1 INT = (SELECT TOP 1 MaNV FROM NhanVien WHERE DienThoai = '0901000001');
+DECLARE @nv2 INT = (SELECT TOP 1 MaNV FROM NhanVien WHERE DienThoai = '0901000002');
+DECLARE @nv3 INT = (SELECT TOP 1 MaNV FROM NhanVien WHERE DienThoai = '0901000003');
+
+-- Tài khoản 1: quanly / 123456 (Vai trò: Quản lý)
+IF NOT EXISTS (SELECT 1 FROM TaiKhoan WHERE TenDangNhap = 'quanly')
+    INSERT INTO TaiKhoan (MaNV, MaVaiTro, TenDangNhap, MatKhauHash, TrangThai)
+    VALUES (ISNULL(@nv1, 1), 1, 'quanly', @PassHash, N'HOAT_DONG');
+ELSE
+    UPDATE TaiKhoan SET MatKhauHash = @PassHash, TrangThai = N'HOAT_DONG', MaVaiTro = 1, MaNV = ISNULL(@nv1, 1) WHERE TenDangNhap = 'quanly';
+
+-- Tài khoản 2: thukho / 123456 (Vai trò: Thủ kho)
+IF NOT EXISTS (SELECT 1 FROM TaiKhoan WHERE TenDangNhap = 'thukho')
+    INSERT INTO TaiKhoan (MaNV, MaVaiTro, TenDangNhap, MatKhauHash, TrangThai)
+    VALUES (ISNULL(@nv2, 2), 2, 'thukho', @PassHash, N'HOAT_DONG');
+ELSE
+    UPDATE TaiKhoan SET MatKhauHash = @PassHash, TrangThai = N'HOAT_DONG', MaVaiTro = 2, MaNV = ISNULL(@nv2, 2) WHERE TenDangNhap = 'thukho';
+
+-- Tài khoản 3: nvkho / 123456 (Vai trò: Nhân viên kho)
+IF NOT EXISTS (SELECT 1 FROM TaiKhoan WHERE TenDangNhap = 'nvkho')
+    INSERT INTO TaiKhoan (MaNV, MaVaiTro, TenDangNhap, MatKhauHash, TrangThai)
+    VALUES (ISNULL(@nv3, 3), 3, 'nvkho', @PassHash, N'HOAT_DONG');
+ELSE
+    UPDATE TaiKhoan SET MatKhauHash = @PassHash, TrangThai = N'HOAT_DONG', MaVaiTro = 3, MaNV = ISNULL(@nv3, 3) WHERE TenDangNhap = 'nvkho';
+
+PRINT N'[OK] Đã cấu hình 3 tài khoản mẫu quanly, thukho, nvkho (mật khẩu 123456).';
+GO
+
+-- 9.4. Bảng TaiKhoanKho: Phân quyền kho chuẩn
+-- Quản lý: Toàn quyền tất cả các kho
+DECLARE @tkQuanLy INT = (SELECT TOP 1 MaTaiKhoan FROM TaiKhoan WHERE TenDangNhap = 'quanly');
+IF @tkQuanLy IS NOT NULL
+BEGIN
+    INSERT INTO TaiKhoanKho (MaTaiKhoan, MaKho)
+    SELECT @tkQuanLy, k.MaKho
+    FROM Kho k
+    WHERE k.TrangThai = 'HOAT_DONG'
+      AND NOT EXISTS (SELECT 1 FROM TaiKhoanKho tkk WHERE tkk.MaTaiKhoan = @tkQuanLy AND tkk.MaKho = k.MaKho);
+END;
+
+-- Thủ kho: Quản lý 1 kho duy nhất (Kho trung tâm - MaKho = 1)
+DECLARE @tkThuKho INT = (SELECT TOP 1 MaTaiKhoan FROM TaiKhoan WHERE TenDangNhap = 'thukho');
+IF @tkThuKho IS NOT NULL
+BEGIN
+    DELETE FROM TaiKhoanKho WHERE MaTaiKhoan = @tkThuKho;
+    INSERT INTO TaiKhoanKho (MaTaiKhoan, MaKho) VALUES (@tkThuKho, 1);
+END;
+
+-- Nhân viên kho: Tác nghiệp tại Kho trung tâm (MaKho = 1)
+DECLARE @tkNvk INT = (SELECT TOP 1 MaTaiKhoan FROM TaiKhoan WHERE TenDangNhap = 'nvkho');
+IF @tkNvk IS NOT NULL
+BEGIN
+    DELETE FROM TaiKhoanKho WHERE MaTaiKhoan = @tkNvk;
+    INSERT INTO TaiKhoanKho (MaTaiKhoan, MaKho) VALUES (@tkNvk, 1);
+END;
+
+PRINT N'[OK] Đã hoàn tất phân quyền kho trong TaiKhoanKho: Quản lý (mọi kho), Thủ kho (Kho 1 duy nhất), Nhân viên kho (Kho 1).';
 GO

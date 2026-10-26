@@ -1,4 +1,4 @@
-# 05. Cơ sở dữ liệu & Thao tác ADO.NET thuần
+﻿# 05. Cơ sở dữ liệu & Thao tác ADO.NET thuần
 
 ## 1. Môi trường CSDL & Cấu hình Kết nối
 
@@ -12,7 +12,7 @@
            providerName="System.Data.SqlClient" />
   </connectionStrings>
   ```
-- **Lớp truy xuất dữ liệu**: [`DAL/DataProcessing.cs`](../../BTL-LTTQ-2/DAL/DataProcessing.cs).
+- **Lớp truy xuất dữ liệu**: [`Classes/DataProcessing.cs`](../../BTL-LTTQ-2/Classes/DataProcessing.cs).
 
 ---
 
@@ -121,3 +121,15 @@ DataProcessing.ChangeDataTransaction((conn, trans) =>
 > 
 > **LUÔN LUÔN** dùng `SqlParameter`:
 > ✔️ `string sql = "SELECT * FROM TaiKhoan WHERE TenDangNhap = @User";` kèm `new SqlParameter("@User", txtUser.Text.Trim())` (BẮT BUỘC).
+
+---
+
+## 5. Cấm đoán bừa cấu trúc CSDL - Bắt buộc xin quyền truy vấn SELECT kiểm tra
+
+> [!IMPORTANT]
+> **Quy tắc bất biến khi viết câu lệnh SQL tới CSDL**:
+> 1. Khi tạo mới hoặc chỉnh sửa truy vấn tới CSDL trong code, nếu **chưa rõ 100%** về tên bảng, thuộc tính/tên cột, kiểu dữ liệu, các giá trị cho phép của cột (ví dụ: TrangThai dạng varchar hay int, chứa 'HOAT_DONG' hay 1, khóa ngoại trỏ sang TaiKhoan(MaTaiKhoan) hay NhanVien(MaNV)):
+>    - **BẮT BUỘC** phải xin phép người dùng cấp quyền chạy truy vấn tới CSDL để kiểm tra.
+>    - **CHỈ ĐƯỢC PHÉP** sử dụng các câu lệnh truy vấn SELECT (như INFORMATION_SCHEMA.COLUMNS, sys.tables, SELECT DISTINCT TrangThai FROM ...).
+>    - **NGHIÊM CẤM** chỉnh sửa cấu trúc hay dữ liệu database (DROP, ALTER, UPDATE, DELETE) khi chưa được phép.
+> 2. **TUYỆT ĐỐI KHÔNG ĐƯỢC ĐOÁN BỪA** tên cột hay giá trị trạng thái để tránh phát sinh lỗi thời gian chạy (Invalid column name, Conversion failed, v.v.).

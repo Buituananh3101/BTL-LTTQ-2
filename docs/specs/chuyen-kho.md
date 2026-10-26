@@ -1,93 +1,90 @@
-﻿# Đặc tả Chức năng: Chuyển kho (Quản lý Chuyển kho)
+﻿# Đặc tả Chức năng: Quản lý Chuyển kho & Đổi kho làm việc
 
-> **Mô tả**: Quản lý luồng chuyển hàng hóa giữa các kho nội bộ (Kho gửi -> Kho nhận), kiểm soát tồn kho theo thời gian thực, xử lý nhận hàng từng phần và thất thoát trên đường chuyển.
-
----
-
-## 1. Mục tiêu & Phạm vi nghiệp vụ
-- **Người dùng**: Quản lý kho, Thủ kho các chi nhánh.
-- **Mã tiền tố chứng từ**: `CK` (Ví dụ: `CK000001`, `CK000002`).
-- **4 Trạng thái chứng từ (`TrangThai` trong CSDL)**:
-  1. `'NHAP'`: **Phiếu tạm** (Chưa trừ tồn kho gửi, có thể chỉnh sửa/xóa/hủy).
-  2. `'DA_XUAT'`: **Đang chuyển** (Đã trừ tồn kho gửi, đang vận chuyển, chờ kho nhận).
-  3. `'DA_NHAN'`: **Đã nhận** (Kho nhận đã nhận hàng, cộng tồn kho nhận; khóa vĩnh viễn không được hủy).
-  4. `'HUY'`: **Đã hủy** (Phiếu tạm hoặc phiếu đang chuyển bị hủy; nếu hủy khi đang chuyển thì tự động hoàn trả tồn cho kho gửi).
+> **Mô tả**: Quản lý toàn diện luồng điều chuyển hàng hóa liên chi nhánh kho (Kho gửi -> Kho nhận), cơ chế tồn kho động thời gian thực qua `vw_TonKhoHienTai`, xử lý nhận hàng và hao hụt thất thoát trên đường chuyển; đồng thời cung cấp form Đổi kho làm việc nhanh cho người dùng trên nền tảng Windows Forms .NET Framework 4.7.2.
 
 ---
 
-## 2. Quy tắc Nghiệp vụ cốt lõi & Tồn kho
-1. **Kiểm tra & Chặn tồn âm**:
-   - Khi bấm **"Chuyển hàng"** (từ `NHAP` -> `DA_XUAT`), hệ thống dùng `ITonKhoService.KiemTraXuatKhoAsync` kiểm tra tồn hiện tại tại `MaKhoNguon`. Nếu bất kỳ mặt hàng nào có `SoLuongChuyen > TonKho`, hệ thống chặn đứng giao dịch và báo lỗi tiếng Việt.
-2. **Biến động tồn kho (`vw_BienDongKho`)**:
-   - **Kho gửi**: Bị trừ tồn ngay khi chuyển sang trạng thái `'DA_XUAT'` hoặc `'DA_NHAN'`.
-   - **Kho đích**: Chỉ được cộng tồn khi chuyển sang trạng thái `'DA_NHAN'` với số lượng thực nhận `ct.SoLuongNhan` (`ISNULL(ct.SoLuongNhan, ct.SoLuong)`).
-   - **Thất thoát hàng hóa**: Khi `SoLuongNhan < SoLuongChuyen`, số lượng thiếu được tính là hao hụt/thất thoát trên đường chuyển. Bắt buộc nhập lý do vào `GhiChuNhan`.
-3. **Phân quyền & Ràng buộc Kho**:
-   - Chỉ người dùng đang ở kho nguồn (`MaKhoNguon == CurrentKhoId`) mới được quyền bấm **"Chuyển hàng"**.
-   - Chỉ người dùng đang ở kho đích (`MaKhoDich == CurrentKhoId`) mới được quyền bấm **"Nhận hàng"**.
-   - Không cho phép chuyển hàng giữa cùng một kho (`MaKhoNguon != MaKhoDich`).
-4. **Quy tắc Hủy phiếu**:
-   - Phiếu tạm (`NHAP`): Hủy không ảnh hưởng tồn kho.
-   - Phiếu đang chuyển (`DA_XUAT`): Hủy sẽ chuyển trạng thái sang `'HUY'`. View `vw_BienDongKho` tự động loại bỏ phiếu khỏi danh sách trừ tồn, giúp tồn kho gửi được phục hồi ngay lập tức mà không sinh chứng từ rác.
-   - Phiếu đã nhận (`DA_NHAN`): **Khóa vĩnh viễn, tuyệt đối không được hủy** (Tuân thủ Luật 5 AGENTS.md).
+## 1. Cấu trúc Bảng CSDL & Nghiệp vụ
+
+### 1.1. Bảng CSDL tham gia:
+- **`PhieuChuyenKho`**:
+  - `MaPhieuChuyen` (INT IDENTITY, PK): Mã định danh phiếu chuyển kho.
+  - `MaPhieu` (VARCHAR(30)): Mã hiển thị (ví dụ: `CK000001`, `CK000017`).
+  - `MaKhoNguon` (INT, FK `Kho`): Chi nhánh kho xuất chuyển đi.
+  - `MaKhoDich` (INT, FK `Kho`): Chi nhánh kho nhận hàng đến.
+  - `MaNVLap` (INT, FK `NhanVien`): Nhân viên lập phiếu.
+  - `MaNVXuat` (INT, FK `NhanVien`, NULL): Nhân viên xác nhận xuất chuyển.
+  - `MaNVNhan` (INT, FK `NhanVien`, NULL): Nhân viên xác nhận nhận hàng tại kho đích.
+  - `NgayLap` (DATETIME2): Thời điểm lập phiếu.
+  - `ThoiDiemXuat` (DATETIME2, NULL): Thời điểm xuất kho chuyển đi.
+  - `ThoiDiemNhan` (DATETIME2, NULL): Thời điểm kho đích nhận hàng hoàn tất.
+  - `TrangThai` (VARCHAR(20)): 4 trạng thái chuẩn:
+    1. `'NHAP'`: Phiếu tạm (chưa trừ tồn kho gửi, có thể chỉnh sửa/xóa).
+    2. `'DA_XUAT'`: Đang chuyển (đã trừ tồn kho gửi, chờ kho đích nhận, cho phép hủy).
+    3. `'DA_NHAN'`: Đã nhận (đã cộng tồn kho đích, khóa vĩnh viễn không được xóa/hủy).
+    4. `'HUY'`: Đã hủy (hoàn trả tồn kho gửi ngay lập tức).
+  - `GhiChu` (NVARCHAR(500)): Ghi chú khi chuyển.
+  - `GhiChuNhan` (NVARCHAR(500)): Ghi chú khi nhận hàng (bắt buộc khi có hao hụt).
+  - `DaDanhDau` (BIT): Đánh dấu sao.
+  - `TongSoLuongChuyen` (DECIMAL(18,2)): Tổng số lượng xuất chuyển.
+  - `TongSoLuongNhan` (DECIMAL(18,2)): Tổng số lượng thực tế nhận được.
+  - `TongGiaTriChuyen` (DECIMAL(18,2)): Tổng giá trị hàng hóa chuyển (theo giá vốn).
+
+- **`ChiTietPhieuChuyenKho`**:
+  - `MaCTPhieuChuyen` (INT IDENTITY, PK).
+  - `MaPhieuChuyen` (INT, FK `PhieuChuyenKho`).
+  - `MaHang` (INT, FK `HangHoa`).
+  - `SoLuong` (DECIMAL(18,2)): Số lượng xuất chuyển.
+  - `SoLuongNhan` (DECIMAL(18,2), NULL): Số lượng thực nhận tại kho đích.
+  - `DonGiaChuyen` (DECIMAL(18,2)): Đơn giá chuyển (lấy từ giá vốn `GiaVon`).
+  - `ThanhTien` (DECIMAL(18,2)): Thành tiền (`SoLuong * DonGiaChuyen`).
+
+- **`vw_TonKhoHienTai` & `vw_BienDongKho`**:
+  - Khi `TrangThai IN ('DA_XUAT', 'DA_NHAN')`: Trừ tồn kho tại `MaKhoNguon`.
+  - Khi `TrangThai = 'DA_NHAN'`: Cộng tồn kho tại `MaKhoDich` với số lượng `ct.SoLuongNhan`.
+  - Khi `TrangThai = 'HUY'`: Tự động loại trừ khỏi biến động, phục hồi tồn cho kho gửi.
+
+- **`NhatKyThaoTac`**: Ghi vết kiểm toán mọi hành vi Lập phiếu, Chuyển hàng, Nhận hàng, Xóa phiếu tạm, Hủy phiếu.
 
 ---
 
-## 3. Cấu trúc CSDL & ViewModels
+## 2. Kiến trúc Phân hệ Form
 
-### 3.1. CSDL (`QuanLyKhoPhuQuocLTW`)
-- **`PhieuChuyenKho`**: Bổ sung `MaPhieu` (VARCHAR(30), Unique Filtered), `DaDanhDau` (BIT), `GhiChuNhan` (NVARCHAR(500)), `TongSoLuongChuyen`, `TongSoLuongNhan`, `TongGiaTriChuyen`.
-- **`ChiTietPhieuChuyenKho`**: Bổ sung `SoLuongNhan` (DECIMAL(18,2) NULL), `DonGiaChuyen` (DECIMAL(18,2)), `ThanhTien` (DECIMAL(18,2)).
-- **`vw_BienDongKho`**: Cập nhật nhánh nhận hàng cộng theo `ISNULL(ct.SoLuongNhan, ct.SoLuong)`.
-
-### 3.2. ViewModels (`ViewModels/ChuyenKho/`)
-- `ChuyenKhoIndexVM`: Model màn hình danh sách, chứa dữ liệu phân trang và bộ lọc.
-- `ChuyenKhoListItemVM`: Dòng dữ liệu hiển thị trên bảng và chi tiết mở rộng.
-- `ChuyenKhoFilterVM`: Tham số lọc (Hướng chuyển, Trạng thái, Thời gian, Từ khóa).
-- `ChuyenKhoFormVM`: Model màn hình Lập/Sửa phiếu chuyển.
-- `ChuyenKhoLineVM`: Chi tiết dòng hàng hóa chuyển.
-- `SaveChuyenKhoRequest`: DTO nhận dữ liệu JSON khi lưu phiếu tạm / chuyển hàng.
-- `ReceiveChuyenKhoRequest`: DTO nhận dữ liệu khi kho đích bấm nhận hàng.
+| Tên Form | Loại | Đường dẫn | Vai trò & Nghiệp vụ |
+|---|---|---|---|
+| `frmDoiKho` | Modal Dialog | `GUI/Forms/DoiKho/frmDoiKho.cs` | Form chọn kho làm việc nhanh theo ảnh mẫu: ComboBox chọn chi nhánh kho hoạt động được phân quyền, 2 nút "Xác nhận", "Hủy"; cập nhật `SessionContext` và toàn bộ giao diện cha. |
+| `frmChuyenKho` | MDI Child | `GUI/Forms/ChuyenKho/frmChuyenKho.cs` | Form danh sách phiếu chuyển kho, chuẩn kích thước `1782x853`, bộ lọc 100% ComboBox, cụm thời gian ở đáy, hiển thị màu 3 nhóm trạng thái bằng font chữ thường theo chuẩn Trả hàng nhập, phân trang. |
+| `frmThemPhieuChuyenKho` / `frmThemPhieuChuyenKhoNew` | Modal Dialog | `GUI/Forms/ChuyenKho/frmThemPhieuChuyenKhoNew.cs` | Form lập phiếu chuyển mới: bố cục và giao diện chuẩn 100% theo khuôn mẫu `frmThemPhieuKiemKho` (Size `1582x803`), gồm vùng nhập thông tin ở Right Menu (Người chuyển, Thời gian, Mã phiếu, Kho gửi, Kho nhận, Ghi chú, tóm tắt Số mặt hàng / Tổng số lượng / Tổng giá trị), thanh tìm kiếm chọn hàng & các nút thao tác "+ Thêm", "Nhập file", "Hiện cột" (kèm popup `frmHienCotHangChuyen`), lưới DataGridView phân trang bên trái nhập hàng hóa chuyển (SL chuyển cho phép sửa trực tiếp trên ô màu vàng `#FEFCE8`, chặn vượt tồn), thứ tự nút đáy chuẩn `Bỏ qua` ➜ `Lưu tạm` ➜ `Lưu`. |
+| `frmChiTietChuyenKho` | Modal Dialog | `GUI/Forms/ChuyenKho/frmChiTietChuyenKho.cs` | Form chi tiết phiếu chuyển kho khi double-click: Master-Detail, nhãn trạng thái dòng chữ màu font chữ thường theo chuẩn Trả hàng nhập, nút Hoàn thành (xuất chuyển cho phiếu tạm `NHAP`), Nhận hàng (cho kho đích khi `DA_XUAT`), Xóa (theo Luật 5 & 15d), Xuất file. |
+| `frmNhanChuyenKho` | Modal Dialog | `GUI/Forms/ChuyenKho/frmNhanChuyenKho.cs` | Form xác nhận nhận hàng tại kho đích: kiểm đếm số lượng thực nhận, phát hiện hao hụt, bắt buộc nhập lý do thất thoát, cập nhật `DA_NHAN`. |
+| `frmHienCotChuyenKho` | Tool Window | `GUI/Forms/ChuyenKho/frmHienCotChuyenKho.cs` | Popup tùy chọn ẩn/hiện cột bảng chuyển kho. |
+| `frmNhapChuyenKhoFile` | Modal Dialog | `GUI/Forms/ChuyenKho/frmNhapChuyenKhoFile.cs` | Form nạp danh sách hàng hóa chuyển từ file CSV (hỗ trợ tải file mẫu chuẩn). |
 
 ---
 
-## 4. Giao diện & Các Khối Lego Bắt Buộc
+## 3. Quy tắc Nghiệp vụ cốt lõi
 
-### 4.1. Màn hình 1: Danh sách (`/ChuyenKho/Index`)
-- **Sidebar lọc bên trái**:
-  - Hướng chuyển (Radio: Tất cả, Chuyển đi từ kho này, Chuyển đến kho này).
-  - Trạng thái (Checkbox Lego: Phiếu tạm, Đang chuyển, Đã nhận, Đã hủy).
-  - Thời gian (`_KiotDateFilter` + `KiotFilter.initDateFilter`).
-- **Topbar**: Tiêu đề "Chuyển hàng", ô tìm kiếm mã phiếu F3, nút "+ Chuyển hàng", "Xuất file", nút tùy chọn hiển thị cột (`#btnColsDropdown` + `#colMenu`).
-- **Bảng dữ liệu Master-Detail chuẩn Kiểm tồn & hệ thống (`PhieuKiemKe`)**:
-  - Dòng cha + Dòng chi tiết viền chữ nhật `#0070f3` (`KiotFilter.initRowDetail`).
-  - Dòng tổng hợp `tr.summary-row` ngay dưới thead hiển thị tổng SL chuyển, tổng SL nhận, tổng Giá trị chuyển.
-  - Drawer chi tiết chuẩn Kiểm tồn (`PhieuKiemKe`):
-    - Tab bar `.dp-tabs`, tiêu đề mã phiếu in đậm `18px`, badge trạng thái pill chuẩn mực.
-    - Hàng thông tin tóm tắt `.meta` (Kho gửi, Kho nhận, Người tạo/chuyển/nhận, Ngày tạo/chuyển/nhận).
-    - Bảng danh sách hàng hóa `.dtl-tbl` với header `#f8fafc`, hàng tìm kiếm nhanh `tr.fin`.
-    - Khối ghi chú và tóm tắt số liệu `.dp-bottom`, hàng nút hành động `.dp-actions`.
-  - Tùy chọn ẩn/hiển thị 11 cột lưu `localStorage` (`KiotFilter.initColumnToggle`).
-  - Sắp xếp cột 3 trạng thái click-to-sort (ASC -> DESC -> Bỏ sắp xếp) trên 11 cột dữ liệu.
-  - Phân trang AJAX (`_Pagination.cshtml`).
-
-### 4.2. Màn hình 2: Lập/Sửa phiếu (`/ChuyenKho/Create`, `/ChuyenKho/Edit/{id}`)
-- Layout 2 cột chuẩn chuyên nghiệp:
-  - Cột trái: Nút quay lại, ô tìm hàng F3 autocomplete, nút nhập Excel (`#btnImportExcel`), empty state "Thêm sản phẩm từ file excel" với nút "Chọn file dữ liệu" (`#btnPickExcel`) & link tải file mẫu (`Mau_Chuyen_Kho.xlsx`, `DownloadTemplate`), import server-side ClosedXML qua API `ChuyenKho/ImportExcel`, bảng lưới hàng hóa có cảnh báo vượt tồn.
-  - Cột phải: Box lộ trình `routebox` (Kho gửi -> Kho nhận), dropdown kho nhận `.wh-custom-select-btn`, thời gian `.dtpop` & mã chuyển hàng `.inp` căn phải đồng bộ Kiểm kho (nhập tay hoặc để trống tự sinh `CK000001`...), tổng SL, tổng giá trị, ghi chú.
-  - Thu gọn/mở rộng panel phải mượt mà 0.25s chuẩn Kiểm kho (F4, `.f-panel-inner` 440px cố định chống giật méo nội dung, nút trượt đồng bộ mép).
-  - Nút cố định đáy: "Lưu tạm" (`NHAP`) và "Chuyển hàng" (`DA_XUAT`).
-
-### 4.3. Modal Nhận hàng (`/ChuyenKho/Receive`)
-- Modal popup hiển thị danh sách mặt hàng, ô nhập `SL nhận` (chặn không cho vượt `SL chuyển`).
-- Nếu nhận thiếu, bắt buộc nhập ghi chú lý do thất thoát.
-
----
-
-## 5. Kế hoạch Triển khai
-1. Migration SQL `13_bo_sung_chuyen_kho.sql` & cập nhật Model EF Core.
-2. ViewModel và `ChuyenKhoController.cs` (Transaction, chặn âm kho, BaseKhoController).
-3. Giao diện Danh sách `Index`, `_ChuyenKhoFilterSidebar`, `_ChuyenKhoTable`.
-4. Giao diện Lập/Sửa `Create`, `Edit`, `_ChuyenKhoForm` (F3 autocomplete, custom dtPop, toggle panel, nạp Excel/CSV).
-5. Modal `_ReceiveModal` nhận hàng & cập nhật `_MainMenu.cshtml`.
-6. Biên dịch và đồng bộ `PROGRESS.md`.
+1. **Chặn tồn âm kho gửi (Luật 6)**:
+   - Trước khi xác nhận chuyển hàng (`DA_XUAT`), hệ thống kiểm tra tồn kho sổ sách tức thời qua `vw_TonKhoHienTai`. Nếu `SoLuongChuyen > TonKho`, chặn đứng giao dịch và hiển thị thông báo cảnh báo chi tiết.
+2. **Quyền nhận hàng liên chi nhánh**:
+   - Nút "Nhận hàng" trong `frmChiTietChuyenKho` chỉ hiển thị và cho phép thao tác khi phiếu ở trạng thái `'DA_XUAT'` và người dùng hiện tại đang làm việc tại kho đích (`SessionContext.MaKhoHienTai == MaKhoDich` hoặc tài khoản có vai trò Quản lý Admin).
+3. **Xử lý hao hụt / nhận thiếu**:
+   - Thủ kho nhận có quyền ghi nhận `SoLuongNhan <= SoLuongChuyen`. Nếu `SoLuongNhan < SoLuongChuyen`, phần chênh lệch được đánh dấu hao hụt (tô đỏ) và bắt buộc phải nhập lý do vào ô `GhiChuNhan` trước khi lưu.
+4. **Quy tắc Xóa & Hủy (Luật 5 & Điều 15d)**:
+   - Phiếu tạm (`NHAP`): Được phép xóa hoàn toàn khỏi CSDL.
+   - Phiếu đang chuyển (`DA_XUAT`): Được phép Hủy (`HUY`), tồn kho gửi được tự động phục hồi ngay lập tức.
+   - Phiếu đã nhận (`DA_NHAN`): Khóa vĩnh viễn, nút Xóa bị vô hiệu hóa (`btnXoa.Enabled = false`, giữ nguyên text "Xóa").
+5. **Thứ tự nút đáy chuẩn (Điều luật 19b)**:
+   - Thanh nút thao tác ở đáy form `frmThemPhieuChuyenKho` tuân thủ đúng chuẩn toàn hệ thống: `Bỏ qua` ➜ `Lưu tạm` ➜ `Lưu`.
+6. **Màu sắc trạng thái 3 nhóm (Điều luật 15b & 19a)**:
+   - Nhóm Hoàn thành ("Đã nhận"): Màu xanh lá `Color.FromArgb(22, 163, 74)`.
+   - Nhóm Tạm thời ("Đang chuyển", "Phiếu tạm"): Màu vàng amber `Color.FromArgb(217, 119, 6)`.
+   - Nhóm Đã hủy ("Đã hủy"): Màu xám nhạt `Color.FromArgb(100, 116, 139)`.
+   - Nhãn trạng thái hiển thị bằng dòng chữ tự nhiên có màu, không viền khung badge.
+7. **Nút Hoàn thành cho Phiếu tạm (`NHAP`)**:
+   - Khi phiếu chuyển ở trạng thái `NHAP` (Phiếu tạm), form chi tiết `frmChiTietChuyenKho` hiển thị nút `Hoàn thành` (`btnHoanThanh`).
+   - Khi bấm Hoàn thành, hệ thống kiểm tra tồn kho tại kho gửi (chặn âm tồn kho theo Luật 6), hỏi xác nhận, bọc trong Transaction cập nhật `TrangThai = 'DA_XUAT'`, `ThoiDiemXuat = GETDATE()`, `MaNVXuat`, hàng hóa xuất kho gửi và chuyển sang trạng thái "Đang chuyển" để kho đích thực hiện nhận hàng.
+8. **Kiểm tra an toàn hiển thị cột Số lượng trên lưới hàng chuyển**:
+   - Khi thao tác thêm hàng (`btnThemHang_Click`) hoặc nhập file (`btnNhapFile_Click`), hệ thống kiểm tra sự tồn tại và trạng thái hiển thị của cột `colSoLuong`.
+   - Nếu cột `colSoLuong` đang bị ẩn (do người dùng bỏ chọn trong mục *Hiện cột*), hệ thống chủ động đưa ra thông báo cảnh báo rõ ràng (`MessageBox.Show`) hướng dẫn người dùng bật lại cột Số lượng thay vì để xảy ra lỗi ngoại lệ unhandled exception `System.InvalidOperationException: Current cell cannot be set to an invisible cell`.
+   - Toàn bộ thao tác gán `CurrentCell` và nhập số lượng trực tiếp được bọc kiểm tra an toàn và `try...catch` dự phòng.

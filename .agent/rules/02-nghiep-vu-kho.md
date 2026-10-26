@@ -1,4 +1,4 @@
-# 02. Nghiệp vụ Quản lý kho hàng & Trạng thái chứng từ
+﻿# 02. Nghiệp vụ Quản lý kho hàng & Trạng thái chứng từ
 
 ## 1. Cơ chế tính toán Tồn kho động (`vw_TonKhoHienTai`)
 

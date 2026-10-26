@@ -61,3 +61,16 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
+
+
+###############################################################################
+# Strict UTF-8 with BOM & CRLF encoding for all source and text files
+###############################################################################
+*.cs text working-tree-encoding=UTF-8 eol=crlf
+*.Designer.cs text working-tree-encoding=UTF-8 eol=crlf
+*.resx text working-tree-encoding=UTF-8 eol=crlf
+*.sql text working-tree-encoding=UTF-8 eol=crlf
+*.config text working-tree-encoding=UTF-8 eol=crlf
+*.md text working-tree-encoding=UTF-8 eol=crlf
+*.json text working-tree-encoding=UTF-8 eol=crlf
+*.editorconfig text working-tree-encoding=UTF-8 eol=crlf

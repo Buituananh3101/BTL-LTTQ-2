@@ -1,7 +1,9 @@
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using BTL_LTTQ_2.Classes;
 using BTL_LTTQ_2.GUI.Forms;
+using BTL_LTTQ_2.GUI.Forms.DangNhap;
 
 namespace BTL_LTTQ_2
 {
@@ -51,7 +53,35 @@ namespace BTL_LTTQ_2
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FormMain());
+
+            // Vòng lặp phiên làm việc: Yêu cầu đăng nhập trước khi vào hệ thống
+            while (true)
+            {
+                using (frmDangNhap formDangNhap = new frmDangNhap())
+                {
+                    if (formDangNhap.ShowDialog() != DialogResult.OK)
+                    {
+                        // Người dùng nhấn Thoát hoặc đóng form đăng nhập -> Thoát ứng dụng
+                        return;
+                    }
+                }
+
+                // Đăng nhập thành công -> Khởi chạy màn hình chính MDI frmMain
+                using (frmMain formMain = new frmMain())
+                {
+                    Application.Run(formMain);
+
+                    // Khi formMain đóng: kiểm tra xem có phải do người dùng chọn Đăng xuất không
+                    if (!SessionContext.IsDangXuat)
+                    {
+                        // Người dùng chọn Thoát hoặc đóng cửa sổ -> Kết thúc hoàn toàn
+                        break;
+                    }
+
+                    // Nếu là Đăng xuất: giải phóng phiên làm việc và tiếp tục vòng lặp để mở lại form đăng nhập
+                    SessionContext.XoaPhien();
+                }
+            }
         }
     }
 }

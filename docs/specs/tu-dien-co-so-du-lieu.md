@@ -1,4 +1,4 @@
-# Đặc Tả: Từ Điển Cơ Sở Dữ Liệu QuanLyKhoPhuQuocLTW
+﻿# Đặc Tả: Từ Điển Cơ Sở Dữ Liệu QuanLyKhoPhuQuocLTW
 
 > **Hệ thống CSDL**: SQL Server | **ORM**: EF Core 10 | **Quy mô**: 29 Bảng + 2 Views (3NF)
 

@@ -1,4 +1,4 @@
-# Sơ Đồ Thực Thể - Mối Quan Hệ (ERD) & Lược Đồ Quan Hệ (RM)
+﻿# Sơ Đồ Thực Thể - Mối Quan Hệ (ERD) & Lược Đồ Quan Hệ (RM)
 ## Hệ Thống Quản Lý Kho Hàng Phú Quốc (`QuanLyKhoPhuQuocLTW`)
 
 > **Mục đích tài liệu**: Cung cấp tài liệu mô hình hóa dữ liệu chính xác 100% theo chuẩn học thuật (Đại học GTVT / Đồ án Lập trình Web) và chuẩn công nghiệp, phục vụ báo cáo LaTeX, bảo vệ đồ án và tra cứu phát triển.

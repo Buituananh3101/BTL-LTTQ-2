@@ -43,15 +43,16 @@
 ## 3. Quy chuẩn Giao diện & Bộ lọc
 
 ### 3.1. Cột lọc bên trái (Sidebar Filter):
-1. **Nhóm hàng**: Multi-select Tag Dropdown + ô tìm kiếm dính đỉnh + Tạo mới, Sửa và Xóa trực tiếp từ dropdown (icon ✎ khi hover).
-2. **Tồn kho**: Custom Single Select hệ thống (Tất cả / Còn hàng / Hết hàng / Dưới định mức tồn).
-3. **Dự kiến hết hàng**: Hôm nay, 3 ngày tới, 7 ngày tới, Trong tháng, > 30 ngày.
-4. **Nhà cung cấp**: Multi-select tag dropdown theo NCC đã từng nhập.
-5. **Loại hàng**: Hàng hóa / Dịch vụ / Combo đóng gói.
-6. **Vị trí**: Dropdown đa chọn kèm ô tìm kiếm nhanh `.kiot-ms-search`.
-7. **Thời gian tạo**: Hôm nay, Hôm qua, 7 ngày, 30 ngày hoặc tùy chọn ngày (Dual Calendar).
-
-### 3.2. Sắp xếp 3 trạng thái & Ẩn hiện cột:
+1. **Nhóm hàng**: ComboBox tìm kiếm tiếng Việt không dấu (`ComboboxHelper.CaiDatTimKiem`) + Nút `+` mở form popup quản lý nhóm hàng (`frmNhomHang`).
+2. **Đơn vị tính**: ComboBox tìm kiếm tiếng Việt không dấu (`ComboboxHelper.CaiDatTimKiem`) + Nút `+` mở form popup quản lý đơn vị tính (`frmDonViTinh`) đồng bộ bố cục và logic theo `frmNhomHang` và `frmViTri`.
+3. **Tồn kho**: ComboBox tùy chọn mức tồn (Tất cả / Còn hàng / Hết hàng / Dưới định mức tồn).
+4. **Nhà cung cấp**: ComboBox tìm kiếm tiếng Việt không dấu theo NCC đã từng nhập hàng.
+5. **Vị trí**: ComboBox tìm kiếm tiếng Việt không dấu + Nút `+` mở form popup quản lý vị trí (`frmViTri`).
+6. **Trạng thái**: ComboBox chọn trạng thái kinh doanh (Tất cả / Đang kinh doanh / Ngừng kinh doanh).
+7. **Thời gian tạo**: Cụm `grpThoiGianTao` chứa 2 `DateTimePicker` (Từ ngày - Đến ngày) **ở vị trí đáy** tuân thủ tuyệt đối Điều luật 16.
+### 3.2. Cột Checkbox & Ẩn hiện cột:
+- **Cột CheckBox lựa chọn (colChon)**: Cột cố định đầu tiên (35px) phục vụ chọn từng dòng hoặc chọn tất cả qua Header CheckBox. Click trực tiếp hoặc bấm phím Space để đảo trạng thái chọn tức thì mà không ảnh hưởng trạng thái chỉ đọc của các cột dữ liệu. Cung cấp API LayDanhSachMaHangDaChon() để phục vụ các tác vụ hàng loạt. Tự động loại trừ khi xuất file Excel/CSV.
+- **Sắp xếp 3 trạng thái & Ẩn hiện cột**:
 - **Sắp xếp 3 trạng thái**: Click header: Lần 1 ASC (`bi-arrow-up`) ➜ Lần 2 DESC (`bi-arrow-down`) ➜ Lần 3 Default. Cột căn trái dùng inline-flex chống tràn viền, cột số dùng padding-right 22px cố định icon.
 - **Tùy chọn hiển thị cột**: Nút `#btnColsDropdown` (`bi-view-list`), menu `#colMenu` 2 cột chuẩn chuyên nghiệp. Quản lý qua `KiotFilter.initColumnToggle` lưu `kiot_hang_hoa_cols_v1`. Quản lý 13 cột dữ liệu (`img`, `mahang`, `tenhang`, `nhomhang`, `dvt`, `giaban`, `giavon`, `tonkho`, `khachdat`, `vitri`, `ngaytao`, `dukienhethang`, `trangthai`) + 2 cột cố định. Tự động đồng bộ `colspan` và class `.last-visible-col`. Bảng `#productTable` áp dụng chuẩn `width: max-content; min-width: 760px; table-layout: fixed;` (chuẩn Kiểm tồn & Nhà cung cấp), khóa cố định `width`/`min-width` từng cột chống co rút khi thêm cột. Khung chi tiết `.kiot-detail-fixed-wrap` cố định 992px.
 
@@ -67,3 +68,56 @@
 3. **Mã nội bộ & Retry**: Mã `HH` + 6 số tự tăng (`HH000001`), Unique, retry chống Race Condition.
 4. **Tồn kho theo kho làm việc**: Đọc động từ `vw_TonKhoHienTai` theo `CurrentWarehouseId`.
 5. **Tối ưu RAM & Xử lý ảnh**: Không `SELECT HinhAnh` ở danh sách. Dùng LINQ Projection `HasImage`. Quá trình nén ảnh client tự động đổ nền trắng `#FFFFFF` trên Canvas nhằm triệt tiêu hoàn toàn lỗi ảnh trong suốt (PNG/WebP) bị chuyển thành nền đen khi nén JPEG; hỗ trợ Kéo-Thả (Drag & Drop) và Dán ảnh từ Clipboard (`Ctrl+V`); backend tự động nhận diện chính xác MIME type (`image/png`, `image/jpeg`, `image/webp`, `image/gif`).
+
+
+---
+
+## 5. Quy chuẩn Chức năng Nhập File Hàng Hóa (Desktop WinForms - frmNhapHangHoaFile)
+
+### 5.1. Luồng thao tác giao diện:
+1. Từ `frmDanhSachHangHoa`, người dùng bấm `btnNhapFile` ("Nhập file").
+2. Hiển thị hộp thoại modal `frmNhapHangHoaFile` (`882 x 453`, CenterParent, FixedDialog).
+3. Phần 1 - Chọn file: Người dùng bấm `btnChonFile` ("Chọn file...") để nạp file Excel (`.xlsx`, `.xls`).
+4. Phần 2 - Tùy chọn trùng mã:
+   - `rdoCapNhat` (Mặc định): Cập nhật thông tin nếu trùng mã hàng.
+   - `rdoBoQua`: Bỏ qua không cập nhật nếu trùng mã hàng, chỉ thêm mới dòng chưa có mã.
+5. Thanh điều khiển dưới đáy (Footer):
+   - Bên trái: `btnTaiFileMauExcel` ("Tải file mẫu Excel") xuất file `.xls` mẫu chuẩn.
+   - Bên phải: `btnThucHien` ("Thực hiện nhập") và `btnDong` ("Đóng").
+6. Bấm `btnThucHien`: Kích hoạt thanh tiến trình `prgTienTrinh`, đổi con trỏ chuột sang chờ (`WaitCursor`), kiểm tra tính hợp lệ và bọc toàn bộ trong `DataProcessing.ChangeDataTransaction`. Sau khi xong, hiển thị hộp thoại báo cáo tổng kết chi tiết và kích hoạt làm mới danh sách hàng hóa trên form chính.
+
+### 5.2. Quy tắc nghiệp vụ dữ liệu:
+- **Tên hàng hóa (Bắt buộc duy nhất)**: Bắt buộc phải có giá trị. Dòng thiếu tên hàng hóa sẽ bị ghi nhận lỗi/bỏ qua.
+- **Mã hàng (`MaHangNoiBo`)**:
+  - Nếu bỏ trống: Hệ thống tự động sinh mã tăng dần tiếp theo (`HH000001`, `HH000002`...).
+  - Nếu có sẵn: Kiểm tra trùng mã trong CSDL để quyết định Ghi đè hoặc Bỏ qua theo tùy chọn người dùng.
+- **Tồn kho (BẤT BIẾN)**:
+  - TUYỆT ĐỐI KHÔNG ghi đè tồn kho qua nhập file danh mục. Tồn kho thực tế tính động qua `vw_TonKhoHienTai`, biến động kho bắt buộc thông qua chứng từ Nhập kho hoặc Kiểm kê.
+- **Nhóm hàng (`NhomHang`)**:
+  - Bắt buộc trong CSDL (`MaNhom NOT NULL`).
+  - Khi thêm mới: Nếu có trong file thì liên kết; nếu tên nhóm chưa tồn tại thì tự động tạo mới vào bảng `NhomHang`; nếu để trống thì tự động gán vào nhóm mặc định **"Khác"** (tự tạo nếu chưa có).
+  - Khi cập nhật ghi đè: Nếu để trống cột nhóm hàng trong file thì **giữ nguyên nhóm hàng cũ** của sản phẩm.
+- **Đơn vị tính (`DonViTinh`)**:
+  - Bắt buộc trong CSDL (`MaDVT NOT NULL`).
+  - Khi thêm mới: Nếu có trong file thì liên kết; nếu chưa có thì tự động tạo mới vào bảng `DonViTinh`; nếu để trống thì tự động gán ĐVT mặc định **"Cái"** (tự tạo nếu chưa có).
+  - Khi cập nhật ghi đè: Nếu để trống thì **giữ nguyên ĐVT cũ**.
+- **Vị trí (`ViTri`)**:
+  - Cho phép `NULL`.
+  - Khi thêm mới: Nếu có tên vị trí chưa tồn tại thì tự động thêm vào bảng `ViTri` và lưu tên vị trí; nếu để trống thì lưu `NULL`.
+  - Khi cập nhật ghi đè: Nếu để trống thì **giữ nguyên vị trí cũ**.
+- **Giá vốn, Giá bán, Trọng lượng**:
+  - Tự động parse số thập phân (loại bỏ dấu phẩy/chấm phân cách nghìn).
+  - Khi thêm mới: Để trống hoặc sai số mặc định về `0`.
+  - Khi cập nhật ghi đè: Để trống giữ nguyên giá trị cũ.
+- **An toàn giao dịch**: 100% bọc trong `SqlTransaction` và tham số hóa câu lệnh (`SqlParameter`).
+
+---
+
+## 6. Nghiệp vụ Cột "Khách đặt" (Reserved / On-order)
+- **Định nghĩa nghiệp vụ**: Cột "Khách đặt" phản ánh tổng số lượng hàng hóa nằm trong các đơn đặt hàng bán của khách (`DonBan` & `ChiTietDonBan`) tại kho đang làm việc (`MaKho = @MaKho`) chưa được giao/xuất kho hoàn tất và chưa bị hủy (`TrangThai NOT IN ('HOAN_TAT', 'HUY')`).
+- **Ý nghĩa quản trị**: Giúp nhân viên kho và bộ phận bán hàng biết được lượng hàng đã được giữ chỗ/đặt trước cho khách, từ đó xác định lượng tồn khả dụng thực tế (`Tồn khả dụng = Tồn kho - Khách đặt`).
+- **Quy chuẩn hiển thị & Tương tác**:
+  - Cột: `colKhachDat`, HeaderText: `Khách đặt`, DataPropertyName: `KhachDat`.
+  - Vị trí: Đứng ngay sau cột Tồn kho (`colTonKho`), độ rộng 95px, căn phải (`MiddleRight`), định dạng số `N0`.
+  - Mặc định ẩn (`Visible = false`) khi tải danh sách; người dùng bật/tắt hiển thị linh hoạt thông qua form "Hiện cột" (`frmHienCot`, checkbox `chkKhachDat`).
+  - Khi xuất file Excel (`.xls`) hoặc `.csv`: Nếu cột đang hiển thị, hệ thống tự động xuất kèm dữ liệu số lượng khách đặt với định dạng số chuẩn.

@@ -1,4 +1,4 @@
-# Tài Liệu Thiết Kế Luồng Xử Lý Nghiệp Vụ (Activity Diagrams)
+﻿# Tài Liệu Thiết Kế Luồng Xử Lý Nghiệp Vụ (Activity Diagrams)
 ## Hệ Thống Quản Lý Kho Hàng Phú Quốc (`QuanLyKhoPhuQuocLTW`)
 
 > **Mục đích tài liệu**: Chuẩn hóa toàn bộ các luồng hoạt động nghiệp vụ cốt lõi theo chuẩn UML 2.5 với phân làn trách nhiệm (Swimlanes 3 tầng: *Client/UI* - *Web App/Service* - *Database/Transaction*), phục vụ báo cáo học thuật LaTeX, bảo vệ đồ án và tham chiếu mã nguồn.

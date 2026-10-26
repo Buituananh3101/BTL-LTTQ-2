@@ -1,4 +1,4 @@
-# SƠ ĐỒ USE CASE & MA TRẬN PHÂN QUYỀN HỆ THỐNG (UML)
+﻿# SƠ ĐỒ USE CASE & MA TRẬN PHÂN QUYỀN HỆ THỐNG (UML)
 ## Website Quản Lý Kho Hàng Phú Quốc (`QuanLyKhoPhuQuocLTW`)
 
 > **Mục đích tài liệu**: Chuẩn hóa toàn bộ mô hình hóa chức năng hệ thống theo chuẩn UML 2.5 bằng Mermaid, cung cấp hình ảnh chất lượng cao phục vụ Báo cáo học thuật LaTeX (Mục 2.1), bảo vệ đồ án và tài liệu vận hành.
