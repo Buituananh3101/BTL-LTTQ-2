@@ -20,6 +20,9 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
         private int tongSoBanGhi = 0;
         private bool isInitializing = true;
         private DataTable dtDanhSachPhieu;
+        // Truy vấn đầy đủ (không phân trang) của lần tải gần nhất, dùng cho Xuất file
+        private string sqlXuatToanBo = null;
+        private List<SqlParameter> thamSoXuatToanBo = null;
         private bool isHeaderChecked = false;
 
         private Timer searchDebounceTimer;
@@ -405,6 +408,11 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                     ORDER BY pkk.ThoiDiemChot DESC, pkk.MaPhieuKiemKe DESC
                     OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY";
 
+                // Lưu truy vấn không phân trang để "Xuất file" lấy toàn bộ phiếu khớp bộ lọc
+                sqlXuatToanBo = sqlData.Replace("OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY", "");
+                thamSoXuatToanBo = new List<SqlParameter>();
+                foreach (SqlParameter p in listParams) thamSoXuatToanBo.Add(new SqlParameter(p.ParameterName, p.Value));
+
                 listParams.Add(new SqlParameter("@Skip", skip));
                 listParams.Add(new SqlParameter("@Take", soDongMoiTrang));
 
@@ -756,7 +764,20 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                 bool coDongChon = danhSachXuat.Count > 0;
                 if (!coDongChon)
                 {
-                    foreach (DataRow r in dtDanhSachPhieu.Rows)
+                    // Không tích dòng nào: xuất toàn bộ phiếu khớp bộ lọc (không chỉ trang đang xem)
+                    DataTable dtToanBo = null;
+                    try
+                    {
+                        if (!string.IsNullOrEmpty(sqlXuatToanBo) && thamSoXuatToanBo != null)
+                        {
+                            List<SqlParameter> ps = new List<SqlParameter>();
+                            foreach (SqlParameter p in thamSoXuatToanBo) ps.Add(new SqlParameter(p.ParameterName, p.Value));
+                            dtToanBo = DataProcessing.ReadData(sqlXuatToanBo, ps.ToArray());
+                        }
+                    }
+                    catch { dtToanBo = null; }
+
+                    foreach (DataRow r in (dtToanBo ?? dtDanhSachPhieu).Rows)
                     {
                         danhSachXuat.Add(r);
                     }
