@@ -353,16 +353,13 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
                 sfd.Title = "Xuất danh sách đơn vị tính";
-                sfd.Filter = "File Excel (*.xls)|*.xls|File CSV (*.csv)|*.csv";
+                sfd.Filter = "File Excel (*.xls)|*.xls";
                 sfd.FileName = $"DanhSachDonViTinh_{DateTime.Now:yyyyMMdd_HHmm}.xls";
 
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
                     try
                     {
-                        string ext = Path.GetExtension(sfd.FileName).ToLower();
-                        if (ext == ".xls")
-                        {
                             StringBuilder sb = new StringBuilder();
                             sb.AppendLine("<!DOCTYPE html>");
                             sb.AppendLine("<html><head><meta http-equiv=\"content-type\" content=\"application/vnd.ms-excel; charset=UTF-8\" />");
@@ -392,22 +389,6 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
 
                             sb.AppendLine("</table></body></html>");
                             File.WriteAllText(sfd.FileName, sb.ToString(), new UTF8Encoding(true));
-                        }
-                        else
-                        {
-                            StringBuilder sb = new StringBuilder();
-                            sb.AppendLine("sep=,");
-                            sb.AppendLine("\"Tên đơn vị tính\",\"Số mặt hàng\"");
-
-                            foreach (DataGridViewRow row in dgvDonViTinh.Rows)
-                            {
-                                string tenDvt = row.Cells["colTenDVT"].Value?.ToString() ?? "";
-                                string soLuong = row.Cells["colSoLuongHang"].FormattedValue?.ToString() ?? "0";
-                                sb.AppendLine($"\"{tenDvt.Replace("\"", "\"\"")}\",\"{soLuong.Replace("\"", "\"\"")}\"");
-                            }
-
-                            File.WriteAllText(sfd.FileName, sb.ToString(), new UTF8Encoding(true));
-                        }
 
                         DialogResult dr = MessageBox.Show(
                             $"Xuất file thành công {dgvDonViTinh.Rows.Count:N0} đơn vị tính!\n\nĐường dẫn:\n{sfd.FileName}\n\nBạn có muốn mở file vừa xuất không?",

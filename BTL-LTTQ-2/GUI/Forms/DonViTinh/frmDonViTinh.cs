@@ -445,46 +445,57 @@ namespace BTL_LTTQ_2.GUI.Forms.DonViTinh
 
                 using (SaveFileDialog sfd = new SaveFileDialog())
                 {
-                    sfd.Filter = "File Excel / CSV (*.csv)|*.csv|Tất cả các file (*.*)|*.*";
-                    sfd.FileName = string.Format("DanhSachDonViTinh_{0:yyyyMMdd_HHmmss}.csv", DateTime.Now);
-                    sfd.Title = "Xuất danh sách đơn vị tính ra file CSV";
+                    sfd.Filter = "File Excel (*.xls)|*.xls";
+                    sfd.FileName = string.Format("DanhSachDonViTinh_{0:yyyyMMdd_HHmm}.xls", DateTime.Now);
+                    sfd.Title = "Xuất danh sách đơn vị tính";
 
                     if (sfd.ShowDialog() == DialogResult.OK)
                     {
                         StringBuilder sb = new StringBuilder();
+                        sb.AppendLine("<!DOCTYPE html>");
+                        sb.AppendLine("<html><head><meta http-equiv=\"content-type\" content=\"application/vnd.ms-excel; charset=UTF-8\" />");
+                        sb.AppendLine("<style>");
+                        sb.AppendLine("table { border-collapse: collapse; font-family: Segoe UI, Tahoma, sans-serif; font-size: 11pt; }");
+                        sb.AppendLine("th { background-color: #E2E8F0; color: #0F172A; font-weight: bold; border: 1px solid #94A3B8; padding: 8px 12px; }");
+                        sb.AppendLine("td { border: 1px solid #CBD5E1; padding: 6px 10px; }");
+                        sb.AppendLine(".text { mso-number-format: '\\@'; text-align: left; }");
+                        sb.AppendLine(".center { text-align: center; }");
+                        sb.AppendLine(".number { mso-number-format: '#,##0'; text-align: right; }");
+                        sb.AppendLine("</style></head><body>");
+                        sb.AppendLine("<table>");
 
-                        // Header chỉ lấy các cột Visible
-                        bool firstCol = true;
+                        sb.AppendLine("<tr>");
                         foreach (DataGridViewColumn col in dgvDonViTinh.Columns)
                         {
                             if (col.Visible && col.Name != "colChon")
                             {
-                                if (!firstCol) sb.Append(",");
-                                sb.Append("\"" + col.HeaderText.Replace("\"", "\"\"") + "\"");
-                                firstCol = false;
+                                sb.AppendLine($"<th>{System.Net.WebUtility.HtmlEncode(col.HeaderText)}</th>");
                             }
                         }
-                        sb.AppendLine();
+                        sb.AppendLine("</tr>");
 
-                        // Rows
                         for (int i = 0; i < dgvDonViTinh.Rows.Count; i++)
                         {
                             var row = dgvDonViTinh.Rows[i];
-                            firstCol = true;
+                            sb.AppendLine("<tr>");
                             foreach (DataGridViewColumn col in dgvDonViTinh.Columns)
                             {
                                 if (col.Visible && col.Name != "colChon")
                                 {
-                                    if (!firstCol) sb.Append(",");
                                     string cellVal = row.Cells[col.Index].FormattedValue?.ToString() ?? "";
-                                    sb.Append("\"" + cellVal.Replace("\"", "\"\"") + "\"");
-                                    firstCol = false;
+                                    string cssClass = "text";
+                                    if (col.DefaultCellStyle.Alignment == DataGridViewContentAlignment.MiddleRight)
+                                        cssClass = "number";
+                                    else if (col.DefaultCellStyle.Alignment == DataGridViewContentAlignment.MiddleCenter)
+                                        cssClass = "center";
+
+                                    sb.AppendLine($"<td class=\"{cssClass}\">{System.Net.WebUtility.HtmlEncode(cellVal)}</td>");
                                 }
                             }
-                            sb.AppendLine();
+                            sb.AppendLine("</tr>");
                         }
 
-                        // Ghi file với UTF-8 with BOM để mở trực tiếp trong Excel không bị lỗi font tiếng Việt
+                        sb.AppendLine("</table></body></html>");
                         File.WriteAllText(sfd.FileName, sb.ToString(), new UTF8Encoding(true));
 
                         DialogResult dr = MessageBox.Show("Xuất file thành công! Bạn có muốn mở file ngay không?",

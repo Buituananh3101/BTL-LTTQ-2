@@ -520,8 +520,9 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
         {
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
-                sfd.Filter = "CSV File (*.csv)|*.csv|All Files (*.*)|*.*";
-                sfd.FileName = $"DanhSachTraHangNhap_{DateTime.Now:yyyyMMdd_HHmm}.csv";
+                sfd.Title = "Xuất danh sách trả hàng nhập";
+                sfd.Filter = "File Excel (*.xls)|*.xls";
+                sfd.FileName = $"DanhSachTraHangNhap_{DateTime.Now:yyyyMMdd_HHmm}.xls";
 
                 if (sfd.ShowDialog(this) == DialogResult.OK)
                 {
@@ -568,20 +569,20 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                         }
 
                         DateTime tuNgay = dtpTuNgay.Value.Date;
-                int maKhoHienTai = SessionContext.MaKhoHienTai;
-                string filterKhoSql = "";
-                if (maKhoHienTai > 0)
-                {
-                    filterKhoSql = " AND pth.MaKho = @MaKho ";
-                }
+                        int maKhoHienTai = SessionContext.MaKhoHienTai;
+                        string filterKhoSql = "";
+                        if (maKhoHienTai > 0)
+                        {
+                            filterKhoSql = " AND pth.MaKho = @MaKho ";
+                        }
                         DateTime denNgay = dtpDenNgay.Value.Date.AddDays(1);
                         string timKiem = txtTimKiem.Text.Trim();
 
-                        string exportSql = $@"
+                        string exportSql = @"
                             SELECT 
                                 ISNULL(pth.MaPhieu, 'THN' + RIGHT('000000' + CAST(pth.MaPhieuTraHang AS VARCHAR(10)), 6)) AS MaPhieu,
                                 pth.NgayTra,
-                        ISNULL(k.TenKho, N'') AS TenKho,
+                                ISNULL(k.TenKho, N'') AS TenKho,
                                 ISNULL(ncc.TenDonVi, N'Nhà cung cấp lẻ') AS TenDonVi,
                                 pth.TongTienHang,
                                 pth.GiamGia,
@@ -595,13 +596,13 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                                 END AS TenTrangThai
                             FROM PhieuTraHangNhap pth
                             LEFT JOIN DonViCapHang ncc ON pth.MaDonViCapHang = ncc.MaDonViCapHang
-                    LEFT JOIN Kho k ON pth.MaKho = k.MaKho
+                            LEFT JOIN Kho k ON pth.MaKho = k.MaKho
                             WHERE (pth.NgayTra >= @TuNgay AND pth.NgayTra < @DenNgay)
-                              {filterKhoSql}
-                      {filterTrangThaiSql}
-                              {filterNccSql}
-                              {filterNvlSql}
-                              {filterNvtSql}
+                              " + filterKhoSql + @"
+                              " + filterTrangThaiSql + @"
+                              " + filterNccSql + @"
+                              " + filterNvlSql + @"
+                              " + filterNvtSql + @"
                               AND (
                                   @TimKiem = ''
                                   OR pth.MaPhieu LIKE @TimKiemLike
@@ -626,25 +627,59 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                         DataTable dtExport = DataProcessing.ReadData(exportSql, p.ToArray());
 
                         StringBuilder sb = new StringBuilder();
-                        sb.AppendLine("Mã trả hàng nhập,Thời gian,Nhà cung cấp,Tổng tiền hàng,Giảm giá,NCC cần trả,NCC đã trả,Trạng thái");
+                        sb.AppendLine("<!DOCTYPE html>");
+                        sb.AppendLine("<html><head><meta http-equiv=\"content-type\" content=\"application/vnd.ms-excel; charset=UTF-8\" />");
+                        sb.AppendLine("<style>");
+                        sb.AppendLine("table { border-collapse: collapse; font-family: Segoe UI, Tahoma, sans-serif; font-size: 11pt; }");
+                        sb.AppendLine("th { background-color: #E2E8F0; color: #0F172A; font-weight: bold; border: 1px solid #94A3B8; padding: 8px 12px; }");
+                        sb.AppendLine("td { border: 1px solid #CBD5E1; padding: 6px 10px; }");
+                        sb.AppendLine(".text { mso-number-format: '\\@'; text-align: left; }");
+                        sb.AppendLine(".center { text-align: center; }");
+                        sb.AppendLine(".number { mso-number-format: '#,##0'; text-align: right; }");
+                        sb.AppendLine("</style></head><body>");
+                        sb.AppendLine("<table>");
+
+                        sb.AppendLine("<tr>");
+                        sb.AppendLine("<th>Mã trả hàng nhập</th>");
+                        sb.AppendLine("<th>Thời gian</th>");
+                        sb.AppendLine("<th>Kho</th>");
+                        sb.AppendLine("<th>Nhà cung cấp</th>");
+                        sb.AppendLine("<th>Tổng tiền hàng</th>");
+                        sb.AppendLine("<th>Giảm giá</th>");
+                        sb.AppendLine("<th>NCC cần trả</th>");
+                        sb.AppendLine("<th>NCC đã trả</th>");
+                        sb.AppendLine("<th>Trạng thái</th>");
+                        sb.AppendLine("</tr>");
 
                         if (dtExport != null)
                         {
                             foreach (DataRow row in dtExport.Rows)
                             {
-                                string maPhieu = EscapeCsv(row["MaPhieu"].ToString());
+                                string maPhieu = row["MaPhieu"]?.ToString() ?? "";
                                 string thoiGian = Convert.ToDateTime(row["NgayTra"]).ToString("dd/MM/yyyy HH:mm");
-                                string tenNcc = EscapeCsv(row["TenDonVi"].ToString());
-                                string tongTien = Convert.ToDecimal(row["TongTienHang"]).ToString("N0");
-                                string giamGia = Convert.ToDecimal(row["GiamGia"]).ToString("N0");
-                                string canThu = Convert.ToDecimal(row["CanThuNcc"]).ToString("N0");
-                                string daThu = Convert.ToDecimal(row["DaThuNcc"]).ToString("N0");
-                                string trangThai = EscapeCsv(row["TenTrangThai"].ToString());
+                                string tenKho = row["TenKho"]?.ToString() ?? "";
+                                string tenNcc = row["TenDonVi"]?.ToString() ?? "";
+                                decimal tongTien = Convert.ToDecimal(row["TongTienHang"]);
+                                decimal giamGia = Convert.ToDecimal(row["GiamGia"]);
+                                decimal canThu = Convert.ToDecimal(row["CanThuNcc"]);
+                                decimal daThu = Convert.ToDecimal(row["DaThuNcc"]);
+                                string trangThai = row["TenTrangThai"]?.ToString() ?? "";
 
-                                sb.AppendLine($"{maPhieu},{thoiGian},{tenNcc},{tongTien},{giamGia},{canThu},{daThu},{trangThai}");
+                                sb.AppendLine("<tr>");
+                                sb.AppendLine($"<td class=\"center\">{System.Net.WebUtility.HtmlEncode(maPhieu)}</td>");
+                                sb.AppendLine($"<td class=\"center\">{System.Net.WebUtility.HtmlEncode(thoiGian)}</td>");
+                                sb.AppendLine($"<td class=\"text\">{System.Net.WebUtility.HtmlEncode(tenKho)}</td>");
+                                sb.AppendLine($"<td class=\"text\">{System.Net.WebUtility.HtmlEncode(tenNcc)}</td>");
+                                sb.AppendLine($"<td class=\"number\">{tongTien:N0}</td>");
+                                sb.AppendLine($"<td class=\"number\">{giamGia:N0}</td>");
+                                sb.AppendLine($"<td class=\"number\">{canThu:N0}</td>");
+                                sb.AppendLine($"<td class=\"number\">{daThu:N0}</td>");
+                                sb.AppendLine($"<td class=\"center\">{System.Net.WebUtility.HtmlEncode(trangThai)}</td>");
+                                sb.AppendLine("</tr>");
                             }
                         }
 
+                        sb.AppendLine("</table></body></html>");
                         File.WriteAllText(sfd.FileName, sb.ToString(), new UTF8Encoding(true));
                         MessageBox.Show("Xuất danh sách đơn trả hàng nhập ra file thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -654,16 +689,6 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                     }
                 }
             }
-        }
-
-        private string EscapeCsv(string text)
-        {
-            if (string.IsNullOrEmpty(text)) return "\"\"";
-            if (text.Contains(",") || text.Contains("\"") || text.Contains("\n") || text.Contains("\r"))
-            {
-                return "\"" + text.Replace("\"", "\"\"") + "\"";
-            }
-            return text;
         }
 
         private void btnHienCot_Click(object sender, EventArgs e)
@@ -703,7 +728,7 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                               "3. Lập phiếu trả hàng mới: Nhấp nút '+ Trả hàng nhập' để chọn nhà cung cấp và thêm mặt hàng cần trả từ danh mục hàng hóa.\n" +
                               "4. Xem chi tiết / Xóa / Hủy: Nhấp đúp chuột (Double click) vào bất kỳ dòng đơn trả nào trên bảng.\n" +
                               "5. Phân trang: Nhấp 'Trước' / 'Sau' hoặc chọn lại số dòng hiển thị mỗi trang ở góc dưới.\n" +
-                              "6. Xuất file: Nhấp 'Xuất file' để lưu danh sách ra định dạng CSV chuẩn UTF-8 BOM mở bằng Excel.\n" +
+                              "6. Xuất file: Nhấp 'Xuất file' để lưu danh sách ra định dạng Excel (.xls) chuẩn tiếng Việt.\n" +
                               "7. Hiện/Ẩn cột: Nhấp nút 'Hiện cột' để bật/tắt hiển thị các cột trên bảng.";
 
             MessageBox.Show(huongDan, "Hướng dẫn sử dụng", MessageBoxButtons.OK, MessageBoxIcon.Information);

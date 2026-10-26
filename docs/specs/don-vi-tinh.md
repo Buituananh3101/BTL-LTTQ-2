@@ -1,6 +1,6 @@
 ﻿# Đặc tả Chức năng: Quản lý Đơn vị tính (Unit of Measure Management - Windows Forms)
 
-> **Mục tiêu**: Quản lý danh mục Đơn vị tính chuẩn giao diện & nghiệp vụ hệ thống kho hàng nội bộ. Hỗ trợ tìm kiếm tức thì, lọc tình trạng sử dụng, thống kê số lượng mặt hàng đang áp dụng từng đơn vị tính, bảo vệ ràng buộc toàn vẹn dữ liệu (không xóa ĐVT đang có hàng hóa liên kết), mở form MDI, thêm mới/chỉnh sửa đơn vị tính, tạo nhanh ĐVT từ màn hình thêm hàng hóa và xuất danh sách ra file CSV/Excel UTF-8 BOM.
+> **Mục tiêu**: Quản lý danh mục Đơn vị tính chuẩn giao diện & nghiệp vụ hệ thống kho hàng nội bộ. Hỗ trợ tìm kiếm tức thì, lọc tình trạng sử dụng, thống kê số lượng mặt hàng đang áp dụng từng đơn vị tính, bảo vệ ràng buộc toàn vẹn dữ liệu (không xóa ĐVT đang có hàng hóa liên kết), mở form MDI, thêm mới/chỉnh sửa đơn vị tính, tạo nhanh ĐVT từ màn hình thêm hàng hóa và xuất danh sách ra file Excel (.xls) UTF-8 BOM.
 
 ---
 
@@ -39,7 +39,7 @@
 | **7. Xóa ĐVT** | Nhấn nút "Xóa" trong form chi tiết `frmChiTietDonViTinh` | Kiểm tra điều kiện xóa: nếu đang có mặt hàng sử dụng ➜ chặn xóa và thông báo chi tiết. Nếu 0 mặt hàng ➜ hiện hộp thoại xác nhận | Thực hiện `DELETE FROM DonViTinh WHERE MaDVT = @MaDVT` trong Transaction, ghi nhật ký thao tác `NhatKyThaoTac`, trả về `DialogResult.OK` để form danh sách tự tải lại |
 | **8. Tạo nhanh ĐVT từ Form Hàng hóa** | Bấm nút "+" cạnh `cboDonVi` trên `frmHangHoa` | Mở modal dialog `frmChiTietDonViTinh` | Sau khi lưu thành công, nạp lại ComboBox `cboDonVi` và tự động chọn ĐVT vừa tạo |
 | **9. Tùy chọn Ẩn/Hiện cột** | Bấm nút "Hiện cột" | Mở popup `frmHienCotDvt` ngay dưới nút | Bật/tắt `dgv.Columns[col].Visible` tức thì |
-| **10. Xuất file CSV / Excel** | Bấm nút "Xuất file" | Hộp thoại `SaveFileDialog` lưu file `.csv` | Xuất đúng các cột đang hiển thị với định dạng UTF-8 BOM đọc tốt tiếng Việt trên Excel |
+| **10. Xuất file Excel** | Bấm nút "Xuất file" | Hộp thoại `SaveFileDialog` lưu file `.xls` | Xuất đúng các cột đang hiển thị với định dạng UTF-8 BOM đọc tốt tiếng Việt trên Excel |
 
 ---
 

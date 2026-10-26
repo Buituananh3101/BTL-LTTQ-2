@@ -58,7 +58,7 @@
 | `frmChiTietChuyenKho` | Modal Dialog | `GUI/Forms/ChuyenKho/frmChiTietChuyenKho.cs` | Form chi tiết phiếu chuyển kho khi double-click: Master-Detail, nhãn trạng thái dòng chữ màu font chữ thường theo chuẩn Trả hàng nhập, nút Hoàn thành (xuất chuyển cho phiếu tạm `NHAP`), Nhận hàng (cho kho đích khi `DA_XUAT`), Xóa (theo Luật 5 & 15d), Xuất file. |
 | `frmNhanChuyenKho` | Modal Dialog | `GUI/Forms/ChuyenKho/frmNhanChuyenKho.cs` | Form xác nhận nhận hàng tại kho đích: kiểm đếm số lượng thực nhận, phát hiện hao hụt, bắt buộc nhập lý do thất thoát, cập nhật `DA_NHAN`. |
 | `frmHienCotChuyenKho` | Tool Window | `GUI/Forms/ChuyenKho/frmHienCotChuyenKho.cs` | Popup tùy chọn ẩn/hiện cột bảng chuyển kho. |
-| `frmNhapChuyenKhoFile` | Modal Dialog | `GUI/Forms/ChuyenKho/frmNhapChuyenKhoFile.cs` | Form nạp danh sách hàng hóa chuyển từ file CSV (hỗ trợ tải file mẫu chuẩn). |
+| `frmNhapChuyenKhoFile` | Modal Dialog | `GUI/Forms/ChuyenKho/frmNhapChuyenKhoFile.cs` | Form nạp danh sách hàng hóa chuyển từ file Excel (hỗ trợ tải file mẫu chuẩn). |
 
 ---
 

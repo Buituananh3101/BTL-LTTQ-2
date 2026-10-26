@@ -627,33 +627,76 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
 
             try
             {
-                SaveFileDialog sfd = new SaveFileDialog();
-                sfd.Title = coDongChon ? string.Format("Xuất {0} phiếu chuyển kho đã chọn", danhSachXuat.Count) : "Xuất danh sách phiếu chuyển kho";
-                sfd.Filter = "File Excel (*.xls)|*.xls|File CSV (*.csv)|*.csv";
-                sfd.FileName = string.Format("Danh_Sach_Chuyen_Kho_{0}.csv", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
-
-                if (sfd.ShowDialog() == DialogResult.OK)
+                using (SaveFileDialog sfd = new SaveFileDialog())
                 {
-                    StringBuilder sb = new StringBuilder();
-                    sb.AppendLine("Mã chuyển kho,Thời gian,Kho gửi,Kho nhận,Tổng SL chuyển,Tổng SL nhận,Tổng giá trị,Người tạo,Trạng thái,Ghi chú");
+                    sfd.Title = coDongChon ? string.Format("Xuất {0} phiếu chuyển kho đã chọn", danhSachXuat.Count) : "Xuất danh sách phiếu chuyển kho";
+                    sfd.Filter = "File Excel (*.xls)|*.xls";
+                    sfd.FileName = string.Format("DanhSachChuyenKho_{0:yyyyMMdd_HHmm}.xls", DateTime.Now);
 
-                    foreach (DataRow r in dtDanhSach.Rows)
+                    if (sfd.ShowDialog() == DialogResult.OK)
                     {
-                        sb.AppendLine(string.Format("{0},{1},\"{2}\",\"{3}\",{4},{5},{6},\"{7}\",\"{8}\",\"{9}\"",
-                            r["MaPhieu"],
-                            r["NgayLapHienThi"],
-                            r["TenKhoNguon"].ToString().Replace("\"", "\"\""),
-                            r["TenKhoDich"].ToString().Replace("\"", "\"\""),
-                            r["TongSoLuongChuyen"],
-                            r["TongSoLuongNhanHienThi"],
-                            r["TongGiaTriChuyen"],
-                            r["TenNguoiTao"].ToString().Replace("\"", "\"\""),
-                            r["TrangThaiHienThi"],
-                            r["GhiChu"].ToString().Replace("\"", "\"\"")));
-                    }
+                        StringBuilder sb = new StringBuilder();
+                        sb.AppendLine("<!DOCTYPE html>");
+                        sb.AppendLine("<html><head><meta http-equiv=\"content-type\" content=\"application/vnd.ms-excel; charset=UTF-8\" />");
+                        sb.AppendLine("<style>");
+                        sb.AppendLine("table { border-collapse: collapse; font-family: Segoe UI, Tahoma, sans-serif; font-size: 11pt; }");
+                        sb.AppendLine("th { background-color: #E2E8F0; color: #0F172A; font-weight: bold; border: 1px solid #94A3B8; padding: 8px 12px; }");
+                        sb.AppendLine("td { border: 1px solid #CBD5E1; padding: 6px 10px; }");
+                        sb.AppendLine(".text { mso-number-format: '\\@'; text-align: left; }");
+                        sb.AppendLine(".center { text-align: center; }");
+                        sb.AppendLine(".number { mso-number-format: '#,##0'; text-align: right; }");
+                        sb.AppendLine("</style></head><body>");
+                        sb.AppendLine("<table>");
 
-                    File.WriteAllText(sfd.FileName, sb.ToString(), new UTF8Encoding(true));
-                    MessageBox.Show("Xuất file CSV danh sách chuyển kho thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        // Tiêu đề cột
+                        sb.AppendLine("<tr>");
+                        sb.AppendLine("<th>Mã chuyển kho</th>");
+                        sb.AppendLine("<th>Thời gian</th>");
+                        sb.AppendLine("<th>Kho gửi</th>");
+                        sb.AppendLine("<th>Kho nhận</th>");
+                        sb.AppendLine("<th>Tổng SL chuyển</th>");
+                        sb.AppendLine("<th>Tổng SL nhận</th>");
+                        sb.AppendLine("<th>Tổng giá trị</th>");
+                        sb.AppendLine("<th>Người tạo</th>");
+                        sb.AppendLine("<th>Trạng thái</th>");
+                        sb.AppendLine("<th>Ghi chú</th>");
+                        sb.AppendLine("</tr>");
+
+                        foreach (DataRow r in danhSachXuat)
+                        {
+                            string maPhieu = r["MaPhieu"]?.ToString() ?? "";
+                            string ngayLap = r["NgayLapHienThi"]?.ToString() ?? "";
+                            string khoGui = r["TenKhoNguon"]?.ToString() ?? "";
+                            string khoNhan = r["TenKhoDich"]?.ToString() ?? "";
+                            decimal slChuyen = r["TongSoLuongChuyen"] != DBNull.Value ? Convert.ToDecimal(r["TongSoLuongChuyen"]) : 0;
+                            string slNhan = r["TongSoLuongNhanHienThi"]?.ToString() ?? "";
+                            decimal tongGiaTri = r["TongGiaTriChuyen"] != DBNull.Value ? Convert.ToDecimal(r["TongGiaTriChuyen"]) : 0;
+                            string nguoiTao = r["TenNguoiTao"]?.ToString() ?? "";
+                            string trangThai = r["TrangThaiHienThi"]?.ToString() ?? "";
+                            string ghiChu = r["GhiChu"]?.ToString() ?? "";
+
+                            sb.AppendLine("<tr>");
+                            sb.AppendLine($"<td class=\"center\">{System.Net.WebUtility.HtmlEncode(maPhieu)}</td>");
+                            sb.AppendLine($"<td class=\"center\">{System.Net.WebUtility.HtmlEncode(ngayLap)}</td>");
+                            sb.AppendLine($"<td class=\"text\">{System.Net.WebUtility.HtmlEncode(khoGui)}</td>");
+                            sb.AppendLine($"<td class=\"text\">{System.Net.WebUtility.HtmlEncode(khoNhan)}</td>");
+                            sb.AppendLine($"<td class=\"number\">{slChuyen:N0}</td>");
+                            sb.AppendLine($"<td class=\"number\">{System.Net.WebUtility.HtmlEncode(slNhan)}</td>");
+                            sb.AppendLine($"<td class=\"number\">{tongGiaTri:N0}</td>");
+                            sb.AppendLine($"<td class=\"text\">{System.Net.WebUtility.HtmlEncode(nguoiTao)}</td>");
+                            sb.AppendLine($"<td class=\"center\">{System.Net.WebUtility.HtmlEncode(trangThai)}</td>");
+                            sb.AppendLine($"<td class=\"text\">{System.Net.WebUtility.HtmlEncode(ghiChu)}</td>");
+                            sb.AppendLine("</tr>");
+                        }
+
+                        sb.AppendLine("</table></body></html>");
+                        File.WriteAllText(sfd.FileName, sb.ToString(), new UTF8Encoding(true));
+
+                        string thongBao = coDongChon
+                            ? string.Format("Xuất file thành công {0:N0} phiếu chuyển kho đã chọn tại:\n{1}", danhSachXuat.Count, sfd.FileName)
+                            : string.Format("Xuất file thành công toàn bộ {0:N0} phiếu chuyển kho tại:\n{1}", danhSachXuat.Count, sfd.FileName);
+                        MessageBox.Show(thongBao, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
                 }
             }
             catch (Exception ex)

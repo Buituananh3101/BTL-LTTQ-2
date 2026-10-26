@@ -52,7 +52,7 @@
   - Tiêu đề: "Phiếu kiểm kho" (`Segoe UI, 12pt Bold`).
   - Ô tìm kiếm `txtTimKiem`: Lọc theo mã phiếu kiểm và ghi chú.
   - Nút `+ Kiểm kho` (`btnKiemKho`): Mở form `frmThemPhieuKiemKho`.
-  - Nút `Xuất file` (`btnXuatFile`): Xuất danh sách đang lọc ra Excel/CSV.
+  - Nút `Xuất file` (`btnXuatFile`): Xuất danh sách đang lọc ra file Excel (.xls).
   - Nút `Hiện cột` (`btnHienCot`): Mở popup tùy chọn cột `frmHienCotKiemKho`.
   - Nút `?` (`btnHuongDanSuDung`): Hiển thị hướng dẫn sử dụng.
 - **Khối bộ lọc bên trái (Left Filter GroupBox)**:
@@ -80,7 +80,7 @@
   - Nút **Xóa** (`btnXoa`):
     + Nếu phiếu ở trạng thái `'DA_DIEU_CHINH'`: Khóa vĩnh viễn theo Luật 6, không cho xóa.
     + Nếu phiếu ở trạng thái `'NHAP'`: Xác nhận Yes/No, xóa phiếu và chi tiết, ghi log nhật ký.
-  - Nút **Xuất file** (`btnXuatFile`): Xuất chi tiết phiếu kiểm ra file Excel hoặc CSV (UTF-8 BOM).
+  - Nút **Xuất file** (`btnXuatFile`): Xuất chi tiết phiếu kiểm ra file Excel (.xls) UTF-8 BOM.
   - Nút **Hoàn thành** (`btnHoanThanh`): Chỉ hiển thị khi phiếu ở trạng thái Phiếu tạm (`NHAP`, `DANG_KIEM`, `DA_KIEM`). Bấm Hoàn thành sẽ hỏi xác nhận, bọc trong Transaction cập nhật `PhieuKiemKe` sang `DA_DIEU_CHINH`, sinh `PhieuDieuChinh` và `ChiTietPhieuDieuChinh` trạng thái `DA_DUYET`, cập nhật tồn kho sổ sách qua `vw_TonKhoHienTai` và khóa vĩnh viễn phiếu.
   - Nút **Đóng** (`btnDong`).
 
@@ -97,7 +97,6 @@
 ### 3.4. Màn hình Nhập file `frmNhapKiemKhoFile`
 - Cung cấp 2 nút tải file mẫu:
   - **Tải file mẫu Excel (.xls)**: Định dạng bảng HTML-Excel đẹp mắt, có header xanh `#0078D7`, kèm dữ liệu mẫu thực tế từ database.
-  - **Tải file mẫu CSV (.csv)**: Định dạng CSV chuẩn UTF-8 BOM.
 - Đọc file dữ liệu (.xlsx, .xls, .csv), kiểm tra đối chiếu mã hàng tồn tại trong hệ thống và số lượng thực tế hợp lệ.
 - Lưới xem trước hiển thị trạng thái từng dòng (Hợp lệ / Lỗi). Nút "Đồng ý nhập" nạp toàn bộ dòng hợp lệ vào `frmThemPhieuKiemKho`.
 

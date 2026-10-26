@@ -472,22 +472,14 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
                 sfd.Title = "Xuất chi tiết phiếu kiểm kho";
-                sfd.Filter = "File Excel (*.xls)|*.xls|File CSV (*.csv)|*.csv";
+                sfd.Filter = "File Excel (*.xls)|*.xls";
                 sfd.FileName = $"ChiTiet_{this.maPhieu}_{DateTime.Now:yyyyMMdd_HHmm}.xls";
 
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
                     try
                     {
-                        string ext = Path.GetExtension(sfd.FileName).ToLowerInvariant();
-                        if (ext == ".csv")
-                        {
-                            XuatCsvChiTiet(sfd.FileName);
-                        }
-                        else
-                        {
-                            XuatExcelHtmlChiTiet(sfd.FileName);
-                        }
+                        XuatExcelHtmlChiTiet(sfd.FileName);
 
                         MessageBox.Show("Xuất file thành công!\nĐường dẫn: " + sfd.FileName, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -497,33 +489,6 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                     }
                 }
             }
-        }
-
-        private void XuatCsvChiTiet(string filePath)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"PHIẾU KIỂM KHO: {this.maPhieu}");
-            sb.AppendLine($"Trạng thái: {lblTrangThaiBadge.Text}");
-            sb.AppendLine($"{lblNguoiTao.Text} - {lblNgayTao.Text}");
-            sb.AppendLine($"{lblNguoiCanBang.Text} - {lblNgayCanBang.Text}");
-            sb.AppendLine($"{lblKho.Text}");
-            sb.AppendLine($"Ghi chú: {txtGhiChu.Text}");
-            sb.AppendLine();
-            sb.AppendLine("STT,Mã hàng,Tên hàng,ĐVT,Tồn kho (sổ sách),Thực tế,SL lệch,Đơn giá,Giá trị lệch");
-
-            foreach (DataRow r in dtChiTietData.Rows)
-            {
-                string thucTe = r["SoLuongThucTe"] != DBNull.Value ? r["SoLuongThucTe"].ToString() : "Chưa kiểm";
-                sb.AppendLine($"{r["STT"]},\"{r["MaHangNoiBo"]}\",\"{r["TenHang"]}\",\"{r["TenDVT"]}\",{r["TonKho"]},{thucTe},{r["SlChenhLech"]},{r["DonGia"]},{r["GiaTriChenhLech"]}");
-            }
-
-            sb.AppendLine();
-            sb.AppendLine($"Tổng thực tế: {lblTongThucTeVal.Text}");
-            sb.AppendLine($"Tổng lệch tăng: {lblTongLechTangVal.Text}");
-            sb.AppendLine($"Tổng lệch giảm: {lblTongLechGiamVal.Text}");
-            sb.AppendLine($"Tổng chênh lệch: {lblTongChenhLechVal.Text}");
-
-            File.WriteAllText(filePath, sb.ToString(), new UTF8Encoding(true));
         }
 
         private void XuatExcelHtmlChiTiet(string filePath)
@@ -589,7 +554,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             sb.AppendLine("</body>");
             sb.AppendLine("</html>");
 
-            File.WriteAllText(filePath, sb.ToString(), Encoding.UTF8);
+            File.WriteAllText(filePath, sb.ToString(), new UTF8Encoding(true));
         }
 
         private void btnDong_Click(object sender, EventArgs e)

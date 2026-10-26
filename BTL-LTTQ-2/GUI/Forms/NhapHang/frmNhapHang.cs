@@ -451,38 +451,95 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 
         private void btnXuatFile_Click(object sender, EventArgs e)
         {
+            // Xác định danh sách dòng cần xuất: Ưu tiên các dòng được tích chọn CheckBox
+            List<DataGridViewRow> danhSachXuat = new List<DataGridViewRow>();
+            foreach (DataGridViewRow row in dgvNhapHang.Rows)
+            {
+                if (Convert.ToBoolean(row.Cells["colChon"].Value ?? false))
+                {
+                    danhSachXuat.Add(row);
+                }
+            }
+
+            bool coDongChon = danhSachXuat.Count > 0;
+            if (!coDongChon)
+            {
+                foreach (DataGridViewRow row in dgvNhapHang.Rows)
+                {
+                    danhSachXuat.Add(row);
+                }
+            }
+
+            if (danhSachXuat.Count == 0)
+            {
+                MessageBox.Show("Không có dữ liệu phiếu nhập hàng để xuất file!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
-                sfd.Filter = "File CSV (*.csv)|*.csv|Tất cả tệp (*.*)|*.*";
-                sfd.FileName = $"DanhSachNhapHang_{DateTime.Now:yyyyMMdd_HHmm}.csv";
+                sfd.Title = coDongChon ? $"Xuất {danhSachXuat.Count} phiếu nhập hàng đã chọn" : "Xuất danh sách nhập hàng";
+                sfd.Filter = "File Excel (*.xls)|*.xls";
+                sfd.FileName = coDongChon 
+                    ? $"DanhSachNhapHang_DaChon_{DateTime.Now:yyyyMMdd_HHmm}.xls" 
+                    : $"DanhSachNhapHang_{DateTime.Now:yyyyMMdd_HHmm}.xls";
 
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
                     try
                     {
                         StringBuilder sb = new StringBuilder();
-                        sb.AppendLine("Mã nhập hàng,Thời gian,Mã NCC,Tên NCC,Cần trả NCC,Tổng tiền,Trạng thái");
+                        sb.AppendLine("<!DOCTYPE html>");
+                        sb.AppendLine("<html><head><meta http-equiv=\"content-type\" content=\"application/vnd.ms-excel; charset=UTF-8\" />");
+                        sb.AppendLine("<style>");
+                        sb.AppendLine("table { border-collapse: collapse; font-family: Segoe UI, Tahoma, sans-serif; font-size: 11pt; }");
+                        sb.AppendLine("th { background-color: #E2E8F0; color: #0F172A; font-weight: bold; border: 1px solid #94A3B8; padding: 8px 12px; }");
+                        sb.AppendLine("td { border: 1px solid #CBD5E1; padding: 6px 10px; }");
+                        sb.AppendLine(".text { mso-number-format: '\\@'; text-align: left; }");
+                        sb.AppendLine(".center { text-align: center; }");
+                        sb.AppendLine(".number { mso-number-format: '#,##0'; text-align: right; }");
+                        sb.AppendLine("</style></head><body>");
+                        sb.AppendLine("<table>");
 
-                        DataTable dt = dgvNhapHang.DataSource as DataTable;
-                        if (dt != null)
+                        // Dòng tiêu đề cột
+                        sb.AppendLine("<tr>");
+                        foreach (DataGridViewColumn col in dgvNhapHang.Columns)
                         {
-                            foreach (DataRow row in dt.Rows)
+                            if (col.Visible && col.Name != "colChon" && col.Name != "colMaPhieuNhap")
                             {
-                                string maPhieu = row["MaPhieu"]?.ToString() ?? "";
-                                string thoiGian = Convert.ToDateTime(row["NgayLap"]).ToString("dd/MM/yyyy HH:mm");
-                                string maNcc = row["MaNccHienThi"]?.ToString() ?? "";
-                                string tenNcc = $"\"{row["TenDonVi"]?.ToString().Replace("\"", "\"\"")}\"";
-                                decimal canTra = Convert.ToDecimal(row["CanTraNcc"]);
-                                decimal tongTien = Convert.ToDecimal(row["TongTien"]);
-                                string trangThai = row["TenTrangThai"]?.ToString() ?? "";
-
-                                sb.AppendLine($"{maPhieu},{thoiGian},{maNcc},{tenNcc},{canTra},{tongTien},{trangThai}");
+                                sb.AppendLine($"<th>{System.Net.WebUtility.HtmlEncode(col.HeaderText)}</th>");
                             }
                         }
+                        sb.AppendLine("</tr>");
 
-                        // Ghi với UTF-8 with BOM để Excel đọc không lỗi font tiếng Việt
+                        // Dữ liệu từng dòng
+                        foreach (DataGridViewRow row in danhSachXuat)
+                        {
+                            sb.AppendLine("<tr>");
+                            foreach (DataGridViewColumn col in dgvNhapHang.Columns)
+                            {
+                                if (col.Visible && col.Name != "colChon" && col.Name != "colMaPhieuNhap")
+                                {
+                                    string cellVal = row.Cells[col.Index].FormattedValue?.ToString() ?? "";
+                                    string cssClass = "text";
+                                    if (col.DefaultCellStyle.Alignment == DataGridViewContentAlignment.MiddleRight)
+                                        cssClass = "number";
+                                    else if (col.DefaultCellStyle.Alignment == DataGridViewContentAlignment.MiddleCenter)
+                                        cssClass = "center";
+
+                                    sb.AppendLine($"<td class=\"{cssClass}\">{System.Net.WebUtility.HtmlEncode(cellVal)}</td>");
+                                }
+                            }
+                            sb.AppendLine("</tr>");
+                        }
+
+                        sb.AppendLine("</table></body></html>");
                         File.WriteAllText(sfd.FileName, sb.ToString(), new UTF8Encoding(true));
-                        MessageBox.Show("Xuất file dữ liệu thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        string thongBao = coDongChon
+                            ? $"Xuất file thành công {danhSachXuat.Count:N0} phiếu nhập hàng đã chọn tại:\n{sfd.FileName}"
+                            : $"Xuất file thành công toàn bộ {danhSachXuat.Count:N0} phiếu nhập hàng tại:\n{sfd.FileName}";
+                        MessageBox.Show(thongBao, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     catch (Exception ex)
                     {

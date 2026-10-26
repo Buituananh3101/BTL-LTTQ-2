@@ -51,7 +51,7 @@
 6. **Trạng thái**: ComboBox chọn trạng thái kinh doanh (Tất cả / Đang kinh doanh / Ngừng kinh doanh).
 7. **Thời gian tạo**: Cụm `grpThoiGianTao` chứa 2 `DateTimePicker` (Từ ngày - Đến ngày) **ở vị trí đáy** tuân thủ tuyệt đối Điều luật 16.
 ### 3.2. Cột Checkbox & Ẩn hiện cột:
-- **Cột CheckBox lựa chọn (colChon)**: Cột cố định đầu tiên (35px) phục vụ chọn từng dòng hoặc chọn tất cả qua Header CheckBox. Click trực tiếp hoặc bấm phím Space để đảo trạng thái chọn tức thì mà không ảnh hưởng trạng thái chỉ đọc của các cột dữ liệu. Cung cấp API LayDanhSachMaHangDaChon() để phục vụ các tác vụ hàng loạt. Tự động loại trừ khi xuất file Excel/CSV.
+- **Cột CheckBox lựa chọn (colChon)**: Cột cố định đầu tiên (35px) phục vụ chọn từng dòng hoặc chọn tất cả qua Header CheckBox. Click trực tiếp hoặc bấm phím Space để đảo trạng thái chọn tức thì mà không ảnh hưởng trạng thái chỉ đọc của các cột dữ liệu. Cung cấp API LayDanhSachMaHangDaChon() để phục vụ các tác vụ hàng loạt. Tự động loại trừ khi xuất file Excel (.xls).
 - **Sắp xếp 3 trạng thái & Ẩn hiện cột**:
 - **Sắp xếp 3 trạng thái**: Click header: Lần 1 ASC (`bi-arrow-up`) ➜ Lần 2 DESC (`bi-arrow-down`) ➜ Lần 3 Default. Cột căn trái dùng inline-flex chống tràn viền, cột số dùng padding-right 22px cố định icon.
 - **Tùy chọn hiển thị cột**: Nút `#btnColsDropdown` (`bi-view-list`), menu `#colMenu` 2 cột chuẩn chuyên nghiệp. Quản lý qua `KiotFilter.initColumnToggle` lưu `kiot_hang_hoa_cols_v1`. Quản lý 13 cột dữ liệu (`img`, `mahang`, `tenhang`, `nhomhang`, `dvt`, `giaban`, `giavon`, `tonkho`, `khachdat`, `vitri`, `ngaytao`, `dukienhethang`, `trangthai`) + 2 cột cố định. Tự động đồng bộ `colspan` và class `.last-visible-col`. Bảng `#productTable` áp dụng chuẩn `width: max-content; min-width: 760px; table-layout: fixed;` (chuẩn Kiểm tồn & Nhà cung cấp), khóa cố định `width`/`min-width` từng cột chống co rút khi thêm cột. Khung chi tiết `.kiot-detail-fixed-wrap` cố định 992px.
@@ -120,4 +120,4 @@
   - Cột: `colKhachDat`, HeaderText: `Khách đặt`, DataPropertyName: `KhachDat`.
   - Vị trí: Đứng ngay sau cột Tồn kho (`colTonKho`), độ rộng 95px, căn phải (`MiddleRight`), định dạng số `N0`.
   - Mặc định ẩn (`Visible = false`) khi tải danh sách; người dùng bật/tắt hiển thị linh hoạt thông qua form "Hiện cột" (`frmHienCot`, checkbox `chkKhachDat`).
-  - Khi xuất file Excel (`.xls`) hoặc `.csv`: Nếu cột đang hiển thị, hệ thống tự động xuất kèm dữ liệu số lượng khách đặt với định dạng số chuẩn.
+  - Khi xuất file Excel (`.xls`) : Nếu cột đang hiển thị, hệ thống tự động xuất kèm dữ liệu số lượng khách đặt với định dạng số chuẩn.

@@ -693,50 +693,77 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                     return;
                 }
 
-                SaveFileDialog sfd = new SaveFileDialog
+                using (SaveFileDialog sfd = new SaveFileDialog
                 {
-                    Filter = "CSV File (*.csv)|*.csv",
-                    FileName = $"TheKho_{DateTime.Now:yyyyMMdd_HHmmss}.csv"
-                };
-
-                if (sfd.ShowDialog() == DialogResult.OK)
+                    Title = "Xuất báo cáo thẻ kho",
+                    Filter = "File Excel (*.xls)|*.xls",
+                    FileName = $"TheKho_{DateTime.Now:yyyyMMdd_HHmm}.xls"
+                })
                 {
-                    StringBuilder sb = new StringBuilder();
-
-                    // Tiêu đề báo cáo
-                    sb.AppendLine($"\"BÁO CÁO THẺ KHO - {lblTenHangHienThi.Text.Replace("\"", "\"\"")}\"");
-                    sb.AppendLine($"\"{lblThongTinChiTiet.Text.Replace("\"", "\"\"")}\"");
-                    sb.AppendLine($"\"Thời gian: Từ {dtpTuNgay.Value:dd/MM/yyyy} đến {dtpDenNgay.Value:dd/MM/yyyy}\"");
-                    sb.AppendLine();
-
-                    // Ghi tiêu đề cột
-                    List<string> headers = new List<string>();
-                    List<string> colNames = new List<string>();
-                    foreach (DataGridViewColumn col in dgvTheKho.Columns)
+                    if (sfd.ShowDialog() == DialogResult.OK)
                     {
-                        if (col.Visible && !string.IsNullOrWhiteSpace(col.HeaderText))
-                        {
-                            headers.Add($"\"{col.HeaderText.Replace("\"", "\"\"")}\"");
-                            colNames.Add(col.DataPropertyName);
-                        }
-                    }
-                    sb.AppendLine(string.Join(",", headers));
+                        StringBuilder sb = new StringBuilder();
+                        sb.AppendLine("<!DOCTYPE html>");
+                        sb.AppendLine("<html><head><meta http-equiv=\"content-type\" content=\"application/vnd.ms-excel; charset=UTF-8\" />");
+                        sb.AppendLine("<style>");
+                        sb.AppendLine("body { font-family: Segoe UI, Tahoma, sans-serif; font-size: 10.5pt; color: #1E293B; }");
+                        sb.AppendLine(".title { font-size: 15pt; font-weight: bold; color: #0F172A; margin-bottom: 8px; }");
+                        sb.AppendLine(".subtitle { font-size: 11pt; color: #475569; margin-bottom: 4px; }");
+                        sb.AppendLine("table.data { border-collapse: collapse; width: 100%; font-size: 10pt; margin-top: 15px; }");
+                        sb.AppendLine("table.data th { background-color: #E2E8F0; color: #0F172A; font-weight: bold; border: 1px solid #94A3B8; padding: 8px 10px; }");
+                        sb.AppendLine("table.data td { border: 1px solid #CBD5E1; padding: 6px 10px; }");
+                        sb.AppendLine(".text { mso-number-format: '\\@'; text-align: left; }");
+                        sb.AppendLine(".center { text-align: center; }");
+                        sb.AppendLine(".number { mso-number-format: '#,##0'; text-align: right; }");
+                        sb.AppendLine("</style></head><body>");
 
-                    // Ghi từng dòng dữ liệu
-                    foreach (DataRow row in dtTheKhoHienThi.Rows)
-                    {
-                        List<string> cells = new List<string>();
-                        foreach (string colName in colNames)
-                        {
-                            string strVal = row[colName] != null ? row[colName].ToString().Replace("\"", "\"\"") : "";
-                            cells.Add($"\"{strVal}\"");
-                        }
-                        sb.AppendLine(string.Join(",", cells));
-                    }
+                        sb.AppendLine($"<div class=\"title\">BÁO CÁO THẺ KHO - {System.Net.WebUtility.HtmlEncode(lblTenHangHienThi.Text)}</div>");
+                        sb.AppendLine($"<div class=\"subtitle\">{System.Net.WebUtility.HtmlEncode(lblThongTinChiTiet.Text)}</div>");
+                        sb.AppendLine($"<div class=\"subtitle\">Thời gian: Từ {dtpTuNgay.Value:dd/MM/yyyy} đến {dtpDenNgay.Value:dd/MM/yyyy}</div>");
 
-                    // Lưu file UTF-8 with BOM chuẩn tiếng Việt
-                    File.WriteAllText(sfd.FileName, sb.ToString(), new UTF8Encoding(true));
-                    MessageBox.Show("Xuất file báo cáo thẻ kho thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        sb.AppendLine("<table class=\"data\">");
+                        sb.AppendLine("<tr>");
+                        List<DataGridViewColumn> colsToExport = new List<DataGridViewColumn>();
+                        foreach (DataGridViewColumn col in dgvTheKho.Columns)
+                        {
+                            if (col.Visible && !string.IsNullOrWhiteSpace(col.HeaderText))
+                            {
+                                colsToExport.Add(col);
+                                sb.AppendLine($"<th>{System.Net.WebUtility.HtmlEncode(col.HeaderText)}</th>");
+                            }
+                        }
+                        sb.AppendLine("</tr>");
+
+                        foreach (DataRow row in dtTheKhoHienThi.Rows)
+                        {
+                            sb.AppendLine("<tr>");
+                            foreach (DataGridViewColumn col in colsToExport)
+                            {
+                                string colProp = col.DataPropertyName;
+                                string cellVal = row[colProp] != null ? row[colProp].ToString() : "";
+                                string cssClass = "text";
+                                if (col.DefaultCellStyle.Alignment == DataGridViewContentAlignment.MiddleRight)
+                                {
+                                    cssClass = "number";
+                                    if (decimal.TryParse(cellVal, out decimal numVal))
+                                    {
+                                        cellVal = numVal.ToString("N0");
+                                    }
+                                }
+                                else if (col.DefaultCellStyle.Alignment == DataGridViewContentAlignment.MiddleCenter)
+                                {
+                                    cssClass = "center";
+                                }
+
+                                sb.AppendLine($"<td class=\"{cssClass}\">{System.Net.WebUtility.HtmlEncode(cellVal)}</td>");
+                            }
+                            sb.AppendLine("</tr>");
+                        }
+
+                        sb.AppendLine("</table></body></html>");
+                        File.WriteAllText(sfd.FileName, sb.ToString(), new UTF8Encoding(true));
+                        MessageBox.Show("Xuất file báo cáo thẻ kho thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
                 }
             }
             catch (Exception ex)

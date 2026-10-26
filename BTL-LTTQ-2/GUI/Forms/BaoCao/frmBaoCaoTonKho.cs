@@ -685,45 +685,63 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                     return;
                 }
 
-                SaveFileDialog sfd = new SaveFileDialog
+                using (SaveFileDialog sfd = new SaveFileDialog
                 {
-                    Filter = "CSV File (*.csv)|*.csv",
-                    FileName = $"BaoCaoTonKho_{DateTime.Now:yyyyMMdd_HHmmss}.csv"
-                };
-
-                if (sfd.ShowDialog() == DialogResult.OK)
+                    Title = "Xuất báo cáo tồn kho",
+                    Filter = "File Excel (*.xls)|*.xls",
+                    FileName = $"BaoCaoTonKho_{DateTime.Now:yyyyMMdd_HHmm}.xls"
+                })
                 {
-                    StringBuilder sb = new StringBuilder();
-
-                    // Ghi tiêu đề cột
-                    List<string> headers = new List<string>();
-                    List<string> colNames = new List<string>();
-                    foreach (DataGridViewColumn col in dgvBaoCaoTonKho.Columns)
+                    if (sfd.ShowDialog() == DialogResult.OK)
                     {
-                        if (col.Visible && !string.IsNullOrWhiteSpace(col.HeaderText))
-                        {
-                            headers.Add($"\"{col.HeaderText.Replace("\"", "\"\"")}\"");
-                            colNames.Add(col.Name);
-                        }
-                    }
-                    sb.AppendLine(string.Join(",", headers));
+                        StringBuilder sb = new StringBuilder();
+                        sb.AppendLine("<!DOCTYPE html>");
+                        sb.AppendLine("<html><head><meta http-equiv=\"content-type\" content=\"application/vnd.ms-excel; charset=UTF-8\" />");
+                        sb.AppendLine("<style>");
+                        sb.AppendLine("table { border-collapse: collapse; font-family: Segoe UI, Tahoma, sans-serif; font-size: 11pt; }");
+                        sb.AppendLine("th { background-color: #E2E8F0; color: #0F172A; font-weight: bold; border: 1px solid #94A3B8; padding: 8px 12px; }");
+                        sb.AppendLine("td { border: 1px solid #CBD5E1; padding: 6px 10px; }");
+                        sb.AppendLine(".text { mso-number-format: '\\@'; text-align: left; }");
+                        sb.AppendLine(".center { text-align: center; }");
+                        sb.AppendLine(".number { mso-number-format: '#,##0'; text-align: right; }");
+                        sb.AppendLine("</style></head><body>");
+                        sb.AppendLine("<table>");
 
-                    // Ghi dữ liệu từng dòng
-                    foreach (DataGridViewRow row in dgvBaoCaoTonKho.Rows)
-                    {
-                        List<string> cells = new List<string>();
-                        foreach (string colName in colNames)
+                        // Dòng tiêu đề cột
+                        sb.AppendLine("<tr>");
+                        List<DataGridViewColumn> colsToExport = new List<DataGridViewColumn>();
+                        foreach (DataGridViewColumn col in dgvBaoCaoTonKho.Columns)
                         {
-                            object val = row.Cells[colName].Value;
-                            string strVal = val != null ? val.ToString().Replace("\"", "\"\"") : "";
-                            cells.Add($"\"{strVal}\"");
+                            if (col.Visible && !string.IsNullOrWhiteSpace(col.HeaderText))
+                            {
+                                colsToExport.Add(col);
+                                sb.AppendLine($"<th>{System.Net.WebUtility.HtmlEncode(col.HeaderText)}</th>");
+                            }
                         }
-                        sb.AppendLine(string.Join(",", cells));
-                    }
+                        sb.AppendLine("</tr>");
 
-                    // Lưu file UTF-8 with BOM chuẩn tiếng Việt
-                    File.WriteAllText(sfd.FileName, sb.ToString(), new UTF8Encoding(true));
-                    MessageBox.Show("Xuất file báo cáo tồn kho thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        // Ghi dữ liệu từng dòng
+                        foreach (DataGridViewRow row in dgvBaoCaoTonKho.Rows)
+                        {
+                            sb.AppendLine("<tr>");
+                            foreach (DataGridViewColumn col in colsToExport)
+                            {
+                                string cellVal = row.Cells[col.Index].FormattedValue?.ToString() ?? "";
+                                string cssClass = "text";
+                                if (col.DefaultCellStyle.Alignment == DataGridViewContentAlignment.MiddleRight)
+                                    cssClass = "number";
+                                else if (col.DefaultCellStyle.Alignment == DataGridViewContentAlignment.MiddleCenter)
+                                    cssClass = "center";
+
+                                sb.AppendLine($"<td class=\"{cssClass}\">{System.Net.WebUtility.HtmlEncode(cellVal)}</td>");
+                            }
+                            sb.AppendLine("</tr>");
+                        }
+
+                        sb.AppendLine("</table></body></html>");
+                        File.WriteAllText(sfd.FileName, sb.ToString(), new UTF8Encoding(true));
+                        MessageBox.Show("Xuất file báo cáo tồn kho thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
                 }
             }
             catch (Exception ex)
@@ -778,7 +796,7 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                 "1. Xem tồn kho: Chọn Chi nhánh kho ở bộ lọc bên trái để xem tồn từng kho, hoặc chọn '-- Tất cả các kho --' để xem tổng hợp toàn hệ thống.\n" +
                 "2. Bộ lọc: Kết hợp lọc theo Nhóm hàng, Tiêu chí mức tồn (Còn tồn, Hết hàng, Tồn âm, Dưới định mức, Vượt định mức) và Trạng thái kinh doanh.\n" +
                 "3. Xem thẻ kho: Nhấp đúp vào dòng mặt hàng trên bảng để mở xem lịch sử xuất - nhập - tồn thẻ kho chi tiết.\n" +
-                "4. Xuất file: Nhấn 'Xuất file' để xuất danh sách ra định dạng CSV chuẩn tiếng Việt có dấu.\n" +
+                "4. Xuất file: Nhấn 'Xuất file' để xuất danh sách ra định dạng Excel (.xls) chuẩn tiếng Việt.\n" +
                 "5. Cảnh báo đỏ: Các mặt hàng hết hàng hoặc tồn âm được đánh dấu đỏ nổi bật.";
 
             MessageBox.Show(huongDan, "Hướng dẫn sử dụng", MessageBoxButtons.OK, MessageBoxIcon.Information);

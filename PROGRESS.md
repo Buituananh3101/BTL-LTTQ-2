@@ -1,17 +1,12 @@
 ﻿# Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-26 – Chuẩn hóa phím Enter/nhận SL kiểm kho và đồng bộ hành vi nút Bỏ qua của 4 form thêm chứng từ (Phiên 56)
+**Cập nhật lần cuối**: 2026-10-26 – Thống nhất 100% chức năng xuất file toàn hệ thống sang định dạng Excel (.xls), loại bỏ hoàn toàn CSV (Phiên 57)
 ---
 
 ## Đang làm
-- [x] Tái thiết kế toàn diện `frmNhapKiemKhoFile` (Kiểm kho) và `frmNhapChuyenKhoFile` (Chuyển kho) giống 100% bố cục và giao diện của `frmNhapHangHoaFile` (kích thước 882x453, FixedDialog, panel header, 1. Chọn file, 2. Tùy chọn xử lý trùng mã, thanh tiến trình, thanh thao tác đáy với Tải file mẫu Excel, Thực hiện nhập và Đóng).
-- [x] Xây dựng mới `frmNhapHangNhapFile` (Nhập hàng) và `frmNhapHangTraFile` (Trả hàng nhập) theo đúng 100% khuôn mẫu `frmNhapHangHoaFile`, đăng ký vào `BTL-LTTQ-2.csproj`.
-- [x] Kết nối `btnNhapFile_Click` trong `frmThemPhieuNhap` và `frmThemPhieuTraHang` gọi dialog nhập file chuyên biệt, đồng bộ dữ liệu vào bảng chi tiết.
-- [x] Đồng bộ đặc tả chức năng `docs/specs/nhap-hang.md`, `docs/specs/tra-hang-nhap.md` và `docs/specs/kiem-kho.md`.
-
-
-
-
+- [x] Thống nhất 100% chức năng xuất file toàn hệ thống sang định dạng Excel (.xls), loại bỏ hoàn toàn CSV trên toàn bộ 17 Form nghiệp vụ.
+- [x] Chuyển đổi và chuẩn hóa cấu trúc xuất HTML Table (.xls) kèm UTF-8 BOM, căn phải dữ liệu số tiền/số lượng, căn giữa mã/ngày, mở trực tiếp bằng Excel không lỗi font tiếng Việt.
+- [x] Đồng bộ toàn bộ 7 file đặc tả chức năng trong `docs/specs/` sang định dạng xuất Excel (.xls).
 - [x] Kiểm tra mã hóa tự động `tools/KiemTraMaHoa.ps1`: 100% file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake.
 - [x] Kiểm tra biên dịch mã nguồn C# bằng MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
 
@@ -46,11 +41,32 @@
 | 11 | **Kiểm kê & Cân bằng kho** | `frmKiemKho`, nạp tồn sổ sách, sinh phiếu điều chỉnh, khóa vĩnh viễn, `frmThemPhieuKiemKho`, `frmHienCotHangKiem` | Hoàn thành 100% |
 | 12 | **Chuyển kho Liên chi nhánh & Đổi kho** | `frmChuyenKho`, 2 bước Xuất kho ➜ Nhận kho, chặn tồn âm kho nguồn, modal `frmDoiKho` | Hoàn thành 100% |
 | 13 | **Xuất hủy** | `frmXuatHuy` | Chưa bắt đầu |
-| 14 | **Báo cáo Tồn kho & Thẻ kho** | Báo cáo tồn đa kho (`frmBaoCaoTonKho`), Thẻ kho (`frmBaoCaoTheKho`) từ `vw_BienDongKho`, xuất CSV UTF-8 BOM | Hoàn thành 100% |
+| 14 | **Báo cáo Tồn kho & Thẻ kho** | Báo cáo tồn đa kho (`frmBaoCaoTonKho`), Thẻ kho (`frmBaoCaoTheKho`) từ `vw_BienDongKho`, xuất Excel (.xls) UTF-8 BOM | Hoàn thành 100% |
 
 ---
 
 ## Nhật ký phiên (Session Logs)
+- **Phiên 57 (2026-10-26) – Thống nhất 100% chức năng xuất file toàn hệ thống sang định dạng Excel (.xls), loại bỏ hoàn toàn CSV**:
+  - **Nhu cầu**: Người dùng yêu cầu: "Tất cả các chức năng khi xuất file thống nhất là định dạng .xls, không sử dụng csv".
+  - **Kết quả thực hiện**:
+    1. **Rà soát & chuyển đổi toàn diện 17 Form có tính năng xuất file**:
+       - `frmDanhSachHangHoa.cs` (Danh sách Hàng hóa): Cố định `sfd.Filter = "File Excel (*.xls)|*.xls"`, loại bỏ hoàn toàn nhánh xuất CSV.
+       - `frmNhomHang.cs` (Nhóm hàng) & `frmViTri.cs` (Vị trí): Cố định filter `.xls`, loại bỏ logic xuất CSV.
+       - `frmDonViTinh.cs` (trong DanhSachHangHoa) & `GUI/Forms/DonViTinh/frmDonViTinh.cs` (Phân hệ Đơn vị tính): Chuyển đổi toàn diện cơ chế xuất từ CSV sang bảng HTML Table `.xls` chuẩn UTF-8 with BOM, mở trực tiếp bằng Excel không lỗi font tiếng Việt.
+       - `frmNhaCungCap.cs` & `frmNhomNhaCungCap.cs` (Nhà cung cấp): Chuyển đổi sang xuất bảng HTML Table `.xls` chuyên nghiệp.
+       - `frmNhapHang.cs` & `frmChiTietPhieuNhap.cs` (Nhập hàng): Chuyển đổi xuất danh sách phiếu và chi tiết chứng từ (header, bảng hàng, tổng kết) sang bảng HTML Table `.xls`.
+       - `frmTraHangNhap.cs` & `frmChiTietTraHangNhap.cs` (Trả hàng nhập): Chuyển đổi xuất danh sách đơn trả và chi tiết phiếu sang `.xls`, loại bỏ helper `EscapeCsv`.
+       - `frmKiemKho.cs` & `frmChiTietKiemKho.cs` (Kiểm kho): Cố định filter `.xls`, loại bỏ phương thức `XuatCsvDanhSach` và `XuatCsvChiTiet`, giữ lại cơ chế xuất `.xls` HTML Table chuẩn.
+       - `frmChuyenKho.cs` & `frmChiTietChuyenKho.cs` (Chuyển kho): Chuyển đổi xuất danh sách chuyển và chi tiết phiếu sang `.xls`, hỗ trợ lọc theo dòng được chọn và cột hiển thị.
+       - `frmBaoCaoTonKho.cs` & `frmBaoCaoTheKho.cs` (Báo cáo Kho): Chuyển đổi sang bảng HTML Table `.xls` UTF-8 with BOM, đồng bộ tooltip hướng dẫn.
+    2. **Bảo toàn chức năng nạp file (Import)**:
+       - Các form nạp dữ liệu từ file `frmNhap...File.cs` giữ nguyên khả năng tương thích đọc file đa định dạng (`.xlsx`, `.xls`, `.csv`) và tải file mẫu chuẩn `.xls`.
+    3. **Đồng bộ toàn bộ tài liệu đặc tả chức năng**:
+       - Cập nhật 7 tài liệu đặc tả `docs/specs/` (`bao-cao-ton-kho.md`, `danh-sach-hang-hoa.md`, `don-vi-tinh.md`, `kiem-kho.md`, `nha-cung-cap.md`, `nhap-hang.md`, `tra-hang-nhap.md`) đồng bộ quy chuẩn xuất file `.xls`.
+    4. **Kiểm tra chất lượng**:
+       - `tools/KiemTraMaHoa.ps1`: 202/202 file đạt 100% UTF-8 with BOM, 0 lỗi Mojibake.
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+
 - **Phiên 56 (2026-10-26) – Chuẩn hóa phím Enter/nhận SL kiểm kho và đồng bộ hành vi nút Bỏ qua của 4 form thêm chứng từ**:
   - **Nhu cầu**: Người dùng phản ánh:
     1. Trong form `frmThemPhieuKiemKho`: khi thêm 1, 2 hàng hóa thủ công thì nhập số lượng và ấn Enter thì số lượng không nhận.

@@ -834,43 +834,61 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
 
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
-                sfd.Filter = "File CSV (*.csv)|*.csv|Tất cả tệp (*.*)|*.*";
-                sfd.FileName = $"DanhSachNhaCungCap_{DateTime.Now:yyyyMMdd_HHmm}.csv";
+                sfd.Title = "Xuất danh sách nhà cung cấp";
+                sfd.Filter = "File Excel (*.xls)|*.xls";
+                sfd.FileName = $"DanhSachNhaCungCap_{DateTime.Now:yyyyMMdd_HHmm}.xls";
 
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
                     try
                     {
                         StringBuilder sb = new StringBuilder();
+                        sb.AppendLine("<!DOCTYPE html>");
+                        sb.AppendLine("<html><head><meta http-equiv=\"content-type\" content=\"application/vnd.ms-excel; charset=UTF-8\" />");
+                        sb.AppendLine("<style>");
+                        sb.AppendLine("table { border-collapse: collapse; font-family: Segoe UI, Tahoma, sans-serif; font-size: 11pt; }");
+                        sb.AppendLine("th { background-color: #E2E8F0; color: #0F172A; font-weight: bold; border: 1px solid #94A3B8; padding: 8px 12px; }");
+                        sb.AppendLine("td { border: 1px solid #CBD5E1; padding: 6px 10px; }");
+                        sb.AppendLine(".text { mso-number-format: '\\@'; text-align: left; }");
+                        sb.AppendLine(".center { text-align: center; }");
+                        sb.AppendLine(".number { mso-number-format: '#,##0'; text-align: right; }");
+                        sb.AppendLine("</style></head><body>");
+                        sb.AppendLine("<table>");
 
-                        // Ghi tiêu đề cột (bỏ các cột ẩn và cột hộp kiểm)
-                        List<string> headers = new List<string>();
+                        // Tiêu đề cột
+                        sb.AppendLine("<tr>");
                         foreach (DataGridViewColumn col in dgvNhaCungCap.Columns)
                         {
                             if (col.Visible && col.Name != "colChon" && col.Name != "colMaDonViCapHang")
                             {
-                                headers.Add($"\"{col.HeaderText}\"");
+                                sb.AppendLine($"<th>{System.Net.WebUtility.HtmlEncode(col.HeaderText)}</th>");
                             }
                         }
-                        sb.AppendLine(string.Join(",", headers));
+                        sb.AppendLine("</tr>");
 
-                        // Ghi từng dòng dữ liệu
+                        // Dữ liệu từng dòng
                         foreach (DataGridViewRow row in dgvNhaCungCap.Rows)
                         {
-                            List<string> rowValues = new List<string>();
+                            sb.AppendLine("<tr>");
                             foreach (DataGridViewColumn col in dgvNhaCungCap.Columns)
                             {
                                 if (col.Visible && col.Name != "colChon" && col.Name != "colMaDonViCapHang")
                                 {
                                     string cellVal = row.Cells[col.Index].FormattedValue?.ToString() ?? "";
-                                    rowValues.Add($"\"{cellVal.Replace("\"", "\"\"")}\"");
+                                    string cssClass = "text";
+                                    if (col.DefaultCellStyle.Alignment == DataGridViewContentAlignment.MiddleRight)
+                                        cssClass = "number";
+                                    else if (col.DefaultCellStyle.Alignment == DataGridViewContentAlignment.MiddleCenter)
+                                        cssClass = "center";
+
+                                    sb.AppendLine($"<td class=\"{cssClass}\">{System.Net.WebUtility.HtmlEncode(cellVal)}</td>");
                                 }
                             }
-                            sb.AppendLine(string.Join(",", rowValues));
+                            sb.AppendLine("</tr>");
                         }
 
-                        // Ghi ra file với UTF-8 BOM để Excel hiển thị đúng tiếng Việt
-                        File.WriteAllText(sfd.FileName, sb.ToString(), Encoding.UTF8);
+                        sb.AppendLine("</table></body></html>");
+                        File.WriteAllText(sfd.FileName, sb.ToString(), new UTF8Encoding(true));
                         MessageBox.Show("Xuất danh sách nhà cung cấp thành công tại:\n" + sfd.FileName, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     catch (Exception ex)

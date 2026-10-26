@@ -1011,7 +1011,7 @@ private void btnHangHoa_Click(object sender, EventArgs e)
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
                 sfd.Title = coDongChon ? $"Xuất {danhSachXuat.Count} hàng hóa đã chọn" : "Xuất danh sách hàng hóa";
-                sfd.Filter = "File Excel (*.xls)|*.xls|File CSV (*.csv)|*.csv";
+                sfd.Filter = "File Excel (*.xls)|*.xls";
                 sfd.FileName = coDongChon 
                     ? $"DanhSachHangHoa_DaChon_{DateTime.Now:yyyyMMdd_HHmm}.xls" 
                     : $"DanhSachHangHoa_{DateTime.Now:yyyyMMdd_HHmm}.xls";
@@ -1020,10 +1020,6 @@ private void btnHangHoa_Click(object sender, EventArgs e)
                 {
                     try
                     {
-                        string ext = Path.GetExtension(sfd.FileName).ToLower();
-
-                        if (ext == ".xls")
-                        {
                             // Xuất định dạng bảng tính Excel (HTML Table UTF-8): Mở bằng Excel tự động chia từng cột, kẻ viền, căn lề chuẩn
                             StringBuilder sb = new StringBuilder();
                             sb.AppendLine("<!DOCTYPE html>");
@@ -1072,39 +1068,6 @@ private void btnHangHoa_Click(object sender, EventArgs e)
 
                             sb.AppendLine("</table></body></html>");
                             File.WriteAllText(sfd.FileName, sb.ToString(), new UTF8Encoding(true));
-                        }
-                        else
-                        {
-                            // Xuất định dạng CSV kèm chỉ thị sep=, để Excel nhận diện chuẩn dấu phân cách cột
-                            StringBuilder sb = new StringBuilder();
-                            sb.AppendLine("sep=,");
-
-                            List<string> headers = new List<string>();
-                            foreach (DataGridViewColumn col in dgvHangHoa.Columns)
-                            {
-                                if (col.Visible && !(col is DataGridViewImageColumn) && !(col is DataGridViewCheckBoxColumn))
-                                {
-                                    headers.Add($"\"{col.HeaderText.Replace("\"", "\"\"")}\"");
-                                }
-                            }
-                            sb.AppendLine(string.Join(",", headers));
-
-                            foreach (DataGridViewRow row in danhSachXuat)
-                            {
-                                List<string> rowValues = new List<string>();
-                                foreach (DataGridViewColumn col in dgvHangHoa.Columns)
-                                {
-                                    if (col.Visible && !(col is DataGridViewImageColumn) && !(col is DataGridViewCheckBoxColumn))
-                                    {
-                                        string cellVal = row.Cells[col.Index].FormattedValue?.ToString() ?? "";
-                                        rowValues.Add($"\"{cellVal.Replace("\"", "\"\"")}\"");
-                                    }
-                                }
-                                sb.AppendLine(string.Join(",", rowValues));
-                            }
-
-                            File.WriteAllText(sfd.FileName, sb.ToString(), new UTF8Encoding(true));
-                        }
 
                         string thongBao = coDongChon
                             ? $"Xuất file thành công {danhSachXuat.Count:N0} hàng hóa đã chọn tại:\n{sfd.FileName}"

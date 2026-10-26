@@ -341,43 +341,82 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
-                sfd.Filter = "CSV File (*.csv)|*.csv|All Files (*.*)|*.*";
-                sfd.FileName = $"ChiTiet_{maPhieu}_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
+                sfd.Title = "Xuất chi tiết phiếu nhập hàng";
+                sfd.Filter = "File Excel (*.xls)|*.xls";
+                sfd.FileName = $"ChiTiet_{maPhieu}_{DateTime.Now:yyyyMMdd_HHmm}.xls";
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
                     try
                     {
                         StringBuilder sb = new StringBuilder();
-                        sb.AppendLine($"PHIẾU NHẬP HÀNG: {maPhieu}");
-                        sb.AppendLine($"Ngày nhập: {lblNgayNhapVal.Text}");
-                        sb.AppendLine($"Nhà cung cấp: \"{lblTenNccVal.Text}\"");
-                        sb.AppendLine($"Người tạo: {lblNguoiTaoVal.Text}");
-                        sb.AppendLine($"Người nhập: {lblNguoiNhapVal.Text}");
-                        sb.AppendLine($"Trạng thái: {lblTrangThai.Text}");
-                        sb.AppendLine($"Ghi chú: \"{txtGhiChu.Text.Replace("\"", "\"\"")}\"");
-                        sb.AppendLine("");
+                        sb.AppendLine("<!DOCTYPE html>");
+                        sb.AppendLine("<html><head><meta http-equiv=\"content-type\" content=\"application/vnd.ms-excel; charset=UTF-8\" />");
+                        sb.AppendLine("<style>");
+                        sb.AppendLine("body { font-family: Segoe UI, Tahoma, sans-serif; font-size: 10.5pt; color: #1E293B; }");
+                        sb.AppendLine(".title { font-size: 15pt; font-weight: bold; color: #0F172A; margin-bottom: 12px; }");
+                        sb.AppendLine(".info-table { border: none; margin-bottom: 15px; }");
+                        sb.AppendLine(".info-table td { border: none; padding: 4px 8px; font-size: 10pt; }");
+                        sb.AppendLine(".info-label { font-weight: bold; color: #475569; width: 130px; }");
+                        sb.AppendLine("table.data { border-collapse: collapse; width: 100%; font-size: 10pt; }");
+                        sb.AppendLine("table.data th { background-color: #E2E8F0; color: #0F172A; font-weight: bold; border: 1px solid #94A3B8; padding: 8px 10px; }");
+                        sb.AppendLine("table.data td { border: 1px solid #CBD5E1; padding: 6px 10px; }");
+                        sb.AppendLine(".text { mso-number-format: '\\@'; text-align: left; }");
+                        sb.AppendLine(".center { text-align: center; }");
+                        sb.AppendLine(".number { mso-number-format: '#,##0'; text-align: right; }");
+                        sb.AppendLine(".summary-label { text-align: right; font-weight: bold; background-color: #F8FAFC; border: 1px solid #CBD5E1; padding: 6px 10px; }");
+                        sb.AppendLine(".summary-val { text-align: right; font-weight: bold; background-color: #F8FAFC; border: 1px solid #CBD5E1; padding: 6px 10px; mso-number-format: '#,##0'; }");
+                        sb.AppendLine("</style></head><body>");
 
-                        sb.AppendLine("STT,Mã hàng,Tên hàng,ĐVT,Số lượng,Đơn giá,Giảm giá,Thành tiền");
+                        sb.AppendLine($"<div class=\"title\">PHIẾU NHẬP HÀNG: {System.Net.WebUtility.HtmlEncode(maPhieu)}</div>");
+                        sb.AppendLine("<table class=\"info-table\">");
+                        sb.AppendLine($"<tr><td class=\"info-label\">Ngày nhập:</td><td>{System.Net.WebUtility.HtmlEncode(lblNgayNhapVal.Text)}</td><td class=\"info-label\">Trạng thái:</td><td>{System.Net.WebUtility.HtmlEncode(lblTrangThai.Text)}</td></tr>");
+                        sb.AppendLine($"<tr><td class=\"info-label\">Nhà cung cấp:</td><td>{System.Net.WebUtility.HtmlEncode(lblTenNccVal.Text)}</td><td class=\"info-label\">Ghi chú:</td><td>{System.Net.WebUtility.HtmlEncode(txtGhiChu.Text)}</td></tr>");
+                        sb.AppendLine($"<tr><td class=\"info-label\">Người tạo:</td><td>{System.Net.WebUtility.HtmlEncode(lblNguoiTaoVal.Text)}</td><td class=\"info-label\">Người nhập:</td><td>{System.Net.WebUtility.HtmlEncode(lblNguoiNhapVal.Text)}</td></tr>");
+                        sb.AppendLine("</table>");
+
+                        sb.AppendLine("<table class=\"data\">");
+                        sb.AppendLine("<tr>");
+                        sb.AppendLine("<th style=\"width: 50px;\">STT</th>");
+                        sb.AppendLine("<th style=\"width: 120px;\">Mã hàng</th>");
+                        sb.AppendLine("<th>Tên hàng</th>");
+                        sb.AppendLine("<th style=\"width: 80px;\">ĐVT</th>");
+                        sb.AppendLine("<th style=\"width: 90px;\">Số lượng</th>");
+                        sb.AppendLine("<th style=\"width: 110px;\">Đơn giá</th>");
+                        sb.AppendLine("<th style=\"width: 100px;\">Giảm giá</th>");
+                        sb.AppendLine("<th style=\"width: 120px;\">Thành tiền</th>");
+                        sb.AppendLine("</tr>");
+
                         foreach (DataRow r in dtChiTietData.Rows)
                         {
                             int stt = Convert.ToInt32(r["STT"]);
-                            string sku = r["MaHangNoiBo"].ToString();
-                            string ten = $"\"{r["TenHang"].ToString().Replace("\"", "\"\"")}\"";
-                            string dvt = r["TenDvt"].ToString();
+                            string sku = r["MaHangNoiBo"]?.ToString() ?? "";
+                            string ten = r["TenHang"]?.ToString() ?? "";
+                            string dvt = r["TenDvt"]?.ToString() ?? "";
                             decimal sl = Convert.ToDecimal(r["SoLuong"]);
                             decimal dg = Convert.ToDecimal(r["DonGiaNhap"]);
                             decimal gg = Convert.ToDecimal(r["GiamGia"]);
                             decimal tt = Convert.ToDecimal(r["ThanhTien"]);
 
-                            sb.AppendLine($"{stt},{sku},{ten},{dvt},{sl},{dg},{gg},{tt}");
+                            sb.AppendLine("<tr>");
+                            sb.AppendLine($"<td class=\"center\">{stt}</td>");
+                            sb.AppendLine($"<td class=\"center\">{System.Net.WebUtility.HtmlEncode(sku)}</td>");
+                            sb.AppendLine($"<td class=\"text\">{System.Net.WebUtility.HtmlEncode(ten)}</td>");
+                            sb.AppendLine($"<td class=\"center\">{System.Net.WebUtility.HtmlEncode(dvt)}</td>");
+                            sb.AppendLine($"<td class=\"number\">{sl:N0}</td>");
+                            sb.AppendLine($"<td class=\"number\">{dg:N0}</td>");
+                            sb.AppendLine($"<td class=\"number\">{gg:N0}</td>");
+                            sb.AppendLine($"<td class=\"number\">{tt:N0}</td>");
+                            sb.AppendLine("</tr>");
                         }
 
-                        sb.AppendLine("");
-                        sb.AppendLine($",,,,,Tổng tiền hàng:,{lblTongTienHangVal.Text.Replace(",", "")}");
-                        sb.AppendLine($",,,,,Giảm giá:,{lblGiamGiaVal.Text.Replace(",", "")}");
-                        sb.AppendLine($",,,,,Tổng cộng:,{lblTongCongVal.Text.Replace(",", "")}");
-                        sb.AppendLine($",,,,,Tiền đã trả NCC:,{lblTienDaTraVal.Text.Replace(",", "")}");
-                        sb.AppendLine($",,,,,Cần trả NCC:,{lblCanTraNccVal.Text.Replace(",", "")}");
+                        // Tổng kết
+                        sb.AppendLine($"<tr><td colspan=\"7\" class=\"summary-label\">Tổng tiền hàng:</td><td class=\"summary-val\">{System.Net.WebUtility.HtmlEncode(lblTongTienHangVal.Text)}</td></tr>");
+                        sb.AppendLine($"<tr><td colspan=\"7\" class=\"summary-label\">Giảm giá:</td><td class=\"summary-val\">{System.Net.WebUtility.HtmlEncode(lblGiamGiaVal.Text)}</td></tr>");
+                        sb.AppendLine($"<tr><td colspan=\"7\" class=\"summary-label\">Tổng cộng:</td><td class=\"summary-val\">{System.Net.WebUtility.HtmlEncode(lblTongCongVal.Text)}</td></tr>");
+                        sb.AppendLine($"<tr><td colspan=\"7\" class=\"summary-label\">Tiền đã trả NCC:</td><td class=\"summary-val\">{System.Net.WebUtility.HtmlEncode(lblTienDaTraVal.Text)}</td></tr>");
+                        sb.AppendLine($"<tr><td colspan=\"7\" class=\"summary-label\">Cần trả NCC:</td><td class=\"summary-val\">{System.Net.WebUtility.HtmlEncode(lblCanTraNccVal.Text)}</td></tr>");
+
+                        sb.AppendLine("</table></body></html>");
 
                         File.WriteAllText(sfd.FileName, sb.ToString(), new UTF8Encoding(true));
                         MessageBox.Show("Xuất file chi tiết đơn nhập thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);

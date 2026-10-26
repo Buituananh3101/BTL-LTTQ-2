@@ -762,7 +762,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                 }
 
                 sfd.Title = coDongChon ? $"Xuất {danhSachXuat.Count} phiếu kiểm kho đã chọn" : "Xuất danh sách phiếu kiểm kho";
-                sfd.Filter = "File Excel (*.xls)|*.xls|File CSV (*.csv)|*.csv";
+                sfd.Filter = "File Excel (*.xls)|*.xls";
                 sfd.FileName = coDongChon
                     ? $"DanhSachKiemKho_DaChon_{DateTime.Now:yyyyMMdd_HHmm}.xls"
                     : $"DanhSachKiemKho_{DateTime.Now:yyyyMMdd_HHmm}.xls";
@@ -771,15 +771,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                 {
                     try
                     {
-                        string ext = Path.GetExtension(sfd.FileName).ToLowerInvariant();
-                        if (ext == ".csv")
-                        {
-                            XuatCsvDanhSach(sfd.FileName, danhSachXuat);
-                        }
-                        else
-                        {
-                            XuatExcelHtmlDanhSach(sfd.FileName, danhSachXuat);
-                        }
+                        XuatExcelHtmlDanhSach(sfd.FileName, danhSachXuat);
 
                         MessageBox.Show("Xuất file danh sách thành công!\nĐường dẫn: " + sfd.FileName, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -789,19 +781,6 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
                     }
                 }
             }
-        }
-
-        private void XuatCsvDanhSach(string filePath, IEnumerable<DataRow> danhSach)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine("Mã kiểm kho,Ngày cân bằng,SL lệch tăng,SL lệch giảm,SL thực tế,Ghi chú,Tổng thực tế,Tổng chênh lệch,Thời gian tạo,Trạng thái");
-
-            foreach (DataRow r in danhSach)
-            {
-                sb.AppendLine($"\"{r["MaPhieu"]}\",\"{r["ThoiGian"]}\",{r["TongGiaTriThucTe"]},{r["TongGiaTriChenhLech"]},{r["SlLechTang"]},{r["SlLechGiam"]},\"{r["NgayCanBang"]}\",{r["TongSlThucTe"]},\"{r["GhiChu"]}\",\"{r["TenTrangThai"]}\"");
-            }
-
-            File.WriteAllText(filePath, sb.ToString(), new UTF8Encoding(true));
         }
 
         private void XuatExcelHtmlDanhSach(string filePath, IEnumerable<DataRow> danhSach)
@@ -855,7 +834,7 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
             sb.AppendLine("</body>");
             sb.AppendLine("</html>");
 
-            File.WriteAllText(filePath, sb.ToString(), Encoding.UTF8);
+            File.WriteAllText(filePath, sb.ToString(), new UTF8Encoding(true));
         }
 
         #endregion

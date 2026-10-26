@@ -369,7 +369,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
             DatLaiTrangThaiBanDau();
         }
 
-        // Bấm nút Xuất file: Xuất danh sách nhóm nhà cung cấp đang hiển thị ra file Excel (.xls) hoặc CSV (.csv)
+        // Bấm nút Xuất file: Xuất danh sách nhóm nhà cung cấp đang hiển thị ra file Excel (.xls)
         private void btnXuatFile_Click(object sender, EventArgs e)
         {
             if (dgvNhomHang.Rows.Count == 0)
@@ -381,15 +381,13 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
                 sfd.Title = "Xuất danh sách nhóm nhà cung cấp";
-                sfd.Filter = "File Excel (*.xls)|*.xls|File CSV (*.csv)|*.csv";
+                sfd.Filter = "File Excel (*.xls)|*.xls";
                 sfd.FileName = $"DanhSachNhomNhaCungCap_{DateTime.Now:yyyyMMdd_HHmm}.xls";
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
                     try
                     {
-                        string ext = Path.GetExtension(sfd.FileName).ToLower();
-                        if (ext == ".xls")
-                        {
+                        
                             StringBuilder sb = new StringBuilder();
                             sb.AppendLine("<!DOCTYPE html>");
                             sb.AppendLine("<html><head><meta http-equiv=\"content-type\" content=\"application/vnd.ms-excel; charset=UTF-8\" />");
@@ -420,21 +418,6 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                             }
                             sb.AppendLine("</table></body></html>");
                             File.WriteAllText(sfd.FileName, sb.ToString(), new UTF8Encoding(true));
-                        }
-                        else
-                        {
-                            StringBuilder sb = new StringBuilder();
-                            sb.AppendLine("sep=,");
-                            sb.AppendLine("\"Tên nhóm nhà cung cấp\",\"Số nhà cung cấp\"");
-
-                            foreach (DataGridViewRow row in dgvNhomHang.Rows)
-                            {
-                                string tenNhom = row.Cells["colTenNhom"].Value?.ToString() ?? "";
-                                string soLuong = row.Cells["colSoLuongNCC"].FormattedValue?.ToString() ?? "0";
-                                sb.AppendLine($"\"{tenNhom.Replace("\"", "\"\"")}\",\"{soLuong.Replace("\"", "\"\"")}\"");
-                            }
-                            File.WriteAllText(sfd.FileName, sb.ToString(), new UTF8Encoding(true));
-                        }
                         DialogResult dr = MessageBox.Show(
                             $"Xuất file thành công {dgvNhomHang.Rows.Count:N0} nhóm nhà cung cấp!\n\nĐường dẫn:\n{sfd.FileName}\n\nBạn có muốn mở file vừa xuất không?",
                             "Xuất file thành công",

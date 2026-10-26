@@ -1,6 +1,6 @@
 ﻿# Đặc tả Chức năng: Quản lý Nhà cung cấp (Supplier Management - Windows Forms)
 
-> **Mục tiêu**: Quản lý danh mục Nhà cung cấp chuẩn giao diện & nghiệp vụ hệ thống kho hàng nội bộ. Tìm kiếm tức thì, lọc đa tiêu chí bằng ComboBox, phân trang SQL Server, mở form MDI, form phụ thêm/sửa NCC bọc Transaction, tạo nhanh nhóm NCC, nhập file danh sách NCC từ Excel/CSV và xuất dữ liệu ra file CSV/Excel UTF-8 BOM.
+> **Mục tiêu**: Quản lý danh mục Nhà cung cấp chuẩn giao diện & nghiệp vụ hệ thống kho hàng nội bộ. Tìm kiếm tức thì, lọc đa tiêu chí bằng ComboBox, phân trang SQL Server, mở form MDI, form phụ thêm/sửa NCC bọc Transaction, tạo nhanh nhóm NCC, nhập file danh sách NCC từ Excel/CSV và xuất dữ liệu ra file Excel (.xls) UTF-8 BOM.
 
 ---
 
@@ -53,7 +53,7 @@
 | **7. Tạo nhanh Nhóm NCC** | Bấm nút "+" cạnh combobox Nhóm trên `frmNhaCungCap` | Mở modal dialog `frmNhomNhaCungCap` | Thêm vào `NhomNhaCungCap`, tự động nạp lại combobox và chọn ngay nhóm vừa tạo |
 | **8. Tùy chọn Ẩn/Hiện cột** | Bấm nút "Hiện cột" | Mở popup `frmHienCotNcc` ngay dưới nút | Bật/tắt `dgv.Columns[col].Visible` tức thì, nhấn ESC hoặc click ra ngoài để đóng |
 | **9. Nhập file NCC** | Bấm nút "Nhập file" | Mở modal dialog `frmNhapNhaCungCapFile` | Đọc dữ liệu từ file Excel (.xlsx, .xls) hoặc CSV; tải file mẫu; tùy chọn cập nhật hoặc bỏ qua; bọc Transaction |
-| **10. Xuất file CSV / Excel** | Bấm nút "Xuất file" | Hộp thoại `SaveFileDialog` lưu file `.csv` | Xuất đúng các cột đang hiển thị với định dạng UTF-8 BOM đọc tốt tiếng Việt trên Excel |
+| **10. Xuất file Excel** | Bấm nút "Xuất file" | Hộp thoại `SaveFileDialog` lưu file `.xls` | Xuất đúng các cột đang hiển thị với định dạng UTF-8 BOM đọc tốt tiếng Việt trên Excel |
 
 ---
 

@@ -23,7 +23,7 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
         public frmNhapChuyenKhoFile(int maKhoNguon = 0)
         {
             InitializeComponent();
-            this.maKhoNguon = maKhoNguon > 0 ? maKhoNguon : SessionContext.MaKhoHienTai;
+            this.maKhoNguon = maKhoNguon > 0 ? maKhoNguon : (SessionContext.MaKhoHienTai > 0 ? SessionContext.MaKhoHienTai : 1);
             KhoiTaoBangKetQua();
         }
 
@@ -100,11 +100,11 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
 
                         // Nạp hàng mẫu có tồn kho tại kho nguồn
                         string sqlMau = @"
-                            SELECT TOP 3 h.MaHangNoiBo, h.TenHang, d.TenDVT, ISNULL(t.TonCuoi, 0) AS TonKho
+                            SELECT TOP 3 h.MaHangNoiBo, h.TenHang, d.TenDVT, ISNULL(t.SoLuongTon, 0) AS TonKho
                             FROM HangHoa h
                             LEFT JOIN DonViTinh d ON h.MaDVT = d.MaDVT
-                            OUTER APPLY (SELECT TonCuoi FROM vw_TonKhoHienTai WHERE MaHang = h.MaHang AND MaKho = @MaKho) t
-                            WHERE h.TrangThai = 'DANG_BAN' AND ISNULL(t.TonCuoi, 0) > 0";
+                            OUTER APPLY (SELECT SoLuongTon FROM vw_TonKhoHienTai WHERE MaHang = h.MaHang AND MaKho = @MaKho) t
+                            WHERE ISNULL(h.TrangThai, '') NOT IN ('NGUNG_BAN', 'NGUNG_KINH_DOANH', 'DA_XOA') AND ISNULL(t.SoLuongTon, 0) > 0";
 
                         SqlParameter[] prms = { new SqlParameter("@MaKho", maKhoNguon) };
                         DataTable dtHang = DataProcessing.ReadData(sqlMau, prms);
@@ -177,11 +177,11 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
 
                 // Tra cứu danh sách hàng hóa và tồn kho nguồn
                 string sqlHang = @"
-                    SELECT h.MaHang, h.MaHangNoiBo, h.TenHang, d.TenDVT, h.GiaVon, ISNULL(t.TonCuoi, 0) AS TonKho
+                    SELECT h.MaHang, h.MaHangNoiBo, h.TenHang, d.TenDVT, h.GiaVon, ISNULL(t.SoLuongTon, 0) AS TonKho
                     FROM HangHoa h
                     LEFT JOIN DonViTinh d ON h.MaDVT = d.MaDVT
-                    OUTER APPLY (SELECT TonCuoi FROM vw_TonKhoHienTai WHERE MaHang = h.MaHang AND MaKho = @MaKho) t
-                    WHERE h.TrangThai = 'DANG_BAN'";
+                    OUTER APPLY (SELECT SoLuongTon FROM vw_TonKhoHienTai WHERE MaHang = h.MaHang AND MaKho = @MaKho) t
+                    WHERE ISNULL(h.TrangThai, '') NOT IN ('NGUNG_BAN', 'NGUNG_KINH_DOANH', 'DA_XOA')";
 
                 SqlParameter[] prms = { new SqlParameter("@MaKho", maKhoNguon) };
                 DataTable dtHang = DataProcessing.ReadData(sqlHang, prms);
@@ -235,9 +235,9 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                         {
                             decimal slHienTai = Convert.ToDecimal(dictKetQua[maHang]["SoLuongChuyen"]);
                             decimal slTong = slHienTai + slChuyen;
-                            if (tonKho > 0 && slTong > tonKho)
+                            if (slTong > tonKho)
                             {
-                                slTong = tonKho;
+                                slTong = Math.Max(0, tonKho);
                                 vuotTon++;
                             }
                             dictKetQua[maHang]["SoLuongChuyen"] = slTong;
@@ -251,27 +251,30 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
                     }
                     else
                     {
-                        if (tonKho > 0 && slChuyen > tonKho)
+                        if (slChuyen > tonKho)
                         {
-                            slChuyen = tonKho;
+                            slChuyen = Math.Max(0, tonKho);
                             vuotTon++;
                         }
 
-                        DataRow rNew = DtKetQuaNhap.NewRow();
-                        rNew["STT"] = DtKetQuaNhap.Rows.Count + 1;
-                        rNew["MaHang"] = maHang;
-                        rNew["MaHangNoiBo"] = maHangNoiBo;
-                        rNew["TenHang"] = tenHang;
-                        rNew["TenDVT"] = tenDvt;
-                        rNew["SoLuongChuyen"] = slChuyen;
-                        rNew["DonGia"] = donGia;
-                        rNew["TonKho"] = tonKho;
-                        rNew["ThanhTien"] = slChuyen * donGia;
-                        rNew["GhiChu"] = ghiChu;
+                        if (slChuyen > 0)
+                        {
+                            DataRow rNew = DtKetQuaNhap.NewRow();
+                            rNew["STT"] = DtKetQuaNhap.Rows.Count + 1;
+                            rNew["MaHang"] = maHang;
+                            rNew["MaHangNoiBo"] = maHangNoiBo;
+                            rNew["TenHang"] = tenHang;
+                            rNew["TenDVT"] = tenDvt;
+                            rNew["SoLuongChuyen"] = slChuyen;
+                            rNew["DonGia"] = donGia;
+                            rNew["TonKho"] = tonKho;
+                            rNew["ThanhTien"] = slChuyen * donGia;
+                            rNew["GhiChu"] = ghiChu;
 
-                        DtKetQuaNhap.Rows.Add(rNew);
-                        dictKetQua.Add(maHang, rNew);
-                        themMoi++;
+                            DtKetQuaNhap.Rows.Add(rNew);
+                            dictKetQua.Add(maHang, rNew);
+                            themMoi++;
+                        }
                     }
                 }
 
