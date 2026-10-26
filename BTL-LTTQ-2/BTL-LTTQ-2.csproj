@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{AEF476B0-DB44-4C0F-8C1A-2739DEA01A7F}</ProjectGuid>
+    <ProjectGuid>{7C10BECC-A336-5E4E-1897-677463985068}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>BTL_LTTQ_2</RootNamespace>
     <AssemblyName>BTL-LTTQ-2</AssemblyName>
