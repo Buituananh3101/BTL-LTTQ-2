@@ -112,7 +112,22 @@ namespace BTL_LTTQ_2.GUI.Forms.DonViTinh
             cboSoDongMoiTrang.SelectedItem = 20;
 
             // Thời gian tạo
-            dtpTuNgay.Value = new DateTime(DateTime.Now.Year, 1, 1);
+            // Mặc định "Từ ngày" là ngày tạo hàng hóa sớm nhất (01/01/2000 nếu chưa có) để không ẩn dữ liệu cũ
+            DateTime tuNgay = new DateTime(2000, 1, 1);
+            try
+            {
+                object minNgayTao = DataProcessing.ReadValue("SELECT MIN(NgayTao) FROM HangHoa");
+                if (minNgayTao != null && minNgayTao != DBNull.Value)
+                {
+                    DateTime ngay = Convert.ToDateTime(minNgayTao).Date;
+                    if (ngay >= dtpTuNgay.MinDate && ngay <= DateTime.Today) tuNgay = ngay;
+                }
+            }
+            catch
+            {
+                // Lỗi đọc CSDL: dùng mốc mặc định
+            }
+            dtpTuNgay.Value = tuNgay;
             dtpDenNgay.Value = DateTime.Now;
         }
 

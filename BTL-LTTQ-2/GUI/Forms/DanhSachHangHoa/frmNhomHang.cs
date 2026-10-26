@@ -209,7 +209,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             try
             {
                 // Kiểm tra trùng tên nhóm
-                string sqlCheck = "SELECT COUNT(1) FROM NhomHang WHERE TenNhom = @TenNhom AND TrangThai = 'HOAT_DONG'";
+                string sqlCheck = "SELECT COUNT(1) FROM NhomHang WHERE UPPER(LTRIM(RTRIM(TenNhom))) = UPPER(@TenNhom)";
                 object res = DataProcessing.ReadValue(sqlCheck, new SqlParameter[] { new SqlParameter("@TenNhom", tenNhom) });
                 if (res != null && int.TryParse(res.ToString(), out int count) && count > 0)
                 {
@@ -258,7 +258,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             try
             {
                 // Kiểm tra trùng tên với nhóm hàng khác
-                string sqlCheck = "SELECT COUNT(1) FROM NhomHang WHERE TenNhom = @TenNhom AND MaNhom <> @MaNhom AND TrangThai = 'HOAT_DONG'";
+                string sqlCheck = "SELECT COUNT(1) FROM NhomHang WHERE UPPER(LTRIM(RTRIM(TenNhom))) = UPPER(@TenNhom) AND MaNhom <> @MaNhom";
                 object res = DataProcessing.ReadValue(sqlCheck, new SqlParameter[] {
                     new SqlParameter("@TenNhom", tenMoi),
                     new SqlParameter("@MaNhom", maNhomDangChon)
@@ -340,7 +340,8 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
         private void txtTimKiem_TextChanged(object sender, EventArgs e)
         {
             if (dtNhomHang == null) return;
-            string kw = txtTimKiem.Text.Trim().Replace("'", "''").Replace("[", "[[]").Replace("%", "[%]");
+            // Thoát ký tự đặc biệt (' [ ] * %) để RowFilter không lỗi khi gõ ký tự đại diện
+            string kw = ComboboxHelper.ThoatKyTuLikeRowFilter(txtTimKiem.Text.Trim());
             if (string.IsNullOrEmpty(kw))
             {
                 dtNhomHang.DefaultView.RowFilter = "";
@@ -461,7 +462,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                         }
 
                         // Lấy danh sách nhóm hàng hiện có trong CSDL để lọc trùng
-                        DataTable dtHienCo = DataProcessing.ReadData("SELECT TenNhom FROM NhomHang WHERE TrangThai = 'HOAT_DONG'");
+                        DataTable dtHienCo = DataProcessing.ReadData("SELECT TenNhom FROM NhomHang");
                         HashSet<string> tapTenHienCo = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                         if (dtHienCo != null)
                         {

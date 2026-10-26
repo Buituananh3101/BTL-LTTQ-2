@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
@@ -302,9 +303,31 @@ namespace BTL_LTTQ_2.GUI.Forms
                 cboSoDongMoiTrang.SelectedIndex = 1; // 20 dòng
             }
 
-            // 7. Khoảng thời gian tạo (Mặc định từ đầu năm đến ngày hiện tại)
-            dtpTuNgay.Value = new DateTime(DateTime.Now.Year, 1, 1);
+            // 7. Khoảng thời gian tạo (Mặc định từ ngày tạo hàng hóa sớm nhất đến ngày hiện tại để không ẩn hàng cũ)
+            dtpTuNgay.Value = LayNgayTaoHangHoaSomNhat();
             dtpDenNgay.Value = DateTime.Today;
+        }
+
+        /// <summary>
+        /// Lấy ngày tạo sớm nhất trong HangHoa (01/01/2000 nếu chưa có dữ liệu) làm mặc định "Từ ngày"
+        /// </summary>
+        private DateTime LayNgayTaoHangHoaSomNhat()
+        {
+            DateTime macDinh = new DateTime(2000, 1, 1);
+            try
+            {
+                object result = DataProcessing.ReadValue("SELECT MIN(NgayTao) FROM HangHoa");
+                if (result != null && result != DBNull.Value)
+                {
+                    DateTime ngay = Convert.ToDateTime(result).Date;
+                    if (ngay >= dtpTuNgay.MinDate && ngay <= DateTime.Today) return ngay;
+                }
+            }
+            catch
+            {
+                // Lỗi đọc CSDL: dùng mốc mặc định
+            }
+            return macDinh;
         }
 
         #endregion
@@ -318,6 +341,70 @@ namespace BTL_LTTQ_2.GUI.Forms
             try
             {
                 List<SqlParameter> parameters = new List<SqlParameter>();
+                string sqlData = TaoCauTruyVanDanhSach(parameters, true, true, out string sqlCount);
+
+                SqlParameter[] countParams = new SqlParameter[parameters.Count];
+                for (int i = 0; i < parameters.Count; i++)
+                {
+                    countParams[i] = new SqlParameter(parameters[i].ParameterName, parameters[i].Value);
+                }
+
+                object resultCount = DataProcessing.ReadValue(sqlCount, countParams);
+                tongSoBanGhi = resultCount != null && int.TryParse(resultCount.ToString(), out int c) ? c : 0;
+
+                // 2. Tính lại phân trang nếu vượt trang
+                tongSoTrang = (int)Math.Ceiling((double)tongSoBanGhi / soDongMoiTrang);
+                if (tongSoTrang <= 0) tongSoTrang = 1;
+                if (trangHienTai > tongSoTrang) trangHienTai = tongSoTrang;
+
+                int skip = (trangHienTai - 1) * soDongMoiTrang;
+                parameters.Add(new SqlParameter("@Skip", skip));
+                parameters.Add(new SqlParameter("@Take", soDongMoiTrang));
+
+                DataTable dtHangHoa = DataProcessing.ReadData(sqlData, parameters.ToArray());
+
+                // Thêm cột logic Chon vào DataTable để DataGridViewCheckBoxColumn bind chuẩn xác
+                if (!dtHangHoa.Columns.Contains("Chon"))
+                {
+                    dtHangHoa.Columns.Add("Chon", typeof(bool));
+                    dtHangHoa.Columns["Chon"].DefaultValue = false;
+                    foreach (DataRow r in dtHangHoa.Rows)
+                    {
+                        r["Chon"] = false;
+                    }
+                }
+
+                dgvHangHoa.DataSource = dtHangHoa;
+
+                // Reset trạng thái Header CheckBox khi nạp trang mới
+                isHeaderChecked = false;
+                if (dgvHangHoa.Columns.Contains("colChon"))
+                {
+                    dgvHangHoa.InvalidateCell(dgvHangHoa.Columns["colChon"].Index, -1);
+                }
+
+                // Cố định chiều cao dòng 48px để ô cột hình ảnh luôn tạo thành hình vuông 48x48
+                foreach (DataGridViewRow r in dgvHangHoa.Rows)
+                {
+                    r.Height = 48;
+                }
+
+                // 4. Cập nhật thanh phân trang
+                CapNhatGiaoDienPhanTrang();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi tải danh sách hàng hóa: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Xây dựng câu truy vấn danh sách hàng hóa theo toàn bộ bộ lọc hiện tại (dùng chung cho hiển thị và xuất file).
+        /// phanTrang = true: thêm OFFSET @Skip / FETCH @Take (người gọi tự thêm 2 tham số này).
+        /// </summary>
+        private string TaoCauTruyVanDanhSach(List<SqlParameter> parameters, bool phanTrang, bool layHinhAnh, out string sqlCount)
+        {
+            {
                 StringBuilder whereSql = new StringBuilder(" WHERE 1=1 ");
 
                 // Tham số kho hiện tại
@@ -389,15 +476,27 @@ namespace BTL_LTTQ_2.GUI.Forms
                 }
                 else if (cboTieuChiTon.SelectedIndex == 3) // Dưới định mức tồn
                 {
-                    whereSql.Append(" AND ISNULL(tk.SoLuongTon, 0) < ISNULL(ntk.TonToiThieu, 0) ");
+                    if (currentMaKho > 0)
+                    {
+                        whereSql.Append(" AND ISNULL(tk.SoLuongTon, 0) < ISNULL(ntk.TonToiThieu, 0) ");
+                    }
+                    else
+                    {
+                        // Tất cả kho: hàng dưới định mức nếu có BẤT KỲ kho nào tồn < định mức tối thiểu của chính kho đó
+                        whereSql.Append(@" AND EXISTS (
+                            SELECT 1 FROM NguongTonKho n
+                            LEFT JOIN vw_TonKhoHienTai t ON t.MaHang = n.MaHang AND t.MaKho = n.MaKho
+                            WHERE n.MaHang = h.MaHang AND ISNULL(t.SoLuongTon, 0) < n.TonToiThieu
+                        ) ");
+                    }
                 }
 
-                // 1. Đếm tổng số bản ghi
+                // 1. Câu lệnh đếm tổng số bản ghi
                 string joinTonKho = currentMaKho > 0 ? "LEFT JOIN vw_TonKhoHienTai tk ON h.MaHang = tk.MaHang AND tk.MaKho = @MaKho" : "LEFT JOIN (SELECT MaHang, SUM(SoLuongTon) AS SoLuongTon FROM vw_TonKhoHienTai GROUP BY MaHang) tk ON h.MaHang = tk.MaHang";
                 string joinNguongTon = currentMaKho > 0 ? "LEFT JOIN NguongTonKho ntk ON h.MaHang = ntk.MaHang AND ntk.MaKho = @MaKho" : "LEFT JOIN (SELECT MaHang, MAX(TonToiThieu) AS TonToiThieu FROM NguongTonKho GROUP BY MaHang) ntk ON h.MaHang = ntk.MaHang";
 
 
-                string sqlCount = $@"
+                sqlCount = $@"
                     SELECT COUNT(DISTINCT h.MaHang)
                     FROM HangHoa h
                     LEFT JOIN NhomHang nh ON h.MaNhom = nh.MaNhom
@@ -406,27 +505,11 @@ namespace BTL_LTTQ_2.GUI.Forms
                     {joinNguongTon}
                     {whereSql};";
 
-                SqlParameter[] countParams = new SqlParameter[parameters.Count];
-                for (int i = 0; i < parameters.Count; i++)
-                {
-                    countParams[i] = new SqlParameter(parameters[i].ParameterName, parameters[i].Value);
-                }
-
-                object resultCount = DataProcessing.ReadValue(sqlCount, countParams);
-                tongSoBanGhi = resultCount != null && int.TryParse(resultCount.ToString(), out int c) ? c : 0;
-
-                // 2. Tính lại phân trang nếu vượt trang
-                tongSoTrang = (int)Math.Ceiling((double)tongSoBanGhi / soDongMoiTrang);
-                if (tongSoTrang <= 0) tongSoTrang = 1;
-                if (trangHienTai > tongSoTrang) trangHienTai = tongSoTrang;
-
-                int skip = (trangHienTai - 1) * soDongMoiTrang;
-                parameters.Add(new SqlParameter("@Skip", skip));
-                parameters.Add(new SqlParameter("@Take", soDongMoiTrang));
-
-                // 3. Lấy dữ liệu phân trang kèm tốc độ bán 30 ngày và Dự kiến hết hàng
+                // 3. Lấy dữ liệu (phân trang hoặc toàn bộ) kèm tốc độ bán 30 ngày và Dự kiến hết hàng
+                string cotHinhAnh = layHinhAnh ? "h.HinhAnh" : "CAST(NULL AS VARBINARY(MAX)) AS HinhAnh";
+                string phanTrangSql = phanTrang ? "OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY" : "";
                 string sqlData = $@"
-                    SELECT h.MaHang, h.HinhAnh, h.MaHangNoiBo, h.TenHang, nh.TenNhom, dvt.TenDVT,
+                    SELECT h.MaHang, {cotHinhAnh}, h.MaHangNoiBo, h.TenHang, nh.TenNhom, dvt.TenDVT,
                            h.GiaBanThamKhao, h.GiaVon, ISNULL(tk.SoLuongTon, 0) AS SoLuongTon,
                            ISNULL(kd.SoLuongKhachDat, 0) AS KhachDat,
                            CASE 
@@ -459,42 +542,9 @@ namespace BTL_LTTQ_2.GUI.Forms
                     ) x30 ON h.MaHang = x30.MaHang
                     {whereSql}
                     ORDER BY h.MaHang DESC
-                    OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY;";
+                    {phanTrangSql};";
 
-                DataTable dtHangHoa = DataProcessing.ReadData(sqlData, parameters.ToArray());
-
-                // Thêm cột logic Chon vào DataTable để DataGridViewCheckBoxColumn bind chuẩn xác
-                if (!dtHangHoa.Columns.Contains("Chon"))
-                {
-                    dtHangHoa.Columns.Add("Chon", typeof(bool));
-                    dtHangHoa.Columns["Chon"].DefaultValue = false;
-                    foreach (DataRow r in dtHangHoa.Rows)
-                    {
-                        r["Chon"] = false;
-                    }
-                }
-
-                dgvHangHoa.DataSource = dtHangHoa;
-
-                // Reset trạng thái Header CheckBox khi nạp trang mới
-                isHeaderChecked = false;
-                if (dgvHangHoa.Columns.Contains("colChon"))
-                {
-                    dgvHangHoa.InvalidateCell(dgvHangHoa.Columns["colChon"].Index, -1);
-                }
-
-                // Cố định chiều cao dòng 48px để ô cột hình ảnh luôn tạo thành hình vuông 48x48
-                foreach (DataGridViewRow r in dgvHangHoa.Rows)
-                {
-                    r.Height = 48;
-                }
-
-                // 4. Cập nhật thanh phân trang
-                CapNhatGiaoDienPhanTrang();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi khi tải danh sách hàng hóa: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return sqlData;
             }
         }
 
@@ -989,22 +1039,42 @@ private void btnHangHoa_Click(object sender, EventArgs e)
             }
 
             // Xác định danh sách dòng cần xuất: Ưu tiên các dòng được tích chọn CheckBox
-            List<DataGridViewRow> danhSachXuat = new List<DataGridViewRow>();
-            foreach (DataGridViewRow row in dgvHangHoa.Rows)
+            List<DataRow> danhSachXuat = new List<DataRow>();
+            if (dgvHangHoa.DataSource is DataTable dtTrang)
             {
-                if (Convert.ToBoolean(row.Cells["colChon"].Value ?? false))
+                foreach (DataRow dr in dtTrang.Rows)
                 {
-                    danhSachXuat.Add(row);
+                    if (dr["Chon"] != DBNull.Value && Convert.ToBoolean(dr["Chon"]))
+                    {
+                        danhSachXuat.Add(dr);
+                    }
                 }
             }
 
             bool coDongChon = danhSachXuat.Count > 0;
             if (!coDongChon)
             {
-                // Nếu không có dòng nào được tích chọn thì xuất tất cả dòng hiện có trên trang
-                foreach (DataGridViewRow row in dgvHangHoa.Rows)
+                // Không tích chọn dòng nào: xuất TOÀN BỘ hàng hóa khớp bộ lọc hiện tại (truy vấn lại không phân trang)
+                try
                 {
-                    danhSachXuat.Add(row);
+                    List<SqlParameter> parameters = new List<SqlParameter>();
+                    string sqlTatCa = TaoCauTruyVanDanhSach(parameters, false, false, out _);
+                    DataTable dtTatCa = DataProcessing.ReadData(sqlTatCa, parameters.ToArray());
+                    foreach (DataRow dr in dtTatCa.Rows)
+                    {
+                        danhSachXuat.Add(dr);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi khi tải dữ liệu xuất file: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                if (danhSachXuat.Count == 0)
+                {
+                    MessageBox.Show("Không có dữ liệu để xuất file!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
                 }
             }
 
@@ -1049,17 +1119,17 @@ private void btnHangHoa_Click(object sender, EventArgs e)
                             }
                             sb.AppendLine("</tr>");
 
-                            // Dữ liệu từng dòng
-                            foreach (DataGridViewRow row in danhSachXuat)
+                            // Dữ liệu từng dòng (cột số ghi giá trị thô để nhập file ngược lại không sai số)
+                            foreach (DataRow row in danhSachXuat)
                             {
                                 sb.AppendLine("<tr>");
                                 foreach (DataGridViewColumn col in dgvHangHoa.Columns)
                                 {
                                     if (col.Visible && !(col is DataGridViewImageColumn) && !(col is DataGridViewCheckBoxColumn))
                                     {
-                                        string cellVal = row.Cells[col.Index].FormattedValue?.ToString() ?? "";
+                                        string cellVal = LayGiaTriXuatFile(col, row, out bool laSo);
                                         string cssClass = "text";
-                                        if (col.DefaultCellStyle.Alignment == DataGridViewContentAlignment.MiddleRight)
+                                        if (laSo)
                                             cssClass = "number";
                                         else if (col.DefaultCellStyle.Alignment == DataGridViewContentAlignment.MiddleCenter)
                                             cssClass = "center";
@@ -1089,14 +1159,14 @@ private void btnHangHoa_Click(object sender, EventArgs e)
                             }
                             sb.AppendLine(string.Join(",", headers));
 
-                            foreach (DataGridViewRow row in danhSachXuat)
+                            foreach (DataRow row in danhSachXuat)
                             {
                                 List<string> rowValues = new List<string>();
                                 foreach (DataGridViewColumn col in dgvHangHoa.Columns)
                                 {
                                     if (col.Visible && !(col is DataGridViewImageColumn) && !(col is DataGridViewCheckBoxColumn))
                                     {
-                                        string cellVal = row.Cells[col.Index].FormattedValue?.ToString() ?? "";
+                                        string cellVal = LayGiaTriXuatFile(col, row, out _);
                                         rowValues.Add($"\"{cellVal.Replace("\"", "\"\"")}\"");
                                     }
                                 }
@@ -1108,7 +1178,7 @@ private void btnHangHoa_Click(object sender, EventArgs e)
 
                         string thongBao = coDongChon
                             ? $"Xuất file thành công {danhSachXuat.Count:N0} hàng hóa đã chọn tại:\n{sfd.FileName}"
-                            : $"Xuất file thành công toàn bộ {danhSachXuat.Count:N0} hàng hóa tại:\n{sfd.FileName}";
+                            : $"Xuất file thành công toàn bộ {danhSachXuat.Count:N0} hàng hóa khớp bộ lọc hiện tại tại:\n{sfd.FileName}";
                         MessageBox.Show(thongBao, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     catch (Exception ex)
@@ -1117,6 +1187,49 @@ private void btnHangHoa_Click(object sender, EventArgs e)
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Lấy giá trị ô để ghi ra file: cột số ghi số thô (InvariantCulture, không nhóm nghìn, dấu chấm thập phân),
+        /// cột ngày/trạng thái giữ định dạng hiển thị như trên lưới.
+        /// </summary>
+        private static string LayGiaTriXuatFile(DataGridViewColumn col, DataRow row, out bool laSo)
+        {
+            laSo = false;
+            string tenCot = col.DataPropertyName;
+            if (string.IsNullOrEmpty(tenCot) || !row.Table.Columns.Contains(tenCot)) return "";
+
+            object val = row[tenCot];
+            if (val == null || val == DBNull.Value) return "";
+
+            switch (val)
+            {
+                case decimal d:
+                    laSo = true;
+                    return d.ToString("0.############################", CultureInfo.InvariantCulture);
+                case double db:
+                    laSo = true;
+                    return db.ToString("R", CultureInfo.InvariantCulture);
+                case float f:
+                    laSo = true;
+                    return f.ToString("R", CultureInfo.InvariantCulture);
+                case int _:
+                case long _:
+                case short _:
+                case byte _:
+                    laSo = true;
+                    return Convert.ToString(val, CultureInfo.InvariantCulture);
+                case DateTime dt:
+                    return string.IsNullOrEmpty(col.DefaultCellStyle.Format) ? dt.ToString("dd/MM/yyyy HH:mm") : dt.ToString(col.DefaultCellStyle.Format);
+            }
+
+            string text = val.ToString();
+            if (col.Name == "colTrangThai")
+            {
+                if (text == "DANG_BAN") return "Đang bán";
+                if (text == "NGUNG_BAN") return "Ngừng bán";
+            }
+            return text;
         }
 
         // Bấm nút Hiện cột mở form tùy chọn cột xuất hiện ngay dưới nút btnHienCot

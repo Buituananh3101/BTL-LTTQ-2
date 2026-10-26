@@ -226,7 +226,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                 }
             }
 
-            DataTable dtViTri = DataProcessing.ReadData("SELECT TenViTri FROM ViTri WHERE TrangThai = 'HOAT_DONG'");
+            DataTable dtViTri = DataProcessing.ReadData("SELECT TenViTri FROM ViTri");
             HashSet<string> setViTri = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             if (dtViTri != null)
             {
@@ -240,7 +240,6 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             // 2. Tải danh sách Hàng hóa hiện tại theo MaHangNoiBo
             DataTable dtHang = DataProcessing.ReadData("SELECT MaHang, MaHangNoiBo, TenHang, MaNhom, MaDVT, ViTri, GiaVon, GiaBanThamKhao, TrongLuong, DonViTrongLuong, QuyCach, MoTa FROM HangHoa");
             Dictionary<string, HangHoaHienTai> dictHang = new Dictionary<string, HangHoaHienTai>(StringComparer.OrdinalIgnoreCase);
-            int maxMaHangNoiBoSo = 0;
 
             if (dtHang != null)
             {
@@ -266,19 +265,12 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                         };
 
                         if (!dictHang.ContainsKey(ma)) dictHang.Add(ma, h);
-
-                        // Tìm số thứ tự lớn nhất nếu mã có dạng HHxxxxxx
-                        if (ma.StartsWith("HH", StringComparison.OrdinalIgnoreCase) && ma.Length > 2)
-                        {
-                            string phanSo = ma.Substring(2);
-                            if (int.TryParse(phanSo, out int so) && so > maxMaHangNoiBoSo)
-                            {
-                                maxMaHangNoiBoSo = so;
-                            }
-                        }
                     }
                 }
             }
+
+            // Tìm số thứ tự lớn nhất của các mã dạng ^HH[0-9]+$ (dùng chung quy tắc sinh mã với frmHangHoa)
+            long maxMaHangNoiBoSo = frmHangHoa.LaySoMaHangLonNhat(dictHang.Keys);
 
             int soThemMoi = 0;
             int soCapNhat = 0;
@@ -378,8 +370,8 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
 
                         if (string.IsNullOrEmpty(maHang))
                         {
-                            maxMaHangNoiBoSo++;
-                            maHang = $"HH{maxMaHangNoiBoSo.ToString("D6")}";
+                            // Sinh "HH" + 6 số, lặp tới khi gặp mã chưa dùng (kể cả mã vừa thêm trong cùng file)
+                            maHang = frmHangHoa.TaoMaHangTiepTheo(ref maxMaHangNoiBoSo, dictHang.Keys);
                             laMaTuSinh = true;
                         }
 
@@ -603,30 +595,47 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
             }
         }
 
-        private decimal ChuyenDoiSoThapPhan(string raw, decimal giaTriMacDinh)
+        internal static decimal ChuyenDoiSoThapPhan(string raw, decimal giaTriMacDinh)
         {
             if (string.IsNullOrWhiteSpace(raw)) return giaTriMacDinh;
-            string clean = raw.Trim().Replace(" ", "");
 
-            // Xử lý dấu phẩy hoặc chấm
-            if (clean.Contains(",") && clean.Contains("."))
+            // 1. Bỏ khoảng trắng (kể cả khoảng trắng không ngắt dòng dùng làm phân cách nghìn) và ký hiệu tiền tệ ở cuối
+            string clean = Regex.Replace(raw.Trim(), @"[\s\u00A0\u202F]", "");
+            clean = Regex.Replace(clean, @"(đ|₫|vnđ|vnd)$", "", RegexOptions.IgnoreCase);
+            if (clean.Length == 0) return giaTriMacDinh;
+
+            if (Regex.IsMatch(clean, @"^[-+]?\d{1,3}(?:([.,])\d{3})(?:\1\d{3})*$"))
             {
-                // Dạng 1,234.56 hoặc 1.234,56
-                if (clean.LastIndexOf(',') > clean.LastIndexOf('.'))
-                {
-                    clean = clean.Replace(".", "").Replace(",", ".");
-                }
-                else
-                {
-                    clean = clean.Replace(",", "");
-                }
+                // 2. Dạng nhóm nghìn dùng cùng một loại dấu (420,000 / 350.000 / 1.234.567) -> bỏ dấu phân cách nghìn
+                clean = clean.Replace(",", "").Replace(".", "");
             }
-            else if (clean.Contains(","))
+            else if (clean.Contains(",") && clean.Contains("."))
             {
+                // 3. Dạng 1,234.56 hoặc 1.234,56: dấu xuất hiện sau cùng là dấu thập phân, dấu còn lại là phân cách nghìn
+                int viTriThapPhan = Math.Max(clean.LastIndexOf(','), clean.LastIndexOf('.'));
+                string dauNghin = clean[viTriThapPhan] == ',' ? "." : ",";
+                string phanNguyen = clean.Substring(0, viTriThapPhan);
+                string phanLe = clean.Substring(viTriThapPhan + 1);
+
+                if (!Regex.IsMatch(phanNguyen, @"^[-+]?\d{1,3}(?:" + Regex.Escape(dauNghin) + @"\d{3})+$") || !Regex.IsMatch(phanLe, @"^\d+$"))
+                {
+                    return giaTriMacDinh;
+                }
+                clean = phanNguyen.Replace(dauNghin, "") + "." + phanLe;
+            }
+            else
+            {
+                // 4. Chỉ chấp nhận tối đa một dấu thập phân (',' hoặc '.')
+                int soDau = 0;
+                foreach (char ch in clean)
+                {
+                    if (ch == ',' || ch == '.') soDau++;
+                }
+                if (soDau > 1) return giaTriMacDinh;
                 clean = clean.Replace(",", ".");
             }
 
-            if (decimal.TryParse(clean, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal val))
+            if (decimal.TryParse(clean, NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out decimal val))
             {
                 return val;
             }
@@ -754,6 +763,11 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                                 {
                                     string inlineText = c.Element(ns + "is")?.Element(ns + "t")?.Value ?? string.Empty;
                                     rowCells.Add(inlineText);
+                                }
+                                else if ((type == null || type == "n") && val != null && Regex.IsMatch(val, @"^-?\d{1,3}\.\d{3}$"))
+                                {
+                                    // Ô số của Excel luôn dùng dấu chấm thập phân (vd 12.345): thêm số 0 cuối để không bị hiểu nhầm là nhóm nghìn
+                                    rowCells.Add(val + "0");
                                 }
                                 else
                                 {
