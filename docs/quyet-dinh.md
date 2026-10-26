@@ -272,3 +272,5 @@
   4. **Cơ chế vòng lặp phiên làm việc và Đăng xuất (`Program.cs` & `frmMain.cs`)**:
      - `Program.cs` chạy vòng lặp yêu cầu đăng nhập trước khi vào `frmMain`.
      - Khi người dùng chọn "Đăng xuất" trên menu Hệ thống của `frmMain`, ứng dụng xóa sạch phiên làm việc trong `SessionContext` và quay trở lại ngay màn hình Đăng nhập `frmDangNhap`. Khi chọn "Thoát" hoặc đóng cửa sổ, ứng dụng kết thúc hoàn toàn.
+
+- **2026-10-26 (Phiên 59)** – Loại bỏ chức năng Xuất hủy (frmXuatHuy) và gỡ khỏi Thẻ kho – Người dùng quyết định hủy bỏ phân hệ Xuất hủy; gỡ bỏ hoàn toàn tùy chọn lọc "Xuất hủy / Hao hụt" và loại trừ loại chứng từ XUAT_HUY khỏi Báo cáo Thẻ kho (frmBaoCaoTheKho).

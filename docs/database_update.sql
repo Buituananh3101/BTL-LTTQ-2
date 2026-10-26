@@ -184,7 +184,7 @@ JOIN ChiTietPhieuNhap ct ON ct.MaPhieuNhap = pn.MaPhieuNhap
 WHERE pn.TrangThai = 'DA_XAC_NHAN'
 
 UNION ALL
--- 2. Xuất kho đã xác nhận (Bao gồm xuất bán, xuất nội bộ, xuất hủy): Giảm tồn
+-- 2. Xuất kho đã xác nhận (Bao gồm xuất bán, xuất nội bộ; loại bỏ xuất hủy): Giảm tồn
 SELECT CAST(ISNULL(px.NgayXacNhan, px.NgayLap) AS DATETIME) AS NgayGiaoDich,
        px.MaKho,
        ctpx.MaHang,
@@ -194,7 +194,7 @@ SELECT CAST(ISNULL(px.NgayXacNhan, px.NgayLap) AS DATETIME) AS NgayGiaoDich,
        ctpx.SoLuongXuat AS SoLuongGiam
 FROM PhieuXuat px
 JOIN ChiTietPhieuXuat ctpx ON ctpx.MaPhieuXuat = px.MaPhieuXuat
-WHERE px.TrangThai = 'DA_XAC_NHAN'
+WHERE px.TrangThai = 'DA_XAC_NHAN' AND px.LoaiPhieuXuat <> 'XUAT_HUY'
 
 UNION ALL
 -- 3. Chuyển kho đã xuất / đã nhận: Trừ tồn kho nguồn
@@ -614,4 +614,16 @@ BEGIN
 END;
 
 PRINT N'[OK] Đã hoàn tất phân quyền kho trong TaiKhoanKho: Quản lý (mọi kho), Thủ kho (Kho 1 duy nhất), Nhân viên kho (Kho 1).';
+GO
+
+
+-- -----------------------------------------------------------------------------------------
+-- MỤC 18: LOẠI BỎ PHÂN HỆ XUẤT HỦY (Phiên 59 - 2026-10-26)
+-- Lý do: Người dùng quyết định loại bỏ hoàn toàn phân hệ Xuất hủy (frmXuatHuy).
+-- Chuyển toàn bộ các phiếu xuất hủy cũ trong PhieuXuat sang trạng thái 'HUY'
+-- và cập nhật View vw_BienDongKho loại trừ LoaiPhieuXuat = 'XUAT_HUY'.
+-- -----------------------------------------------------------------------------------------
+UPDATE PhieuXuat
+SET TrangThai = 'HUY'
+WHERE LoaiPhieuXuat = 'XUAT_HUY';
 GO

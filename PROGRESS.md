@@ -1,6 +1,6 @@
 ﻿# Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-26 – Chuẩn hóa phân trang SQL Server và DataBinding cho Người dùng (Phiên 58)
+**Cập nhật lần cuối**: 2026-10-26 – Chuẩn hóa giao diện và logic Báo cáo Thẻ kho & Báo cáo Tồn kho (Phiên 59)
 ---
 
 ## Đang làm
@@ -24,8 +24,6 @@
    - Form Danh mục Vị trí (`frmViTri`).
    - Form Danh mục Chi nhánh Kho & phân quyền `TaiKhoanKho` (`frmKho`).
    - Form Danh mục Khách hàng (`frmKhachHang`).
-3. **Quản lý Kho & Chứng từ Biến động**:
-   - Form Xuất hủy (`frmXuatHuy`).
 
 ---
 
@@ -45,12 +43,28 @@
 | 10 | **Danh mục Cơ bản khác** | CRUD Nhóm hàng, Vị trí, Chi nhánh Kho, Khách hàng | Chưa bắt đầu |
 | 11 | **Kiểm kê & Cân bằng kho** | `frmKiemKho`, nạp tồn sổ sách, sinh phiếu điều chỉnh, khóa vĩnh viễn, `frmThemPhieuKiemKho`, `frmHienCotHangKiem` | Hoàn thành 100% |
 | 12 | **Chuyển kho Liên chi nhánh & Đổi kho** | `frmChuyenKho`, 2 bước Xuất kho ➜ Nhận kho, chặn tồn âm kho nguồn, modal `frmDoiKho` | Hoàn thành 100% |
-| 13 | **Xuất hủy** | `frmXuatHuy` | Chưa bắt đầu |
+| 13 | **Xuất hủy** | Đã hủy bỏ chức năng theo quyết định người dùng | Đã hủy |
 | 14 | **Báo cáo Tồn kho & Thẻ kho** | Báo cáo tồn đa kho (`frmBaoCaoTonKho`), Thẻ kho (`frmBaoCaoTheKho`) từ `vw_BienDongKho`, xuất CSV UTF-8 BOM | Hoàn thành 100% |
 
 ---
 
 ## Nhật ký phiên (Session Logs)
+- **Phiên 59 (2026-10-26) – Chuẩn hóa bố cục và logic Báo cáo Thẻ kho (frmBaoCaoTheKho) và Báo cáo Tồn kho (frmBaoCaoTonKho)**:
+  - **Nhu cầu**: Người dùng chỉnh sửa giao diện Báo cáo tồn kho và Thẻ kho; yêu cầu căn chỉnh left menu và cập nhật hoàn thiện logic cho Thẻ kho.
+  - **Kết quả thực hiện**:
+    1. Căn chỉnh `pnlBoLoc` và `grpBoLoc` trong cả 2 form `frmBaoCaoTonKho` và `frmBaoCaoTheKho`: loại bỏ Anchor 4 phía gây lệch menu trái, cố định Size `(360, 717)`, căn chỉnh lề trái các control tại `X = 18`, đưa cụm thời gian phát sinh `grpThoiGianTao` xuống đáy `(18, 593)` chuẩn Điều luật 16.
+    2. Sửa lỗi xung đột thứ tự Z-order Docking giữa `panel1` (Top) và `dgvTheKho` (Fill) trong `frmBaoCaoTheKho.Designer.cs`: đưa `panel1` lên trước `dgvTheKho`, gọi `dgvTheKho.BringToFront()` trong `Load` để hiển thị đầy đủ thông tin mặt hàng và 4 thẻ KPI Thẻ kho.
+    3. Cập nhật logic `frmBaoCaoTheKho.cs`:
+       - Nhận và lưu trữ `maKhoKhoiTao` từ `frmBaoCaoTonKho` hoặc theo `SessionContext.MaKhoHienTai`.
+       - Truy vấn tên kho tương ứng và hiển thị rõ ràng trên banner chi tiết mặt hàng (`Kho: ... | ĐVT: ...`).
+       - Tự động ẩn/hiện cột `Kho` trên bảng dữ liệu tùy theo ngữ cảnh xem toàn hệ thống hay xem một kho cụ thể.
+       - Loại bỏ hoàn toàn tùy chọn lọc "Xuất hủy / Hao hụt" và loại trừ loại chứng từ XUAT_HUY khỏi Thẻ kho theo quyết định người dùng bỏ phân hệ Xuất hủy.
+    4. Cài đặt sự kiện tương tác cho 4 thẻ KPI (`pnlCardTonDau`, `pnlCardNhapKy`, `pnlCardXuatKy`, `pnlCardTonCuoi`): gán con trỏ chuột Hand, click để lọc nhanh loại giao dịch hoặc cuộn tới dòng đầu/cuối.
+       - Chuẩn hóa nút điều hướng `btnQuayLai` tại góc đáy trái `(12, 735)`: hiển thị "Quay lại" khi mở từ Báo cáo tồn kho (nhấn Esc hoặc click để quay về), hiển thị "Đóng" khi mở độc lập từ menu.
+    4. Đồng bộ tài liệu đặc tả `docs/specs/the-kho.md`.
+    5. Kiểm tra mã hóa UTF-8 with BOM: 100% file đạt chuẩn, 0 lỗi Mojibake.
+    6. Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+
 - **Phiên 58 (2026-10-26) – Chuẩn hóa phân trang SQL Server và DataBinding cho Danh sách Người dùng (rmDanhSachNguoiDung)**:   - **Nhu cầu**: Tiến hành sửa điểm chưa nhất quán số 2: Chuẩn hóa logic phân trang tầng CSDL và cơ chế DataBinding cho DataGridView.   - **Kết quả thực hiện**:     1. Cập nhật [rmDanhSachNguoiDung.Designer.cs](file:///d:/CODE/BTL-LTTQ-2/BTL-LTTQ-2/GUI/Forms/NguoiDung/frmDanhSachNguoiDung.Designer.cs): Khai báo DataPropertyName cho toàn bộ các cột trên dgvNguoiDung (MaTaiKhoan, TenDangNhap, HoTen, DienThoai, TenVaiTro, KhoPhuTrach, LanDangNhapCuoiHienThi, TrangThai).     2. Tái cấu tróc [rmDanhSachNguoiDung.cs](file:///d:/CODE/BTL-LTTQ-2/BTL-LTTQ-2/GUI/Forms/NguoiDung/frmDanhSachNguoiDung.cs):        - Chuyển từ phân trang in-memory sang phân trang SQL Server chuẩn với COUNT(1) và OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY.        - Bỏ hàm add dòng thủ công Rows.Add(...), chuyển sang dgvNguoiDung.DataSource = dt theo chuẩn toàn hệ thống.        - Tích hổp ComboboxHelper.CaiDatTimKiem cho cboKho hổ trổ tìm kho nhanh.        - Chuẩn hóa màu trạng thái 'KHOA' sang màu Xám nhạt (Color.FromArgb(100, 116, 139)) theo chuẩn nhóm 3 của Rule 15b.     3. Kiểm tra mã hóa font chữ 	ools/KiemTraMaHoa.ps1: 100% file UTF-8 with BOM, 0 lỗi font.     4. Biên dịch Rebuild: **0 Warning(s), 0 Error(s)**.
 - **Phiên 57 (2026-10-26) – Chuẩn hóa tìm kiếm tức thời Search Debounce Timer cho Danh sách Hàng hóa (rmDanhSachHangHoa)**:   - **Nhu cầu**: Rà soát độ đồng nhất giữa các đoạn code có logic tương tự trên toàn bộ hệ thống; tiến hành sửa điểm chưa nhất quán số 1 (Search Debounce Timer).   - **Kết quả thực hiện**:     1. Bổ sung searchDebounceTimer (300ms) và sự kiện 	xtTimKiem_KeyDown (phím Enter) vào [rmDanhSachHangHoa.cs](file:///d:/CODE/BTL-LTTQ-2/BTL-LTTQ-2/GUI/Forms/DanhSachHangHoa/frmDanhSachHangHoa.cs).     2. Cập nhật 	xtTimKiem_TextChanged sang cơ chế Stop() / Start() timer, khẮc phỤc triểt để hiện tưồng gửi truy vấn SQL Server liên tỤc theo tứng phím gõ, đồng nhất hoàn toàn với các form danh sách khác (rmNhapHang, rmChuyenKho, rmKiemKho, rmTraHangNhap, rmNhaCungCap, rmBaoCaoTonKho).     3. Kiểm tra tự động mã hóa 	ools/KiemTraMaHoa.ps1: 100% file UTF-8 with BOM, 0 lỗi Mojibake.     4. Biên dịch Rebuild bằng dotnet msbuild: **0 Warning(s), 0 Error(s)**.
 - **Phiên 56 (2026-10-26) – Chuẩn hóa phím Enter/nhận SL kiểm kho và đồng bộ hành vi nút Bỏ qua của 4 form thêm chứng từ**:

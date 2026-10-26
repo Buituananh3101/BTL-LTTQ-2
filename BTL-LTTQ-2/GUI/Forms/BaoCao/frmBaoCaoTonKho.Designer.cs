@@ -72,6 +72,7 @@
             this.pnlCardSku = new System.Windows.Forms.Panel();
             this.lblCardSkuVal = new System.Windows.Forms.Label();
             this.lblCardSkuTitle = new System.Windows.Forms.Label();
+            this.splitter1 = new System.Windows.Forms.Splitter();
             this.pnlTop.SuspendLayout();
             this.grpTop.SuspendLayout();
             this.pnlBoLoc.SuspendLayout();
@@ -90,6 +91,7 @@
             // pnlTop
             // 
             this.pnlTop.BackColor = System.Drawing.SystemColors.Control;
+            this.pnlTop.Controls.Add(this.splitter1);
             this.pnlTop.Controls.Add(this.grpTop);
             this.pnlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlTop.Location = new System.Drawing.Point(0, 0);
@@ -556,6 +558,16 @@
             this.lblCardSkuTitle.TabIndex = 0;
             this.lblCardSkuTitle.Text = "Tổng số mặt hàng";
             // 
+            // splitter1
+            // 
+            this.splitter1.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.splitter1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.splitter1.Location = new System.Drawing.Point(0, 72);
+            this.splitter1.Name = "splitter1";
+            this.splitter1.Size = new System.Drawing.Size(1782, 1);
+            this.splitter1.TabIndex = 1;
+            this.splitter1.TabStop = false;
+            // 
             // frmBaoCaoTonKho
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
@@ -644,5 +656,6 @@
         private System.Windows.Forms.Panel pnlCardSku;
         private System.Windows.Forms.Label lblCardSkuVal;
         private System.Windows.Forms.Label lblCardSkuTitle;
+        private System.Windows.Forms.Splitter splitter1;
     }
 }
