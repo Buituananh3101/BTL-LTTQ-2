@@ -343,6 +343,7 @@
             this.colMaTaiKhoan.DefaultCellStyle = dataGridViewCellStyle3;
             this.colMaTaiKhoan.HeaderText = "Mã TK";
             this.colMaTaiKhoan.MinimumWidth = 6;
+            this.colMaTaiKhoan.DataPropertyName = "MaTaiKhoan";
             this.colMaTaiKhoan.Name = "colMaTaiKhoan";
             this.colMaTaiKhoan.ReadOnly = true;
             this.colMaTaiKhoan.Width = 80;
@@ -351,6 +352,7 @@
             // 
             this.colTenDangNhap.HeaderText = "Tên đăng nhập";
             this.colTenDangNhap.MinimumWidth = 6;
+            this.colTenDangNhap.DataPropertyName = "TenDangNhap";
             this.colTenDangNhap.Name = "colTenDangNhap";
             this.colTenDangNhap.ReadOnly = true;
             this.colTenDangNhap.Width = 160;
@@ -361,6 +363,7 @@
             this.colHoTen.FillWeight = 130F;
             this.colHoTen.HeaderText = "Họ và tên";
             this.colHoTen.MinimumWidth = 6;
+            this.colHoTen.DataPropertyName = "HoTen";
             this.colHoTen.Name = "colHoTen";
             this.colHoTen.ReadOnly = true;
             // 
@@ -370,6 +373,7 @@
             this.colDienThoai.DefaultCellStyle = dataGridViewCellStyle4;
             this.colDienThoai.HeaderText = "Điện thoại";
             this.colDienThoai.MinimumWidth = 6;
+            this.colDienThoai.DataPropertyName = "DienThoai";
             this.colDienThoai.Name = "colDienThoai";
             this.colDienThoai.ReadOnly = true;
             this.colDienThoai.Width = 130;
@@ -378,6 +382,7 @@
             // 
             this.colVaiTro.HeaderText = "Vai trò";
             this.colVaiTro.MinimumWidth = 6;
+            this.colVaiTro.DataPropertyName = "TenVaiTro";
             this.colVaiTro.Name = "colVaiTro";
             this.colVaiTro.ReadOnly = true;
             this.colVaiTro.Width = 150;
@@ -388,6 +393,7 @@
             this.colKhoPhuTrach.FillWeight = 160F;
             this.colKhoPhuTrach.HeaderText = "Kho phụ trách";
             this.colKhoPhuTrach.MinimumWidth = 6;
+            this.colKhoPhuTrach.DataPropertyName = "KhoPhuTrach";
             this.colKhoPhuTrach.Name = "colKhoPhuTrach";
             this.colKhoPhuTrach.ReadOnly = true;
             // 
@@ -397,6 +403,7 @@
             this.colNgayTao.DefaultCellStyle = dataGridViewCellStyle5;
             this.colNgayTao.HeaderText = "Đăng nhập cuối";
             this.colNgayTao.MinimumWidth = 6;
+            this.colNgayTao.DataPropertyName = "LanDangNhapCuoiHienThi";
             this.colNgayTao.Name = "colNgayTao";
             this.colNgayTao.ReadOnly = true;
             this.colNgayTao.Width = 160;
@@ -405,6 +412,7 @@
             // 
             this.colTrangThai.HeaderText = "Trạng thái";
             this.colTrangThai.MinimumWidth = 6;
+            this.colTrangThai.DataPropertyName = "TrangThai";
             this.colTrangThai.Name = "colTrangThai";
             this.colTrangThai.ReadOnly = true;
             this.colTrangThai.Width = 150;
