@@ -125,7 +125,7 @@
             this.chkGiamGia.Name = "chkGiamGia";
             this.chkGiamGia.Size = new System.Drawing.Size(94, 25);
             this.chkGiamGia.TabIndex = 6;
-            this.chkGiamGia.Text = "Giảm giá";
+            this.chkGiamGia.Text = "Giảm giá (%)";
             this.chkGiamGia.UseVisualStyleBackColor = true;
             // 
             // chkThanhTien

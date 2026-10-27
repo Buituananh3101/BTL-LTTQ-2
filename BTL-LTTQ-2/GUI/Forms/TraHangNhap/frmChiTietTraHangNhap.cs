@@ -149,7 +149,7 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                 decimal daThuNcc = Convert.ToDecimal(row["DaThuNcc"]);
 
                 lblTongTienHangVal.Text = tongTienHang.ToString("N0") + " đ";
-                lblGiamGiaVal.Text = giamGia.ToString("N0") + " đ";
+                lblGiamGiaVal.Text = giamGia.ToString("N0") + " %";
                 lblCanThuNccVal.Text = canThuNcc.ToString("N0") + " đ";
                 lblDaThuNccVal.Text = daThuNcc.ToString("N0") + " đ";
 
@@ -381,7 +381,7 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
             sb.AppendLine("<br/>");
             sb.AppendLine($"<p><b>Số lượng mặt hàng:</b> {lblSoLuongMatHangVal.Text}</p>");
             sb.AppendLine($"<p><b>Tổng tiền hàng:</b> {lblTongTienHangVal.Text}</p>");
-            sb.AppendLine($"<p><b>Giảm giá:</b> {lblGiamGiaVal.Text}</p>");
+            sb.AppendLine($"<p><b>Giảm giá (%):</b> {lblGiamGiaVal.Text}</p>");
             sb.AppendLine($"<p><b>NCC cần trả:</b> {lblCanThuNccVal.Text}</p>");
             sb.AppendLine($"<p><b>NCC đã trả:</b> {lblDaThuNccVal.Text}</p>");
 
@@ -432,7 +432,7 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
             sb.AppendLine();
             sb.AppendLine($",,,Số lượng mặt hàng:,{lblSoLuongMatHangVal.Text}");
             sb.AppendLine($",,,Tổng tiền hàng:,,,{lblTongTienHangVal.Text.Replace(",", "")}");
-            sb.AppendLine($",,,Giảm giá:,,,{lblGiamGiaVal.Text.Replace(",", "")}");
+            sb.AppendLine($",,,Giảm giá (%):,,,{lblGiamGiaVal.Text.Replace(",", "")}");
             sb.AppendLine($",,,NCC cần trả:,,,{lblCanThuNccVal.Text.Replace(",", "")}");
             sb.AppendLine($",,,NCC đã trả:,,,{lblDaThuNccVal.Text.Replace(",", "")}");
 

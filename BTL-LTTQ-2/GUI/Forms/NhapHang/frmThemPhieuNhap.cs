@@ -3,6 +3,7 @@ using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
@@ -64,6 +65,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             colDonGia.DefaultCellStyle.Format = "N0";
             colGiamGia.DefaultCellStyle.Format = "N0";
             colThanhTien.DefaultCellStyle.Format = "N0";
+            colGiamGia.HeaderText = "Giảm giá (%)";
 
             colSoLuong.DefaultCellStyle.BackColor = Color.FromArgb(254, 252, 232);
             colSoLuong.ToolTipText = "Nhập số lượng trực tiếp tại đây (nhấn Enter để xác nhận)";
@@ -71,6 +73,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             dgvChiTietHang.EditMode = DataGridViewEditMode.EditOnEnter;
             dgvChiTietHang.EditingControlShowing += dgvChiTietHang_EditingControlShowing;
             dgvChiTietHang.CellEndEdit += dgvChiTietHang_CellEndEdit;
+            dgvChiTietHang.CellClick += dgvChiTietHang_CellClick;
             dgvChiTietHang.Leave += (s, e) => { if (dgvChiTietHang.IsCurrentCellInEditMode) dgvChiTietHang.EndEdit(); };
 
             dgvChiTietHang.DataSource = dtChiTietHang;
@@ -266,7 +269,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                     decimal slHienCo = Convert.ToDecimal(daCo[0]["SoLuong"]) + 1;
                     daCo[0]["SoLuong"] = slHienCo;
                     decimal ggDong = Convert.ToDecimal(daCo[0]["GiamGia"]);
-                    decimal ttDong = (slHienCo * donGia) - ggDong;
+                    decimal ttDong = (slHienCo * donGia) * (1m - (ggDong / 100m));
                     daCo[0]["ThanhTien"] = ttDong > 0 ? ttDong : 0;
                     CapNhatTongKet();
 
@@ -387,12 +390,93 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             }
         }
 
-        private void ApDungSoLuongNhap()
+        private decimal ParseDecimalAnToan(object rawVal)
+        {
+            if (rawVal == null || rawVal == DBNull.Value) return 0m;
+            if (rawVal is decimal d) return d;
+            if (rawVal is int i) return (decimal)i;
+            if (rawVal is long l) return (decimal)l;
+            if (rawVal is double db) return (decimal)db;
+            if (rawVal is float f) return (decimal)f;
+
+            string s = rawVal.ToString().Trim().Replace("đ", "").Replace("VNĐ", "").Replace("%", "").Trim();
+            if (string.IsNullOrEmpty(s)) return 0m;
+
+            if (s.Contains(".") && s.Contains(","))
+            {
+                if (s.LastIndexOf('.') > s.LastIndexOf(','))
+                {
+                    s = s.Replace(",", "");
+                }
+                else
+                {
+                    s = s.Replace(".", "").Replace(",", ".");
+                }
+            }
+            else if (s.Contains("."))
+            {
+                int dotIdx = s.IndexOf('.');
+                int digitsAfter = s.Length - dotIdx - 1;
+                if (digitsAfter == 3 && dotIdx == s.LastIndexOf('.'))
+                {
+                    s = s.Replace(".", "");
+                }
+                else if (s.IndexOf('.') != s.LastIndexOf('.'))
+                {
+                    s = s.Replace(".", "");
+                }
+            }
+            else if (s.Contains(","))
+            {
+                int commaIdx = s.IndexOf(',');
+                int digitsAfter = s.Length - commaIdx - 1;
+                if (digitsAfter == 3 && commaIdx == s.LastIndexOf(','))
+                {
+                    s = s.Replace(",", "");
+                }
+                else if (s.IndexOf(',') != s.LastIndexOf(','))
+                {
+                    s = s.Replace(",", "");
+                }
+                else
+                {
+                    s = s.Replace(",", ".");
+                }
+            }
+
+            if (decimal.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal res))
+            {
+                return res;
+            }
+            return 0m;
+        }
+
+        private void dgvChiTietHang_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.RowIndex >= dgvChiTietHang.Rows.Count) return;
+            if (e.ColumnIndex < 0 || e.ColumnIndex >= dgvChiTietHang.Columns.Count) return;
+
+            string colName = dgvChiTietHang.Columns[e.ColumnIndex].Name;
+            if (colName == "colSoLuong" || colName == "colDonGia" || colName == "colGiamGia")
+            {
+                dgvChiTietHang.BeginEdit(true);
+                if (dgvChiTietHang.EditingControl is TextBox txt)
+                {
+                    txt.SelectAll();
+                }
+            }
+        }
+
+        private void ApDungSoLuongNhap(int targetRowIndex = -1, int targetColIndex = -1)
         {
             try
             {
-                if (dgvChiTietHang.CurrentCell == null) return;
-                int rowIndex = dgvChiTietHang.CurrentCell.RowIndex;
+                int rowIndex = targetRowIndex >= 0 ? targetRowIndex : (dgvChiTietHang.CurrentCell != null ? dgvChiTietHang.CurrentCell.RowIndex : -1);
+                int colIndex = targetColIndex >= 0 ? targetColIndex : (dgvChiTietHang.CurrentCell != null ? dgvChiTietHang.CurrentCell.ColumnIndex : -1);
+
+                if (rowIndex < 0 || rowIndex >= dgvChiTietHang.Rows.Count) return;
+                if (colIndex < 0 || colIndex >= dgvChiTietHang.Columns.Count) return;
+
                 if (rowIndex < 0 || rowIndex >= dgvChiTietHang.Rows.Count) return;
 
                 DataGridViewRow dgvRow = dgvChiTietHang.Rows[rowIndex];
@@ -400,53 +484,70 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                 DataRow row = drv != null ? drv.Row : (rowIndex < dtChiTietHang.Rows.Count ? dtChiTietHang.Rows[rowIndex] : null);
                 if (row == null) return;
 
-                string colName = dgvChiTietHang.Columns[dgvChiTietHang.CurrentCell.ColumnIndex].Name;
+                string colName = dgvChiTietHang.Columns[colIndex].Name;
 
                 // Lấy chuỗi từ ô nhập
-                string text = "";
-                if (dgvChiTietHang.EditingControl is TextBox txt)
+                object cellRawVal = null;
+                if (dgvChiTietHang.EditingControl is TextBox txt && dgvChiTietHang.CurrentCell != null && dgvChiTietHang.CurrentCell.RowIndex == rowIndex && dgvChiTietHang.CurrentCell.ColumnIndex == colIndex)
                 {
-                    text = txt.Text;
+                    cellRawVal = txt.Text;
                 }
                 else if (dgvChiTietHang.Columns.Contains(colName) && dgvRow.Cells[colName].Value != null)
                 {
-                    text = dgvRow.Cells[colName].Value.ToString();
+                    cellRawVal = dgvRow.Cells[colName].Value;
                 }
 
-                decimal soLuong = row["SoLuong"] != DBNull.Value ? Convert.ToDecimal(row["SoLuong"]) : 1;
-                decimal donGia = row["DonGiaNhap"] != DBNull.Value ? Convert.ToDecimal(row["DonGiaNhap"]) : 0;
-                decimal giamGia = row["GiamGia"] != DBNull.Value ? Convert.ToDecimal(row["GiamGia"]) : 0;
+                decimal soLuong = row["SoLuong"] != DBNull.Value ? ParseDecimalAnToan(row["SoLuong"]) : 1;
+                decimal donGia = row["DonGiaNhap"] != DBNull.Value ? ParseDecimalAnToan(row["DonGiaNhap"]) : 0;
+                decimal giamGia = row["GiamGia"] != DBNull.Value ? ParseDecimalAnToan(row["GiamGia"]) : 0;
 
-                string cleanStr = text.Replace(",", "").Replace(".", "").Trim();
+                decimal inputVal = ParseDecimalAnToan(cellRawVal);
 
                 if (colName == "colSoLuong")
                 {
-                    if (string.IsNullOrEmpty(cleanStr) || !decimal.TryParse(cleanStr, out soLuong) || soLuong <= 0)
+                    if (inputVal <= 0)
                     {
                         MessageBox.Show("Số lượng nhập phải là số nguyên lớn hơn 0!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         soLuong = 1;
                     }
-                    soLuong = (int)Math.Floor(soLuong);
+                    else
+                    {
+                        soLuong = Math.Floor(inputVal);
+                    }
                 }
                 else if (colName == "colDonGia")
                 {
-                    if (string.IsNullOrEmpty(cleanStr) || !decimal.TryParse(cleanStr, out donGia) || donGia < 0)
+                    if (inputVal < 0)
                     {
                         MessageBox.Show("Đơn giá nhập không hợp lệ!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         donGia = 0;
                     }
+                    else
+                    {
+                        donGia = inputVal;
+                    }
                 }
                 else if (colName == "colGiamGia")
                 {
-                    if (string.IsNullOrEmpty(cleanStr) || !decimal.TryParse(cleanStr, out giamGia) || giamGia < 0)
+                    if (inputVal < 0)
                     {
-                        MessageBox.Show("Giảm giá không hợp lệ!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show("Giảm giá (%) không hợp lệ!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         giamGia = 0;
+                    }
+                    else if (inputVal > 100)
+                    {
+                        MessageBox.Show("Giảm giá không được vượt quá 100%!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        giamGia = 100;
+                    }
+                    else
+                    {
+                        giamGia = inputVal;
                     }
                 }
 
-                decimal thanhTien = (soLuong * donGia) - giamGia;
-                if (thanhTien < 0) thanhTien = 0;
+                decimal tienChuaGiam = soLuong * donGia;
+                decimal thanhTien = Math.Max(0, tienChuaGiam * (1m - (giamGia / 100m)));
+
 
                 if (dgvChiTietHang.IsCurrentCellInEditMode)
                 {
@@ -500,8 +601,8 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             {
                 try
                 {
-                    isCalculating = true;
-                    ApDungSoLuongNhap();
+
+                    ApDungSoLuongNhap(e.RowIndex, e.ColumnIndex);
                 }
                 finally
                 {
@@ -538,6 +639,14 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                 {
                     txt.KeyPress += TxtNumberDgv_KeyPress;
                     txt.KeyDown += TxtNumberDgv_KeyDown;
+
+                    this.BeginInvoke(new Action(() =>
+                    {
+                        if (txt != null && !txt.IsDisposed)
+                        {
+                            txt.SelectAll();
+                        }
+                    }));
                 }
             }
         }
@@ -636,29 +745,34 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             if (isCalculating) return;
 
             int soMatHang = dtChiTietHang.Rows.Count;
-            decimal tongSoLuong = 0;
+            try
+            {
+                isCalculating = true;
+                decimal tongSoLuong = 0;
             decimal tongTienHang = 0;
 
             foreach (DataRow r in dtChiTietHang.Rows)
             {
                 if (r.RowState == DataRowState.Deleted) continue;
-                tongSoLuong += Convert.ToDecimal(r["SoLuong"]);
-                tongTienHang += Convert.ToDecimal(r["ThanhTien"]);
+                tongSoLuong += ParseDecimalAnToan(r["SoLuong"]);
+                tongTienHang += ParseDecimalAnToan(r["ThanhTien"]);
             }
 
             lblSoMatHangVal.Text = soMatHang.ToString("N0");
             lblTongSoLuongVal.Text = tongSoLuong.ToString("N0");
             lblTongTienHangVal.Text = string.Format("{0:N0} đ", tongTienHang);
 
-            decimal giamGiaTong = 0;
+            decimal giamGiaTongPercent = 0;
             string cleanGg = txtGiamGiaTong.Text.Replace(",", "").Replace(".", "").Trim();
             if (decimal.TryParse(cleanGg, out decimal ggVal))
             {
-                giamGiaTong = ggVal;
+                if (ggVal < 0) ggVal = 0;
+                if (ggVal > 100) ggVal = 100;
+                giamGiaTongPercent = ggVal;
             }
 
-            decimal tongCong = tongTienHang - giamGiaTong;
-            if (tongCong < 0) tongCong = 0;
+            decimal giamGiaTien = tongTienHang * (giamGiaTongPercent / 100m);
+            decimal tongCong = Math.Max(0, tongTienHang - giamGiaTien);
             lblTongCongVal.Text = string.Format("{0:N0} đ", tongCong);
 
             decimal tienDaTra = 0;
@@ -669,13 +783,66 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             }
             else
             {
-                tienDaTra = tongCong;
-                txtTienDaTra.Text = tienDaTra.ToString("N0");
+                tienDaTra = 0;
             }
 
-            decimal canTraNcc = tongCong - tienDaTra;
-            if (canTraNcc < 0) canTraNcc = 0;
+            decimal canTraNcc = Math.Max(0, tongCong - tienDaTra);
             lblCanTraNccVal.Text = string.Format("{0:N0} đ", canTraNcc);
+            }
+            finally
+            {
+                isCalculating = false;
+            }
+        }
+
+        private void txtGiamGiaTong_Leave(object sender, EventArgs e)
+        {
+            string clean = txtGiamGiaTong.Text.Replace(",", "").Replace(".", "").Trim();
+            if (decimal.TryParse(clean, out decimal val))
+            {
+                if (val < 0) val = 0;
+                if (val > 100) val = 100;
+                txtGiamGiaTong.Text = val.ToString("N0");
+            }
+            else
+            {
+                txtGiamGiaTong.Text = "0";
+            }
+            CapNhatTongKet();
+        }
+
+        private void txtGiamGiaTong_Enter(object sender, EventArgs e)
+        {
+            this.BeginInvoke(new Action(() => txtGiamGiaTong.SelectAll()));
+        }
+
+        private void txtGiamGiaTong_Click(object sender, EventArgs e)
+        {
+            txtGiamGiaTong.SelectAll();
+        }
+
+        private void txtTienDaTra_Leave(object sender, EventArgs e)
+        {
+            string clean = txtTienDaTra.Text.Replace(",", "").Replace(".", "").Trim();
+            if (decimal.TryParse(clean, out decimal val))
+            {
+                txtTienDaTra.Text = val.ToString("N0");
+            }
+            else
+            {
+                txtTienDaTra.Text = "0";
+            }
+            CapNhatTongKet();
+        }
+
+        private void txtTienDaTra_Enter(object sender, EventArgs e)
+        {
+            this.BeginInvoke(new Action(() => txtTienDaTra.SelectAll()));
+        }
+
+        private void txtTienDaTra_Click(object sender, EventArgs e)
+        {
+            txtTienDaTra.SelectAll();
         }
 
         private void txtGiamGiaTong_TextChanged(object sender, EventArgs e)
@@ -750,7 +917,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                             daCo[0]["SoLuong"] = slMoi;
                             daCo[0]["DonGiaNhap"] = dgApDung;
                             daCo[0]["GiamGia"] = ggMoi;
-                            daCo[0]["ThanhTien"] = Math.Max(0, slMoi * dgApDung - ggMoi);
+                            daCo[0]["ThanhTien"] = Math.Max(0, (slMoi * dgApDung) * (1m - (ggMoi / 100m)));
                             demCapNhat++;
                         }
                         else
@@ -764,7 +931,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                             nr["SoLuong"] = sl;
                             nr["DonGiaNhap"] = dg;
                             nr["GiamGia"] = gg;
-                            nr["ThanhTien"] = Math.Max(0, sl * dg - gg);
+                            nr["ThanhTien"] = Math.Max(0, (sl * dg) * (1m - (gg / 100m)));
 
                             dtChiTietHang.Rows.Add(nr);
                             demThemMoi++;
@@ -848,19 +1015,35 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             string soHoaDon = txtSoHoaDon.Text.Trim();
             string ghiChu = txtGhiChu.Text.Trim();
 
-            decimal giamGiaTong = 0;
-            decimal.TryParse(txtGiamGiaTong.Text.Replace(",", "").Replace(".", ""), out giamGiaTong);
-
             decimal tongTienHang = 0;
-            foreach (DataRow r in dtChiTietHang.Rows)
+            foreach (DataRow row in dtChiTietHang.Rows)
             {
-                tongTienHang += Convert.ToDecimal(r["ThanhTien"]);
+                tongTienHang += ParseDecimalAnToan(row["ThanhTien"]);
             }
 
-            decimal tongCong = Math.Max(0, tongTienHang - giamGiaTong);
+            decimal giamGiaTongPercent = 0;
+            string cleanGg = txtGiamGiaTong.Text.Replace(",", "").Replace(".", "").Trim();
+            if (decimal.TryParse(cleanGg, out decimal ggVal))
+            {
+                if (ggVal < 0) ggVal = 0;
+                if (ggVal > 100) ggVal = 100;
+                giamGiaTongPercent = ggVal;
+            }
+
+            decimal giamGiaTien = tongTienHang * (giamGiaTongPercent / 100m);
+            decimal tongCong = Math.Max(0, tongTienHang - giamGiaTien);
+            lblTongCongVal.Text = string.Format("{0:N0} đ", tongCong);
 
             decimal tienDaTra = 0;
-            decimal.TryParse(txtTienDaTra.Text.Replace(",", "").Replace(".", ""), out tienDaTra);
+            string cleanDaTra = txtTienDaTra.Text.Replace(",", "").Replace(".", "").Trim();
+            if (decimal.TryParse(cleanDaTra, out decimal dtVal))
+            {
+                tienDaTra = dtVal;
+            }
+            else
+            {
+                tienDaTra = 0;
+            }
 
             decimal canTraNcc = Math.Max(0, tongCong - tienDaTra);
 
@@ -903,7 +1086,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                     cmdPn.Parameters.AddWithValue("@GhiChu", string.IsNullOrEmpty(ghiChu) ? (object)DBNull.Value : ghiChu);
                     cmdPn.Parameters.AddWithValue("@MaPhieu", maPhieu);
                     cmdPn.Parameters.AddWithValue("@SoHoaDon", string.IsNullOrEmpty(soHoaDon) ? (object)DBNull.Value : soHoaDon);
-                    cmdPn.Parameters.AddWithValue("@GiamGia", giamGiaTong);
+                    cmdPn.Parameters.AddWithValue("@GiamGia", giamGiaTongPercent);
                     cmdPn.Parameters.AddWithValue("@TongTien", tongCong);
                     cmdPn.Parameters.AddWithValue("@CanTraNcc", canTraNcc);
 

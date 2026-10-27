@@ -1,23 +1,13 @@
 ﻿# Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-27 – Chuẩn hóa file mẫu Excel chức năng Nhà cung cấp đồng bộ với Hàng hóa và Nhập hàng (Phiên 65)
+**Cập nhật lần cuối**: 2026-10-27 – Sửa lỗi nhảy tiền, đổi Giảm giá sang %, khắc phục nhân đơn giá ở Nhập hàng & Trả hàng nhập (Phiên 66)
 ---
 
 ## Đang làm
-- [x] Nâng cấp xuất file Báo cáo tồn kho (`frmBaoCaoTonKho.cs`) sang Excel `.xls` HTML Table UTF-8 (format `#,##0`, tô đỏ tồn <= 0) và `.csv` (UTF-8 BOM).
-- [x] Nâng cấp xuất file Báo cáo thẻ kho (`frmBaoCaoTheKho.cs`) sang Excel `.xls` HTML Table UTF-8 (tiêu đề, thẻ KPI, highlight tồn đầu/cuối kỳ, tô đỏ tồn âm) và `.csv` (UTF-8 BOM).
-- [x] Đồng bộ đặc tả kỹ thuật: `docs/specs/bao-cao-ton-kho.md`, `docs/specs/the-kho.md`.
-
-
-
-
-
-
-
-
-
-
-
+- [x] Khắc phục lỗi ô tiền đã trả/đã thu NCC bị nhảy số và chèn vào đầu chuỗi (`frmThemPhieuNhap`, `frmThemPhieuTraHang`).
+- [x] Đổi cách tính Giảm giá sang phần trăm (%) và đổi nhãn cột/label thành `Giảm giá (%)` (`frmThemPhieuNhap`, `frmChiTietPhieuNhap`, `frmThemPhieuTraHang`, `frmChiTietTraHangNhap`, `frmHienCotHangNhap`).
+- [x] Sửa lỗi kích ra ngoài cột đơn giá làm nhân số tiền 100/1000 lần qua `ParseDecimalAnToan` và `SelectAll()`.
+- [x] Đồng bộ đặc tả chức năng: `docs/specs/nhap-hang.md`, `docs/specs/tra-hang-nhap.md`.
 - [x] Kiểm tra mã hóa tự động `tools/KiemTraMaHoa.ps1`: 100% file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake.
 - [x] Kiểm tra biên dịch mã nguồn C# bằng MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
 
@@ -55,6 +45,24 @@
 ---
 
 ## Nhật ký phiên (Session Logs)
+- **Phiên 66 (2026-10-27) – Sửa lỗi tiền đã trả/thu NCC nhảy số, chuyển Giảm giá sang % và khắc phục lỗi nhân đơn giá ở Nhập hàng & Trả hàng nhập**:
+  - **Nhu cầu**: Người dùng phản ánh: "khi ấn vào tiền đã trả thì phần tiền cần trả nhà cung cấp bị nhảy lên và không thể xóa, nhập số thì sẽ bị chèn vào phần đầu số tiền (ảnh 1 và ảnh 4). Khi nhập giảm giá vào từng mặt hàng hoặc vào ô giảm giá của phiếu ở góc phải thì chỉ trừ đi số tiền chứ không phải giảm giá theo % (làm giảm giá theo %, tên cột để là Giảm giá (%) và tên label bên grp thông tin cũng để là Giảm giá (%)) (ảnh 2). Khi thêm hàng và nhấn vào cột đơn giá của hàng thì khi kích chuột ra ngoài, số tiền sẽ bị nhân lên 1000 lần (ảnh 3)".
+  - **Kết quả thực hiện**:
+    1. **Khắc phục lỗi ô Tiền đã trả & Cần trả NCC (`frmThemPhieuNhap` và `frmThemPhieuTraHang`)**:
+       - Bỏ việc gán đè `.Text` trực tiếp trong phương thức tính toán tổng kết `CapNhatTongKet` / `TinhToanTongKet`.
+       - Cho phép người dùng xóa trống ô về 0. Tự động `SelectAll()` khi Enter hoặc Click. Chỉ format `N0` khi `Leave`.
+    2. **Đổi tính năng Giảm giá sang tỷ lệ phần trăm (%)**:
+       - Đổi Header cột thành `Giảm giá (%)` và nhãn thông tin thành `Giảm giá (%):` trên `frmThemPhieuNhap`, `frmChiTietPhieuNhap`, `frmThemPhieuTraHang`, `frmChiTietTraHangNhap`, `frmHienCotHangNhap`.
+       - Công thức dòng hàng: `ThanhTien = (SoLuong * DonGia) * (1 - GiamGia / 100)`. Công thức tổng: `TongCong = TongTienHang * (1 - GiamGiaTong / 100)`. Giới hạn hợp lệ [0, 100].
+       - Form chi tiết hiển thị `{GiamGia:N0} %`.
+    3. **Khắc phục triệt để lỗi Đơn giá bị nhân lên khi click ra ngoài**:
+       - Bổ sung `ParseDecimalAnToan(object rawVal)`: Trả về trực tiếp giá trị số nếu là `decimal`/`int`, không qua chuỗi; phân tích chuỗi với InvariantCulture bảo đảm không nuốt dấu chấm thập phân sinh ra nhân 100 lần.
+       - Tự động vào chế độ edit và `SelectAll()` khi người dùng nhấp chuột vào cột Đơn giá hoặc Số lượng.
+    4. **Kiểm tra chất lượng & Đồng bộ**:
+       - Đồng bộ tài liệu đặc tả `docs/specs/nhap-hang.md`, `docs/specs/tra-hang-nhap.md`, `docs/quyet-dinh.md`.
+       - Chạy `tools/KiemTraMaHoa.ps1`: **193/193 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+
 - **Phiên 65 (2026-10-27) – Chuẩn hóa toàn diện định dạng file mẫu Excel của chức năng Nhà cung cấp**:
   - **Nhu cầu**: Người dùng phản ánh: "Định dạng file mẫu phần tải về file mẫu của chức năng Nhà cung cấp (ảnh 3) đang có giao diện khác với các file mẫu khác (ảnh 1 và 2). Chuẩn hóa file mẫu của Nhà cung cấp cho giao diện xuất ra giống các file mẫu còn lại".
   - **Nguyên nhân**: File mẫu Nhà cung cấp (`Mau_Nhap_Nha_Cung_Cap.xls`) trước đây xuất bằng thẻ `<table border="1">`, thiếu cấu hình Workbook XML `<x:DisplayGridlines/>`, không có khối CSS styling Segoe UI và tiêu đề `#0078D7`, khiến Excel mở ra với font Aptos Narrow mặc định và viền đen dày, khác biệt hoàn toàn với file mẫu Hàng hóa và Nhập hàng.

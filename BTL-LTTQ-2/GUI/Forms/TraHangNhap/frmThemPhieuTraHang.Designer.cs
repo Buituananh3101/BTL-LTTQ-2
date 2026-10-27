@@ -164,6 +164,10 @@
             this.txtDaThuNcc.TabIndex = 74;
             this.txtDaThuNcc.Text = "0";
             this.txtDaThuNcc.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtDaThuNcc.TextChanged += new System.EventHandler(this.txtDaThuNcc_TextChanged);
+            this.txtDaThuNcc.Leave += new System.EventHandler(this.txtDaThuNcc_Leave);
+            this.txtDaThuNcc.Enter += new System.EventHandler(this.txtDaThuNcc_Enter);
+            this.txtDaThuNcc.Click += new System.EventHandler(this.txtDaThuNcc_Click);
             // 
             // lblDaThuNccLbl
             // 
@@ -205,6 +209,9 @@
             this.txtGiamGia.Text = "0";
             this.txtGiamGia.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtGiamGia.TextChanged += new System.EventHandler(this.txtGiamGia_TextChanged);
+            this.txtGiamGia.Leave += new System.EventHandler(this.txtGiamGia_Leave);
+            this.txtGiamGia.Enter += new System.EventHandler(this.txtGiamGia_Enter);
+            this.txtGiamGia.Click += new System.EventHandler(this.txtGiamGia_Click);
             // 
             // lblGiamGiaLbl
             // 
@@ -213,7 +220,7 @@
             this.lblGiamGiaLbl.Name = "lblGiamGiaLbl";
             this.lblGiamGiaLbl.Size = new System.Drawing.Size(63, 17);
             this.lblGiamGiaLbl.TabIndex = 69;
-            this.lblGiamGiaLbl.Text = "Giảm giá:";
+            this.lblGiamGiaLbl.Text = "Giảm giá (%):";
             // 
             // lblTongTienTraVal
             // 
@@ -514,6 +521,7 @@
             this.dgvHangTra.Size = new System.Drawing.Size(1182, 607);
             this.dgvHangTra.TabIndex = 3;
             this.dgvHangTra.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvHangTra_CellDoubleClick);
+            this.dgvHangTra.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvHangTra_CellClick);
             // 
             // colStt
             // 

@@ -92,7 +92,7 @@
        - Nhà cung cấp: ComboBox `cboNhaCungCap` (kèm tìm kiếm tiếng Việt không dấu qua `ComboboxHelper.CaiDatTimKiem`).
        - Kho xuất trả: ComboBox `cboKhoXuat` (tự động khóa nếu tài khoản đang ở kho chi nhánh).
        - Ghi chú: TextBox `txtGhiChu` (đa dòng).
-       - Thống kê tổng hợp: Số mặt hàng (`lblSoMatHangVal`), Tổng SL trả (`lblTongSoLuongVal`), Tổng tiền trả (`lblTongTienHangVal`), Giảm giá (TextBox `txtGiamGia`), Cần thu NCC (`lblCanThuNccVal`), Đã thu NCC (TextBox `txtDaThuNcc`).
+       - Thống kê tổng hợp: Số mặt hàng (`lblSoMatHangVal`), Tổng SL trả (`lblTongSoLuongVal`), Tổng tiền trả (`lblTongTienHangVal`), Giảm giá (%) (TextBox `txtGiamGia`), Cần thu NCC (`lblCanThuNccVal`), Đã thu NCC (TextBox `txtDaThuNcc`).
        - Cụm 3 nút bấm ở đáy (Location: Y=732, Size: 100x34): `Bỏ qua` (`btnBoQua`) ➜ `Lưu tạm` (`btnLuuTam`) ➜ `Lưu` (`btnLuu`).
   2. **Panel chọn hàng bên trên (`pnlTop` - Height 150px, Dock = Top)**:
      - Khung `grpChonHang` (1182 x 125):
@@ -102,7 +102,7 @@
        - Nút `Nhập file` (`btnNhapFile`): Nhập danh sách mặt hàng và số lượng trả từ file.
        - Nút `Hiện cột` (`btnHienCot`): Mở popup `frmHienCotHangTra` để ẩn/hiện các cột dữ liệu.
   3. **Lưới dữ liệu trung tâm (`dgvHangTra` - Dock = Fill)**:
-     - Cột: STT (ReadOnly, MiddleCenter), Mã hàng (ReadOnly, MiddleCenter), Tên hàng (ReadOnly, MiddleLeft), Đơn vị tính (ReadOnly, MiddleCenter), Tồn kho (ReadOnly, MiddleRight, `N0`), Số lượng trả (Editable, màu `#FEFCE8`, MiddleRight, định dạng `N0`), Đơn giá trả (ReadOnly, MiddleRight, `N0`), Thành tiền (ReadOnly, MiddleRight, `N0`).
+     - Cột: STT (ReadOnly, MiddleCenter), Mã hàng (ReadOnly, MiddleCenter), Tên hàng (ReadOnly, MiddleLeft), Đơn vị tính (ReadOnly, MiddleCenter), Tồn kho (ReadOnly, MiddleRight, `N0`), Số lượng trả (Editable, màu `#FEFCE8`, MiddleRight, định dạng `N0`), Đơn giá trả (Editable, MiddleRight, `N0`), Thành tiền (ReadOnly, MiddleRight, `N0`).
      - Cho phép chỉnh sửa số lượng trả trực tiếp trên ô lưới; nhấn `Enter` commit dữ liệu và tự động kiểm tra tồn kho (chặn <= 0 hoặc vượt quá tồn kho), tính toán lại thành tiền dòng cùng các chỉ số tài chính tổng hợp.
      - Nhấp đúp chuột (Double click) vào một dòng trên lưới hiển thị hộp thoại xác nhận xóa mặt hàng khỏi phiếu.
      - **Kiểm tra an toàn cột Số lượng trả**: Khi thêm hàng mới (`btnThemHang_Click`) hoặc nạp file (`btnNhapFile_Click`), nếu cột 'Số lượng trả' đang bị ẩn (`!colSoLuongTra.Visible`), hệ thống chặn thao tác và hiển thị `MessageBox.Show` cảnh báo người dùng bật lại cột trước khi thêm hàng, ngăn chặn hoàn toàn lỗi hệ thống unhandled exception `System.InvalidOperationException: Current cell cannot be set to an invisible cell`.

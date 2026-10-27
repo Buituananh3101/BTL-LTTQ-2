@@ -193,6 +193,9 @@
             this.txtTienDaTra.Text = "0";
             this.txtTienDaTra.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtTienDaTra.TextChanged += new System.EventHandler(this.txtTienDaTra_TextChanged);
+            this.txtTienDaTra.Leave += new System.EventHandler(this.txtTienDaTra_Leave);
+            this.txtTienDaTra.Enter += new System.EventHandler(this.txtTienDaTra_Enter);
+            this.txtTienDaTra.Click += new System.EventHandler(this.txtTienDaTra_Click);
             // 
             // lblTienDaTraLbl
             // 
@@ -234,6 +237,9 @@
             this.txtGiamGiaTong.Text = "0";
             this.txtGiamGiaTong.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtGiamGiaTong.TextChanged += new System.EventHandler(this.txtGiamGiaTong_TextChanged);
+            this.txtGiamGiaTong.Leave += new System.EventHandler(this.txtGiamGiaTong_Leave);
+            this.txtGiamGiaTong.Enter += new System.EventHandler(this.txtGiamGiaTong_Enter);
+            this.txtGiamGiaTong.Click += new System.EventHandler(this.txtGiamGiaTong_Click);
             // 
             // lblGiamGiaTongLbl
             // 
@@ -242,7 +248,7 @@
             this.lblGiamGiaTongLbl.Name = "lblGiamGiaTongLbl";
             this.lblGiamGiaTongLbl.Size = new System.Drawing.Size(63, 17);
             this.lblGiamGiaTongLbl.TabIndex = 69;
-            this.lblGiamGiaTongLbl.Text = "Giảm giá:";
+            this.lblGiamGiaTongLbl.Text = "Giảm giá (%):";
             // 
             // lblTongTienHangVal
             // 
@@ -560,6 +566,7 @@
             this.dgvChiTietHang.Size = new System.Drawing.Size(1182, 607);
             this.dgvChiTietHang.TabIndex = 3;
             this.dgvChiTietHang.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvChiTietHang_CellDoubleClick);
+            this.dgvChiTietHang.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvChiTietHang_CellClick);
             // 
             // colStt
             // 
@@ -616,7 +623,7 @@
             // colGiamGia
             // 
             this.colGiamGia.DataPropertyName = "GiamGia";
-            this.colGiamGia.HeaderText = "Giảm giá";
+            this.colGiamGia.HeaderText = "Giảm giá (%)";
             this.colGiamGia.MinimumWidth = 6;
             this.colGiamGia.Name = "colGiamGia";
             this.colGiamGia.Width = 100;

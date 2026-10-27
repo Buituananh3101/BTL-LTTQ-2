@@ -274,3 +274,19 @@
      - Khi người dùng chọn "Đăng xuất" trên menu Hệ thống của `frmMain`, ứng dụng xóa sạch phiên làm việc trong `SessionContext` và quay trở lại ngay màn hình Đăng nhập `frmDangNhap`. Khi chọn "Thoát" hoặc đóng cửa sổ, ứng dụng kết thúc hoàn toàn.
 
 - **2026-10-26 (Phiên 59)** – Loại bỏ chức năng Xuất hủy (frmXuatHuy) và gỡ khỏi Thẻ kho – Người dùng quyết định hủy bỏ phân hệ Xuất hủy; gỡ bỏ hoàn toàn tùy chọn lọc "Xuất hủy / Hao hụt" và loại trừ loại chứng từ XUAT_HUY khỏi Báo cáo Thẻ kho (frmBaoCaoTheKho).
+- **2026-10-27 (Phiên 66) – Sửa 3 lỗi trong phân hệ Nhập hàng & Trả hàng nhập (Ô tiền đã trả / Đã thu NCC bị nhảy số, Đổi sang Giảm giá theo %, Khắc phục lỗi đơn giá nhân 100/1000 lần)**:
+  1. **Khắc phục lỗi ô Tiền đã trả & Cần trả NCC (`frmThemPhieuNhap` và `frmThemPhieuTraHang`)**:
+     - *Nguyên nhân*: Trong sự kiện tính toán tổng kết, khi người dùng xóa trắng ô tiền đã trả/đã thu, `TryParse` thất bại khiến code tự động gán lại `tienDaTra = tongCong; txtTienDaTra.Text = ...`. Thao tác gán `.Text` trực tiếp trong khi người dùng đang nhập làm reset lại vị trí con trỏ về đầu (`SelectionStart = 0`), dẫn đến việc gõ ký tự tiếp theo bị chèn vào đầu số (ví dụ: `2362,999,990`).
+     - *Khắc phục*: Tách biệt hoàn toàn tính toán và định dạng text: Không can thiệp sửa `.Text` trong `TextChanged` (nếu để trống coi như bằng 0 để tính `CanTraNcc`), chỉ format lại `N0` khi rời ô (`Leave`). Khi focus hoặc click vào ô (`Enter`, `Click`), tự động bôi đen toàn bộ (`SelectAll()`) giúp người dùng gõ đè số mới tiện lợi.
+  2. **Chuẩn hóa tính năng Giảm giá theo tỷ lệ (%)**:
+     - Đổi tên cột hiển thị trên DataGridView thành `Giảm giá (%)` và nhãn thống kê thành `Giảm giá (%):` trên cả 4 form: `frmThemPhieuNhap`, `frmChiTietPhieuNhap`, `frmThemPhieuTraHang`, `frmChiTietTraHangNhap` (kể cả form hiện cột `frmHienCotHangNhap`).
+     - Cập nhật công thức tính: Thành tiền dòng hàng = `(SoLuong * DonGia) * (1 - GiamGia / 100)`. Tổng thanh toán phiếu = `TongTienHang * (1 - GiamGiaTong / 100)`. Ràng buộc giá trị % hợp lệ trong khoảng 0 đến 100.
+     - Cập nhật định dạng nhãn hiển thị tại form chi tiết thành `{GiamGia:N0} %`.
+  3. **Khắc phục lỗi Đơn giá bị nhân lên 100/1000 lần khi click ra ngoài (`ParseDecimalAnToan`)**:
+     - *Nguyên nhân*: Khi ô mất focus hoặc rời chế độ edit, code lấy `Value.ToString()` từ đối tượng `decimal` trong DataRow (sinh ra chuỗi dạng `210000.00`). Khi qua bước xóa sạch dấu chấm và phẩy (`Replace(".", "").Replace(",", "")`), chuỗi bị biến thành `21000000` (nhân 100 lần), cộng thêm phân cách hàng nghìn văn hóa `vi-VN` khiến số bị phóng đại.
+     - *Khắc phục*: Viết hàm tiện ích an toàn `ParseDecimalAnToan(object rawVal)`. Nếu giá trị đã là kiểu số (`decimal`, `int`, `long`, `double`), trả về trực tiếp không qua ép kiểu chuỗi; nếu là chuỗi, xử lý phân tích thông minh theo chuẩn InvariantCulture.
+     - Khi nhấp chuột vào cột Đơn giá (`colDonGia` / `colDonGiaTra`), tự động kích hoạt chế độ sửa và `SelectAll()` giúp người dùng gõ sửa giá dễ dàng.
+  4. **Kiểm tra mã hóa & Biên dịch**:
+     - 100% file mã nguồn và tài liệu lưu định dạng **UTF-8 with BOM** và CRLF. 0 Mojibake.
+     - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+

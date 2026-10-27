@@ -188,7 +188,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 
                 lblSoLuongMatHangVal.Text = $"Số lượng mặt hàng: {dtChiTietData.Rows.Count}";
                 lblTongTienHangVal.Text = tongTienHang.ToString("N0");
-                lblGiamGiaVal.Text = giamGia.ToString("N0");
+                lblGiamGiaVal.Text = giamGia.ToString("N0") + " %";
                 lblTongCongVal.Text = tongCong.ToString("N0");
                 lblTienDaTraVal.Text = daTra.ToString("N0");
                 lblCanTraNccVal.Text = canTra.ToString("N0");
@@ -405,7 +405,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             sb.AppendLine("<th>ĐVT</th>");
             sb.AppendLine("<th>Số lượng</th>");
             sb.AppendLine("<th>Đơn giá</th>");
-            sb.AppendLine("<th>Giảm giá</th>");
+            sb.AppendLine("<th>Giảm giá (%)</th>");
             sb.AppendLine("<th>Thành tiền</th>");
             sb.AppendLine("</tr>");
 
@@ -435,7 +435,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             sb.AppendLine("</table>");
             sb.AppendLine("<br/>");
             sb.AppendLine($"<p><b>Tổng tiền hàng:</b> {lblTongTienHangVal.Text}</p>");
-            sb.AppendLine($"<p><b>Giảm giá:</b> {lblGiamGiaVal.Text}</p>");
+            sb.AppendLine($"<p><b>Giảm giá (%):</b> {lblGiamGiaVal.Text}</p>");
             sb.AppendLine($"<p><b>Tổng cộng:</b> {lblTongCongVal.Text}</p>");
             sb.AppendLine($"<p><b>Tiền đã trả NCC:</b> {lblTienDaTraVal.Text}</p>");
             sb.AppendLine($"<p><b>Cần trả NCC:</b> {lblCanTraNccVal.Text}</p>");
@@ -460,7 +460,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
             sb.AppendLine($"Ghi chú: \"{txtGhiChu.Text.Replace("\"", "\"\"")}\"");
             sb.AppendLine();
 
-            sb.AppendLine("STT,Mã hàng,Tên hàng,ĐVT,Số lượng,Đơn giá,Giảm giá,Thành tiền");
+            sb.AppendLine("STT,Mã hàng,Tên hàng,ĐVT,Số lượng,Đơn giá,Giảm giá (%),Thành tiền");
             foreach (DataRow r in dtChiTietData.Rows)
             {
                 int stt = Convert.ToInt32(r["STT"]);
@@ -485,7 +485,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 
             sb.AppendLine();
             sb.AppendLine($",,,,,Tổng tiền hàng:,{lblTongTienHangVal.Text.Replace(",", "")}");
-            sb.AppendLine($",,,,,Giảm giá:,{lblGiamGiaVal.Text.Replace(",", "")}");
+            sb.AppendLine($",,,,,Giảm giá (%):,{lblGiamGiaVal.Text.Replace(",", "")}");
             sb.AppendLine($",,,,,Tổng cộng:,{lblTongCongVal.Text.Replace(",", "")}");
             sb.AppendLine($",,,,,Tiền đã trả NCC:,{lblTienDaTraVal.Text.Replace(",", "")}");
             sb.AppendLine($",,,,,Cần trả NCC:,{lblCanTraNccVal.Text.Replace(",", "")}");
@@ -520,7 +520,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
                         sb.AppendLine($"Ghi chú: \"{txtGhiChu.Text.Replace("\"", "\"\"")}\"");
                         sb.AppendLine("");
 
-                        sb.AppendLine("STT,Mã hàng,Tên hàng,ĐVT,Số lượng,Đơn giá,Giảm giá,Thành tiền");
+                        sb.AppendLine("STT,Mã hàng,Tên hàng,ĐVT,Số lượng,Đơn giá,Giảm giá (%),Thành tiền");
                         foreach (DataRow r in dtChiTietData.Rows)
                         {
                             int stt = Convert.ToInt32(r["STT"]);
@@ -537,7 +537,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhapHang
 
                         sb.AppendLine("");
                         sb.AppendLine($",,,,,Tổng tiền hàng:,{lblTongTienHangVal.Text.Replace(",", "")}");
-                        sb.AppendLine($",,,,,Giảm giá:,{lblGiamGiaVal.Text.Replace(",", "")}");
+                        sb.AppendLine($",,,,,Giảm giá (%):,{lblGiamGiaVal.Text.Replace(",", "")}");
                         sb.AppendLine($",,,,,Tổng cộng:,{lblTongCongVal.Text.Replace(",", "")}");
                         sb.AppendLine($",,,,,Tiền đã trả NCC:,{lblTienDaTraVal.Text.Replace(",", "")}");
                         sb.AppendLine($",,,,,Cần trả NCC:,{lblCanTraNccVal.Text.Replace(",", "")}");
