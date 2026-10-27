@@ -39,7 +39,7 @@ Số liệu Thẻ kho được truy vấn từ View CSDL **`vw_BienDongKho`** (h
   - Khi `moTuTonKho = true`: Nút điều hướng hiển thị nhãn "Quay lại" (`btnQuayLai`). Khi bấm `Quay lại`, nhấn phím `Escape` hoặc đóng form (dấu [X]), hệ thống tự động đóng Thẻ kho và kích hoạt lại `frmBaoCaoTonKho` (`Activate()`) đưa người dùng về ngay dòng hàng và trang đang xem dở.
 - **Phân vùng giao diện**:
   - `pnlTop` (Dock = Top, Cao 74px):
-    - `grpTop`: Tiêu đề "Báo cáo thẻ kho", ô tìm kiếm nhanh chứng từ/đối tác (`lblTimKiem` tại (385, 25) và `txtTimKiem` tại (465, 21)), các nút chức năng bên phải: `btnXuatFile`, `btnHienCot`, `btnHuongDanSuDung` (`?`).
+    - `grpTop`: Tiêu đề "Báo cáo thẻ kho", ô tìm kiếm nhanh chứng từ/đối tác (`lblTimKiem` tại (385, 25) và `txtTimKiem` tại (465, 21)), các nút chức năng bên phải: `btnXuatFile` (hỗ trợ xuất file Excel `.xls` HTML Table UTF-8 và `.csv` UTF-8 BOM đầy đủ thông tin kỳ báo cáo và các giao dịch), `btnHienCot`, `btnHuongDanSuDung` (`?`).
   - `panel1` (Dock = Top, Cao 133px, đặt trên `dgvTheKho`):
     - Chứa `groupBox1` gồm:
       - `pnlThongTinHang` (23, 24, Size 709x72): Hiển thị tên hàng, mã SKU, Kho, ĐVT, Nhóm hàng, Vị trí, Giá vốn.

@@ -784,6 +784,185 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
         {
             try
             {
+                if (dgvBaoCaoTonKho.Rows.Count == 0 && tongSoBanGhi == 0)
+                {
+                    MessageBox.Show("Không có dữ liệu để xuất file!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Lấy danh sách các cột đang hiển thị
+                List<DataGridViewColumn> cols = new List<DataGridViewColumn>();
+                foreach (DataGridViewColumn col in dgvBaoCaoTonKho.Columns)
+                {
+                    if (col.Visible && !string.IsNullOrWhiteSpace(col.HeaderText))
+                    {
+                        cols.Add(col);
+                    }
+                }
+
+                // Lấy toàn bộ kết quả theo bộ lọc hiện tại (không chỉ trang đang xem)
+                DataTable dtXuat = null;
+                if (!string.IsNullOrEmpty(sqlXuatFile) && thamSoXuatFile != null)
+                {
+                    List<SqlParameter> ps = new List<SqlParameter>();
+                    foreach (var p in thamSoXuatFile) ps.Add(new SqlParameter(p.ParameterName, p.Value));
+                    dtXuat = DataProcessing.ReadData(sqlXuatFile, ps.ToArray());
+                }
+
+                if (dtXuat == null || dtXuat.Rows.Count == 0)
+                {
+                    if (dgvBaoCaoTonKho.DataSource is DataTable dt)
+                    {
+                        dtXuat = dt;
+                    }
+                }
+
+                if (dtXuat == null || dtXuat.Rows.Count == 0)
+                {
+                    MessageBox.Show("Không tìm thấy dữ liệu phù hợp để xuất file!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                using (SaveFileDialog sfd = new SaveFileDialog())
+                {
+                    sfd.Title = "Xuất báo cáo tồn kho";
+                    sfd.Filter = "File Excel (*.xls)|*.xls|File CSV (*.csv)|*.csv";
+                    sfd.FileName = $"BaoCaoTonKho_{DateTime.Now:yyyyMMdd_HHmm}.xls";
+
+                    if (sfd.ShowDialog(this) == DialogResult.OK)
+                    {
+                        string ext = Path.GetExtension(sfd.FileName).ToLowerInvariant();
+                        if (ext == ".csv")
+                        {
+                            XuatCsvTonKho(sfd.FileName, dtXuat, cols);
+                        }
+                        else
+                        {
+                            XuatExcelHtmlTonKho(sfd.FileName, dtXuat, cols);
+                        }
+
+                        MessageBox.Show($"Xuất báo cáo tồn kho ra file thành công ({dtXuat.Rows.Count:N0} mặt hàng)!\nĐường dẫn: {sfd.FileName}", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi xuất file: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void XuatExcelHtmlTonKho(string filePath, DataTable dtXuat, List<DataGridViewColumn> cols)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("<html xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:x=\"urn:schemas-microsoft-com:office:excel\" xmlns=\"http://www.w3.org/TR/REC-html40\">");
+            sb.AppendLine("<head>");
+            sb.AppendLine("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />");
+            sb.AppendLine("<style>");
+            sb.AppendLine("body { font-family: Segoe UI, Arial; font-size: 10pt; }");
+            sb.AppendLine("th { background-color: #0078D7; color: #FFFFFF; font-weight: bold; border: 0.5pt solid #CCCCCC; padding: 6px; }");
+            sb.AppendLine("td { border: 0.5pt solid #E0E0E0; padding: 5px; }");
+            sb.AppendLine(".num { mso-number-format: \"#,##0\"; text-align: right; }");
+            sb.AppendLine(".center { text-align: center; }");
+            sb.AppendLine(".danger { color: #DC2626; font-weight: bold; }");
+            sb.AppendLine("</style>");
+            sb.AppendLine("</head>");
+            sb.AppendLine("<body>");
+
+            string tenKho = (SessionContext.MaKhoHienTai > 0 && !string.IsNullOrEmpty(SessionContext.TenKhoHienTai)) ? SessionContext.TenKhoHienTai : "Tất cả kho";
+            sb.AppendLine("<h2>BÁO CÁO TỒN KHO</h2>");
+            sb.AppendLine($"<p>Thời gian xuất: {DateTime.Now:dd/MM/yyyy HH:mm} | Kho: {System.Net.WebUtility.HtmlEncode(tenKho)} | Tổng số: {tongSoBanGhi:N0} mặt hàng</p>");
+            sb.AppendLine($"<p><b>Tổng tồn:</b> {lblCardSoLuongVal.Text} | <b>Tổng giá trị tồn:</b> {lblCardGiaTriVal.Text} | <b>Cần lưu ý:</b> {lblCardCanLuuYVal.Text}</p>");
+            sb.AppendLine("<br/>");
+
+            sb.AppendLine("<table>");
+            sb.AppendLine("<tr>");
+            foreach (DataGridViewColumn col in cols)
+            {
+                sb.AppendLine($"<th>{System.Net.WebUtility.HtmlEncode(col.HeaderText)}</th>");
+            }
+            sb.AppendLine("</tr>");
+
+            foreach (DataRow row in dtXuat.Rows)
+            {
+                sb.AppendLine("<tr>");
+                foreach (DataGridViewColumn col in cols)
+                {
+                    string prop = col.DataPropertyName;
+                    object val = (!string.IsNullOrEmpty(prop) && dtXuat.Columns.Contains(prop)) ? row[prop] : null;
+
+                    if (col.Name == "colTonKho" || col.Name == "colGiaVon" || col.Name == "colGiaBan" ||
+                        col.Name == "colGiaTriTon" || col.Name == "colTonToiThieu" || col.Name == "colTonToiDa")
+                    {
+                        if (val != null && val != DBNull.Value && decimal.TryParse(val.ToString(), out decimal numVal))
+                        {
+                            if (col.Name == "colTonKho" && numVal <= 0)
+                            {
+                                sb.AppendLine($"<td class=\"num danger\">{numVal:N0}</td>");
+                            }
+                            else
+                            {
+                                sb.AppendLine($"<td class=\"num\">{numVal:N0}</td>");
+                            }
+                        }
+                        else
+                        {
+                            sb.AppendLine("<td class=\"num\">0</td>");
+                        }
+                    }
+                    else if (col.Name == "colMaHangNoiBo" || col.Name == "colTenDVT" || col.Name == "colViTri" || col.Name == "colTrangThai")
+                    {
+                        string s = val != null && val != DBNull.Value ? val.ToString() : "";
+                        sb.AppendLine($"<td class=\"center\">{System.Net.WebUtility.HtmlEncode(s)}</td>");
+                    }
+                    else
+                    {
+                        string s = val != null && val != DBNull.Value ? val.ToString() : "";
+                        sb.AppendLine($"<td>{System.Net.WebUtility.HtmlEncode(s)}</td>");
+                    }
+                }
+                sb.AppendLine("</tr>");
+            }
+
+            sb.AppendLine("</table>");
+            sb.AppendLine("</body>");
+            sb.AppendLine("</html>");
+
+            File.WriteAllText(filePath, sb.ToString(), Encoding.UTF8);
+        }
+
+        private void XuatCsvTonKho(string filePath, DataTable dtXuat, List<DataGridViewColumn> cols)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("sep=,");
+
+            List<string> headers = new List<string>();
+            foreach (DataGridViewColumn col in cols)
+            {
+                headers.Add($"\"{col.HeaderText.Replace("\"", "\"\"")}\"");
+            }
+            sb.AppendLine(string.Join(",", headers));
+
+            foreach (DataRow row in dtXuat.Rows)
+            {
+                List<string> cells = new List<string>();
+                foreach (DataGridViewColumn col in cols)
+                {
+                    string prop = col.DataPropertyName;
+                    object val = (!string.IsNullOrEmpty(prop) && dtXuat.Columns.Contains(prop)) ? row[prop] : null;
+                    string strVal = val != null && val != DBNull.Value ? val.ToString().Replace("\"", "\"\"") : "";
+                    cells.Add($"\"{strVal}\"");
+                }
+                sb.AppendLine(string.Join(",", cells));
+            }
+
+            File.WriteAllText(filePath, sb.ToString(), new UTF8Encoding(true));
+        }
+
+#if FALSE
+        private void btnXuatFile_Click_Old(object sender, EventArgs e)
+        {
+            try
+            {
                 if (dgvBaoCaoTonKho.Rows.Count == 0)
                 {
                     MessageBox.Show("Không có dữ liệu để xuất file!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -849,6 +1028,8 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                 MessageBox.Show("Lỗi khi xuất file: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+#endif
 
         private void btnHienCot_Click(object sender, EventArgs e)
         {

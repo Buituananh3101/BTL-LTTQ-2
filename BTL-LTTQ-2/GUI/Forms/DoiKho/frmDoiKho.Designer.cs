@@ -31,7 +31,7 @@
             this.lblKhoLamViec.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.lblKhoLamViec.Location = new System.Drawing.Point(34, 61);
             this.lblKhoLamViec.Name = "lblKhoLamViec";
-            this.lblKhoLamViec.Size = new System.Drawing.Size(101, 21);
+            this.lblKhoLamViec.Size = new System.Drawing.Size(85, 17);
             this.lblKhoLamViec.TabIndex = 0;
             this.lblKhoLamViec.Text = "Kho làm việc:";
             // 
@@ -42,7 +42,7 @@
             this.cboKhoLamViec.FormattingEnabled = true;
             this.cboKhoLamViec.Location = new System.Drawing.Point(38, 99);
             this.cboKhoLamViec.Name = "cboKhoLamViec";
-            this.cboKhoLamViec.Size = new System.Drawing.Size(415, 29);
+            this.cboKhoLamViec.Size = new System.Drawing.Size(415, 25);
             this.cboKhoLamViec.TabIndex = 1;
             // 
             // btnXacNhan
@@ -74,14 +74,14 @@
             this.groupBox1.Controls.Add(this.btnXacNhan);
             this.groupBox1.Location = new System.Drawing.Point(-15, 191);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(508, 56);
+            this.groupBox1.Size = new System.Drawing.Size(508, 72);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             // 
             // frmDoiKho
             // 
             this.AcceptButton = this.btnXacNhan;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnHuy;
             this.ClientSize = new System.Drawing.Size(482, 253);

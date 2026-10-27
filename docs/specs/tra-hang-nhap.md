@@ -1,6 +1,6 @@
 ﻿# Đặc tả Chức năng: Quản lý Trả hàng nhập (Purchase Returns - Windows Forms)
 
-> **Mục tiêu**: Xây dựng phân hệ quản trị nghiệp vụ Trả hàng nhập cho Nhà cung cấp trên nền tảng Windows Forms (.NET Framework 4.7.2) bám sát trải nghiệm thực tế của KiotViet và tuân thủ tuyệt đối Khuôn mẫu Thiết kế Design System (Phiên 5, 13 & 15). Cung cấp màn hình danh sách đơn trả với bộ lọc 100% ComboBox trực quan, màn hình lập phiếu trả cho phép chọn sản phẩm từ danh mục hàng hóa (chặn âm kho, tính toán công nợ động), màn hình chi tiết đơn trả (chỉ giữ lại 2 nút: Xóa và Xuất file) và tiện ích xuất file CSV UTF-8 BOM.
+> **Mục tiêu**: Xây dựng phân hệ quản trị nghiệp vụ Trả hàng nhập cho Nhà cung cấp trên nền tảng Windows Forms (.NET Framework 4.7.2) bám sát trải nghiệm thực tế của KiotViet và tuân thủ tuyệt đối Khuôn mẫu Thiết kế Design System (Phiên 5, 13 & 15). Cung cấp màn hình danh sách đơn trả với bộ lọc 100% ComboBox trực quan, màn hình lập phiếu trả cho phép chọn sản phẩm từ danh mục hàng hóa (chặn âm kho, tính toán công nợ động), màn hình chi tiết đơn trả (cung cấp các nút: Xóa, Xuất file, và Hoàn thành) và tiện ích xuất file Excel (.xls - HTML Table UTF-8) / CSV (UTF-8 BOM).
 
 ---
 
@@ -61,7 +61,7 @@
   - Ô tìm kiếm: `lblTimKiem` ("Tìm kiếm:"), `txtTimKiem` (Kích thước `602x24`, hỗ trợ Debounce Timer 300ms tìm theo mã phiếu hoặc tên NCC).
   - Cụm nút thao tác bên phải:
     - `btnHienCot` ("Hiện cột", kích thước chuẩn `95x29`).
-    - `btnXuatFile` ("Xuất file", kích thước `110x29`).
+    - `btnXuatFile` ("Xuất file", kích thước `110x29`): Hộp thoại `SaveFileDialog` hỗ trợ lưu file `.xls` (HTML Table UTF-8 header màu `#0078D7`, format số `#,##0`) và `.csv` (UTF-8 BOM). Ưu tiên xuất các dòng được tích chọn CheckBox; nếu không chọn dòng nào sẽ xuất toàn bộ dữ liệu thỏa mãn bộ lọc hiện tại.
     - `btnThemTraHang` ("+ Trả hàng nhập", kích thước `145x29`).
     - Tất cả nút bấm hiển thị 100% tiếng Việt có dấu, phong cách chuẩn WinForms (`UseVisualStyleBackColor = true`).
 - **Thanh lọc bên trái (`pnlBoLoc` & `grpBoLoc` - Width 387px)**:
@@ -120,7 +120,7 @@
 - **Khối tổng kết**: Ghi chú, Số lượng mặt hàng, Tổng tiền hàng, Giảm giá, NCC cần trả, NCC đã trả.
 - **Nút bấm thao tác**:
   - Nút `Xóa`: Nếu phiếu tạm (`NHAP`), xóa vĩnh viễn khỏi CSDL; nếu đã trả hàng (`DA_TRA_HANG`), chuyển sang trạng thái `HUY` để hoàn tồn tự động qua View, tuyệt đối không DROP dữ liệu hoàn thành.
-  - Nút `Xuất file`: Xuất chi tiết đơn hàng ra file CSV UTF-8 BOM chuẩn tiếng Việt.
+  - Nút `Xuất file`: Xuất chi tiết đơn hàng ra file Excel (`.xls` - HTML Table UTF-8 header màu `#0066CC`, format `#,##0`) hoặc CSV (`sep=,` UTF-8 BOM). Tự động lấy tên file `ChiTietTraHang_{maPhieu}_{DateTime.Now:yyyyMMdd_HHmm}.xls`.
   - Nút `Hoàn thành` (`btnHoanThanh`): Chỉ hiển thị khi phiếu ở trạng thái `NHAP` (Phiếu tạm). Kiểm tra tồn kho an toàn chống âm kho (Luật 6), hỏi xác nhận, bọc Transaction cập nhật `TrangThai = 'DA_TRA_HANG'`, `NgayTra = GETDATE()`, `MaNvtra`, trừ tồn kho tự động qua View và cập nhật công nợ NCC.
   - Nút `Đóng` (`btnDong` / CancelButton).
 

@@ -41,7 +41,7 @@
 | **7. Xóa đơn nhập** | Bấm nút `Xóa` trên form chi tiết | Xác nhận DialogResult: Nếu phiếu `NHAP` ➜ Xóa cứng; Nếu `DA_XAC_NHAN` ➜ Kiểm tra an toàn tồn kho, chuyển trạng thái `HUY` | Bọc trong Transaction; ghi nhật ký thao tác; nếu hủy làm âm tồn kho thì chặn ngay |
 | **8. Trả hàng nhập** | Bấm nút `Trả hàng nhập` trên form chi tiết | Mở modal dialog `frmTraHangTheoPhieuNhap(maPhieuNhap)` | Chỉ mở được với phiếu `DA_XAC_NHAN`. Chuyển sang giao diện trả hàng nhập |
 | **9. Tùy chọn Ẩn/Hiện cột** | Bấm nút "Hiện cột" | Mở popup `frmHienCotNhapHang` | Bật/tắt `dgv.Columns[col].Visible` tức thì |
-| **10. Xuất file CSV** | Bấm nút "Xuất file" | Hộp thoại `SaveFileDialog` lưu file `.csv` | Xuất đúng các cột đang hiển thị với định dạng UTF-8 BOM đọc tốt trên Microsoft Excel |
+| **10. Xuất file Excel / CSV** | Bấm nút "Xuất file" | Hộp thoại `SaveFileDialog` hỗ trợ lưu file `.xls` (HTML Table UTF-8 chuẩn mở trực tiếp bằng Excel, header màu `#0078D7`, format số `#,##0`) và `.csv` (UTF-8 BOM). Ưu tiên xuất các dòng được tích chọn CheckBox; nếu không chọn dòng nào sẽ xuất toàn bộ dữ liệu thỏa mãn bộ lọc hiện tại | Xuất toàn bộ danh sách phiếu nhập hoặc các phiếu được chọn ra file Excel/CSV |
 
 ---
 
@@ -75,7 +75,7 @@
   - Khối tổng kết thanh toán: Tổng số lượng, Tổng tiền hàng, Giảm giá, Tổng cộng cần trả, Đã trả NCC, Còn nợ NCC.
 - **Ràng buộc quan trọng**: Giữ lại duy nhất 3 nút bấm chức năng ở góc dưới:
   1. `Xóa` (`btnXoaPhieu`): Thực hiện xóa phiếu tạm hoặc chuyển trạng thái sang `HUY` đối với phiếu đã xác nhận (kèm kiểm tra chặn âm tồn kho).
-  2. `Xuất file` (`btnXuatFile`): Xuất thông tin phiếu và bảng hàng hóa ra file CSV/Excel UTF-8 BOM.
+  2. `Xuất file` (`btnXuatFile`): Xuất thông tin chi tiết phiếu và bảng hàng hóa ra file Excel (`.xls` - HTML Table UTF-8 header màu `#0066CC`, format `#,##0`) hoặc CSV (`sep=,` UTF-8 BOM). Tự động lấy tên file `ChiTiet_{maPhieu}_{DateTime.Now:yyyyMMdd_HHmm}.xls`.
   3. `Hoàn thành` (`btnHoanThanh`): Chỉ hiển thị khi phiếu ở trạng thái `NHAP` (Phiếu tạm). Bấm Hoàn thành sẽ hỏi xác nhận, bọc trong Transaction cập nhật `TrangThai = 'DA_XAC_NHAN'`, `NgayXacNhan = GETDATE()`, `MaNVXacNhan`, tự động cộng tồn kho và ghi nhận công nợ NCC.
   4. `Trả hàng nhập` (`btnTraHangNhap`): Chỉ hiển thị khi phiếu ở trạng thái `DA_XAC_NHAN`. Kích hoạt `frmTraHangTheoPhieuNhap` để hoàn trả một phần hoặc toàn bộ lô hàng cho NCC.
 

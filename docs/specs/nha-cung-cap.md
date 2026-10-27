@@ -53,7 +53,17 @@
 | **7. Tạo nhanh Nhóm NCC** | Bấm nút "+" cạnh combobox Nhóm trên `frmNhaCungCap` | Mở modal dialog `frmNhomNhaCungCap` | Thêm vào `NhomNhaCungCap`, tự động nạp lại combobox và chọn ngay nhóm vừa tạo |
 | **8. Tùy chọn Ẩn/Hiện cột** | Bấm nút "Hiện cột" | Mở popup `frmHienCotNcc` ngay dưới nút | Bật/tắt `dgv.Columns[col].Visible` tức thì, nhấn ESC hoặc click ra ngoài để đóng |
 | **9. Nhập file NCC** | Bấm nút "Nhập file" | Mở modal dialog `frmNhapNhaCungCapFile` | Đọc dữ liệu từ file Excel (.xlsx, .xls) hoặc CSV; tải file mẫu; tùy chọn cập nhật hoặc bỏ qua; bọc Transaction |
-| **10. Xuất file CSV / Excel** | Bấm nút "Xuất file" | Hộp thoại `SaveFileDialog` lưu file `.csv` | Xuất đúng các cột đang hiển thị với định dạng UTF-8 BOM đọc tốt tiếng Việt trên Excel |
+| **10. Xuất file Excel / CSV** | Bấm nút "Xuất file" | Hộp thoại `SaveFileDialog` hỗ trợ lưu file `.xls` (HTML Table UTF-8 header màu `#0078D7`, format số `#,##0`) và `.csv` (UTF-8 BOM). Ưu tiên xuất các dòng được tích chọn CheckBox; nếu không chọn dòng nào sẽ xuất toàn bộ dữ liệu thỏa mãn bộ lọc hiện tại | Xuất toàn bộ danh sách nhà cung cấp hoặc các nhà cung cấp được chọn ra file Excel/CSV |
+
+### 3.5. Form Nhập file Nhà cung cấp (`frmNhapNhaCungCapFile`):
+- **Tải file mẫu Excel (`Mau_Nhap_Nha_Cung_Cap.xls`)**:
+  - Chuẩn hóa định dạng bảng HTML Table UTF-8 with BOM đồng bộ 100% với khuôn mẫu Hàng hóa và Nhập hàng.
+  - Cấu hình Workbook XML với tên Worksheet `MauNhaCungCap` và kích hoạt `<x:DisplayGridlines/>` hiển thị đường lưới ô Excel tiêu chuẩn.
+  - CSS styling đồng nhất: Tiêu đề cột `th` màu xanh `#0078D7`, chữ trắng Segoe UI 10pt in đậm; ô dữ liệu `td` Segoe UI 9.5pt viền xám nhạt `#E0E0E0`.
+  - Định dạng kiểu chuỗi `.text` (`mso-number-format: "\@"`) cho các cột: `Mã nhà cung cấp`, `Điện thoại`, `Mã số thuế` (chống mất số 0 ở đầu).
+  - Cung cấp 3 dòng dữ liệu mẫu chuẩn trực quan (bao gồm dòng để trống mã nhà cung cấp để minh họa quy tắc tự động sinh mã).
+- **Bộ đọc đa định dạng**: Hỗ trợ `.xlsx` (OpenXml ZipArchive), `.xls` (HTML Table / OLEDB), `.csv` (RFC 4180).
+- **Quy trình nhập**: Tự động nhận diện cột linh hoạt, bọc `ChangeDataTransaction`, tùy chọn cập nhật hoặc bỏ qua khi trùng mã NCC.
 
 ---
 
@@ -106,6 +116,16 @@
   - Hiển thị `Tổng tiền mua hàng` (`lblTongMuaVal`) và `Nợ cần trả hiện tại` (`lblNoHienTaiVal`).
 - **Thanh thao tác Bottom (`pnlBottom`)**:
   - Nút `Bỏ qua` (`btnBoQua`) và `Lưu` (`btnLuu`) chuẩn WinForms (`UseVisualStyleBackColor = true`), căn phải (`Anchor = Bottom, Right`).
+
+### 3.5. Form Nhập file Nhà cung cấp (`frmNhapNhaCungCapFile`):
+- **Tải file mẫu Excel (`Mau_Nhap_Nha_Cung_Cap.xls`)**:
+  - Chuẩn hóa định dạng bảng HTML Table UTF-8 with BOM đồng bộ 100% với khuôn mẫu Hàng hóa và Nhập hàng.
+  - Cấu hình Workbook XML với tên Worksheet `MauNhaCungCap` và kích hoạt `<x:DisplayGridlines/>` hiển thị đường lưới ô Excel tiêu chuẩn.
+  - CSS styling đồng nhất: Tiêu đề cột `th` màu xanh `#0078D7`, chữ trắng Segoe UI 10pt in đậm; ô dữ liệu `td` Segoe UI 9.5pt viền xám nhạt `#E0E0E0`.
+  - Định dạng kiểu chuỗi `.text` (`mso-number-format: "\@"`) cho các cột: `Mã nhà cung cấp`, `Điện thoại`, `Mã số thuế` (chống mất số 0 ở đầu).
+  - Cung cấp 3 dòng dữ liệu mẫu chuẩn trực quan (bao gồm dòng để trống mã nhà cung cấp để minh họa quy tắc tự động sinh mã).
+- **Bộ đọc đa định dạng**: Hỗ trợ `.xlsx` (OpenXml ZipArchive), `.xls` (HTML Table / OLEDB), `.csv` (RFC 4180).
+- **Quy trình nhập**: Tự động nhận diện cột linh hoạt, bọc `ChangeDataTransaction`, tùy chọn cập nhật hoặc bỏ qua khi trùng mã NCC.
 
 ---
 

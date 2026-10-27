@@ -286,6 +286,170 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
 
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
+                sfd.Title = "Xuất chi tiết đơn trả hàng nhập";
+                sfd.Filter = "File Excel (*.xls)|*.xls|File CSV (*.csv)|*.csv";
+                sfd.FileName = $"ChiTietTraHang_{maPhieu}_{DateTime.Now:yyyyMMdd_HHmm}.xls";
+
+                if (sfd.ShowDialog(this) == DialogResult.OK)
+                {
+                    try
+                    {
+                        string ext = Path.GetExtension(sfd.FileName).ToLowerInvariant();
+                        if (ext == ".csv")
+                        {
+                            XuatCsvChiTiet(sfd.FileName);
+                        }
+                        else
+                        {
+                            XuatExcelHtmlChiTiet(sfd.FileName);
+                        }
+
+                        MessageBox.Show("Xuất file chi tiết đơn trả hàng thành công!\nĐường dẫn: " + sfd.FileName, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Lỗi khi xuất file: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+
+        private void XuatExcelHtmlChiTiet(string filePath)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("<html xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:x=\"urn:schemas-microsoft-com:office:excel\" xmlns=\"http://www.w3.org/TR/REC-html40\">");
+            sb.AppendLine("<head>");
+            sb.AppendLine("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />");
+            sb.AppendLine("<style>");
+            sb.AppendLine("body { font-family: Segoe UI, Arial; font-size: 10pt; }");
+            sb.AppendLine("th { background-color: #0066CC; color: #FFFFFF; font-weight: bold; border: 0.5pt solid #CCCCCC; padding: 6px; }");
+            sb.AppendLine("td { border: 0.5pt solid #E0E0E0; padding: 5px; }");
+            sb.AppendLine(".num { mso-number-format: \"#,##0\"; text-align: right; }");
+            sb.AppendLine(".center { text-align: center; }");
+            sb.AppendLine(".bold { font-weight: bold; }");
+            sb.AppendLine("</style>");
+            sb.AppendLine("</head>");
+            sb.AppendLine("<body>");
+
+            sb.AppendLine($"<h2>CHI TIẾT PHIẾU TRẢ HÀNG NHẬP: {maPhieu}</h2>");
+            sb.AppendLine($"<p><b>Trạng thái:</b> {lblTrangThai.Text} | <b>Kho hàng:</b> {lblKhoChiNhanh.Text}</p>");
+            sb.AppendLine($"<p><b>Nhà cung cấp:</b> {lblTenNccVal.Text}</p>");
+            sb.AppendLine($"<p><b>Người tạo:</b> {lblNguoiTaoVal.Text} | <b>Người trả:</b> {lblNguoiTraVal.Text}</p>");
+            sb.AppendLine($"<p><b>Ngày trả:</b> {lblNgayTraVal.Text} | <b>Mã đơn nhập gốc:</b> {lblMaNhapHangVal.Text}</p>");
+            if (!string.IsNullOrWhiteSpace(txtGhiChu.Text))
+            {
+                sb.AppendLine($"<p><b>Ghi chú:</b> {System.Net.WebUtility.HtmlEncode(txtGhiChu.Text)}</p>");
+            }
+            sb.AppendLine("<br/>");
+
+            sb.AppendLine("<table>");
+            sb.AppendLine("<tr>");
+            sb.AppendLine("<th>STT</th>");
+            sb.AppendLine("<th>Mã hàng</th>");
+            sb.AppendLine("<th>Tên hàng hóa</th>");
+            sb.AppendLine("<th>ĐVT</th>");
+            sb.AppendLine("<th>Số lượng trả</th>");
+            sb.AppendLine("<th>Giá nhập</th>");
+            sb.AppendLine("<th>Giá trả lại</th>");
+            sb.AppendLine("<th>Thành tiền</th>");
+            sb.AppendLine("</tr>");
+
+            foreach (DataRow row in dtChiTietData.Rows)
+            {
+                string stt = row["STT"]?.ToString() ?? "";
+                string maHang = row["MaHangNoiBo"]?.ToString() ?? "";
+                string tenHang = row["TenHang"]?.ToString() ?? "";
+                string dvt = row["TenDVT"]?.ToString() ?? "";
+                decimal soLuong = row["SoLuong"] != DBNull.Value ? Convert.ToDecimal(row["SoLuong"]) : 0m;
+                decimal giaNhap = row["GiaNhap"] != DBNull.Value ? Convert.ToDecimal(row["GiaNhap"]) : 0m;
+                decimal donGiaTra = row["DonGiaTra"] != DBNull.Value ? Convert.ToDecimal(row["DonGiaTra"]) : 0m;
+                decimal thanhTien = row["ThanhTien"] != DBNull.Value ? Convert.ToDecimal(row["ThanhTien"]) : 0m;
+
+                sb.AppendLine("<tr>");
+                sb.AppendLine($"<td class=\"center\">{stt}</td>");
+                sb.AppendLine($"<td class=\"center\">{maHang}</td>");
+                sb.AppendLine($"<td>{System.Net.WebUtility.HtmlEncode(tenHang)}</td>");
+                sb.AppendLine($"<td class=\"center\">{System.Net.WebUtility.HtmlEncode(dvt)}</td>");
+                sb.AppendLine($"<td class=\"num\">{soLuong:N0}</td>");
+                sb.AppendLine($"<td class=\"num\">{giaNhap:N0}</td>");
+                sb.AppendLine($"<td class=\"num\">{donGiaTra:N0}</td>");
+                sb.AppendLine($"<td class=\"num\">{thanhTien:N0}</td>");
+                sb.AppendLine("</tr>");
+            }
+
+            sb.AppendLine("</table>");
+            sb.AppendLine("<br/>");
+            sb.AppendLine($"<p><b>Số lượng mặt hàng:</b> {lblSoLuongMatHangVal.Text}</p>");
+            sb.AppendLine($"<p><b>Tổng tiền hàng:</b> {lblTongTienHangVal.Text}</p>");
+            sb.AppendLine($"<p><b>Giảm giá:</b> {lblGiamGiaVal.Text}</p>");
+            sb.AppendLine($"<p><b>NCC cần trả:</b> {lblCanThuNccVal.Text}</p>");
+            sb.AppendLine($"<p><b>NCC đã trả:</b> {lblDaThuNccVal.Text}</p>");
+
+            sb.AppendLine("</body>");
+            sb.AppendLine("</html>");
+
+            File.WriteAllText(filePath, sb.ToString(), Encoding.UTF8);
+        }
+
+        private void XuatCsvChiTiet(string filePath)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("sep=,");
+            sb.AppendLine($"PHIẾU TRẢ HÀNG NHẬP: {maPhieu}");
+            sb.AppendLine($"Trạng thái: {lblTrangThai.Text}");
+            sb.AppendLine($"Kho hàng: {lblKhoChiNhanh.Text}");
+            sb.AppendLine($"Nhà cung cấp: \"{lblTenNccVal.Text.Replace("\"", "\"\"")}\"");
+            sb.AppendLine($"Người tạo: {lblNguoiTaoVal.Text} | Người trả: {lblNguoiTraVal.Text}");
+            sb.AppendLine($"Ngày trả: {lblNgayTraVal.Text}");
+            sb.AppendLine($"Mã đơn nhập gốc: {lblMaNhapHangVal.Text}");
+            sb.AppendLine($"Ghi chú: \"{txtGhiChu.Text.Replace("\"", "\"\"")}\"");
+            sb.AppendLine();
+
+            sb.AppendLine("STT,Mã hàng,Tên hàng hóa,ĐVT,Số lượng trả,Giá nhập,Giá trả lại,Thành tiền");
+
+            foreach (DataRow row in dtChiTietData.Rows)
+            {
+                string stt = row["STT"]?.ToString() ?? "";
+                string maHang = row["MaHangNoiBo"]?.ToString() ?? "";
+                string tenHang = row["TenHang"]?.ToString() ?? "";
+                string dvt = row["TenDVT"]?.ToString() ?? "";
+                decimal soLuong = row["SoLuong"] != DBNull.Value ? Convert.ToDecimal(row["SoLuong"]) : 0m;
+                decimal giaNhap = row["GiaNhap"] != DBNull.Value ? Convert.ToDecimal(row["GiaNhap"]) : 0m;
+                decimal donGiaTra = row["DonGiaTra"] != DBNull.Value ? Convert.ToDecimal(row["DonGiaTra"]) : 0m;
+                decimal thanhTien = row["ThanhTien"] != DBNull.Value ? Convert.ToDecimal(row["ThanhTien"]) : 0m;
+
+                sb.AppendLine(string.Format("{0},\"{1}\",\"{2}\",\"{3}\",{4},{5},{6},{7}",
+                    stt,
+                    maHang,
+                    tenHang.Replace("\"", "\"\""),
+                    dvt.Replace("\"", "\"\""),
+                    soLuong,
+                    giaNhap,
+                    donGiaTra,
+                    thanhTien));
+            }
+
+            sb.AppendLine();
+            sb.AppendLine($",,,Số lượng mặt hàng:,{lblSoLuongMatHangVal.Text}");
+            sb.AppendLine($",,,Tổng tiền hàng:,,,{lblTongTienHangVal.Text.Replace(",", "")}");
+            sb.AppendLine($",,,Giảm giá:,,,{lblGiamGiaVal.Text.Replace(",", "")}");
+            sb.AppendLine($",,,NCC cần trả:,,,{lblCanThuNccVal.Text.Replace(",", "")}");
+            sb.AppendLine($",,,NCC đã trả:,,,{lblDaThuNccVal.Text.Replace(",", "")}");
+
+            File.WriteAllText(filePath, sb.ToString(), new UTF8Encoding(true));
+        }
+
+#if FALSE
+        private void btnXuatFile_Click_Old(object sender, EventArgs e)
+        {
+            if (dtChiTietData == null || dtChiTietData.Rows.Count == 0)
+            {
+                MessageBox.Show("Không có dữ liệu hàng hóa để xuất file!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            using (SaveFileDialog sfd = new SaveFileDialog())
+            {
                 sfd.Filter = "CSV File (*.csv)|*.csv|All Files (*.*)|*.*";
                 sfd.FileName = $"ChiTietTraHang_{maPhieu}_{DateTime.Now:yyyyMMdd_HHmm}.csv";
 
@@ -340,6 +504,8 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                 }
             }
         }
+
+#endif
 
         private string EscapeCsv(string text)
         {

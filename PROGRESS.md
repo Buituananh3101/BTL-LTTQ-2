@@ -1,13 +1,19 @@
 ﻿# Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-27 – Chuẩn hóa định dạng xuất file Chuyển kho sang định dạng Excel .xls đồng bộ Kiểm kho (Phiên 61)
+**Cập nhật lần cuối**: 2026-10-27 – Chuẩn hóa file mẫu Excel chức năng Nhà cung cấp đồng bộ với Hàng hóa và Nhập hàng (Phiên 65)
 ---
 
 ## Đang làm
-- [x] Tái thiết kế toàn diện `frmNhapKiemKhoFile` (Kiểm kho) và `frmNhapChuyenKhoFile` (Chuyển kho) giống 100% bố cục và giao diện của `frmNhapHangHoaFile` (kích thước 882x453, FixedDialog, panel header, 1. Chọn file, 2. Tùy chọn xử lý trùng mã, thanh tiến trình, thanh thao tác đáy với Tải file mẫu Excel, Thực hiện nhập và Đóng).
-- [x] Xây dựng mới `frmNhapHangNhapFile` (Nhập hàng) và `frmNhapHangTraFile` (Trả hàng nhập) theo đúng 100% khuôn mẫu `frmNhapHangHoaFile`, đăng ký vào `BTL-LTTQ-2.csproj`.
-- [x] Kết nối `btnNhapFile_Click` trong `frmThemPhieuNhap` và `frmThemPhieuTraHang` gọi dialog nhập file chuyên biệt, đồng bộ dữ liệu vào bảng chi tiết.
-- [x] Đồng bộ đặc tả chức năng `docs/specs/nhap-hang.md`, `docs/specs/tra-hang-nhap.md` và `docs/specs/kiem-kho.md`.
+- [x] Nâng cấp xuất file Báo cáo tồn kho (`frmBaoCaoTonKho.cs`) sang Excel `.xls` HTML Table UTF-8 (format `#,##0`, tô đỏ tồn <= 0) và `.csv` (UTF-8 BOM).
+- [x] Nâng cấp xuất file Báo cáo thẻ kho (`frmBaoCaoTheKho.cs`) sang Excel `.xls` HTML Table UTF-8 (tiêu đề, thẻ KPI, highlight tồn đầu/cuối kỳ, tô đỏ tồn âm) và `.csv` (UTF-8 BOM).
+- [x] Đồng bộ đặc tả kỹ thuật: `docs/specs/bao-cao-ton-kho.md`, `docs/specs/the-kho.md`.
+
+
+
+
+
+
+
 
 
 
@@ -49,6 +55,67 @@
 ---
 
 ## Nhật ký phiên (Session Logs)
+- **Phiên 65 (2026-10-27) – Chuẩn hóa toàn diện định dạng file mẫu Excel của chức năng Nhà cung cấp**:
+  - **Nhu cầu**: Người dùng phản ánh: "Định dạng file mẫu phần tải về file mẫu của chức năng Nhà cung cấp (ảnh 3) đang có giao diện khác với các file mẫu khác (ảnh 1 và 2). Chuẩn hóa file mẫu của Nhà cung cấp cho giao diện xuất ra giống các file mẫu còn lại".
+  - **Nguyên nhân**: File mẫu Nhà cung cấp (`Mau_Nhap_Nha_Cung_Cap.xls`) trước đây xuất bằng thẻ `<table border="1">`, thiếu cấu hình Workbook XML `<x:DisplayGridlines/>`, không có khối CSS styling Segoe UI và tiêu đề `#0078D7`, khiến Excel mở ra với font Aptos Narrow mặc định và viền đen dày, khác biệt hoàn toàn với file mẫu Hàng hóa và Nhập hàng.
+  - **Kết quả thực hiện**:
+    1. **Chuẩn hóa logic xuất file mẫu (`frmNhapNhaCungCapFile.cs`)**:
+       - Bổ sung cấu hình Workbook XML với tên Worksheet `MauNhaCungCap` và kích hoạt `<x:DisplayGridlines/>` hiển thị đường lưới Excel chuẩn mực.
+       - Thêm toàn bộ CSS styling chuẩn hệ thống: Thẻ `th` màu xanh thương hiệu `#0078D7`, chữ trắng Segoe UI 10pt in đậm, padding 6px; thẻ `td` font Segoe UI 9.5pt viền xám nhạt `#E0E0E0`, padding 5px.
+       - Cấu hình lớp định dạng `.text` (`mso-number-format: "\@"`) cho `Mã nhà cung cấp`, `Điện thoại`, `Mã số thuế` chống mất số 0 ở đầu.
+       - Chuẩn hóa 3 dòng dữ liệu mẫu trực quan (Vinamilk, Masan Consumer và Suntory PepsiCo minh họa rõ quy tắc để trống mã nhà cung cấp sẽ tự sinh mã `NCC0000X`).
+    2. **Rà soát & chuẩn hóa giao diện (`frmNhapNhaCungCapFile.Designer.cs`)**:
+       - Chuẩn hóa 100% chuỗi nhãn hiển thị tiếng Việt có dấu rõ ràng, chuẩn mực theo Luật 14.
+    3. **Đồng bộ tài liệu đặc tả & chất lượng**:
+       - Cập nhật mục 3.5 trong `docs/specs/nha-cung-cap.md`.
+       - Chạy `tools/KiemTraMaHoa.ps1`: 100% file (193/193) đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake.
+       - Biên dịch Visual Studio MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+
+- **Phiên 64 (2026-10-27) – Chuẩn hóa định dạng xuất file Excel .xls cho Báo cáo tồn kho và Báo cáo thẻ kho**:
+  - **Nhu cầu**: Người dùng yêu cầu: "Tiếp tục sửa định dạng xuất file của Báo cáo tồn kho và Báo cáo thẻ kho sang .xls".
+  - **Kết quả thực hiện**:
+    1. **Báo cáo tồn kho (`frmBaoCaoTonKho.cs`)**:
+       - `SaveFileDialog` hỗ trợ `File Excel (*.xls)|*.xls|File CSV (*.csv)|*.csv` (mặc định `.xls`).
+       - Tự động lấy toàn bộ kết quả lọc theo câu truy vấn `sqlXuatFile` và `thamSoXuatFile` (không bị giới hạn 20 dòng trang hiện tại).
+       - Bảng HTML Table UTF-8 chuẩn mở bằng Excel không lỗi font: Tiêu đề lớn, dòng thông tin (Kho, Tổng số mặt hàng, Tổng tồn, Tổng giá trị tồn, Cần lưu ý), bảng các cột đang hiển thị; định dạng số `#,##0` căn phải; cảnh báo tồn kho <= 0 tô đỏ in đậm; căn giữa mã/ĐVT/vị trí/trạng thái.
+    2. **Báo cáo thẻ kho (`frmBaoCaoTheKho.cs`)**:
+       - `SaveFileDialog` hỗ trợ `File Excel (*.xls)|*.xls|File CSV (*.csv)|*.csv` (mặc định `.xls`).
+       - Bảng HTML Table UTF-8 chuẩn: Tiêu đề lớn kèm tên hàng hóa, dòng thông tin (Kho, Mặt hàng, Kỳ báo cáo từ ngày... đến ngày...), 4 chỉ số KPI (Tồn đầu kỳ, Tổng nhập trong kỳ, Tổng xuất trong kỳ, Tồn cuối kỳ); bảng chi tiết các dòng phát sinh; dòng Tồn đầu kỳ và Tồn cuối kỳ được highlight nền `#F1F5F9`; tồn lũy kế âm tô đỏ in đậm.
+    3. **Đồng bộ tài liệu đặc tả chức năng**:
+       - Cập nhật mục xuất file trong `docs/specs/bao-cao-ton-kho.md` và `docs/specs/the-kho.md`.
+    4. **Kiểm tra chất lượng**:
+       - Chạy `tools/KiemTraMaHoa.ps1`: **193/193 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch Visual Studio MSBuild CoreCompile: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+
+- **Phiên 63 (2026-10-27) – Chuẩn hóa toàn diện định dạng xuất file Excel .xls cho 3 phân hệ Nhập hàng, Trả hàng nhập và Nhà cung cấp**:
+  - **Nhu cầu**: Người dùng yêu cầu: "Tiếp tục sửa phần xuất file của 3 chức năng Nhập hàng, Trả hàng nhập và Nhà cung cấp sang định dạng .xls" (giống xuất file của Kiểm kho và Chuyển kho, đầy đủ nội dung, giao diện HTML Table UTF-8 chuyên nghiệp).
+  - **Kết quả thực hiện**:
+    1. **Phân hệ Nhà cung cấp (`frmNhaCungCap.cs`)**:
+       - Bổ sung trích xuất dữ liệu không kèm phân trang (`sqlXuatFile`, `parasXuatFile`). Ưu tiên dòng chọn CheckBox; nếu không chọn dòng nào sẽ lấy toàn bộ 100% bản ghi thỏa mãn bộ lọc hiện tại.
+       - Hỗ trợ SaveFileDialog bộ lọc `File Excel (*.xls)|*.xls|File CSV (*.csv)|*.csv` (mặc định `.xls`).
+       - Bảng HTML Table UTF-8 có CSS styling, header `#0078D7` chữ trắng, format tiền tệ `#,##0`, căn giữa mã/ngày/trạng thái; mở bằng Excel không bao giờ lỗi font tiếng Việt.
+    2. **Phân hệ Nhập hàng (`frmNhapHang.cs` & `frmChiTietPhieuNhap.cs`)**:
+       - `frmNhapHang.cs`: Xuất danh sách đơn nhập hàng ra file Excel `.xls` và `.csv`. Đầy đủ các cột: Mã nhập hàng, Thời gian, Kho nhập, Mã NCC, Nhà cung cấp, Cần trả NCC, Tổng tiền, Trạng thái. Tự động truy vấn 100% dữ liệu theo bộ lọc khi không tích chọn CheckBox.
+       - `frmChiTietPhieuNhap.cs`: Xuất chi tiết phiếu nhập ra file `.xls` và `.csv`. Header phiếu gồm: Ngày nhập, Kho hàng, Nhà cung cấp, Người tạo, Người nhập, Trạng thái, Ghi chú; bảng mặt hàng (STT, Mã hàng, Tên hàng, ĐVT, Số lượng, Đơn giá, Giảm giá, Thành tiền với format `#,##0`); bảng tổng kết chân trang (Tổng tiền hàng, Giảm giá, Tổng cộng, Tiền đã trả NCC, Cần trả NCC).
+    3. **Phân hệ Trả hàng nhập (`frmTraHangNhap.cs` & `frmChiTietTraHangNhap.cs`)**:
+       - `frmTraHangNhap.cs`: Xuất danh sách đơn trả hàng ra file Excel `.xls` và `.csv`. Đầy đủ các cột: Mã trả hàng nhập, Thời gian, Kho hàng, Nhà cung cấp, Tổng tiền hàng, Giảm giá, NCC cần trả, NCC đã trả, Trạng thái. Hỗ trợ xuất các dòng đã chọn hoặc 100% dữ liệu theo bộ lọc.
+       - `frmChiTietTraHangNhap.cs`: Xuất chi tiết đơn trả hàng ra file `.xls` và `.csv`. Header phiếu gồm: Trạng thái, Kho hàng, Nhà cung cấp, Người tạo, Người trả, Ngày trả, Mã đơn nhập gốc, Ghi chú; bảng mặt hàng trả (STT, Mã hàng, Tên hàng hóa, ĐVT, Số lượng trả, Giá nhập, Giá trả lại, Thành tiền); bảng tổng kết chân trang (Số lượng mặt hàng, Tổng tiền hàng, Giảm giá, NCC cần trả, NCC đã trả).
+    4. **Đồng bộ tài liệu đặc tả chức năng**:
+       - Cập nhật mục xuất file trong `docs/specs/nha-cung-cap.md`, `docs/specs/nhap-hang.md`, `docs/specs/tra-hang-nhap.md`.
+    5. **Kiểm tra chất lượng**:
+       - Chạy `tools/KiemTraMaHoa.ps1`: **193/193 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch Visual Studio MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+
+- **Phiên 62 (2026-10-27) – Sửa lỗi tải file mẫu và nhập file Chuyển kho / Trả hàng nhập (Invalid column name 'TonCuoi')**:
+  - **Nhu cầu**: Người dùng phản ánh lỗi khi nhấn nút "Tải file mẫu Excel" trên form Nhập dữ liệu chuyển kho từ file: "Lỗi khi lưu file mẫu: Invalid column name 'TonCuoi'".
+  - **Nguyên nhân**: Trong `frmNhapChuyenKhoFile.cs` và `frmNhapHangTraFile.cs`, câu truy vấn tới view `vw_TonKhoHienTai` để nạp danh sách hàng mẫu và tra cứu tồn kho đã gọi tên cột `TonCuoi` thay vì tên cột chuẩn `SoLuongTon` của view.
+  - **Kết quả thực hiện**:
+    1. Chuẩn hóa câu lệnh truy vấn trong `frmNhapChuyenKhoFile.cs`: Đổi toàn bộ `TonCuoi` thành `SoLuongTon` trong cả `sqlMau` (Tải file mẫu) và `sqlHang` (Thực hiện nhập file).
+    2. Rà soát và chuẩn hóa tương tự trong `frmNhapHangTraFile.cs` nhằm ngăn ngừa lỗi phát sinh khi người dùng tải file mẫu hoặc nhập file trả hàng nhập.
+    3. Khôi phục toàn vẹn cấu trúc lớp `frmNhaCungCap.cs` (`btnNhapFile_Click`, `btnHienCot_Click`, `btnHuongDanSuDung_Click`).
+    4. Kiểm tra mã hóa tự động `tools/KiemTraMaHoa.ps1`: 193/193 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake.
+    5. Biên dịch Visual Studio MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+
 - **Phiên 61 (2026-10-27) – Chuẩn hóa định dạng xuất file Chuyển kho sang định dạng Excel .xls giống Kiểm kho (đầy đủ nội dung)**:
   - **Nhu cầu**: Người dùng yêu cầu: "Đổi định dạng xuất file của form Chuyển kho sang dạng .xls giống xuất file của Kiểm kho ( trong file có đầy đủ nội dung như kiểm kho)".
   - **Kết quả thực hiện**:

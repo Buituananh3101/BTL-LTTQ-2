@@ -25,10 +25,12 @@
      - Nhóm hàng (`cboNhomHang`): Tích hợp tìm kiếm nhanh qua `ComboboxHelper.CaiDatTimKiem`.
      - Tiêu chí mức tồn (`cboTieuChiTon`): Tất cả, Còn tồn (>0), Hết hàng (=0), Tồn âm (<0), Dưới định mức tối thiểu, Vượt định mức tối đa, Cần lưu ý (Hết / Dưới định mức).
      - Trạng thái kinh doanh (`cboTrangThai`): Tất cả, Đang kinh doanh, Ngừng kinh doanh.
-     - Cụm thời gian tạo (`grpThoiGianTao`): 2 `DateTimePicker` (`dtpTuNgay`, `dtpDenNgay` Short) đặt ở vị trí đáy của bộ lọc.$14. **Xem nhanh thẻ kho qua thao tác nhấn đúp**:
+     - Cụm thời gian tạo (`grpThoiGianTao`): 2 `DateTimePicker` (`dtpTuNgay`, `dtpDenNgay` Short) đặt ở vị trí đáy của bộ lọc.
+   4. **Xem nhanh thẻ kho qua thao tác nhấn đúp**:
       - Nhấp đúp vào một dòng hàng hóa trên lưới sẽ tự động kích hoạt form **Báo cáo thẻ kho** (`frmBaoCaoTheKho`) của mặt hàng và chi nhánh kho đó (hỗ trợ nút `Quay lại` để trở về danh sách tồn kho mà không mất trạng thái phân trang/bộ lọc).
-$15. **Xuất file**:
-     - Xuất dữ liệu danh sách tồn kho ra file CSV chuẩn UTF-8 with BOM mở trực tiếp bằng Excel không lỗi font tiếng Việt.$16. **Tùy chọn hiển thị cột**:
+   5. **Xuất file**:
+     - Hộp thoại `SaveFileDialog` hỗ trợ lưu file `.xls` (HTML Table UTF-8 header màu `#0078D7`, format số `#,##0`) và `.csv` (UTF-8 BOM). Tự động xuất toàn bộ kết quả dữ liệu theo bộ lọc hiện tại (bỏ qua giới hạn trang đang xem). Mở trực tiếp bằng Excel không lỗi font tiếng Việt.
+   6. **Tùy chọn hiển thị cột**:
      - Hỗ trợ popup `frmHienCotBaoCao` cho phép bật/tắt hiển thị từng cột dữ liệu trên lưới (quản lý 13 cột nghiệp vụ hợp lệ; loại trừ tuyệt đối cột khóa chính kỹ thuật nội bộ `colMaHang` luôn ẩn `Visible = false`).
 
 ---
