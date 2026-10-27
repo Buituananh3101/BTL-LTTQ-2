@@ -239,7 +239,7 @@
             this.btnThemViTriNhanh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnThemViTriNhanh.Location = new System.Drawing.Point(315, 411);
             this.btnThemViTriNhanh.Name = "btnThemViTriNhanh";
-            this.btnThemViTriNhanh.Size = new System.Drawing.Size(29, 29);
+            this.btnThemViTriNhanh.Size = new System.Drawing.Size(25, 25);
             this.btnThemViTriNhanh.TabIndex = 12;
             this.btnThemViTriNhanh.Text = "+";
             this.btnThemViTriNhanh.UseVisualStyleBackColor = true;
@@ -251,7 +251,7 @@
             this.btnThemDonViTinhNhanh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnThemDonViTinhNhanh.Location = new System.Drawing.Point(315, 141);
             this.btnThemDonViTinhNhanh.Name = "btnThemDonViTinhNhanh";
-            this.btnThemDonViTinhNhanh.Size = new System.Drawing.Size(29, 29);
+            this.btnThemDonViTinhNhanh.Size = new System.Drawing.Size(25, 25);
             this.btnThemDonViTinhNhanh.TabIndex = 13;
             this.btnThemDonViTinhNhanh.Text = "+";
             this.btnThemDonViTinhNhanh.UseVisualStyleBackColor = true;
@@ -263,7 +263,7 @@
             this.btnThemNhomNhanh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnThemNhomNhanh.Location = new System.Drawing.Point(315, 51);
             this.btnThemNhomNhanh.Name = "btnThemNhomNhanh";
-            this.btnThemNhomNhanh.Size = new System.Drawing.Size(29, 29);
+            this.btnThemNhomNhanh.Size = new System.Drawing.Size(25, 25);
             this.btnThemNhomNhanh.TabIndex = 12;
             this.btnThemNhomNhanh.Text = "+";
             this.btnThemNhomNhanh.UseVisualStyleBackColor = true;
