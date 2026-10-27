@@ -1,6 +1,6 @@
 ﻿# Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-27 – Khắc phục lỗi xuất file chỉ lấy 20 mặt hàng trên Danh sách Hàng hóa (Phiên 60)
+**Cập nhật lần cuối**: 2026-10-27 – Chuẩn hóa định dạng xuất file Chuyển kho sang định dạng Excel .xls đồng bộ Kiểm kho (Phiên 61)
 ---
 
 ## Đang làm
@@ -49,6 +49,22 @@
 ---
 
 ## Nhật ký phiên (Session Logs)
+- **Phiên 61 (2026-10-27) – Chuẩn hóa định dạng xuất file Chuyển kho sang định dạng Excel .xls giống Kiểm kho (đầy đủ nội dung)**:
+  - **Nhu cầu**: Người dùng yêu cầu: "Đổi định dạng xuất file của form Chuyển kho sang dạng .xls giống xuất file của Kiểm kho ( trong file có đầy đủ nội dung như kiểm kho)".
+  - **Kết quả thực hiện**:
+    1. **Chuẩn hóa màn hình danh sách Chuyển kho (`frmChuyenKho`)**:
+       - Đổi `SaveFileDialog` mặc định sang định dạng Excel: `sfd.Filter = "File Excel (*.xls)|*.xls|File CSV (*.csv)|*.csv"`, tên file mặc định: `DanhSachChuyenKho_DaChon_...xls` (khi có chọn CheckBox) hoặc `DanhSachChuyenKho_...xls`.
+       - Tích hợp hàm `XuatExcelHtmlDanhSach` xuất bảng HTML Table UTF-8 chuẩn mở trực tiếp bằng Microsoft Excel: Tiêu đề lớn `DANH SÁCH PHIẾU CHUYỂN KHO`, dòng thông tin (Thời gian xuất, Tổng số phiếu), đầy đủ 10 cột dữ liệu (Mã chuyển kho, Thời gian, Kho gửi, Kho nhận, Tổng SL chuyển, Tổng SL nhận, Tổng giá trị, Người tạo, Trạng thái, Ghi chú), căn lề và định dạng số `#,##0` chuyên nghiệp.
+       - Tối ưu trích xuất dữ liệu: Lưu trữ câu truy vấn `sqlXuatFile` và `parasXuatFile` không kèm phân trang; khi người dùng không tích chọn CheckBox (`!coDongChon`), hệ thống tự động truy vấn toàn bộ phiếu chuyển thỏa mãn bộ lọc hiện tại, bảo đảm xuất đủ 100% dữ liệu.
+       - Giữ nguyên tùy chọn xuất CSV UTF-8 with BOM (`sep=,`) nếu người dùng chọn đuôi `.csv`.
+    2. **Chuẩn hóa màn hình chi tiết Chuyển kho (`frmChiTietChuyenKho`)**:
+       - Mở rộng hỗ trợ định dạng Excel `.xls`: `sfd.Filter = "File Excel (*.xls)|*.xls|File CSV (*.csv)|*.csv"`, tên file mặc định `ChiTiet_CK...xls`.
+       - Xây dựng hàm `XuatExcelHtmlChiTiet` giống hệt `frmChiTietKiemKho`: Tiêu đề `CHI TIẾT PHIẾU CHUYỂN KHO: {MaPhieu}`, thông tin chứng từ (Trạng thái, Lộ trình, Kho gửi, Kho nhận, Người lập, Ngày lập, Người xuất, Thời điểm xuất, Người nhận, Thời điểm nhận, Ghi chú chuyển, Ghi chú nhận); bảng mặt hàng chi tiết (STT, Mã hàng, Tên hàng, ĐVT, SL chuyển, SL nhận, Hao hụt - tô đỏ khi > 0, Đơn giá chuyển, Thành tiền); bảng thống kê chân trang (Tổng SL chuyển, Tổng SL nhận, Tổng hao hụt, Tổng giá trị).
+    3. **Đồng bộ tài liệu đặc tả chức năng**:
+       - Cập nhật mục 9 trong `docs/specs/chuyen-kho.md`.
+    4. **Kiểm tra chất lượng**:
+       - Chạy `tools/KiemTraMaHoa.ps1`: **193/193 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch dự án bằng MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
 - **Phiên 60 (2026-10-27) – Khắc phục lỗi xuất file chỉ lấy 20 mặt hàng trên màn hình Danh sách Hàng hóa (frmDanhSachHangHoa)**:
   - **Nhu cầu**: Người dùng phản ánh chức năng Danh sách hàng hóa có 37 hàng nhưng khi xuất ra file chỉ có 20 mặt hàng. Tìm ra lỗi và sửa lại.
   - **Nguyên nhân**: Trong `frmDanhSachHangHoa.cs`, khi người dùng không tích chọn CheckBox (`!coDongChon`), phương thức `btnXuatFile_Click` chỉ lặp qua `dgvHangHoa.Rows`. Do DataGridView đang áp dụng phân trang CSDL (`OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY`) với kích thước trang mặc định 20 dòng (`soDongMoiTrang = 20`), nên `dgvHangHoa.Rows` tại thời điểm đó chỉ chứa tối đa 20 dòng của trang hiện tại, dẫn đến file xuất ra thiếu mất 17 mặt hàng của các trang sau.

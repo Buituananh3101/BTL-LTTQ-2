@@ -713,12 +713,12 @@ namespace BTL_LTTQ_2.GUI.Forms.KiemKho
         private void btnHuongDanSuDung_Click(object sender, EventArgs e)
         {
             MessageBox.Show(
-                "HƯỚNG DẪN SỬ DỤNG MÀN HÌNH KIỂM KHO:\n\n" +
-                "1. Nhấn '+ Kiểm kho' để tạo phiếu kiểm kê mới.\n" +
-                "2. Trong form thêm phiếu, có thể chọn từng sản phẩm từ danh mục hoặc nạp tự động qua nút 'Nhập file' (hỗ trợ tải file mẫu Excel/CSV).\n" +
+                "HƯỚNG DẪN SỬ DỤNG CHỨC NĂNG KIỂM KHO:\n\n" +
+                "1. Nhấn '+ Kiểm kho' để tạo phiếu kiểm kho mới.\n" +
+                "2. Trong form thêm phiếu, có thể chọn từng sản phẩm từ danh mục hoặc nạp tự động qua nút 'Nhập file' (có hỗ trợ tải file mẫu Excel).\n" +
                 "3. Nhấn đúp chuột vào một dòng phiếu kiểm kho bất kỳ để xem chi tiết.\n" +
                 "4. Phiếu ở trạng thái 'Đã cân bằng' sẽ bị khóa vĩnh viễn (không thể xóa).\n" +
-                "5. Nhấn 'Xuất file' để lưu danh sách kiểm kho ra file Excel hoặc CSV.",
+                "5. Nhấn 'Xuất file' để lưu danh sách kiểm kho ra file Excel.",
                 "Hướng dẫn sử dụng",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
