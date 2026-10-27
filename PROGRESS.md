@@ -1,6 +1,6 @@
 ﻿# Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-26 – Chuẩn hóa giao diện và logic Báo cáo Thẻ kho & Báo cáo Tồn kho (Phiên 59)
+**Cập nhật lần cuối**: 2026-10-27 – Khắc phục lỗi xuất file chỉ lấy 20 mặt hàng trên Danh sách Hàng hóa (Phiên 60)
 ---
 
 ## Đang làm
@@ -49,6 +49,21 @@
 ---
 
 ## Nhật ký phiên (Session Logs)
+- **Phiên 60 (2026-10-27) – Khắc phục lỗi xuất file chỉ lấy 20 mặt hàng trên màn hình Danh sách Hàng hóa (frmDanhSachHangHoa)**:
+  - **Nhu cầu**: Người dùng phản ánh chức năng Danh sách hàng hóa có 37 hàng nhưng khi xuất ra file chỉ có 20 mặt hàng. Tìm ra lỗi và sửa lại.
+  - **Nguyên nhân**: Trong `frmDanhSachHangHoa.cs`, khi người dùng không tích chọn CheckBox (`!coDongChon`), phương thức `btnXuatFile_Click` chỉ lặp qua `dgvHangHoa.Rows`. Do DataGridView đang áp dụng phân trang CSDL (`OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY`) với kích thước trang mặc định 20 dòng (`soDongMoiTrang = 20`), nên `dgvHangHoa.Rows` tại thời điểm đó chỉ chứa tối đa 20 dòng của trang hiện tại, dẫn đến file xuất ra thiếu mất 17 mặt hàng của các trang sau.
+  - **Kết quả thực hiện**:
+    1. Khai báo `sqlXuatFile` và `thamSoXuatFile` để lưu lại toàn bộ câu lệnh truy vấn lọc không kèm mệnh đề phân trang `OFFSET/FETCH` trong `HienThiDanhSach()`.
+    2. Tái cấu trúc logic `btnXuatFile_Click`:
+       - Khi có dòng được tích chọn CheckBox (`coDongChon == true`): Xuất đúng danh sách các mặt hàng người dùng chủ động chọn.
+       - Khi không tích chọn dòng nào (`coDongChon == false`): Hệ thống tự động truy vấn `sqlXuatFile` lấy toàn bộ dữ liệu thỏa mãn bộ lọc hiện tại (đầy đủ 100% số lượng, ví dụ toàn bộ 37 mặt hàng).
+       - Đồng bộ xuất theo các cột đang hiển thị (`col.Visible = true`) do người dùng tùy biến qua `frmHienCot`, tự động bỏ cột chọn CheckBox và cột Hình ảnh.
+       - Chuẩn hóa định dạng hiển thị cho cả định dạng Excel (`.xls` HTML Table UTF-8) và `.csv` (UTF-8 with BOM kèm `sep=,`): căn phải số tiền/số lượng `N0`, căn giữa ngày tạo `dd/MM/yyyy HH:mm`, hiển thị trạng thái tiếng Việt ("Đang bán" / "Ngừng bán").
+    3. Đồng bộ đặc tả chức năng `docs/specs/danh-sach-hang-hoa.md`.
+    4. Kiểm tra mã hóa tự động `tools/KiemTraMaHoa.ps1`: 100% file có UTF-8 with BOM, 0 lỗi Mojibake.
+    5. Biên dịch Visual Studio MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+
+
 - **Phiên 59 (2026-10-26) – Chuẩn hóa bố cục và logic Báo cáo Thẻ kho (frmBaoCaoTheKho) và Báo cáo Tồn kho (frmBaoCaoTonKho)**:
   - **Nhu cầu**: Người dùng chỉnh sửa giao diện Báo cáo tồn kho và Thẻ kho; yêu cầu căn chỉnh left menu và cập nhật hoàn thiện logic cho Thẻ kho.
   - **Kết quả thực hiện**:

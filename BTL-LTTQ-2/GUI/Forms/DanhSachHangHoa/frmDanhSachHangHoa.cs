@@ -26,6 +26,10 @@ namespace BTL_LTTQ_2.GUI.Forms
 
         // Cờ kiểm soát Header CheckBox (Chọn tất cả)
         private bool isHeaderChecked = false;
+
+        // Lưu truy vấn đầy đủ (không phân trang) để xuất file toàn bộ kết quả lọc
+        private string sqlXuatFile = null;
+        private SqlParameter[] thamSoXuatFile = null;
         private Timer searchDebounceTimer;
 
         public frmDanhSachHangHoa()
@@ -488,9 +492,15 @@ namespace BTL_LTTQ_2.GUI.Forms
                     ) x30 ON h.MaHang = x30.MaHang
                     {whereSql}
                     ORDER BY h.MaHang DESC
-                    OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY;";
+";
 
-                DataTable dtHangHoa = DataProcessing.ReadData(sqlData, parameters.ToArray());
+                // Lưu lại truy vấn và tham số đầy đủ (không phân trang) để xuất file toàn bộ kết quả lọc
+                sqlXuatFile = sqlData;
+                thamSoXuatFile = countParams;
+
+                string sqlDataPhanTrang = sqlData + "\n                    OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY;";
+
+                DataTable dtHangHoa = DataProcessing.ReadData(sqlDataPhanTrang, parameters.ToArray());
 
                 // Thêm cột logic Chon vào DataTable để DataGridViewCheckBoxColumn bind chuẩn xác
                 if (!dtHangHoa.Columns.Contains("Chon"))
@@ -1008,38 +1018,133 @@ private void btnHangHoa_Click(object sender, EventArgs e)
             }
         }
 
-        // Xuất danh sách ra file CSV / Excel
+                // Xuất danh sách ra file CSV / Excel
         private void btnXuatFile_Click(object sender, EventArgs e)
         {
-            if (dgvHangHoa.Rows.Count == 0)
+            if (dgvHangHoa.Rows.Count == 0 && tongSoBanGhi == 0)
             {
                 MessageBox.Show("Không có dữ liệu để xuất file!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Xác định danh sách dòng cần xuất: Ưu tiên các dòng được tích chọn CheckBox
-            List<DataGridViewRow> danhSachXuat = new List<DataGridViewRow>();
+            List<DataGridViewRow> danhSachChon = new List<DataGridViewRow>();
             foreach (DataGridViewRow row in dgvHangHoa.Rows)
             {
                 if (Convert.ToBoolean(row.Cells["colChon"].Value ?? false))
                 {
-                    danhSachXuat.Add(row);
+                    danhSachChon.Add(row);
                 }
             }
 
-            bool coDongChon = danhSachXuat.Count > 0;
-            if (!coDongChon)
+            bool coDongChon = danhSachChon.Count > 0;
+
+            // Lấy danh sách cột hiển thị cần xuất (bỏ cột CheckBox và cột Hình ảnh)
+            List<DataGridViewColumn> colsXuat = new List<DataGridViewColumn>();
+            foreach (DataGridViewColumn col in dgvHangHoa.Columns)
             {
-                // Nếu không có dòng nào được tích chọn thì xuất tất cả dòng hiện có trên trang
-                foreach (DataGridViewRow row in dgvHangHoa.Rows)
+                if (col.Visible && !(col is DataGridViewImageColumn) && !(col is DataGridViewCheckBoxColumn))
                 {
-                    danhSachXuat.Add(row);
+                    colsXuat.Add(col);
                 }
+            }
+
+            if (colsXuat.Count == 0)
+            {
+                MessageBox.Show("Không có cột nào đang hiển thị để xuất dữ liệu!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Thu thập dữ liệu các dòng cần xuất
+            List<string[]> dataRows = new List<string[]>();
+
+            if (coDongChon)
+            {
+                // Người dùng tích chọn cụ thể các dòng trên trang: xuất các dòng đã chọn
+                foreach (DataGridViewRow row in danhSachChon)
+                {
+                    string[] cells = new string[colsXuat.Count];
+                    for (int i = 0; i < colsXuat.Count; i++)
+                    {
+                        cells[i] = row.Cells[colsXuat[i].Index].FormattedValue?.ToString() ?? "";
+                    }
+                    dataRows.Add(cells);
+                }
+            }
+            else
+            {
+                // Người dùng không tích chọn dòng nào: xuất toàn bộ danh sách thỏa mãn bộ lọc hiện tại
+                DataTable dtTatCa = null;
+                if (!string.IsNullOrEmpty(sqlXuatFile) && thamSoXuatFile != null)
+                {
+                    List<SqlParameter> ps = new List<SqlParameter>();
+                    foreach (var p in thamSoXuatFile)
+                    {
+                        ps.Add(new SqlParameter(p.ParameterName, p.Value));
+                    }
+                    dtTatCa = DataProcessing.ReadData(sqlXuatFile, ps.ToArray());
+                }
+
+                if (dtTatCa != null && dtTatCa.Rows.Count > 0)
+                {
+                    foreach (DataRow dr in dtTatCa.Rows)
+                    {
+                        string[] cells = new string[colsXuat.Count];
+                        for (int i = 0; i < colsXuat.Count; i++)
+                        {
+                            var col = colsXuat[i];
+                            string prop = col.DataPropertyName;
+                            object val = (!string.IsNullOrEmpty(prop) && dtTatCa.Columns.Contains(prop)) ? dr[prop] : null;
+
+                            if (val == null || val == DBNull.Value)
+                            {
+                                cells[i] = "";
+                            }
+                            else if (col.Name == "colTrangThai")
+                            {
+                                string sVal = val.ToString();
+                                cells[i] = (sVal == "DANG_BAN") ? "Đang bán" : (sVal == "NGUNG_BAN" ? "Ngừng bán" : sVal);
+                            }
+                            else if (col.Name == "colThoiGianTao" && DateTime.TryParse(val.ToString(), out DateTime dtVal))
+                            {
+                                cells[i] = dtVal.ToString("dd/MM/yyyy HH:mm");
+                            }
+                            else if (col.DefaultCellStyle.Format == "N0" && decimal.TryParse(val.ToString(), out decimal numVal))
+                            {
+                                cells[i] = numVal.ToString("N0");
+                            }
+                            else
+                            {
+                                cells[i] = val.ToString();
+                            }
+                        }
+                        dataRows.Add(cells);
+                    }
+                }
+                else
+                {
+                    // Dự phòng nếu dtTatCa rỗng thì lấy từ các dòng đang có trên DataGridView
+                    foreach (DataGridViewRow row in dgvHangHoa.Rows)
+                    {
+                        string[] cells = new string[colsXuat.Count];
+                        for (int i = 0; i < colsXuat.Count; i++)
+                        {
+                            cells[i] = row.Cells[colsXuat[i].Index].FormattedValue?.ToString() ?? "";
+                        }
+                        dataRows.Add(cells);
+                    }
+                }
+            }
+
+            if (dataRows.Count == 0)
+            {
+                MessageBox.Show("Không có dữ liệu để xuất file!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
             }
 
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
-                sfd.Title = coDongChon ? $"Xuất {danhSachXuat.Count} hàng hóa đã chọn" : "Xuất danh sách hàng hóa";
+                sfd.Title = coDongChon ? $"Xuất {dataRows.Count} hàng hóa đã chọn" : "Xuất danh sách hàng hóa";
                 sfd.Filter = "File Excel (*.xls)|*.xls|File CSV (*.csv)|*.csv";
                 sfd.FileName = coDongChon 
                     ? $"DanhSachHangHoa_DaChon_{DateTime.Now:yyyyMMdd_HHmm}.xls" 
@@ -1069,32 +1174,27 @@ private void btnHangHoa_Click(object sender, EventArgs e)
 
                             // Dòng tiêu đề cột
                             sb.AppendLine("<tr>");
-                            foreach (DataGridViewColumn col in dgvHangHoa.Columns)
+                            foreach (var col in colsXuat)
                             {
-                                if (col.Visible && !(col is DataGridViewImageColumn) && !(col is DataGridViewCheckBoxColumn))
-                                {
-                                    sb.AppendLine($"<th>{System.Net.WebUtility.HtmlEncode(col.HeaderText)}</th>");
-                                }
+                                sb.AppendLine($"<th>{System.Net.WebUtility.HtmlEncode(col.HeaderText)}</th>");
                             }
                             sb.AppendLine("</tr>");
 
                             // Dữ liệu từng dòng
-                            foreach (DataGridViewRow row in danhSachXuat)
+                            foreach (var rowValues in dataRows)
                             {
                                 sb.AppendLine("<tr>");
-                                foreach (DataGridViewColumn col in dgvHangHoa.Columns)
+                                for (int i = 0; i < colsXuat.Count; i++)
                                 {
-                                    if (col.Visible && !(col is DataGridViewImageColumn) && !(col is DataGridViewCheckBoxColumn))
-                                    {
-                                        string cellVal = row.Cells[col.Index].FormattedValue?.ToString() ?? "";
-                                        string cssClass = "text";
-                                        if (col.DefaultCellStyle.Alignment == DataGridViewContentAlignment.MiddleRight)
-                                            cssClass = "number";
-                                        else if (col.DefaultCellStyle.Alignment == DataGridViewContentAlignment.MiddleCenter)
-                                            cssClass = "center";
+                                    var col = colsXuat[i];
+                                    string cellVal = rowValues[i];
+                                    string cssClass = "text";
+                                    if (col.DefaultCellStyle.Alignment == DataGridViewContentAlignment.MiddleRight)
+                                        cssClass = "number";
+                                    else if (col.DefaultCellStyle.Alignment == DataGridViewContentAlignment.MiddleCenter)
+                                        cssClass = "center";
 
-                                        sb.AppendLine($"<td class=\"{cssClass}\">{System.Net.WebUtility.HtmlEncode(cellVal)}</td>");
-                                    }
+                                    sb.AppendLine($"<td class=\"{cssClass}\">{System.Net.WebUtility.HtmlEncode(cellVal)}</td>");
                                 }
                                 sb.AppendLine("</tr>");
                             }
@@ -1109,35 +1209,28 @@ private void btnHangHoa_Click(object sender, EventArgs e)
                             sb.AppendLine("sep=,");
 
                             List<string> headers = new List<string>();
-                            foreach (DataGridViewColumn col in dgvHangHoa.Columns)
+                            foreach (var col in colsXuat)
                             {
-                                if (col.Visible && !(col is DataGridViewImageColumn) && !(col is DataGridViewCheckBoxColumn))
-                                {
-                                    headers.Add($"\"{col.HeaderText.Replace("\"", "\"\"")}\"");
-                                }
+                                headers.Add($"\"{col.HeaderText.Replace("\"", "\"\"")}\"");
                             }
                             sb.AppendLine(string.Join(",", headers));
 
-                            foreach (DataGridViewRow row in danhSachXuat)
+                            foreach (var rowValues in dataRows)
                             {
-                                List<string> rowValues = new List<string>();
-                                foreach (DataGridViewColumn col in dgvHangHoa.Columns)
+                                List<string> rowValuesEscaped = new List<string>();
+                                foreach (var val in rowValues)
                                 {
-                                    if (col.Visible && !(col is DataGridViewImageColumn) && !(col is DataGridViewCheckBoxColumn))
-                                    {
-                                        string cellVal = row.Cells[col.Index].FormattedValue?.ToString() ?? "";
-                                        rowValues.Add($"\"{cellVal.Replace("\"", "\"\"")}\"");
-                                    }
+                                    rowValuesEscaped.Add($"\"{val.Replace("\"", "\"\"")}\"");
                                 }
-                                sb.AppendLine(string.Join(",", rowValues));
+                                sb.AppendLine(string.Join(",", rowValuesEscaped));
                             }
 
                             File.WriteAllText(sfd.FileName, sb.ToString(), new UTF8Encoding(true));
                         }
 
                         string thongBao = coDongChon
-                            ? $"Xuất file thành công {danhSachXuat.Count:N0} hàng hóa đã chọn tại:\n{sfd.FileName}"
-                            : $"Xuất file thành công toàn bộ {danhSachXuat.Count:N0} hàng hóa tại:\n{sfd.FileName}";
+                            ? $"Xuất file thành công {dataRows.Count:N0} hàng hóa đã chọn tại:\n{sfd.FileName}"
+                            : $"Xuất file thành công toàn bộ {dataRows.Count:N0} hàng hóa tại:\n{sfd.FileName}";
                         MessageBox.Show(thongBao, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     catch (Exception ex)
