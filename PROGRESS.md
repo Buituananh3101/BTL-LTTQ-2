@@ -1,14 +1,13 @@
 ﻿# Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-27 – Sửa lỗi nhảy tiền, đổi Giảm giá sang %, khắc phục nhân đơn giá ở Nhập hàng & Trả hàng nhập (Phiên 66)
+**Cập nhật lần cuối**: 2026-10-28 – Tạo bộ dữ liệu mẫu CSV nhập file cho 6 chức năng (Phiên 67)
 ---
 
 ## Đang làm
-- [x] Khắc phục lỗi ô tiền đã trả/đã thu NCC bị nhảy số và chèn vào đầu chuỗi (`frmThemPhieuNhap`, `frmThemPhieuTraHang`).
-- [x] Đổi cách tính Giảm giá sang phần trăm (%) và đổi nhãn cột/label thành `Giảm giá (%)` (`frmThemPhieuNhap`, `frmChiTietPhieuNhap`, `frmThemPhieuTraHang`, `frmChiTietTraHangNhap`, `frmHienCotHangNhap`).
-- [x] Sửa lỗi kích ra ngoài cột đơn giá làm nhân số tiền 100/1000 lần qua `ParseDecimalAnToan` và `SelectAll()`.
-- [x] Đồng bộ đặc tả chức năng: `docs/specs/nhap-hang.md`, `docs/specs/tra-hang-nhap.md`.
-- [x] Kiểm tra mã hóa tự động `tools/KiemTraMaHoa.ps1`: 100% file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake.
+- [x] Tạo thư mục DuLieuNhapVaoMau cùng cấp với .agent.
+- [x] Tạo 6 file dữ liệu mẫu .csv chuẩn định dạng cho 6 phân hệ nhập file: Danh sách hàng hóa, Nhà cung cấp, Thêm phiếu kiểm kho, Thêm phiếu chuyển kho, Thêm phiếu nhập hàng, Thêm phiếu trả hàng nhập.
+- [x] Định dạng chuẩn 100% UTF-8 with BOM, CRLF, 0 lỗi Mojibake.
+- [x] Kiểm tra mã hóa tự động 	ools/KiemTraMaHoa.ps1: 100% file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake.
 - [x] Kiểm tra biên dịch mã nguồn C# bằng MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
 
 ## Việc kế tiếp
@@ -45,6 +44,20 @@
 ---
 
 ## Nhật ký phiên (Session Logs)
+- **Phiên 67 (2026-10-28) – Tạo bộ dữ liệu mẫu CSV chuẩn cho 6 phân hệ nhập file trong thư mục DuLieuNhapVaoMau**:
+  - **Nhu cầu**: Người dùng yêu cầu tạo thư mục DuLieuNhapVaoMau cùng cấp với .agent chứa các file .csv làm dữ liệu mẫu cho chức năng Nhập file của từng phân hệ (Thêm phiếu kiểm kho, Thêm phiếu chuyển kho, Danh sách hàng hóa, Nhà cung cấp, Thêm phiếu nhập hàng, Thêm phiếu trả hàng nhập).
+  - **Kết quả thực hiện**:
+    1. Tạo thư mục DuLieuNhapVaoMau/ tại thư mục gốc dự án (cùng cấp với .agent).
+    2. Khảo sát chính xác cấu trúc cột đọc dữ liệu của cả 6 Form nhập file (rmNhap*File.cs), xây dựng 6 file CSV mẫu đầy đủ dữ liệu thực tế và khớp 100% với mã hàng nội bộ trong CSDL (GAS45, BEP-DOI, VAN-01, CB-GAS, OXI-MINI):
+       - Mau_DanhSachHangHoa.csv: 11 cột, 11 dòng mẫu sản phẩm gas, bếp, thiết bị an toàn, than sạch.
+       - Mau_NhaCungCap.csv: 9 cột, 7 dòng mẫu nhà cung cấp gas, phụ kiện, khí y tế, PCCC.
+       - Mau_ThemPhieuKiemKho.csv: 5 cột, 5 dòng hàng kiểm đếm thực tế.
+       - Mau_ThemPhieuChuyenKho.csv: 5 cột, 5 dòng hàng chuyển kho liên chi nhánh.
+       - Mau_ThemPhieuNhapHang.csv: 7 cột, 5 dòng hàng nhập kho từ nhà cung cấp.
+       - Mau_ThemPhieuTraHangNhap.csv: 6 cột, 5 dòng hàng trả nhà cung cấp kèm lý do.
+    3. Định dạng chuẩn **UTF-8 with BOM** và ngắt dòng **CRLF** cho toàn bộ file CSV.
+    4. Kiểm tra mã hóa tự động 	ools/KiemTraMaHoa.ps1: 100% file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake.
+    5. Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
 - **Phiên 66 (2026-10-27) – Sửa lỗi tiền đã trả/thu NCC nhảy số, chuyển Giảm giá sang % và khắc phục lỗi nhân đơn giá ở Nhập hàng & Trả hàng nhập**:
   - **Nhu cầu**: Người dùng phản ánh: "khi ấn vào tiền đã trả thì phần tiền cần trả nhà cung cấp bị nhảy lên và không thể xóa, nhập số thì sẽ bị chèn vào phần đầu số tiền (ảnh 1 và ảnh 4). Khi nhập giảm giá vào từng mặt hàng hoặc vào ô giảm giá của phiếu ở góc phải thì chỉ trừ đi số tiền chứ không phải giảm giá theo % (làm giảm giá theo %, tên cột để là Giảm giá (%) và tên label bên grp thông tin cũng để là Giảm giá (%)) (ảnh 2). Khi thêm hàng và nhấn vào cột đơn giá của hàng thì khi kích chuột ra ngoài, số tiền sẽ bị nhân lên 1000 lần (ảnh 3)".
   - **Kết quả thực hiện**:
