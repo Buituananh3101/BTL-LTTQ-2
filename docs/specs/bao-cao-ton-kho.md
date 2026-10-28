@@ -23,12 +23,14 @@
   3. **Lọc đa chiều bên trái** (100% ComboBox, thời gian ở đáy theo Điều luật 16):
      - Chi nhánh kho (`cboKho`): Xem từng kho cụ thể hoặc `-- Tất cả các kho --` (tổng hợp toàn hệ thống).
      - Nhóm hàng (`cboNhomHang`): Tích hợp tìm kiếm nhanh qua `ComboboxHelper.CaiDatTimKiem`.
-     - Tiêu chí mức tồn (`cboTieuChiTon`): Tất cả, Còn tồn (>0), Hết hàng (=0), Tồn âm (<0), Dưới định mức tối thiểu, Vượt định mức tối đa.
+     - Tiêu chí mức tồn (`cboTieuChiTon`): Tất cả, Còn tồn (>0), Hết hàng (=0), Tồn âm (<0), Dưới định mức tối thiểu, Vượt định mức tối đa, Cần lưu ý (Hết / Dưới định mức).
      - Trạng thái kinh doanh (`cboTrangThai`): Tất cả, Đang kinh doanh, Ngừng kinh doanh.
-     - Cụm thời gian tạo (`grpThoiGianTao`): 2 `DateTimePicker` (`dtpTuNgay`, `dtpDenNgay` Short) đặt ở vị trí đáy của bộ lọc.$14. **Xem nhanh thẻ kho qua thao tác nhấn đúp**:
+     - Cụm thời gian tạo (`grpThoiGianTao`): 2 `DateTimePicker` (`dtpTuNgay`, `dtpDenNgay` Short) đặt ở vị trí đáy của bộ lọc.
+   4. **Xem nhanh thẻ kho qua thao tác nhấn đúp**:
       - Nhấp đúp vào một dòng hàng hóa trên lưới sẽ tự động kích hoạt form **Báo cáo thẻ kho** (`frmBaoCaoTheKho`) của mặt hàng và chi nhánh kho đó (hỗ trợ nút `Quay lại` để trở về danh sách tồn kho mà không mất trạng thái phân trang/bộ lọc).
-$15. **Xuất file**:
-     - Xuất dữ liệu danh sách tồn kho ra file CSV chuẩn UTF-8 with BOM mở trực tiếp bằng Excel không lỗi font tiếng Việt.$16. **Tùy chọn hiển thị cột**:
+   5. **Xuất file**:
+     - Hộp thoại `SaveFileDialog` hỗ trợ lưu file `.xls` (HTML Table UTF-8 header màu `#0078D7`, format số `#,##0`) và `.csv` (UTF-8 BOM). Tự động xuất toàn bộ kết quả dữ liệu theo bộ lọc hiện tại (bỏ qua giới hạn trang đang xem). Mở trực tiếp bằng Excel không lỗi font tiếng Việt.
+   6. **Tùy chọn hiển thị cột**:
      - Hỗ trợ popup `frmHienCotBaoCao` cho phép bật/tắt hiển thị từng cột dữ liệu trên lưới (quản lý 13 cột nghiệp vụ hợp lệ; loại trừ tuyệt đối cột khóa chính kỹ thuật nội bộ `colMaHang` luôn ẩn `Visible = false`).
 
 ---
@@ -50,8 +52,10 @@ $15. **Xuất file**:
 
 - **Tỉ lệ & Kích thước form**: Kế thừa chuẩn `frmDanhSachHangHoa` (`ClientSize = (1782, 853)`, `FixedSingle`, `MaximizeBox = false`, `CenterScreen`).
 - **Phân vùng giao diện**:
-  - `pnlTop` (Cao 150px): Gồm `grpTop` (Cao 60px, tách biệt `lblTimKiem` tại (385, 25) và `txtTimKiem` tại (465, 21) chuẩn `frmDanhSachHangHoa`, nút `Xuất file`, `Hiện cột`, `?`) và `pnlKpi` (Cao 90px, chứa 4 thẻ chỉ số tổng quan cao 72px vừa khít panel cha, cách đều mép trên và dưới 9px).
-  - `pnlBoLoc` (Rộng 387px bên trái chuẩn theo `frmDanhSachHangHoa`): Gồm `grpBoLoc` (Rộng 360px, viền đỉnh `splitterBoLoc`), các ComboBox tiêu chí và cụm `lblThoiGianTao` + `grpThoiGianTao` ở đáy (18, 513) theo Điều luật 16.
+  - `pnlTop` (Cao 73px): Gồm `grpTop` (Cao 60px, tách biệt `lblTimKiem` tại (385, 25) và `txtTimKiem` tại (465, 21) chuẩn `frmDanhSachHangHoa`, nút `Xuất file`, `Hiện cột`, `?`).
+  - `panel1` (Cao 93px, Dock = Top nằm trên DataGridView): Chứa 4 thẻ chỉ số KPI tổng quan cao 72px (`pnlCardSku`, `pnlCardSoLuong`, `pnlCardGiaTri`, `pnlCardCanLuuY`), hỗ trợ nhấp chuột trực tiếp (con trỏ chuột hình bàn tay) để lọc nhanh dữ liệu tương ứng.
+  - Khắc phục thứ tự Docking Z-Order: `dgvBaoCaoTonKho` (Dock = Fill) được xếp ở Front Z-Order để lấp đầy chính xác phần diện tích bên dưới `panel1`, bảo đảm không bị đè lấp tiêu đề cột lưới.
+  - `pnlBoLoc` (Rộng 387px bên trái chuẩn theo `frmDanhSachHangHoa`): Gồm `grpBoLoc` (Rộng 360px, cao 717px, viền đỉnh `splitterBoLoc`), các ComboBox tiêu chí căn lề đồng bộ `X = 18` và cụm `lblThoiGianTao` + `grpThoiGianTao` ở đáy (18, 593) theo Điều luật 16.
   - `dgvBaoCaoTonKho` (Dock = Fill): DataGridView đệm đôi, xen kẽ màu, căn lề chuẩn số lượng/tiền tệ `N0`. Cột trạng thái kinh doanh dùng font chữ thường theo chuẩn Trả hàng nhập (Xanh lá: Đang kinh doanh, Xám: Ngừng kinh doanh). Cảnh báo tồn kho <= 0 tô đỏ in đậm theo Điều luật 15a.
   - `pnlPhanTrang` (Đáy 42px): Thống kê tổng số hàng, chọn số dòng mỗi trang (10, 20, 50, 100), điều hướng trang trước/sau.
 

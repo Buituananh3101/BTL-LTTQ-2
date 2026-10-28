@@ -19,6 +19,12 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
         private int tongSoTrang = 1;
         private bool dangNapDuLieu = false;
 
+        // Biểu thức "dưới định mức" của lần tải gần nhất (dùng chung cho KPI)
+        private string duoiDinhMucHienTai = "(1 = 0)";
+        // Truy vấn đầy đủ (không phân trang) của lần tải gần nhất để xuất file toàn bộ kết quả lọc
+        private string sqlXuatFile = null;
+        private SqlParameter[] thamSoXuatFile = null;
+
         private Timer searchDebounceTimer;
 
         public frmBaoCaoTonKho()
@@ -85,8 +91,10 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
             }
             catch { }
 
+            dgvBaoCaoTonKho.BringToFront();
             KhoiTaoCacCotLuoi();
             KhoiTaoBoLoc();
+            KhoiTaoSuKienTheKpi();
             TaiDuLieu();
             lblTongSoHang.BringToFront();
         }
@@ -272,6 +280,66 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
             dgvBaoCaoTonKho.Columns.Add(colTrangThai);
         }
 
+        private void KhoiTaoSuKienTheKpi()
+        {
+            // Thiết lập con trỏ tay (Hand) cho các thẻ KPI và nhãn bên trong
+            Control[] listControls = new Control[]
+            {
+                pnlCardSku, lblCardSkuTitle, lblCardSkuVal,
+                pnlCardSoLuong, lblCardSoLuongTitle, lblCardSoLuongVal,
+                pnlCardGiaTri, lblCardGiaTriTitle, lblCardGiaTriVal,
+                pnlCardCanLuuY, lblCardCanLuuYTitle, lblCardCanLuuYVal
+            };
+
+            foreach (var ctrl in listControls)
+            {
+                if (ctrl != null)
+                {
+                    ctrl.Cursor = Cursors.Hand;
+                }
+            }
+
+            // Nhấp Thẻ 1 (Tổng SKU): Chuyển về "Tất cả mức tồn"
+            Action chonTatCa = () =>
+            {
+                if (cboTieuChiTon.SelectedIndex != 0)
+                {
+                    cboTieuChiTon.SelectedIndex = 0;
+                }
+            };
+            if (pnlCardSku != null) pnlCardSku.Click += (s, e) => chonTatCa();
+            if (lblCardSkuTitle != null) lblCardSkuTitle.Click += (s, e) => chonTatCa();
+            if (lblCardSkuVal != null) lblCardSkuVal.Click += (s, e) => chonTatCa();
+
+            // Nhấp Thẻ 2 (Tổng số lượng tồn): Lọc hàng Còn tồn (> 0)
+            Action chonConTon = () =>
+            {
+                if (cboTieuChiTon.SelectedIndex != 1)
+                {
+                    cboTieuChiTon.SelectedIndex = 1;
+                }
+            };
+            if (pnlCardSoLuong != null) pnlCardSoLuong.Click += (s, e) => chonConTon();
+            if (lblCardSoLuongTitle != null) lblCardSoLuongTitle.Click += (s, e) => chonConTon();
+            if (lblCardSoLuongVal != null) lblCardSoLuongVal.Click += (s, e) => chonConTon();
+
+            // Nhấp Thẻ 4 (Cần lưu ý): Lọc hàng Hết hàng hoặc dưới định mức
+            Action chonCanLuuY = () =>
+            {
+                if (cboTieuChiTon.Items.Count > 6)
+                {
+                    cboTieuChiTon.SelectedIndex = 6;
+                }
+                else
+                {
+                    cboTieuChiTon.SelectedIndex = 4;
+                }
+            };
+            if (pnlCardCanLuuY != null) pnlCardCanLuuY.Click += (s, e) => chonCanLuuY();
+            if (lblCardCanLuuYTitle != null) lblCardCanLuuYTitle.Click += (s, e) => chonCanLuuY();
+            if (lblCardCanLuuYVal != null) lblCardCanLuuYVal.Click += (s, e) => chonCanLuuY();
+        }
+
         private void KhoiTaoBoLoc()
         {
             dangNapDuLieu = true;
@@ -309,7 +377,8 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                 "Hết hàng (= 0)",
                 "Tồn âm (< 0)",
                 "Dưới định mức tối thiểu",
-                "Vượt định mức tối đa"
+                "Vượt định mức tối đa",
+                "Cần lưu ý (Hết / Dưới định mức)"
             });
             cboTieuChiTon.SelectedIndex = 0;
 
@@ -322,8 +391,18 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
             });
             cboTrangThai.SelectedIndex = 0;
 
-            // 5. Thời gian tạo
-            dtpTuNgay.Value = new DateTime(DateTime.Now.Year, 1, 1);
+            // 5. Thời gian tạo: mặc định từ ngày tạo mặt hàng sớm nhất để không ẩn hàng cũ
+            DateTime tuNgayMacDinh = new DateTime(2000, 1, 1);
+            try
+            {
+                object minNgay = DataProcessing.ReadValue("SELECT MIN(NgayTao) FROM HangHoa");
+                if (minNgay != null && minNgay != DBNull.Value)
+                {
+                    tuNgayMacDinh = Convert.ToDateTime(minNgay).Date;
+                }
+            }
+            catch { }
+            dtpTuNgay.Value = tuNgayMacDinh;
             dtpDenNgay.Value = DateTime.Now;
 
             // 6. Số dòng mỗi trang
@@ -353,7 +432,7 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                 // Lọc từ khóa
                 if (!string.IsNullOrWhiteSpace(tuKhoa))
                 {
-                    whereSql.Append(" AND (h.MaHangNoiBo LIKE @Search OR h.TenHang LIKE @Search OR h.MaVach LIKE @Search) ");
+                    whereSql.Append(" AND (h.MaHangNoiBo LIKE @Search OR h.TenHang LIKE @Search OR h.QuyCach LIKE @Search) ");
                     parameters.Add(new SqlParameter("@Search", "%" + tuKhoa + "%"));
                 }
 
@@ -365,13 +444,14 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                 }
 
                 // Lọc trạng thái kinh doanh
+                // (CSDL chỉ cho phép DANG_BAN / NGUNG_BAN)
                 if (trangThai == "Đang kinh doanh")
                 {
-                    whereSql.Append(" AND (h.TrangThai = 'DANG_KINH_DOANH' OR h.TrangThai = N'Đang kinh doanh' OR h.TrangThai IS NULL) ");
+                    whereSql.Append(" AND (h.TrangThai = 'DANG_BAN' OR h.TrangThai IS NULL) ");
                 }
                 else if (trangThai == "Ngừng kinh doanh")
                 {
-                    whereSql.Append(" AND (h.TrangThai = 'NGUNG_KINH_DOANH' OR h.TrangThai = N'Ngừng kinh doanh') ");
+                    whereSql.Append(" AND h.TrangThai = 'NGUNG_BAN' ");
                 }
 
                 // Lọc thời gian tạo
@@ -383,6 +463,10 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                 string tonKhoExpression = "ISNULL(tk.SoLuongTon, 0)";
                 string tonToiThieuExp = "ISNULL(ntk.TonToiThieu, 0)";
                 string tonToiDaExp = "ISNULL(ntk.TonCaoNhat, 0)";
+                // Dưới định mức: theo kho đang làm việc, hoặc ở bất kỳ kho nào khi xem "Tất cả kho"
+                string duoiDinhMucExp = (maKho > 0)
+                    ? $"({tonKhoExpression} < {tonToiThieuExp})"
+                    : "(ISNULL(cb.DuoiDinhMuc, 0) = 1)";
 
                 if (tieuChiTonIndex == 1) // Còn tồn (> 0)
                 {
@@ -398,11 +482,15 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                 }
                 else if (tieuChiTonIndex == 4) // Dưới định mức tối thiểu
                 {
-                    whereSql.Append($" AND {tonKhoExpression} < {tonToiThieuExp} ");
+                    whereSql.Append($" AND {duoiDinhMucExp} ");
                 }
                 else if (tieuChiTonIndex == 5) // Vượt định mức tối đa
                 {
                     whereSql.Append($" AND {tonKhoExpression} > {tonToiDaExp} AND {tonToiDaExp} > 0 ");
+                }
+                else if (tieuChiTonIndex == 6) // Cần lưu ý (Hết hàng hoặc dưới định mức)
+                {
+                    whereSql.Append($" AND ({tonKhoExpression} <= 0 OR {duoiDinhMucExp}) ");
                 }
 
                 // Xây dựng câu truy vấn theo MaKho
@@ -431,12 +519,20 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                             GROUP BY MaHang
                         ) tk ON h.MaHang = tk.MaHang
                         LEFT JOIN (
-                            SELECT MaHang, MAX(TonToiThieu) AS TonToiThieu, MAX(TonCaoNhat) AS TonCaoNhat
+                            SELECT MaHang, SUM(ISNULL(TonToiThieu, 0)) AS TonToiThieu, SUM(ISNULL(TonCaoNhat, 0)) AS TonCaoNhat
                             FROM NguongTonKho
                             GROUP BY MaHang
                         ) ntk ON h.MaHang = ntk.MaHang
+                        LEFT JOIN (
+                            SELECT n.MaHang,
+                                   MAX(CASE WHEN ISNULL(t.SoLuongTon, 0) < ISNULL(n.TonToiThieu, 0) THEN 1 ELSE 0 END) AS DuoiDinhMuc
+                            FROM NguongTonKho n
+                            LEFT JOIN vw_TonKhoHienTai t ON t.MaHang = n.MaHang AND t.MaKho = n.MaKho
+                            GROUP BY n.MaHang
+                        ) cb ON h.MaHang = cb.MaHang
                     ";
                 }
+                duoiDinhMucHienTai = duoiDinhMucExp;
 
                 // 1. Đếm tổng số bản ghi
                 string sqlCount = $"SELECT COUNT(DISTINCT h.MaHang) {fromAndJoin} {whereSql};";
@@ -471,15 +567,19 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                            ISNULL(ntk.TonToiThieu, 0) AS TonToiThieu,
                            ISNULL(ntk.TonCaoNhat, 0) AS TonToiDa,
                            h.ViTri,
-                           CASE 
-                               WHEN h.TrangThai = 'NGUNG_KINH_DOANH' OR h.TrangThai = N'Ngừng kinh doanh' THEN N'Ngừng kinh doanh'
+                           CASE
+                               WHEN h.TrangThai = 'NGUNG_BAN' THEN N'Ngừng kinh doanh'
                                ELSE N'Đang kinh doanh'
                            END AS TrangThai
                     {fromAndJoin}
                     {whereSql}
-                    ORDER BY h.MaHang ASC
-                    OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY;
-                ";
+                    ORDER BY h.MaHang ASC";
+
+                // Lưu lại truy vấn (không phân trang) để Xuất file lấy toàn bộ kết quả lọc
+                sqlXuatFile = sqlData;
+                thamSoXuatFile = countParams;
+
+                sqlData += " OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY;";
 
                 DataTable dtData = DataProcessing.ReadData(sqlData, parameters.ToArray());
                 dgvBaoCaoTonKho.DataSource = dtData;
@@ -509,7 +609,7 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                         COUNT(DISTINCT h.MaHang) AS TongSku,
                         ISNULL(SUM(tk.SoLuongTon), 0) AS TongSoLuong,
                         ISNULL(SUM(ISNULL(tk.SoLuongTon, 0) * ISNULL(h.GiaVon, 0)), 0) AS TongGiaTri,
-                        ISNULL(SUM(CASE WHEN ISNULL(tk.SoLuongTon, 0) <= 0 OR ISNULL(tk.SoLuongTon, 0) < ISNULL(ntk.TonToiThieu, 0) THEN 1 ELSE 0 END), 0) AS CanLuuY
+                        ISNULL(SUM(CASE WHEN ISNULL(tk.SoLuongTon, 0) <= 0 OR {duoiDinhMucHienTai} THEN 1 ELSE 0 END), 0) AS CanLuuY
                     {fromAndJoin}
                     {whereSql};
                 ";
@@ -631,10 +731,15 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
 
         private void dgvBaoCaoTonKho_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0)
+            if (e.RowIndex < 0) return;
+
+            // Nhân viên kho không có quyền xem Báo cáo thẻ kho (menu đã ẩn) nên không mở qua lối nhấp đúp
+            if (!SessionContext.IsAdmin && !SessionContext.IsThuKho && SessionContext.IsNhanVienKho)
             {
-                MoBaoCaoTheKho();
+                MessageBox.Show("Tài khoản của bạn không có quyền xem Báo cáo thẻ kho.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
             }
+            MoBaoCaoTheKho();
         }
 
         private void MoBaoCaoTheKho()
@@ -679,6 +784,185 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
         {
             try
             {
+                if (dgvBaoCaoTonKho.Rows.Count == 0 && tongSoBanGhi == 0)
+                {
+                    MessageBox.Show("Không có dữ liệu để xuất file!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Lấy danh sách các cột đang hiển thị
+                List<DataGridViewColumn> cols = new List<DataGridViewColumn>();
+                foreach (DataGridViewColumn col in dgvBaoCaoTonKho.Columns)
+                {
+                    if (col.Visible && !string.IsNullOrWhiteSpace(col.HeaderText))
+                    {
+                        cols.Add(col);
+                    }
+                }
+
+                // Lấy toàn bộ kết quả theo bộ lọc hiện tại (không chỉ trang đang xem)
+                DataTable dtXuat = null;
+                if (!string.IsNullOrEmpty(sqlXuatFile) && thamSoXuatFile != null)
+                {
+                    List<SqlParameter> ps = new List<SqlParameter>();
+                    foreach (var p in thamSoXuatFile) ps.Add(new SqlParameter(p.ParameterName, p.Value));
+                    dtXuat = DataProcessing.ReadData(sqlXuatFile, ps.ToArray());
+                }
+
+                if (dtXuat == null || dtXuat.Rows.Count == 0)
+                {
+                    if (dgvBaoCaoTonKho.DataSource is DataTable dt)
+                    {
+                        dtXuat = dt;
+                    }
+                }
+
+                if (dtXuat == null || dtXuat.Rows.Count == 0)
+                {
+                    MessageBox.Show("Không tìm thấy dữ liệu phù hợp để xuất file!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                using (SaveFileDialog sfd = new SaveFileDialog())
+                {
+                    sfd.Title = "Xuất báo cáo tồn kho";
+                    sfd.Filter = "File Excel (*.xls)|*.xls|File CSV (*.csv)|*.csv";
+                    sfd.FileName = $"BaoCaoTonKho_{DateTime.Now:yyyyMMdd_HHmm}.xls";
+
+                    if (sfd.ShowDialog(this) == DialogResult.OK)
+                    {
+                        string ext = Path.GetExtension(sfd.FileName).ToLowerInvariant();
+                        if (ext == ".csv")
+                        {
+                            XuatCsvTonKho(sfd.FileName, dtXuat, cols);
+                        }
+                        else
+                        {
+                            XuatExcelHtmlTonKho(sfd.FileName, dtXuat, cols);
+                        }
+
+                        MessageBox.Show($"Xuất báo cáo tồn kho ra file thành công ({dtXuat.Rows.Count:N0} mặt hàng)!\nĐường dẫn: {sfd.FileName}", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi xuất file: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void XuatExcelHtmlTonKho(string filePath, DataTable dtXuat, List<DataGridViewColumn> cols)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("<html xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:x=\"urn:schemas-microsoft-com:office:excel\" xmlns=\"http://www.w3.org/TR/REC-html40\">");
+            sb.AppendLine("<head>");
+            sb.AppendLine("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />");
+            sb.AppendLine("<style>");
+            sb.AppendLine("body { font-family: Segoe UI, Arial; font-size: 10pt; }");
+            sb.AppendLine("th { background-color: #0078D7; color: #FFFFFF; font-weight: bold; border: 0.5pt solid #CCCCCC; padding: 6px; }");
+            sb.AppendLine("td { border: 0.5pt solid #E0E0E0; padding: 5px; }");
+            sb.AppendLine(".num { mso-number-format: \"#,##0\"; text-align: right; }");
+            sb.AppendLine(".center { text-align: center; }");
+            sb.AppendLine(".danger { color: #DC2626; font-weight: bold; }");
+            sb.AppendLine("</style>");
+            sb.AppendLine("</head>");
+            sb.AppendLine("<body>");
+
+            string tenKho = (SessionContext.MaKhoHienTai > 0 && !string.IsNullOrEmpty(SessionContext.TenKhoHienTai)) ? SessionContext.TenKhoHienTai : "Tất cả kho";
+            sb.AppendLine("<h2>BÁO CÁO TỒN KHO</h2>");
+            sb.AppendLine($"<p>Thời gian xuất: {DateTime.Now:dd/MM/yyyy HH:mm} | Kho: {System.Net.WebUtility.HtmlEncode(tenKho)} | Tổng số: {tongSoBanGhi:N0} mặt hàng</p>");
+            sb.AppendLine($"<p><b>Tổng tồn:</b> {lblCardSoLuongVal.Text} | <b>Tổng giá trị tồn:</b> {lblCardGiaTriVal.Text} | <b>Cần lưu ý:</b> {lblCardCanLuuYVal.Text}</p>");
+            sb.AppendLine("<br/>");
+
+            sb.AppendLine("<table>");
+            sb.AppendLine("<tr>");
+            foreach (DataGridViewColumn col in cols)
+            {
+                sb.AppendLine($"<th>{System.Net.WebUtility.HtmlEncode(col.HeaderText)}</th>");
+            }
+            sb.AppendLine("</tr>");
+
+            foreach (DataRow row in dtXuat.Rows)
+            {
+                sb.AppendLine("<tr>");
+                foreach (DataGridViewColumn col in cols)
+                {
+                    string prop = col.DataPropertyName;
+                    object val = (!string.IsNullOrEmpty(prop) && dtXuat.Columns.Contains(prop)) ? row[prop] : null;
+
+                    if (col.Name == "colTonKho" || col.Name == "colGiaVon" || col.Name == "colGiaBan" ||
+                        col.Name == "colGiaTriTon" || col.Name == "colTonToiThieu" || col.Name == "colTonToiDa")
+                    {
+                        if (val != null && val != DBNull.Value && decimal.TryParse(val.ToString(), out decimal numVal))
+                        {
+                            if (col.Name == "colTonKho" && numVal <= 0)
+                            {
+                                sb.AppendLine($"<td class=\"num danger\">{numVal:N0}</td>");
+                            }
+                            else
+                            {
+                                sb.AppendLine($"<td class=\"num\">{numVal:N0}</td>");
+                            }
+                        }
+                        else
+                        {
+                            sb.AppendLine("<td class=\"num\">0</td>");
+                        }
+                    }
+                    else if (col.Name == "colMaHangNoiBo" || col.Name == "colTenDVT" || col.Name == "colViTri" || col.Name == "colTrangThai")
+                    {
+                        string s = val != null && val != DBNull.Value ? val.ToString() : "";
+                        sb.AppendLine($"<td class=\"center\">{System.Net.WebUtility.HtmlEncode(s)}</td>");
+                    }
+                    else
+                    {
+                        string s = val != null && val != DBNull.Value ? val.ToString() : "";
+                        sb.AppendLine($"<td>{System.Net.WebUtility.HtmlEncode(s)}</td>");
+                    }
+                }
+                sb.AppendLine("</tr>");
+            }
+
+            sb.AppendLine("</table>");
+            sb.AppendLine("</body>");
+            sb.AppendLine("</html>");
+
+            File.WriteAllText(filePath, sb.ToString(), Encoding.UTF8);
+        }
+
+        private void XuatCsvTonKho(string filePath, DataTable dtXuat, List<DataGridViewColumn> cols)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("sep=,");
+
+            List<string> headers = new List<string>();
+            foreach (DataGridViewColumn col in cols)
+            {
+                headers.Add($"\"{col.HeaderText.Replace("\"", "\"\"")}\"");
+            }
+            sb.AppendLine(string.Join(",", headers));
+
+            foreach (DataRow row in dtXuat.Rows)
+            {
+                List<string> cells = new List<string>();
+                foreach (DataGridViewColumn col in cols)
+                {
+                    string prop = col.DataPropertyName;
+                    object val = (!string.IsNullOrEmpty(prop) && dtXuat.Columns.Contains(prop)) ? row[prop] : null;
+                    string strVal = val != null && val != DBNull.Value ? val.ToString().Replace("\"", "\"\"") : "";
+                    cells.Add($"\"{strVal}\"");
+                }
+                sb.AppendLine(string.Join(",", cells));
+            }
+
+            File.WriteAllText(filePath, sb.ToString(), new UTF8Encoding(true));
+        }
+
+#if FALSE
+        private void btnXuatFile_Click_Old(object sender, EventArgs e)
+        {
+            try
+            {
                 if (dgvBaoCaoTonKho.Rows.Count == 0)
                 {
                     MessageBox.Show("Không có dữ liệu để xuất file!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -708,17 +992,30 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                     }
                     sb.AppendLine(string.Join(",", headers));
 
-                    // Ghi dữ liệu từng dòng
-                    foreach (DataGridViewRow row in dgvBaoCaoTonKho.Rows)
+                    // Lấy toàn bộ kết quả theo bộ lọc hiện tại (không chỉ trang đang xem)
+                    DataTable dtXuat = null;
+                    if (!string.IsNullOrEmpty(sqlXuatFile) && thamSoXuatFile != null)
                     {
-                        List<string> cells = new List<string>();
-                        foreach (string colName in colNames)
+                        List<SqlParameter> ps = new List<SqlParameter>();
+                        foreach (var p in thamSoXuatFile) ps.Add(new SqlParameter(p.ParameterName, p.Value));
+                        dtXuat = DataProcessing.ReadData(sqlXuatFile, ps.ToArray());
+                    }
+
+                    // Ghi dữ liệu từng dòng theo các cột đang hiển thị
+                    if (dtXuat != null)
+                    {
+                        foreach (DataRow row in dtXuat.Rows)
                         {
-                            object val = row.Cells[colName].Value;
-                            string strVal = val != null ? val.ToString().Replace("\"", "\"\"") : "";
-                            cells.Add($"\"{strVal}\"");
+                            List<string> cells = new List<string>();
+                            foreach (string colName in colNames)
+                            {
+                                string prop = dgvBaoCaoTonKho.Columns[colName].DataPropertyName;
+                                object val = (!string.IsNullOrEmpty(prop) && dtXuat.Columns.Contains(prop)) ? row[prop] : null;
+                                string strVal = val != null && val != DBNull.Value ? val.ToString().Replace("\"", "\"\"") : "";
+                                cells.Add($"\"{strVal}\"");
+                            }
+                            sb.AppendLine(string.Join(",", cells));
                         }
-                        sb.AppendLine(string.Join(",", cells));
                     }
 
                     // Lưu file UTF-8 with BOM chuẩn tiếng Việt
@@ -731,6 +1028,8 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                 MessageBox.Show("Lỗi khi xuất file: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+#endif
 
         private void btnHienCot_Click(object sender, EventArgs e)
         {
@@ -775,11 +1074,12 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
         private void btnHuongDanSuDung_Click(object sender, EventArgs e)
         {
             string huongDan = "HƯỚNG DẪN BÁO CÁO TỒN KHO\n\n" +
-                "1. Xem tồn kho: Chọn Chi nhánh kho ở bộ lọc bên trái để xem tồn từng kho, hoặc chọn '-- Tất cả các kho --' để xem tổng hợp toàn hệ thống.\n" +
-                "2. Bộ lọc: Kết hợp lọc theo Nhóm hàng, Tiêu chí mức tồn (Còn tồn, Hết hàng, Tồn âm, Dưới định mức, Vượt định mức) và Trạng thái kinh doanh.\n" +
-                "3. Xem thẻ kho: Nhấp đúp vào dòng mặt hàng trên bảng để mở xem lịch sử xuất - nhập - tồn thẻ kho chi tiết.\n" +
-                "4. Xuất file: Nhấn 'Xuất file' để xuất danh sách ra định dạng CSV chuẩn tiếng Việt có dấu.\n" +
-                "5. Cảnh báo đỏ: Các mặt hàng hết hàng hoặc tồn âm được đánh dấu đỏ nổi bật.";
+                "1. Xem tồn kho: Báo cáo hiển thị tồn của kho đang làm việc. Quản lý dùng menu Kho hàng > Đổi kho để xem kho khác hoặc 'Tất cả kho' (tổng hợp toàn hệ thống).\n" +
+                "2. Bộ lọc: Kết hợp lọc theo Nhóm hàng, Tiêu chí mức tồn (Còn tồn, Hết hàng, Tồn âm, Dưới định mức, Vượt định mức, Cần lưu ý) và Trạng thái kinh doanh.\n" +
+                "3. Thẻ chỉ số KPI: Nhấp chuột trực tiếp vào các thẻ KPI (Tổng mặt hàng, Còn tồn, Cần lưu ý) để lọc nhanh danh sách tương ứng.\n" +
+                "4. Xem thẻ kho: Nhấp đúp vào dòng mặt hàng trên bảng để mở xem lịch sử xuất - nhập - tồn thẻ kho chi tiết.\n" +
+                "5. Xuất file: Nhấn 'Xuất file' để xuất toàn bộ kết quả theo bộ lọc hiện tại ra định dạng CSV chuẩn tiếng Việt có dấu.\n" +
+                "6. Cảnh báo đỏ: Các mặt hàng hết hàng hoặc tồn âm được đánh dấu đỏ nổi bật.";
 
             MessageBox.Show(huongDan, "Hướng dẫn sử dụng", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }

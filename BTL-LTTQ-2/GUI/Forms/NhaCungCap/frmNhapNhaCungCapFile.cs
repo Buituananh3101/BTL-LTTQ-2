@@ -57,55 +57,80 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                 {
                     try
                     {
-                        StringBuilder sb = new StringBuilder();
-                        sb.AppendLine("<html xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:x=\"urn:schemas-microsoft-com:office:excel\" xmlns=\"http://www.w3.org/TR/REC-html40\">");
-                        sb.AppendLine("<head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"></head>");
-                        sb.AppendLine("<body><table border=\"1\">");
+                        StringBuilder html = new StringBuilder();
+                        html.AppendLine("<html xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:x=\"urn:schemas-microsoft-com:office:excel\" xmlns=\"http://www.w3.org/TR/REC-html40\">");
+                        html.AppendLine("<head>");
+                        html.AppendLine("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />");
+                        html.AppendLine("<!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>MauNhaCungCap</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->");
+                        html.AppendLine("<style>");
+                        html.AppendLine("th { background-color: #0078D7; color: #FFFFFF; font-family: Segoe UI, Arial; font-size: 10pt; font-weight: bold; border: 0.5pt solid #CCCCCC; padding: 6px; }");
+                        html.AppendLine("td { font-family: Segoe UI, Arial; font-size: 9.5pt; border: 0.5pt solid #E0E0E0; padding: 5px; }");
+                        html.AppendLine(".text { mso-number-format: \"\\@\"; }");
+                        html.AppendLine(".number { mso-number-format: \"#,##0\"; text-align: right; }");
+                        html.AppendLine("</style>");
+                        html.AppendLine("</head>");
+                        html.AppendLine("<body>");
+                        html.AppendLine("<table>");
 
                         // Dòng tiêu đề cột
-                        sb.AppendLine("<tr style=\"background-color:#E2E8F0; font-weight:bold; text-align:center;\">");
-                        sb.AppendLine("<td>Mã nhà cung cấp</td>");
-                        sb.AppendLine("<td>Tên nhà cung cấp (*)</td>");
-                        sb.AppendLine("<td>Nhóm nhà cung cấp</td>");
-                        sb.AppendLine("<td>Điện thoại</td>");
-                        sb.AppendLine("<td>Email</td>");
-                        sb.AppendLine("<td>Địa chỉ</td>");
-                        sb.AppendLine("<td>Khu vực</td>");
-                        sb.AppendLine("<td>Mã số thuế</td>");
-                        sb.AppendLine("<td>Ghi chú</td>");
-                        sb.AppendLine("</tr>");
+                        html.AppendLine("<tr>");
+                        html.AppendLine("<th>Mã nhà cung cấp</th>");
+                        html.AppendLine("<th>Tên nhà cung cấp (*)</th>");
+                        html.AppendLine("<th>Nhóm nhà cung cấp</th>");
+                        html.AppendLine("<th>Điện thoại</th>");
+                        html.AppendLine("<th>Email</th>");
+                        html.AppendLine("<th>Địa chỉ</th>");
+                        html.AppendLine("<th>Khu vực</th>");
+                        html.AppendLine("<th>Mã số thuế</th>");
+                        html.AppendLine("<th>Ghi chú</th>");
+                        html.AppendLine("</tr>");
 
                         // Dòng dữ liệu mẫu 1
-                        sb.AppendLine("<tr>");
-                        sb.AppendLine("<td>NCC00001</td>");
-                        sb.AppendLine("<td>Công ty Cổ phần Sữa Việt Nam (Vinamilk)</td>");
-                        sb.AppendLine("<td>Thực phẩm & Đồ uống</td>");
-                        sb.AppendLine("<td>02854155555</td>");
-                        sb.AppendLine("<td>vinamilk@vinamilk.com.vn</td>");
-                        sb.AppendLine("<td>10 Tân Trào, Tân Phú, Quận 7, TP.HCM</td>");
-                        sb.AppendLine("<td>Miền Nam</td>");
-                        sb.AppendLine("<td>0300588569</td>");
-                        sb.AppendLine("<td>Nhà cung cấp sữa tươi và các chế phẩm từ sữa</td>");
-                        sb.AppendLine("</tr>");
+                        html.AppendLine("<tr>");
+                        html.AppendLine("<td class=\"text\">NCC00001</td>");
+                        html.AppendLine("<td>Công ty Cổ phần Sữa Việt Nam (Vinamilk)</td>");
+                        html.AppendLine("<td>Thực phẩm & Đồ uống</td>");
+                        html.AppendLine("<td class=\"text\">02854155555</td>");
+                        html.AppendLine("<td>vinamilk@vinamilk.com.vn</td>");
+                        html.AppendLine("<td>10 Tân Trào, Tân Phú, Quận 7, TP.HCM</td>");
+                        html.AppendLine("<td>Miền Nam</td>");
+                        html.AppendLine("<td class=\"text\">0300588569</td>");
+                        html.AppendLine("<td>Nhà cung cấp sữa tươi và các chế phẩm từ sữa</td>");
+                        html.AppendLine("</tr>");
 
                         // Dòng dữ liệu mẫu 2
-                        sb.AppendLine("<tr>");
-                        sb.AppendLine("<td>NCC00002</td>");
-                        sb.AppendLine("<td>Tập đoàn Masan Consumer</td>");
-                        sb.AppendLine("<td>Gia vị & Tiêu dùng nhanh</td>");
-                        sb.AppendLine("<td>02862563862</td>");
-                        sb.AppendLine("<td>contact@masangroup.com</td>");
-                        sb.AppendLine("<td>Tòa nhà Central Plaza, 17 Lê Duẩn, Quận 1, TP.HCM</td>");
-                        sb.AppendLine("<td>Miền Nam</td>");
-                        sb.AppendLine("<td>0302017440</td>");
-                        sb.AppendLine("<td>Cung ứng nước tương, nước mắm, mì gói</td>");
-                        sb.AppendLine("</tr>");
+                        html.AppendLine("<tr>");
+                        html.AppendLine("<td class=\"text\">NCC00002</td>");
+                        html.AppendLine("<td>Tập đoàn Masan Consumer</td>");
+                        html.AppendLine("<td>Gia vị & Tiêu dùng nhanh</td>");
+                        html.AppendLine("<td class=\"text\">02862563862</td>");
+                        html.AppendLine("<td>contact@masangroup.com</td>");
+                        html.AppendLine("<td>Tòa nhà Central Plaza, 17 Lê Duẩn, Quận 1, TP.HCM</td>");
+                        html.AppendLine("<td>Miền Nam</td>");
+                        html.AppendLine("<td class=\"text\">0302017440</td>");
+                        html.AppendLine("<td>Cung ứng nước tương, nước mắm, mì gói</td>");
+                        html.AppendLine("</tr>");
 
-                        sb.AppendLine("</table></body></html>");
+                        // Dòng dữ liệu mẫu 3 (minh họa để trống mã NCC sẽ tự sinh mã như khuôn mẫu hàng hóa)
+                        html.AppendLine("<tr>");
+                        html.AppendLine("<td class=\"text\"></td>");
+                        html.AppendLine("<td>Công ty TNHH Nước Giải Khát Suntory PepsiCo Việt Nam</td>");
+                        html.AppendLine("<td>Thực phẩm & Đồ uống</td>");
+                        html.AppendLine("<td class=\"text\">02838219433</td>");
+                        html.AppendLine("<td>pepsico@suntorypepsico.vn</td>");
+                        html.AppendLine("<td>88 Đồng Khởi, Quận 1, TP.HCM</td>");
+                        html.AppendLine("<td>Miền Nam</td>");
+                        html.AppendLine("<td class=\"text\">0300816663</td>");
+                        html.AppendLine("<td>Mã nhà cung cấp tự động sinh nếu để trống</td>");
+                        html.AppendLine("</tr>");
 
-                        File.WriteAllText(sfd.FileName, sb.ToString(), Encoding.UTF8);
+                        html.AppendLine("</table>");
+                        html.AppendLine("</body>");
+                        html.AppendLine("</html>");
 
-                        MessageBox.Show("Tải file mẫu Excel nhà cung cấp thành công!\nBạn hãy mở file mẫu vừa lưu, điền dữ liệu và chọn để nhập vào phần mềm.",
+                        File.WriteAllText(sfd.FileName, html.ToString(), Encoding.UTF8);
+
+                        MessageBox.Show("Đã tải file mẫu Excel thành công!\nĐường dẫn: " + sfd.FileName,
                             "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     catch (Exception ex)

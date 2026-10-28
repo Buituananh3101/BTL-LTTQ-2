@@ -24,7 +24,8 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
         public frmBaoCaoTheKho()
         {
             InitializeComponent();
-            btnQuayLai.Visible = false;
+            btnQuayLai.Visible = true;
+            btnQuayLai.Text = "Đóng";
             KhoiTaoDebounceTimer();
             if (txtTimKiem != null)
             {
@@ -84,7 +85,8 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
             this.maHangKhoiTao = maHang;
             this.maKhoKhoiTao = maKho;
             this.moTuTonKho = moTuTonKho;
-            btnQuayLai.Visible = moTuTonKho;
+            btnQuayLai.Visible = true;
+            btnQuayLai.Text = moTuTonKho ? "Quay lại" : "Đóng";
         }
 
         private void frmBaoCaoTheKho_Load(object sender, EventArgs e)
@@ -97,8 +99,11 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
             }
             catch { }
 
+            dgvTheKho.BringToFront();
+
             KhoiTaoCacCotLuoi();
             KhoiTaoBoLoc();
+            KhoiTaoSuKienTheKpi();
 
             // Nếu được truyền mã hàng từ form khác
             if (maHangKhoiTao > 0)
@@ -113,11 +118,13 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
 
         public void ChonMatHangVaKho(int maHang, int maKho = 0, bool moTuTonKho = false)
         {
+            this.maHangKhoiTao = maHang;
+            this.maKhoKhoiTao = maKho;
             this.moTuTonKho = moTuTonKho;
-            btnQuayLai.Visible = moTuTonKho;
+            btnQuayLai.Visible = true;
+            btnQuayLai.Text = moTuTonKho ? "Quay lại" : "Đóng";
 
             dangNapDuLieu = true;
-
 
             if (maHang > 0)
             {
@@ -250,6 +257,87 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
             dgvTheKho.Columns.Add(colGhiChu);
         }
 
+        private void KhoiTaoSuKienTheKpi()
+        {
+            // Thiết lập con trỏ tay (Hand) cho các thẻ KPI và nhãn bên trong
+            Control[] kpiControls = new Control[]
+            {
+                pnlCardTonDau, lblTonDauTitle, lblTonDauVal,
+                pnlCardNhapKy, lblNhapKyTitle, lblNhapKyVal,
+                pnlCardXuatKy, lblXuatKyTitle, lblXuatKyVal,
+                pnlCardTonCuoi, lblTonCuoiTitle, lblTonCuoiVal
+            };
+
+            foreach (var ctrl in kpiControls)
+            {
+                if (ctrl != null)
+                {
+                    ctrl.Cursor = Cursors.Hand;
+                }
+            }
+
+            // Nhấp Tồn đầu kỳ: Reset về tất cả giao dịch và chọn dòng đầu tiên
+            Action chonTonDau = () =>
+            {
+                if (cboLoaiChungTu.SelectedIndex != 0)
+                {
+                    cboLoaiChungTu.SelectedIndex = 0;
+                }
+                if (dgvTheKho.Rows.Count > 0)
+                {
+                    dgvTheKho.ClearSelection();
+                    dgvTheKho.Rows[0].Selected = true;
+                    dgvTheKho.FirstDisplayedScrollingRowIndex = 0;
+                }
+            };
+            if (pnlCardTonDau != null) pnlCardTonDau.Click += (s, e) => chonTonDau();
+            if (lblTonDauTitle != null) lblTonDauTitle.Click += (s, e) => chonTonDau();
+            if (lblTonDauVal != null) lblTonDauVal.Click += (s, e) => chonTonDau();
+
+            // Nhấp Tổng nhập trong kỳ (+): Lọc phiếu nhập mua
+            Action chonNhapKy = () =>
+            {
+                if (cboLoaiChungTu.SelectedIndex != 1)
+                {
+                    cboLoaiChungTu.SelectedIndex = 1;
+                }
+            };
+            if (pnlCardNhapKy != null) pnlCardNhapKy.Click += (s, e) => chonNhapKy();
+            if (lblNhapKyTitle != null) lblNhapKyTitle.Click += (s, e) => chonNhapKy();
+            if (lblNhapKyVal != null) lblNhapKyVal.Click += (s, e) => chonNhapKy();
+
+            // Nhấp Tổng xuất trong kỳ (-): Lọc xuất bán hàng
+            Action chonXuatKy = () =>
+            {
+                if (cboLoaiChungTu.SelectedIndex != 2)
+                {
+                    cboLoaiChungTu.SelectedIndex = 2;
+                }
+            };
+            if (pnlCardXuatKy != null) pnlCardXuatKy.Click += (s, e) => chonXuatKy();
+            if (lblXuatKyTitle != null) lblXuatKyTitle.Click += (s, e) => chonXuatKy();
+            if (lblXuatKyVal != null) lblXuatKyVal.Click += (s, e) => chonXuatKy();
+
+            // Nhấp Tồn cuối kỳ: Reset về tất cả giao dịch và cuộn xuống dòng cuối cùng
+            Action chonTonCuoi = () =>
+            {
+                if (cboLoaiChungTu.SelectedIndex != 0)
+                {
+                    cboLoaiChungTu.SelectedIndex = 0;
+                }
+                if (dgvTheKho.Rows.Count > 0)
+                {
+                    dgvTheKho.ClearSelection();
+                    int lastIdx = dgvTheKho.Rows.Count - 1;
+                    dgvTheKho.Rows[lastIdx].Selected = true;
+                    dgvTheKho.FirstDisplayedScrollingRowIndex = lastIdx;
+                }
+            };
+            if (pnlCardTonCuoi != null) pnlCardTonCuoi.Click += (s, e) => chonTonCuoi();
+            if (lblTonCuoiTitle != null) lblTonCuoiTitle.Click += (s, e) => chonTonCuoi();
+            if (lblTonCuoiVal != null) lblTonCuoiVal.Click += (s, e) => chonTonCuoi();
+        }
+
         private void KhoiTaoBoLoc()
         {
             dangNapDuLieu = true;
@@ -296,7 +384,6 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                 "-- Tất cả giao dịch --",
                 "Phiếu nhập mua (NCC)",
                 "Xuất bán hàng",
-                "Xuất hủy / Hao hụt",
                 "Chuyển kho đến",
                 "Chuyển kho đi",
                 "Cân bằng kiểm kê",
@@ -324,10 +411,32 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                     maHang = hVal;
                 }
 
+                // Xác định mã kho và tên kho áp dụng
+                int maKho = (this.maKhoKhoiTao > 0) ? this.maKhoKhoiTao : SessionContext.MaKhoHienTai;
+                string tenKhoHienThi = "Toàn hệ thống";
+                if (maKho > 0)
+                {
+                    if (maKho == SessionContext.MaKhoHienTai && !string.IsNullOrWhiteSpace(SessionContext.TenKhoHienTai))
+                    {
+                        tenKhoHienThi = SessionContext.TenKhoHienTai;
+                    }
+                    else
+                    {
+                        object objTenKho = DataProcessing.ReadValue("SELECT TenKho FROM Kho WHERE MaKho = @MaKho", new SqlParameter[] { new SqlParameter("@MaKho", maKho) });
+                        tenKhoHienThi = objTenKho != null ? objTenKho.ToString() : $"Kho #{maKho}";
+                    }
+                }
+
+                // Ẩn / hiện cột Tên kho trên lưới tùy theo xem toàn hệ thống hay xem 1 kho
+                if (dgvTheKho.Columns.Contains("colTenKho"))
+                {
+                    dgvTheKho.Columns["colTenKho"].Visible = (maKho == 0);
+                }
+
                 if (maHang <= 0)
                 {
                     lblTenHangHienThi.Text = "Vui lòng chọn một mặt hàng...";
-                    lblThongTinChiTiet.Text = "ĐVT: -- | Nhóm: -- | Vị trí: -- | Giá vốn: 0 đ";
+                    lblThongTinChiTiet.Text = $"Kho: {tenKhoHienThi}  |  ĐVT: --  |  Nhóm: --  |  Vị trí: --  |  Giá vốn: 0 đ";
                     lblTonDauVal.Text = "0";
                     lblNhapKyVal.Text = "0";
                     lblXuatKyVal.Text = "0";
@@ -357,11 +466,10 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                     decimal giaVon = Convert.ToDecimal(rH["GiaVon"]);
 
                     lblTenHangHienThi.Text = $"[{sku}] {ten}";
-                    lblThongTinChiTiet.Text = $"ĐVT: {dvt}  |  Nhóm: {nhom}  |  Vị trí: {vitri}  |  Giá vốn: {giaVon:N0} đ";
+                    lblThongTinChiTiet.Text = $"Kho: {tenKhoHienThi}  |  ĐVT: {dvt}  |  Nhóm: {nhom}  |  Vị trí: {vitri}  |  Giá vốn: {giaVon:N0} đ";
                 }
 
                 // 3. Đọc các tham số lọc
-                int maKho = SessionContext.MaKhoHienTai;
 
                 DateTime tuNgay = dtpTuNgay.Value.Date;
                 DateTime denNgay = dtpDenNgay.Value.Date.AddDays(1).AddSeconds(-1);
@@ -374,6 +482,7 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                     FROM vw_BienDongKho
                     WHERE MaHang = @MaHang
                       AND (@MaKho = 0 OR MaKho = @MaKho)
+                      AND LoaiChungTu <> 'XUAT_HUY'
                       AND NgayGiaoDich < @TuNgay;
                 ";
                 SqlParameter[] pTonDau = new SqlParameter[] {
@@ -392,7 +501,8 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                            nccPth.TenDonVi AS PthTenNCC,
                            pc.MaKhoNguon, kn.TenKho AS TenKhoNguon,
                            pc.MaKhoDich, kd.TenKho AS TenKhoDich,
-                           kh.TenKH AS PxTenKH, px.GhiChu AS PxGhiChu
+                           kh.TenKH AS PxTenKH, px.GhiChu AS PxGhiChu,
+                           COALESCE(pn.MaPhieu, pth.MaPhieu, pc.MaPhieu, px.MaPhieu, pkk.MaPhieu) AS MaPhieuThat
                     FROM vw_BienDongKho bd
                     LEFT JOIN Kho k ON bd.MaKho = k.MaKho
                     -- Thông tin phiếu nhập
@@ -406,11 +516,14 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                     LEFT JOIN Kho kn ON pc.MaKhoNguon = kn.MaKho
                     LEFT JOIN Kho kd ON pc.MaKhoDich = kd.MaKho
                     -- Thông tin phiếu xuất
-                    LEFT JOIN PhieuXuat px ON (bd.LoaiChungTu = 'XUAT_BAN' OR bd.LoaiChungTu = 'XUAT_HUY' OR bd.LoaiChungTu = 'XUAT_NOI_BO') AND bd.MaChungTu = px.MaPhieuXuat
+                    LEFT JOIN PhieuXuat px ON (bd.LoaiChungTu = 'XUAT_BAN' OR bd.LoaiChungTu = 'XUAT_NOI_BO') AND bd.MaChungTu = px.MaPhieuXuat
                     LEFT JOIN DonBan db ON px.MaDonBan = db.MaDonBan
                     LEFT JOIN KhachHang kh ON db.MaKH = kh.MaKH
+                    -- Mã phiếu kiểm kê (để hiển thị đúng mã chứng từ thật)
+                    LEFT JOIN PhieuKiemKe pkk ON bd.LoaiChungTu = 'KIEM_KE' AND bd.MaChungTu = pkk.MaPhieuKiemKe
                     WHERE bd.MaHang = @MaHang
                       AND (@MaKho = 0 OR bd.MaKho = @MaKho)
+                      AND bd.LoaiChungTu <> 'XUAT_HUY'
                       AND bd.NgayGiaoDich >= @TuNgay AND bd.NgayGiaoDich <= @DenNgay
                 ");
 
@@ -422,35 +535,10 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                     new SqlParameter("@DenNgay", denNgay)
                 };
 
-                // Lọc theo loại chứng từ
-                if (loaiChungTuIdx == 1) // Phiếu nhập mua (NCC)
-                {
-                    sqlGd.Append(" AND bd.LoaiChungTu = 'PHIEU_NHAP' ");
-                }
-                else if (loaiChungTuIdx == 2) // Xuất bán
-                {
-                    sqlGd.Append(" AND bd.LoaiChungTu = 'XUAT_BAN' ");
-                }
-                else if (loaiChungTuIdx == 3) // Xuất hủy
-                {
-                    sqlGd.Append(" AND bd.LoaiChungTu = 'XUAT_HUY' ");
-                }
-                else if (loaiChungTuIdx == 4) // Chuyển kho đến
-                {
-                    sqlGd.Append(" AND bd.LoaiChungTu = 'CHUYEN_NHAP' ");
-                }
-                else if (loaiChungTuIdx == 5) // Chuyển kho đi
-                {
-                    sqlGd.Append(" AND bd.LoaiChungTu = 'CHUYEN_XUAT' ");
-                }
-                else if (loaiChungTuIdx == 6) // Cân bằng kiểm kê
-                {
-                    sqlGd.Append(" AND bd.LoaiChungTu = 'KIEM_KE' ");
-                }
-                else if (loaiChungTuIdx == 7) // Trả hàng nhập
-                {
-                    sqlGd.Append(" AND bd.LoaiChungTu = 'TRA_HANG_NHAP' ");
-                }
+                // Lọc theo loại chứng từ: KHÔNG lọc trong SQL để tồn lũy kế và tồn cuối kỳ luôn tính trên
+                // toàn bộ giao dịch; bộ lọc chỉ quyết định dòng nào được hiển thị
+                string[] maLoaiTheoIdx = { null, "PHIEU_NHAP", "XUAT_BAN", "CHUYEN_NHAP", "CHUYEN_XUAT", "KIEM_KE", "TRA_HANG_NHAP" };
+                string loaiCanHienThi = (loaiChungTuIdx > 0 && loaiChungTuIdx < maLoaiTheoIdx.Length) ? maLoaiTheoIdx[loaiChungTuIdx] : null;
 
                 sqlGd.Append(" ORDER BY bd.NgayGiaoDich ASC, bd.MaChungTu ASC;");
 
@@ -471,7 +559,6 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                 dtTheKhoHienThi.Columns.Add("GhiChu", typeof(string));
 
                 // Dòng Tồn đầu kỳ (font chữ thường chuẩn hóa theo mẫu Trả hàng nhập)
-                string tenKhoHienThi = (maKho > 0) ? SessionContext.TenKhoHienTai : "Toàn hệ thống";
                 dtTheKhoHienThi.Rows.Add(
                     "",
                     tuNgay.ToString("dd/MM/yyyy"),
@@ -541,18 +628,27 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                                 doiTac = r["PxTenKH"] != DBNull.Value ? r["PxTenKH"].ToString() : "Khách mua lẻ";
                                 ghiChu = r["PxGhiChu"] != DBNull.Value ? r["PxGhiChu"].ToString() : "";
                                 break;
-                            case "XUAT_HUY":
-                                maHienThi = "PX" + maCt.ToString("D6");
-                                tenLoai = "Xuất hủy";
-                                doiTac = "Xuất hủy hao hụt";
-                                ghiChu = r["PxGhiChu"] != DBNull.Value ? r["PxGhiChu"].ToString() : "";
-                                break;
                             default:
                                 maHienThi = maCt.ToString();
                                 tenLoai = loaiCt;
                                 doiTac = "Biến động kho";
                                 break;
                         }
+
+                        // Ưu tiên mã phiếu thật đã lưu trên chứng từ
+                        if (r.Table.Columns.Contains("MaPhieuThat") && r["MaPhieuThat"] != DBNull.Value
+                            && !string.IsNullOrWhiteSpace(r["MaPhieuThat"].ToString()))
+                        {
+                            maHienThi = r["MaPhieuThat"].ToString();
+                        }
+
+                        // Tồn lũy kế luôn tính trên toàn bộ giao dịch (trước khi áp bộ lọc hiển thị)
+                        tonLuyKe = tonLuyKe + slTang - slGiam;
+                        tongNhapKy += slTang;
+                        tongXuatKy += slGiam;
+
+                        // Lọc theo loại chứng từ (chỉ ẩn dòng, không ảnh hưởng số dư)
+                        if (loaiCanHienThi != null && loaiCt != loaiCanHienThi) continue;
 
                         // Lọc từ khóa tìm kiếm (hỗ trợ cả tiếng Việt có dấu và không dấu)
                         if (!string.IsNullOrWhiteSpace(tuKhoa))
@@ -565,11 +661,6 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                                          ComboboxHelper.BoDauTiengViet(ghiChu).IndexOf(tuKhoaKhongDau, StringComparison.OrdinalIgnoreCase) >= 0;
                             if (!match) continue;
                         }
-
-                        // Tính tồn lũy kế
-                        tonLuyKe = tonLuyKe + slTang - slGiam;
-                        tongNhapKy += slTang;
-                        tongXuatKy += slGiam;
 
                         string slTangStr = slTang > 0 ? slTang.ToString("N0") : "-";
                         string slGiamStr = slGiam > 0 ? slGiam.ToString("N0") : "-";
@@ -665,7 +756,7 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
                 {
                     e.CellStyle.ForeColor = Color.FromArgb(22, 163, 74); // Xanh lá
                 }
-                else if (loai == "Xuất bán hàng" || loai == "Chuyển kho đi" || loai == "Trả hàng nhập" || loai == "Xuất hủy")
+                else if (loai == "Xuất bán hàng" || loai == "Chuyển kho đi" || loai == "Trả hàng nhập")
                 {
                     e.CellStyle.ForeColor = SystemColors.ControlText;
                 }
@@ -684,6 +775,173 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
         }
 
         private void btnXuatFile_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (dtTheKhoHienThi == null || dtTheKhoHienThi.Rows.Count == 0)
+                {
+                    MessageBox.Show("Không có dữ liệu để xuất file!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                List<DataGridViewColumn> cols = new List<DataGridViewColumn>();
+                foreach (DataGridViewColumn col in dgvTheKho.Columns)
+                {
+                    if (col.Visible && !string.IsNullOrWhiteSpace(col.HeaderText))
+                    {
+                        cols.Add(col);
+                    }
+                }
+
+                using (SaveFileDialog sfd = new SaveFileDialog())
+                {
+                    sfd.Title = "Xuất báo cáo thẻ kho";
+                    sfd.Filter = "File Excel (*.xls)|*.xls|File CSV (*.csv)|*.csv";
+                    sfd.FileName = $"TheKho_{DateTime.Now:yyyyMMdd_HHmm}.xls";
+
+                    if (sfd.ShowDialog(this) == DialogResult.OK)
+                    {
+                        string ext = Path.GetExtension(sfd.FileName).ToLowerInvariant();
+                        if (ext == ".csv")
+                        {
+                            XuatCsvTheKho(sfd.FileName, cols);
+                        }
+                        else
+                        {
+                            XuatExcelHtmlTheKho(sfd.FileName, cols);
+                        }
+
+                        MessageBox.Show($"Xuất báo cáo thẻ kho ra file thành công!\nĐường dẫn: {sfd.FileName}", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi xuất file: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void XuatExcelHtmlTheKho(string filePath, List<DataGridViewColumn> cols)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("<html xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:x=\"urn:schemas-microsoft-com:office:excel\" xmlns=\"http://www.w3.org/TR/REC-html40\">");
+            sb.AppendLine("<head>");
+            sb.AppendLine("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />");
+            sb.AppendLine("<style>");
+            sb.AppendLine("body { font-family: Segoe UI, Arial; font-size: 10pt; }");
+            sb.AppendLine("th { background-color: #0066CC; color: #FFFFFF; font-weight: bold; border: 0.5pt solid #CCCCCC; padding: 6px; }");
+            sb.AppendLine("td { border: 0.5pt solid #E0E0E0; padding: 5px; }");
+            sb.AppendLine(".num { mso-number-format: \"#,##0\"; text-align: right; }");
+            sb.AppendLine(".center { text-align: center; }");
+            sb.AppendLine(".danger { color: #DC2626; font-weight: bold; }");
+            sb.AppendLine(".bold { font-weight: bold; }");
+            sb.AppendLine("</style>");
+            sb.AppendLine("</head>");
+            sb.AppendLine("<body>");
+
+            string tenKho = (SessionContext.MaKhoHienTai > 0 && !string.IsNullOrEmpty(SessionContext.TenKhoHienTai)) ? SessionContext.TenKhoHienTai : "Tất cả kho";
+            sb.AppendLine($"<h2>BÁO CÁO THẺ KHO - {System.Net.WebUtility.HtmlEncode(lblTenHangHienThi.Text)}</h2>");
+            sb.AppendLine($"<p><b>Mặt hàng:</b> {System.Net.WebUtility.HtmlEncode(lblThongTinChiTiet.Text)} | <b>Kho:</b> {System.Net.WebUtility.HtmlEncode(tenKho)}</p>");
+            sb.AppendLine($"<p><b>Kỳ báo cáo:</b> Từ ngày {dtpTuNgay.Value:dd/MM/yyyy} đến ngày {dtpDenNgay.Value:dd/MM/yyyy}</p>");
+            sb.AppendLine($"<p><b>Tồn đầu kỳ:</b> {lblTonDauVal.Text} | <b>Tổng nhập trong kỳ:</b> {lblNhapKyVal.Text} | <b>Tổng xuất trong kỳ:</b> {lblXuatKyVal.Text} | <b>Tồn cuối kỳ:</b> {lblTonCuoiVal.Text}</p>");
+            sb.AppendLine("<br/>");
+
+            sb.AppendLine("<table>");
+            sb.AppendLine("<tr>");
+            foreach (DataGridViewColumn col in cols)
+            {
+                sb.AppendLine($"<th>{System.Net.WebUtility.HtmlEncode(col.HeaderText)}</th>");
+            }
+            sb.AppendLine("</tr>");
+
+            int totalRows = dtTheKhoHienThi.Rows.Count;
+            for (int i = 0; i < totalRows; i++)
+            {
+                DataRow row = dtTheKhoHienThi.Rows[i];
+                bool isSpecialRow = (i == 0 || i == totalRows - 1);
+                string trTag = isSpecialRow ? "<tr style=\"background-color: #F1F5F9; font-weight: bold;\">" : "<tr>";
+                sb.AppendLine(trTag);
+
+                foreach (DataGridViewColumn col in cols)
+                {
+                    string prop = col.DataPropertyName;
+                    string strVal = (prop != null && dtTheKhoHienThi.Columns.Contains(prop) && row[prop] != null) ? row[prop].ToString() : "";
+
+                    if (col.Name == "colSoLuongTang" || col.Name == "colSoLuongGiam" || col.Name == "colTonLuyKe")
+                    {
+                        if (col.Name == "colTonLuyKe")
+                        {
+                            decimal tonNum = 0;
+                            if (dtTheKhoHienThi.Columns.Contains("TonLuyKeNum") && row["TonLuyKeNum"] != DBNull.Value)
+                            {
+                                decimal.TryParse(row["TonLuyKeNum"].ToString(), out tonNum);
+                            }
+                            if (tonNum < 0)
+                            {
+                                sb.AppendLine($"<td class=\"num danger\">{strVal}</td>");
+                            }
+                            else
+                            {
+                                sb.AppendLine($"<td class=\"num\">{strVal}</td>");
+                            }
+                        }
+                        else
+                        {
+                            sb.AppendLine($"<td class=\"num\">{strVal}</td>");
+                        }
+                    }
+                    else if (col.Name == "colStt" || col.Name == "colNgayGiaoDich" || col.Name == "colMaChungTu" || col.Name == "colLoaiGiaoDich")
+                    {
+                        sb.AppendLine($"<td class=\"center\">{System.Net.WebUtility.HtmlEncode(strVal)}</td>");
+                    }
+                    else
+                    {
+                        sb.AppendLine($"<td>{System.Net.WebUtility.HtmlEncode(strVal)}</td>");
+                    }
+                }
+                sb.AppendLine("</tr>");
+            }
+
+            sb.AppendLine("</table>");
+            sb.AppendLine("</body>");
+            sb.AppendLine("</html>");
+
+            File.WriteAllText(filePath, sb.ToString(), Encoding.UTF8);
+        }
+
+        private void XuatCsvTheKho(string filePath, List<DataGridViewColumn> cols)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("sep=,");
+            sb.AppendLine($"\"BÁO CÁO THẺ KHO - {lblTenHangHienThi.Text.Replace("\"", "\"\"")}\"");
+            sb.AppendLine($"\"{lblThongTinChiTiet.Text.Replace("\"", "\"\"")}\"");
+            sb.AppendLine($"\"Thời gian: Từ {dtpTuNgay.Value:dd/MM/yyyy} đến {dtpDenNgay.Value:dd/MM/yyyy}\"");
+            sb.AppendLine();
+
+            List<string> headers = new List<string>();
+            foreach (DataGridViewColumn col in cols)
+            {
+                headers.Add($"\"{col.HeaderText.Replace("\"", "\"\"")}\"");
+            }
+            sb.AppendLine(string.Join(",", headers));
+
+            foreach (DataRow row in dtTheKhoHienThi.Rows)
+            {
+                List<string> cells = new List<string>();
+                foreach (DataGridViewColumn col in cols)
+                {
+                    string prop = col.DataPropertyName;
+                    string strVal = (prop != null && dtTheKhoHienThi.Columns.Contains(prop) && row[prop] != null) ? row[prop].ToString().Replace("\"", "\"\"") : "";
+                    cells.Add($"\"{strVal}\"");
+                }
+                sb.AppendLine(string.Join(",", cells));
+            }
+
+            File.WriteAllText(filePath, sb.ToString(), new UTF8Encoding(true));
+        }
+
+#if FALSE
+        private void btnXuatFile_Click_Old(object sender, EventArgs e)
         {
             try
             {
@@ -745,6 +1003,8 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
             }
         }
 
+#endif
+
         private void btnHienCot_Click(object sender, EventArgs e)
         {
             foreach (Form openForm in Application.OpenForms)
@@ -789,7 +1049,8 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
         {
             string huongDan = "HƯỚNG DẪN BÁO CÁO THẺ KHO\n\n" +
                 "1. Chọn mặt hàng: Bắt buộc chọn mặt hàng cần theo dõi tại ComboBox 'Mặt hàng' bên trái (hỗ trợ gõ tìm kiếm theo mã hoặc tên).\n" +
-                "2. Chi nhánh kho: Chọn xem thẻ kho tại 1 kho cụ thể hoặc toàn hệ thống.\n" +
+                "2. Kho: Thẻ kho hiển thị theo kho đang làm việc. Quản lý dùng Kho hàng > Đổi kho để xem kho khác hoặc 'Tất cả kho'.\n" +
+                "   Bộ lọc 'Loại giao dịch' và ô tìm kiếm chỉ ẩn/hiện dòng; Tồn lũy kế và Tồn cuối kỳ luôn tính trên toàn bộ giao dịch.\n" +
                 "3. Dải ngày: Chọn mốc thời gian để hệ thống tính Tồn đầu kỳ và Tồn cuối kỳ chuẩn xác theo chuỗi chứng từ.\n" +
                 "4. Tồn lũy kế: Cột 'Tồn lũy kế' tự động cộng dồn SL nhập và trừ đi SL xuất theo trình tự thời gian phát sinh.\n" +
                 "5. Xuất file: Nhấn 'Xuất file' để xuất toàn bộ biến động thẻ kho ra file CSV chuẩn tiếng Việt có dấu.";
@@ -804,7 +1065,7 @@ namespace BTL_LTTQ_2.GUI.Forms.BaoCao
 
         private void QuayLaiBaoCaoTonKho()
         {
-            if (this.MdiParent != null)
+            if (moTuTonKho && this.MdiParent != null)
             {
                 foreach (Form form in this.MdiParent.MdiChildren)
                 {

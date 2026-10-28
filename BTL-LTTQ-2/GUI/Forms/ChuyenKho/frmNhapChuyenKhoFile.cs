@@ -100,11 +100,11 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
 
                         // Nạp hàng mẫu có tồn kho tại kho nguồn
                         string sqlMau = @"
-                            SELECT TOP 3 h.MaHangNoiBo, h.TenHang, d.TenDVT, ISNULL(t.TonCuoi, 0) AS TonKho
+                            SELECT TOP 3 h.MaHangNoiBo, h.TenHang, d.TenDVT, ISNULL(t.SoLuongTon, 0) AS TonKho
                             FROM HangHoa h
                             LEFT JOIN DonViTinh d ON h.MaDVT = d.MaDVT
-                            OUTER APPLY (SELECT TonCuoi FROM vw_TonKhoHienTai WHERE MaHang = h.MaHang AND MaKho = @MaKho) t
-                            WHERE h.TrangThai = 'DANG_BAN' AND ISNULL(t.TonCuoi, 0) > 0";
+                            OUTER APPLY (SELECT SoLuongTon FROM vw_TonKhoHienTai WHERE MaHang = h.MaHang AND MaKho = @MaKho) t
+                            WHERE h.TrangThai = 'DANG_BAN' AND ISNULL(t.SoLuongTon, 0) > 0";
 
                         SqlParameter[] prms = { new SqlParameter("@MaKho", maKhoNguon) };
                         DataTable dtHang = DataProcessing.ReadData(sqlMau, prms);
@@ -177,10 +177,10 @@ namespace BTL_LTTQ_2.GUI.Forms.ChuyenKho
 
                 // Tra cứu danh sách hàng hóa và tồn kho nguồn
                 string sqlHang = @"
-                    SELECT h.MaHang, h.MaHangNoiBo, h.TenHang, d.TenDVT, h.GiaVon, ISNULL(t.TonCuoi, 0) AS TonKho
+                    SELECT h.MaHang, h.MaHangNoiBo, h.TenHang, d.TenDVT, h.GiaVon, ISNULL(t.SoLuongTon, 0) AS TonKho
                     FROM HangHoa h
                     LEFT JOIN DonViTinh d ON h.MaDVT = d.MaDVT
-                    OUTER APPLY (SELECT TonCuoi FROM vw_TonKhoHienTai WHERE MaHang = h.MaHang AND MaKho = @MaKho) t
+                    OUTER APPLY (SELECT SoLuongTon FROM vw_TonKhoHienTai WHERE MaHang = h.MaHang AND MaKho = @MaKho) t
                     WHERE h.TrangThai = 'DANG_BAN'";
 
                 SqlParameter[] prms = { new SqlParameter("@MaKho", maKhoNguon) };

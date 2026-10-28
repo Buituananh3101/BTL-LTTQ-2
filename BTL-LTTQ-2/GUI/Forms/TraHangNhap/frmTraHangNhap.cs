@@ -518,6 +518,288 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
 
         private void btnXuatFile_Click(object sender, EventArgs e)
         {
+            if (dgvTraHangNhap.Rows.Count == 0 && tongSoBanGhi == 0)
+            {
+                MessageBox.Show("Không có dữ liệu đơn trả hàng nhập để xuất file!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            // Xác định danh sách dòng cần xuất: Ưu tiên các dòng được tích chọn CheckBox
+            List<DataRow> danhSachXuat = new List<DataRow>();
+            foreach (DataGridViewRow row in dgvTraHangNhap.Rows)
+            {
+                if (Convert.ToBoolean(row.Cells["colChon"].Value ?? false))
+                {
+                    DataRowView drv = row.DataBoundItem as DataRowView;
+                    if (drv != null)
+                    {
+                        danhSachXuat.Add(drv.Row);
+                    }
+                }
+            }
+
+            bool coDongChon = danhSachXuat.Count > 0;
+            if (!coDongChon)
+            {
+                try
+                {
+                    string maTrangThai = cboTrangThai.SelectedValue?.ToString();
+                    string filterTrangThaiSql = "";
+                    if (!string.IsNullOrEmpty(maTrangThai))
+                    {
+                        filterTrangThaiSql = " AND pth.TrangThai = @TrangThai ";
+                    }
+
+                    int maNcc = 0;
+                    if (cboNhaCungCap.SelectedValue != null && int.TryParse(cboNhaCungCap.SelectedValue.ToString(), out int nccVal))
+                    {
+                        maNcc = nccVal;
+                    }
+                    string filterNccSql = "";
+                    if (maNcc > 0)
+                    {
+                        filterNccSql = " AND pth.MaDonViCapHang = @MaNCC ";
+                    }
+
+                    int maNvLap = 0;
+                    if (cboNguoiTao.SelectedValue != null && int.TryParse(cboNguoiTao.SelectedValue.ToString(), out int nvlVal))
+                    {
+                        maNvLap = nvlVal;
+                    }
+                    string filterNvlSql = "";
+                    if (maNvLap > 0)
+                    {
+                        filterNvlSql = " AND pth.MaNvlap = @MaNVLap ";
+                    }
+
+                    int maNvTra = 0;
+                    if (cboNguoiTra.SelectedValue != null && int.TryParse(cboNguoiTra.SelectedValue.ToString(), out int nvtVal))
+                    {
+                        maNvTra = nvtVal;
+                    }
+                    string filterNvtSql = "";
+                    if (maNvTra > 0)
+                    {
+                        filterNvtSql = " AND pth.MaNvtra = @MaNVTra ";
+                    }
+
+                    DateTime tuNgay = dtpTuNgay.Value.Date;
+                    int maKhoHienTai = SessionContext.MaKhoHienTai;
+                    string filterKhoSql = "";
+                    if (maKhoHienTai > 0)
+                    {
+                        filterKhoSql = " AND pth.MaKho = @MaKho ";
+                    }
+                    DateTime denNgay = dtpDenNgay.Value.Date.AddDays(1);
+                    string timKiem = txtTimKiem.Text.Trim();
+
+                    string exportSql = $@"
+                        SELECT 
+                            ISNULL(pth.MaPhieu, 'THN' + RIGHT('000000' + CAST(pth.MaPhieuTraHang AS VARCHAR(10)), 6)) AS MaPhieu,
+                            pth.NgayTra,
+                            ISNULL(k.TenKho, N'') AS TenKho,
+                            ISNULL(ncc.TenDonVi, N'Nhà cung cấp lẻ') AS TenDonVi,
+                            pth.TongTienHang,
+                            pth.GiamGia,
+                            pth.CanThuNcc,
+                            pth.DaThuNcc,
+                            CASE pth.TrangThai 
+                                WHEN 'NHAP' THEN N'Phiếu tạm'
+                                WHEN 'DA_TRA_HANG' THEN N'Đã trả hàng'
+                                WHEN 'HUY' THEN N'Đã hủy'
+                                ELSE pth.TrangThai 
+                            END AS TenTrangThai
+                        FROM PhieuTraHangNhap pth
+                        LEFT JOIN DonViCapHang ncc ON pth.MaDonViCapHang = ncc.MaDonViCapHang
+                        LEFT JOIN Kho k ON pth.MaKho = k.MaKho
+                        WHERE (pth.NgayTra >= @TuNgay AND pth.NgayTra < @DenNgay)
+                          {filterKhoSql}
+                          {filterTrangThaiSql}
+                          {filterNccSql}
+                          {filterNvlSql}
+                          {filterNvtSql}
+                          AND (
+                              @TimKiem = ''
+                              OR pth.MaPhieu LIKE @TimKiemLike
+                              OR ncc.TenDonVi LIKE @TimKiemLike
+                              OR pth.GhiChu LIKE @TimKiemLike
+                          )
+                        ORDER BY pth.NgayTra DESC, pth.MaPhieuTraHang DESC";
+
+                    List<SqlParameter> p = new List<SqlParameter>
+                    {
+                        new SqlParameter("@TuNgay", tuNgay),
+                        new SqlParameter("@DenNgay", denNgay),
+                        new SqlParameter("@TimKiem", timKiem),
+                        new SqlParameter("@TimKiemLike", "%" + timKiem + "%")
+                    };
+                    if (maKhoHienTai > 0) p.Add(new SqlParameter("@MaKho", maKhoHienTai));
+                    if (!string.IsNullOrEmpty(maTrangThai)) p.Add(new SqlParameter("@TrangThai", maTrangThai));
+                    if (maNcc > 0) p.Add(new SqlParameter("@MaNCC", maNcc));
+                    if (maNvLap > 0) p.Add(new SqlParameter("@MaNVLap", maNvLap));
+                    if (maNvTra > 0) p.Add(new SqlParameter("@MaNVTra", maNvTra));
+
+                    DataTable dtExport = DataProcessing.ReadData(exportSql, p.ToArray());
+                    if (dtExport != null && dtExport.Rows.Count > 0)
+                    {
+                        foreach (DataRow r in dtExport.Rows)
+                        {
+                            danhSachXuat.Add(r);
+                        }
+                    }
+                    else if (dgvTraHangNhap.DataSource is DataTable dt)
+                    {
+                        foreach (DataRow r in dt.Rows)
+                        {
+                            danhSachXuat.Add(r);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi truy vấn dữ liệu xuất: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+
+            if (danhSachXuat.Count == 0)
+            {
+                MessageBox.Show("Không tìm thấy dữ liệu phù hợp để xuất file!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            using (SaveFileDialog sfd = new SaveFileDialog())
+            {
+                sfd.Title = "Xuất danh sách đơn trả hàng nhập";
+                sfd.Filter = "File Excel (*.xls)|*.xls|File CSV (*.csv)|*.csv";
+                sfd.FileName = $"DanhSachTraHangNhap_{DateTime.Now:yyyyMMdd_HHmm}.xls";
+
+                if (sfd.ShowDialog(this) == DialogResult.OK)
+                {
+                    try
+                    {
+                        string ext = Path.GetExtension(sfd.FileName).ToLowerInvariant();
+                        if (ext == ".csv")
+                        {
+                            XuatCsvDanhSach(sfd.FileName, danhSachXuat);
+                        }
+                        else
+                        {
+                            XuatExcelHtmlDanhSach(sfd.FileName, danhSachXuat);
+                        }
+
+                        string thongBao = coDongChon
+                            ? $"Xuất thành công {danhSachXuat.Count} phiếu trả hàng đã chọn ra file!\nĐường dẫn: {sfd.FileName}"
+                            : $"Xuất toàn bộ {danhSachXuat.Count} phiếu trả hàng theo bộ lọc ra file thành công!\nĐường dẫn: {sfd.FileName}";
+
+                        MessageBox.Show(thongBao, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Lỗi khi xuất file: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+
+        private void XuatExcelHtmlDanhSach(string filePath, IEnumerable<DataRow> danhSach)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("<html xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:x=\"urn:schemas-microsoft-com:office:excel\" xmlns=\"http://www.w3.org/TR/REC-html40\">");
+            sb.AppendLine("<head>");
+            sb.AppendLine("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />");
+            sb.AppendLine("<style>");
+            sb.AppendLine("body { font-family: Segoe UI, Arial; font-size: 10pt; }");
+            sb.AppendLine("th { background-color: #0078D7; color: #FFFFFF; font-weight: bold; border: 0.5pt solid #CCCCCC; padding: 6px; }");
+            sb.AppendLine("td { border: 0.5pt solid #E0E0E0; padding: 5px; }");
+            sb.AppendLine(".num { mso-number-format: \"#,##0\"; text-align: right; }");
+            sb.AppendLine(".center { text-align: center; }");
+            sb.AppendLine("</style>");
+            sb.AppendLine("</head>");
+            sb.AppendLine("<body>");
+            sb.AppendLine("<h2>DANH SÁCH ĐƠN TRẢ HÀNG NHẬP</h2>");
+            sb.AppendLine($"<p>Thời gian xuất: {DateTime.Now:dd/MM/yyyy HH:mm} | Tổng số: {tongSoBanGhi:N0} phiếu</p>");
+            sb.AppendLine("<table>");
+            sb.AppendLine("<tr>");
+            sb.AppendLine("<th>Mã trả hàng nhập</th>");
+            sb.AppendLine("<th>Thời gian</th>");
+            sb.AppendLine("<th>Kho hàng</th>");
+            sb.AppendLine("<th>Nhà cung cấp</th>");
+            sb.AppendLine("<th>Tổng tiền hàng</th>");
+            sb.AppendLine("<th>Giảm giá</th>");
+            sb.AppendLine("<th>NCC cần trả</th>");
+            sb.AppendLine("<th>NCC đã trả</th>");
+            sb.AppendLine("<th>Trạng thái</th>");
+            sb.AppendLine("</tr>");
+
+            foreach (DataRow r in danhSach)
+            {
+                string maPhieu = r["MaPhieu"]?.ToString() ?? "";
+                string thoiGian = r["NgayTra"] != DBNull.Value ? Convert.ToDateTime(r["NgayTra"]).ToString("dd/MM/yyyy HH:mm") : "";
+                string khoHang = r.Table.Columns.Contains("TenKho") ? (r["TenKho"]?.ToString() ?? "") : "";
+                string tenNcc = r["TenDonVi"]?.ToString() ?? "";
+                decimal tongTien = r["TongTienHang"] != DBNull.Value ? Convert.ToDecimal(r["TongTienHang"]) : 0m;
+                decimal giamGia = r["GiamGia"] != DBNull.Value ? Convert.ToDecimal(r["GiamGia"]) : 0m;
+                decimal canThu = r["CanThuNcc"] != DBNull.Value ? Convert.ToDecimal(r["CanThuNcc"]) : 0m;
+                decimal daThu = r["DaThuNcc"] != DBNull.Value ? Convert.ToDecimal(r["DaThuNcc"]) : 0m;
+                string trangThai = r["TenTrangThai"]?.ToString() ?? "";
+
+                sb.AppendLine("<tr>");
+                sb.AppendLine($"<td class=\"center\">{maPhieu}</td>");
+                sb.AppendLine($"<td class=\"center\">{thoiGian}</td>");
+                sb.AppendLine($"<td>{System.Net.WebUtility.HtmlEncode(khoHang)}</td>");
+                sb.AppendLine($"<td>{System.Net.WebUtility.HtmlEncode(tenNcc)}</td>");
+                sb.AppendLine($"<td class=\"num\">{tongTien:N0}</td>");
+                sb.AppendLine($"<td class=\"num\">{giamGia:N0}</td>");
+                sb.AppendLine($"<td class=\"num\">{canThu:N0}</td>");
+                sb.AppendLine($"<td class=\"num\">{daThu:N0}</td>");
+                sb.AppendLine($"<td class=\"center\">{trangThai}</td>");
+                sb.AppendLine("</tr>");
+            }
+
+            sb.AppendLine("</table>");
+            sb.AppendLine("</body>");
+            sb.AppendLine("</html>");
+
+            File.WriteAllText(filePath, sb.ToString(), Encoding.UTF8);
+        }
+
+        private void XuatCsvDanhSach(string filePath, IEnumerable<DataRow> danhSach)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("sep=,");
+            sb.AppendLine("Mã trả hàng nhập,Thời gian,Kho hàng,Nhà cung cấp,Tổng tiền hàng,Giảm giá,NCC cần trả,NCC đã trả,Trạng thái");
+
+            foreach (DataRow r in danhSach)
+            {
+                string maPhieu = r["MaPhieu"]?.ToString() ?? "";
+                string thoiGian = r["NgayTra"] != DBNull.Value ? Convert.ToDateTime(r["NgayTra"]).ToString("dd/MM/yyyy HH:mm") : "";
+                string khoHang = r.Table.Columns.Contains("TenKho") ? (r["TenKho"]?.ToString() ?? "") : "";
+                string tenNcc = r["TenDonVi"]?.ToString() ?? "";
+                decimal tongTien = r["TongTienHang"] != DBNull.Value ? Convert.ToDecimal(r["TongTienHang"]) : 0m;
+                decimal giamGia = r["GiamGia"] != DBNull.Value ? Convert.ToDecimal(r["GiamGia"]) : 0m;
+                decimal canThu = r["CanThuNcc"] != DBNull.Value ? Convert.ToDecimal(r["CanThuNcc"]) : 0m;
+                decimal daThu = r["DaThuNcc"] != DBNull.Value ? Convert.ToDecimal(r["DaThuNcc"]) : 0m;
+                string trangThai = r["TenTrangThai"]?.ToString() ?? "";
+
+                sb.AppendLine(string.Format("\"{0}\",\"{1}\",\"{2}\",\"{3}\",{4},{5},{6},{7},\"{8}\"",
+                    maPhieu,
+                    thoiGian,
+                    khoHang.Replace("\"", "\"\""),
+                    tenNcc.Replace("\"", "\"\""),
+                    tongTien,
+                    giamGia,
+                    canThu,
+                    daThu,
+                    trangThai));
+            }
+
+            File.WriteAllText(filePath, sb.ToString(), new UTF8Encoding(true));
+        }
+
+#if FALSE
+        private void btnXuatFile_Click_Old(object sender, EventArgs e)
+        {
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
                 sfd.Filter = "CSV File (*.csv)|*.csv|All Files (*.*)|*.*";
@@ -655,6 +937,8 @@ namespace BTL_LTTQ_2.GUI.Forms.TraHangNhap
                 }
             }
         }
+
+#endif
 
         private string EscapeCsv(string text)
         {

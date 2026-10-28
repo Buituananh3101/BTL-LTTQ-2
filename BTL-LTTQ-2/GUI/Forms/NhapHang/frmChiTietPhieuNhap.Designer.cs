@@ -299,7 +299,7 @@
             // colGiamGia
             // 
             this.colGiamGia.DataPropertyName = "GiamGia";
-            this.colGiamGia.HeaderText = "Giảm giá";
+            this.colGiamGia.HeaderText = "Giảm giá (%)";
             this.colGiamGia.Name = "colGiamGia";
             this.colGiamGia.ReadOnly = true;
             this.colGiamGia.Width = 100;
@@ -437,7 +437,7 @@
             this.lblGiamGia.Name = "lblGiamGia";
             this.lblGiamGia.Size = new System.Drawing.Size(63, 17);
             this.lblGiamGia.TabIndex = 3;
-            this.lblGiamGia.Text = "Giảm giá:";
+            this.lblGiamGia.Text = "Giảm giá (%):";
             // 
             // lblTongTienHangVal
             // 

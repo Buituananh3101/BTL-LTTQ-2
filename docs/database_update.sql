@@ -1,14 +1,15 @@
 ﻿-- =========================================================================================
 -- FILE CẬP NHẬT CƠ SỞ DỮ LIỆU: docs/database_update.sql
--- Dự án: Quản lý kho hàng nhiều kho (QuanLyKhoPhuQuocLTW)
--- Ngày thực hiện: 2026-10-13
+-- Dự án: Quản lý kho hàng nhiều kho (QuanLyKhoPhuQuocLTTQ – khớp App.config)
+-- Ngày thực hiện: 2026-10-13 (cập nhật 2026-10-26: đổi tên CSDL, view cộng kho nhận theo SL thực nhận)
 -- Tuân thủ: 3 Nguyên tắc vàng trong .agent/rules/05-co-so-du-lieu.md ("Chỉ cộng, không phá")
+-- Lưu ý: CSDL mới hoàn toàn hãy chạy docs/TaoCSDL_DayDu.sql (đã gồm cấu trúc + dữ liệu mẫu).
 -- =========================================================================================
 
-USE QuanLyKhoPhuQuocLTW;
+USE QuanLyKhoPhuQuocLTTQ;
 GO
 
-PRINT N'=== BẮT ĐẦU NÂNG CẤP CƠ SỞ DỮ LIỆU QUANLYKHOPHUQUOCLTW ===';
+PRINT N'=== BẮT ĐẦU NÂNG CẤP CƠ SỞ DỮ LIỆU QUANLYKHOPHUQUOCLTTQ ===';
 GO
 
 -- -----------------------------------------------------------------------------------------
@@ -183,7 +184,7 @@ JOIN ChiTietPhieuNhap ct ON ct.MaPhieuNhap = pn.MaPhieuNhap
 WHERE pn.TrangThai = 'DA_XAC_NHAN'
 
 UNION ALL
--- 2. Xuất kho đã xác nhận (Bao gồm xuất bán, xuất nội bộ, xuất hủy): Giảm tồn
+-- 2. Xuất kho đã xác nhận (Bao gồm xuất bán, xuất nội bộ; loại bỏ xuất hủy): Giảm tồn
 SELECT CAST(ISNULL(px.NgayXacNhan, px.NgayLap) AS DATETIME) AS NgayGiaoDich,
        px.MaKho,
        ctpx.MaHang,
@@ -193,7 +194,7 @@ SELECT CAST(ISNULL(px.NgayXacNhan, px.NgayLap) AS DATETIME) AS NgayGiaoDich,
        ctpx.SoLuongXuat AS SoLuongGiam
 FROM PhieuXuat px
 JOIN ChiTietPhieuXuat ctpx ON ctpx.MaPhieuXuat = px.MaPhieuXuat
-WHERE px.TrangThai = 'DA_XAC_NHAN'
+WHERE px.TrangThai = 'DA_XAC_NHAN' AND px.LoaiPhieuXuat <> 'XUAT_HUY'
 
 UNION ALL
 -- 3. Chuyển kho đã xuất / đã nhận: Trừ tồn kho nguồn
@@ -209,13 +210,13 @@ JOIN ChiTietPhieuChuyenKho ct ON ct.MaPhieuChuyen = pc.MaPhieuChuyen
 WHERE pc.TrangThai IN ('DA_XUAT', 'DA_NHAN')
 
 UNION ALL
--- 4. Chuyển kho đã nhận: Cộng tồn kho đích
+-- 4. Chuyển kho đã nhận: Cộng tồn kho đích theo SỐ LƯỢNG THỰC NHẬN (phần hao hụt không được cộng)
 SELECT CAST(ISNULL(pc.ThoiDiemNhan, ISNULL(pc.ThoiDiemXuat, pc.NgayLap)) AS DATETIME) AS NgayGiaoDich,
        pc.MaKhoDich AS MaKho,
        ct.MaHang,
        CAST('CHUYEN_NHAP' AS VARCHAR(30)) AS LoaiChungTu,
        pc.MaPhieuChuyen AS MaChungTu,
-       ct.SoLuong AS SoLuongTang,
+       ISNULL(ct.SoLuongNhan, ct.SoLuong) AS SoLuongTang,
        CAST(0 AS DECIMAL(18,2)) AS SoLuongGiam
 FROM PhieuChuyenKho pc
 JOIN ChiTietPhieuChuyenKho ct ON ct.MaPhieuChuyen = pc.MaPhieuChuyen
@@ -613,4 +614,16 @@ BEGIN
 END;
 
 PRINT N'[OK] Đã hoàn tất phân quyền kho trong TaiKhoanKho: Quản lý (mọi kho), Thủ kho (Kho 1 duy nhất), Nhân viên kho (Kho 1).';
+GO
+
+
+-- -----------------------------------------------------------------------------------------
+-- MỤC 18: LOẠI BỎ PHÂN HỆ XUẤT HỦY (Phiên 59 - 2026-10-26)
+-- Lý do: Người dùng quyết định loại bỏ hoàn toàn phân hệ Xuất hủy (frmXuatHuy).
+-- Chuyển toàn bộ các phiếu xuất hủy cũ trong PhieuXuat sang trạng thái 'HUY'
+-- và cập nhật View vw_BienDongKho loại trừ LoaiPhieuXuat = 'XUAT_HUY'.
+-- -----------------------------------------------------------------------------------------
+UPDATE PhieuXuat
+SET TrangThai = 'HUY'
+WHERE LoaiPhieuXuat = 'XUAT_HUY';
 GO

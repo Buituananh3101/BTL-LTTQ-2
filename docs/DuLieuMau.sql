@@ -2,13 +2,13 @@
 -- KHO PRO - SCRIPT DỮ LIỆU MẪU ĐẦY ĐỦ (DEMO SEED DATA)
 -- File: docs/DuLieuMau.sql (Đồng bộ với migrations/sql/05_dulieumau_seed.sql)
 -- Mô tả: Cung cấp toàn bộ dữ liệu mẫu chuẩn cho hệ thống Quản lý kho hàng nhiều kho
--- Tài khoản mặc định:
---   1. quanly  / 123456 (Vai trò: Quản lý - Toàn quyền)
---   2. thukho  / 123456 (Vai trò: Nhân viên kho)
---   3. banhang / 123456 (Vai trò: Nhân viên bán hàng)
+-- Tài khoản mặc định (đồng bộ với mục 9 của docs/database_update.sql):
+--   1. quanly / 123456 (Vai trò: Quản lý - Toàn quyền, mọi kho)
+--   2. thukho / 123456 (Vai trò: Thủ kho - Kho trung tâm)
+--   3. nvkho  / 123456 (Vai trò: Nhân viên kho - Kho trung tâm)
 -- =====================================================================================
 
-USE [QuanLyKhoPhuQuocLTW];
+USE [QuanLyKhoPhuQuocLTTQ];
 GO
 
 SET NOCOUNT ON;
@@ -21,29 +21,29 @@ PRINT N'==> BẮT ĐẦU NẠP DỮ LIỆU MẪU CHO HỆ THỐNG KHO PRO...';
 IF NOT EXISTS (SELECT 1 FROM VaiTro WHERE MaVaiTro = 1)
 BEGIN
     SET IDENTITY_INSERT VaiTro ON;
-    INSERT INTO VaiTro (MaVaiTro, TenVaiTro, MoTa) VALUES (1, N'Quản lý', N'Quản lý toàn chi nhánh và toàn bộ các kho');
+    INSERT INTO VaiTro (MaVaiTro, TenVaiTro, MoTa) VALUES (1, N'Quản lý', N'Quản lý toàn bộ chi nhánh và mọi kho hàng');
     SET IDENTITY_INSERT VaiTro OFF;
 END
 ELSE
-    UPDATE VaiTro SET TenVaiTro = N'Quản lý', MoTa = N'Quản lý toàn chi nhánh và toàn bộ các kho' WHERE MaVaiTro = 1;
+    UPDATE VaiTro SET TenVaiTro = N'Quản lý', MoTa = N'Quản lý toàn bộ chi nhánh và mọi kho hàng' WHERE MaVaiTro = 1;
 
 IF NOT EXISTS (SELECT 1 FROM VaiTro WHERE MaVaiTro = 2)
 BEGIN
     SET IDENTITY_INSERT VaiTro ON;
-    INSERT INTO VaiTro (MaVaiTro, TenVaiTro, MoTa) VALUES (2, N'Nhân viên kho', N'Nhập, xuất, chuyển kho và kiểm kê');
+    INSERT INTO VaiTro (MaVaiTro, TenVaiTro, MoTa) VALUES (2, N'Thủ kho', N'Quản lý 1 chi nhánh kho duy nhất được phân công');
     SET IDENTITY_INSERT VaiTro OFF;
 END
 ELSE
-    UPDATE VaiTro SET TenVaiTro = N'Nhân viên kho', MoTa = N'Nhập, xuất, chuyển kho và kiểm kê' WHERE MaVaiTro = 2;
+    UPDATE VaiTro SET TenVaiTro = N'Thủ kho', MoTa = N'Quản lý 1 chi nhánh kho duy nhất được phân công' WHERE MaVaiTro = 2;
 
 IF NOT EXISTS (SELECT 1 FROM VaiTro WHERE MaVaiTro = 3)
 BEGIN
     SET IDENTITY_INSERT VaiTro ON;
-    INSERT INTO VaiTro (MaVaiTro, TenVaiTro, MoTa) VALUES (3, N'Nhân viên bán hàng', N'Lập đơn bán và thu tiền');
+    INSERT INTO VaiTro (MaVaiTro, TenVaiTro, MoTa) VALUES (3, N'Nhân viên kho', N'Nhân viên thực hiện thao tác nghiệp vụ tại kho');
     SET IDENTITY_INSERT VaiTro OFF;
 END
 ELSE
-    UPDATE VaiTro SET TenVaiTro = N'Nhân viên bán hàng', MoTa = N'Lập đơn bán và thu tiền' WHERE MaVaiTro = 3;
+    UPDATE VaiTro SET TenVaiTro = N'Nhân viên kho', MoTa = N'Nhân viên thực hiện thao tác nghiệp vụ tại kho' WHERE MaVaiTro = 3;
 
 PRINT N'   [1/10] Đã đồng bộ bảng VaiTro.';
 
@@ -70,7 +70,7 @@ IF NOT EXISTS (SELECT 1 FROM NhanVien WHERE DienThoai = '0901000003')
 BEGIN
     SET IDENTITY_INSERT NhanVien ON;
     INSERT INTO NhanVien (MaNV, HoTen, DienThoai, Email, NgayVaoLam, TrangThai)
-    VALUES (3, N'Lê Văn Bán', N'0901000003', N'ban.hang@khopro.vn', '2025-02-01', N'DANG_LAM');
+    VALUES (3, N'Lê Văn Kho', N'0901000003', N'nhanvien.kho@khopro.vn', '2025-02-01', N'DANG_LAM');
     SET IDENTITY_INSERT NhanVien OFF;
 END
 
@@ -86,9 +86,15 @@ DECLARE @nv1 INT = (SELECT TOP 1 MaNV FROM NhanVien WHERE DienThoai = '090100000
 DECLARE @nv2 INT = (SELECT TOP 1 MaNV FROM NhanVien WHERE DienThoai = '0901000002');
 DECLARE @nv3 INT = (SELECT TOP 1 MaNV FROM NhanVien WHERE DienThoai = '0901000003');
 
-DECLARE @vt1 INT = (SELECT TOP 1 MaVaiTro FROM VaiTro WHERE TenVaiTro = N'Quản lý');
-DECLARE @vt2 INT = (SELECT TOP 1 MaVaiTro FROM VaiTro WHERE TenVaiTro = N'Nhân viên kho');
-DECLARE @vt3 INT = (SELECT TOP 1 MaVaiTro FROM VaiTro WHERE TenVaiTro = N'Nhân viên bán hàng');
+-- 3 vai trò chuẩn: 1 = Quản lý, 2 = Thủ kho, 3 = Nhân viên kho
+DECLARE @vt1 INT = 1;
+DECLARE @vt2 INT = 2;
+DECLARE @vt3 INT = 3;
+
+-- Dữ liệu cũ dùng tài khoản 'banhang': đổi tên thành 'nvkho' để không trùng nhân viên số 3
+IF EXISTS (SELECT 1 FROM TaiKhoan WHERE TenDangNhap = 'banhang')
+   AND NOT EXISTS (SELECT 1 FROM TaiKhoan WHERE TenDangNhap = 'nvkho')
+    UPDATE TaiKhoan SET TenDangNhap = 'nvkho' WHERE TenDangNhap = 'banhang';
 
 IF NOT EXISTS (SELECT 1 FROM TaiKhoan WHERE TenDangNhap = 'quanly')
     INSERT INTO TaiKhoan (MaNV, MaVaiTro, TenDangNhap, MatKhauHash, TrangThai)
@@ -104,11 +110,11 @@ ELSE
 
 IF NOT EXISTS (SELECT 1 FROM TaiKhoan WHERE TenDangNhap = 'nvkho')
     INSERT INTO TaiKhoan (MaNV, MaVaiTro, TenDangNhap, MatKhauHash, TrangThai)
-    VALUES (ISNULL(@nv3, 3), 3, 'nvkho', @PassHash, N'HOAT_DONG');
+    VALUES (ISNULL(@nv3, 3), @vt3, 'nvkho', @PassHash, N'HOAT_DONG');
 ELSE
-    UPDATE TaiKhoan SET MatKhauHash = @PassHash, TrangThai = N'HOAT_DONG', MaVaiTro = ISNULL(@vt3, 3) WHERE TenDangNhap = 'nvkho';
+    UPDATE TaiKhoan SET MatKhauHash = @PassHash, TrangThai = N'HOAT_DONG', MaVaiTro = @vt3 WHERE TenDangNhap = 'nvkho';
 
-PRINT N'   [3/10] Đã đồng bộ bảng TaiKhoan (quanly, thukho, banhang / 123456).';
+PRINT N'   [3/10] Đã đồng bộ bảng TaiKhoan (quanly, thukho, nvkho / 123456).';
 
 -- -------------------------------------------------------------------------------------
 -- 4. BẢNG KHO HÀNG (Kho)
@@ -146,19 +152,28 @@ ELSE
 PRINT N'   [4/10] Đã đồng bộ bảng Kho.';
 
 -- -------------------------------------------------------------------------------------
--- 5. BẢNG PHÂN QUYỀN KHO (TaiKhoanKho)
--- Cấp quyền truy cập cho mọi tài khoản đối với tất cả kho hoạt động
+-- 5. BẢNG PHÂN QUYỀN KHO (TaiKhoanKho) – theo quy tắc phân quyền 3 vai trò:
+--    Quản lý: mọi kho đang hoạt động. Thủ kho / Nhân viên kho: Kho trung tâm (MaKho = 1)
+--    nếu tài khoản chưa được phân công kho nào (không ghi đè phân công đã có).
 -- -------------------------------------------------------------------------------------
 INSERT INTO TaiKhoanKho (MaTaiKhoan, MaKho)
 SELECT t.MaTaiKhoan, k.MaKho
 FROM TaiKhoan t
 CROSS JOIN Kho k
-WHERE k.TrangThai = 'HOAT_DONG'
+WHERE t.MaVaiTro = 1
+  AND k.TrangThai = 'HOAT_DONG'
   AND NOT EXISTS (
       SELECT 1 FROM TaiKhoanKho tk WHERE tk.MaTaiKhoan = t.MaTaiKhoan AND tk.MaKho = k.MaKho
   );
 
-PRINT N'   [5/10] Đã cấp quyền truy cập các kho cho tài khoản trong TaiKhoanKho.';
+INSERT INTO TaiKhoanKho (MaTaiKhoan, MaKho)
+SELECT t.MaTaiKhoan, 1
+FROM TaiKhoan t
+WHERE t.MaVaiTro IN (2, 3)
+  AND EXISTS (SELECT 1 FROM Kho WHERE MaKho = 1)
+  AND NOT EXISTS (SELECT 1 FROM TaiKhoanKho tk WHERE tk.MaTaiKhoan = t.MaTaiKhoan);
+
+PRINT N'   [5/10] Đã phân quyền kho theo vai trò trong TaiKhoanKho.';
 
 -- -------------------------------------------------------------------------------------
 -- 6. BẢNG ĐƠN VỊ TÍNH (DonViTinh) & NHÓM HÀNG (NhomHang)
@@ -299,5 +314,5 @@ PRINT N'==> HOÀN TẤT NẠP DỮ LIỆU MẪU THÀNH CÔNG!';
 PRINT N'==> Bạn có thể đăng nhập ngay với:';
 PRINT N'    - quanly  / 123456';
 PRINT N'    - thukho  / 123456';
-PRINT N'    - banhang / 123456';
+PRINT N'    - nvkho   / 123456';
 GO

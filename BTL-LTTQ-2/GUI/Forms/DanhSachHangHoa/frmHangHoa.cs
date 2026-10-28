@@ -61,6 +61,7 @@ namespace BTL_LTTQ_2.GUI.Forms.DanhSachHangHoa
                 btnLuu.Text = "Sửa";
 
                 // Khóa ô tồn kho vì tồn kho tính động qua chứng từ kho
+                txtMaHang.ReadOnly = true;
                 txtTonKho.ReadOnly = true;
                 txtTonKho.BackColor = Color.FromArgb(243, 244, 246);
 

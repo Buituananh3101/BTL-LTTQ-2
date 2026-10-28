@@ -1,8 +1,11 @@
 ﻿using BTL_LTTQ_2.Classes;
 using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Reflection;
+using System.Text;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 
@@ -12,9 +15,41 @@ namespace BTL_LTTQ_2.GUI.Forms.NguoiDung
     {
         private bool isHeaderChecked = false;
 
+        // Quản lý phân trang SQL Server đồng nhất toàn hệ thống
+        private int trangHienTai = 1;
+        private int soDongMoiTrang = 20;
+        private int tongSoBanGhi = 0;
+        private int tongSoTrang = 1;
+        private bool dangNapBoLoc = false;
+
+        private Timer searchDebounceTimer;
+
         public frmDanhSachNguoiDung()
         {
             InitializeComponent();
+            KhoiTaoDebounceTimer();
+
+            // Đăng ký sự kiện tìm kiếm, bộ lọc, phân trang và nút hướng dẫn
+            txtTimKiem.TextChanged += txtTimKiem_TextChanged;
+            txtTimKiem.KeyDown += txtTimKiem_KeyDown;
+            cboVaiTro.SelectedIndexChanged += BoLoc_SelectedIndexChanged;
+            cboTrangThai.SelectedIndexChanged += BoLoc_SelectedIndexChanged;
+            cboSoDongMoiTrang.SelectedIndexChanged += cboSoDongMoiTrang_SelectedIndexChanged;
+            btnTrangTruoc.Click += btnTrangTruoc_Click;
+            btnTrangSau.Click += btnTrangSau_Click;
+            btnHuongDanSuDung.Click += btnHuongDanSuDung_Click;
+        }
+
+        private void KhoiTaoDebounceTimer()
+        {
+            searchDebounceTimer = new Timer();
+            searchDebounceTimer.Interval = 300;
+            searchDebounceTimer.Tick += (s, e) =>
+            {
+                searchDebounceTimer.Stop();
+                trangHienTai = 1;
+                HienThiDanhSach();
+            };
         }
 
         private void frmDanhSachNguoiDung_Load(object sender, EventArgs e)
@@ -22,6 +57,13 @@ namespace BTL_LTTQ_2.GUI.Forms.NguoiDung
             DinhDangLuoi();
             NapBoLocGiaoDien();
             HienThiDanhSach();
+        }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            searchDebounceTimer?.Stop();
+            searchDebounceTimer?.Dispose();
+            base.OnFormClosed(e);
         }
 
         #region Định dạng giao diện & Cấu hình lưới chuẩn theo frmDanhSachHangHoa
@@ -110,6 +152,10 @@ namespace BTL_LTTQ_2.GUI.Forms.NguoiDung
                 bool currentVal = Convert.ToBoolean(dgvNguoiDung.Rows[e.RowIndex].Cells["colChon"].Value ?? false);
                 bool newVal = !currentVal;
                 dgvNguoiDung.Rows[e.RowIndex].Cells["colChon"].Value = newVal;
+                if (dgvNguoiDung.DataSource is DataTable dt && e.RowIndex < dt.Rows.Count)
+                {
+                    dt.Rows[e.RowIndex]["Chon"] = newVal;
+                }
                 CapNhatTrangThaiHeaderCheckBox();
             }
         }
@@ -125,6 +171,13 @@ namespace BTL_LTTQ_2.GUI.Forms.NguoiDung
                 {
                     row.Cells["colChon"].Value = isHeaderChecked;
                 }
+                if (dgvNguoiDung.DataSource is DataTable dt)
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        dr["Chon"] = isHeaderChecked;
+                    }
+                }
                 dgvNguoiDung.InvalidateCell(e.ColumnIndex, -1);
             }
         }
@@ -137,7 +190,12 @@ namespace BTL_LTTQ_2.GUI.Forms.NguoiDung
                 if (cell != null)
                 {
                     bool currentVal = Convert.ToBoolean(cell.Value ?? false);
-                    cell.Value = !currentVal;
+                    bool newVal = !currentVal;
+                    cell.Value = newVal;
+                    if (dgvNguoiDung.DataSource is DataTable dt && dgvNguoiDung.CurrentRow.Index < dt.Rows.Count)
+                    {
+                        dt.Rows[dgvNguoiDung.CurrentRow.Index]["Chon"] = newVal;
+                    }
                     CapNhatTrangThaiHeaderCheckBox();
                     e.Handled = true;
                 }
@@ -188,9 +246,11 @@ namespace BTL_LTTQ_2.GUI.Forms.NguoiDung
                 }
                 else
                 {
-                    e.Value = "Ngừng hoạt động";
+                    // 'KHOA' -> Đã khóa (màu Xám nhạt chuẩn nhóm Đã hủy / Đã khóa theo Rule 15b)
+                    e.Value = "Đã khóa";
                     e.CellStyle.ForeColor = Color.FromArgb(100, 116, 139);
                 }
+                e.FormattingApplied = true;
             }
         }
 
@@ -200,33 +260,157 @@ namespace BTL_LTTQ_2.GUI.Forms.NguoiDung
 
         private void NapBoLocGiaoDien()
         {
+            dangNapBoLoc = true;
+
+            // TaiKhoan không có cột ngày tạo -> ẩn nhóm lọc 'Thời gian tạo' để không che mất dữ liệu
+            grpThoiGianTao.Visible = false;
+
             cboVaiTro.Items.Clear();
             cboVaiTro.Items.AddRange(new object[] { "Tất cả", "Quản lý", "Thủ kho", "Nhân viên kho" });
             cboVaiTro.SelectedIndex = 0;
 
             cboTrangThai.Items.Clear();
-            cboTrangThai.Items.AddRange(new object[] { "Tất cả", "Đang hoạt động", "Ngừng hoạt động" });
+            cboTrangThai.Items.AddRange(new object[] { "Tất cả", "Đang hoạt động", "Đã khóa" });
             cboTrangThai.SelectedIndex = 0;
 
-            cboKho.Items.Clear();
-            cboKho.Items.AddRange(new object[] { "Tất cả các kho", "Kho trung tâm", "Kho An Thới", "Kho phụ kiện Tuna" });
-            cboKho.SelectedIndex = 0;
+            // Nạp danh sách kho phụ trách từ CSDL
+            try
+            {
+                DataTable dtKho = DataProcessing.ReadData("SELECT MaKho, TenKho FROM Kho WHERE TrangThai = 'HOAT_DONG' ORDER BY MaKho ASC");
+                if (dtKho == null)
+                {
+                    dtKho = new DataTable();
+                    dtKho.Columns.Add("MaKho", typeof(int));
+                    dtKho.Columns.Add("TenKho", typeof(string));
+                }
+
+                DataRow rowTatCa = dtKho.NewRow();
+                rowTatCa["MaKho"] = 0;
+                rowTatCa["TenKho"] = "-- Tất cả các kho --";
+                dtKho.Rows.InsertAt(rowTatCa, 0);
+
+                ComboboxHelper.CaiDatTimKiem(cboKho, dtKho, "TenKho", "MaKho", () =>
+                {
+                    if (!dangNapBoLoc)
+                    {
+                        trangHienTai = 1;
+                        HienThiDanhSach();
+                    }
+                });
+                cboKho.SelectedIndex = 0;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi nạp danh sách kho: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
             if (cboSoDongMoiTrang.Items.Count > 0 && cboSoDongMoiTrang.SelectedIndex < 0)
             {
                 cboSoDongMoiTrang.SelectedIndex = 1; // 20 dòng
             }
+            soDongMoiTrang = LaySoDongMoiTrang();
+
+            dangNapBoLoc = false;
+        }
+
+        private int LaySoDongMoiTrang()
+        {
+            int soDong;
+            if (cboSoDongMoiTrang.SelectedItem != null && int.TryParse(cboSoDongMoiTrang.SelectedItem.ToString(), out soDong) && soDong > 0)
+            {
+                return soDong;
+            }
+            return 20;
         }
 
         public void HienThiDanhSach()
         {
             try
             {
-                dgvNguoiDung.Rows.Clear();
+                string tuKhoa = txtTimKiem.Text.Trim();
+                int maVaiTro = cboVaiTro.SelectedIndex > 0 ? cboVaiTro.SelectedIndex : 0;
+                string trangThai = null;
+                if (cboTrangThai.SelectedIndex == 1) trangThai = "HOAT_DONG";
+                else if (cboTrangThai.SelectedIndex == 2) trangThai = "KHOA";
 
-                string sql = @"
-                    SELECT tk.MaTaiKhoan, tk.TenDangNhap, nv.HoTen, nv.DienThoai, 
-                           vt.TenVaiTro, tk.TrangThai, tk.LanDangNhapCuoi,
+                int maKho = 0;
+                if (cboKho.SelectedValue != null && int.TryParse(cboKho.SelectedValue.ToString(), out int kVal))
+                {
+                    maKho = kVal;
+                }
+
+                StringBuilder whereSql = new StringBuilder(" WHERE 1=1 ");
+                List<SqlParameter> parameters = new List<SqlParameter>();
+
+                if (!string.IsNullOrEmpty(tuKhoa))
+                {
+                    whereSql.Append(@" AND (
+                        tk.TenDangNhap LIKE @TimKiemLike 
+                        OR ISNULL(nv.HoTen, '') LIKE @TimKiemLike 
+                        OR ISNULL(nv.DienThoai, '') LIKE @TimKiemLike
+                        OR vt.TenVaiTro LIKE @TimKiemLike
+                    ) ");
+                    parameters.Add(new SqlParameter("@TimKiemLike", "%" + tuKhoa + "%"));
+                }
+
+                if (maVaiTro > 0)
+                {
+                    whereSql.Append(" AND tk.MaVaiTro = @MaVaiTro ");
+                    parameters.Add(new SqlParameter("@MaVaiTro", maVaiTro));
+                }
+
+                if (!string.IsNullOrEmpty(trangThai))
+                {
+                    whereSql.Append(" AND tk.TrangThai = @TrangThai ");
+                    parameters.Add(new SqlParameter("@TrangThai", trangThai));
+                }
+
+                if (maKho > 0)
+                {
+                    // Quản lý (MaVaiTro = 1) phụ trách toàn bộ kho; các vai trò khác phải có phân công trong TaiKhoanKho
+                    whereSql.Append(@" AND (
+                        tk.MaVaiTro = 1 
+                        OR EXISTS (SELECT 1 FROM TaiKhoanKho tkk WHERE tkk.MaTaiKhoan = tk.MaTaiKhoan AND tkk.MaKho = @MaKho)
+                    ) ");
+                    parameters.Add(new SqlParameter("@MaKho", maKho));
+                }
+
+                // 1. Đếm tổng số bản ghi
+                string countSql = $@"
+                    SELECT COUNT(1)
+                    FROM TaiKhoan tk
+                    INNER JOIN VaiTro vt ON tk.MaVaiTro = vt.MaVaiTro
+                    LEFT JOIN NhanVien nv ON tk.MaNV = nv.MaNV
+                    {whereSql};";
+
+                SqlParameter[] countParams = new SqlParameter[parameters.Count];
+                for (int i = 0; i < parameters.Count; i++)
+                {
+                    countParams[i] = new SqlParameter(parameters[i].ParameterName, parameters[i].Value);
+                }
+
+                object countObj = DataProcessing.ReadValue(countSql, countParams);
+                tongSoBanGhi = countObj != null && countObj != DBNull.Value ? Convert.ToInt32(countObj) : 0;
+                tongSoTrang = (int)Math.Ceiling((double)tongSoBanGhi / soDongMoiTrang);
+                if (tongSoTrang <= 0) tongSoTrang = 1;
+                if (trangHienTai > tongSoTrang) trangHienTai = tongSoTrang;
+                if (trangHienTai < 1) trangHienTai = 1;
+
+                // 2. Phân trang SQL Server với OFFSET ... ROWS FETCH NEXT ... ROWS ONLY
+                int skip = (trangHienTai - 1) * soDongMoiTrang;
+                parameters.Add(new SqlParameter("@Skip", skip));
+                parameters.Add(new SqlParameter("@Take", soDongMoiTrang));
+
+                string dataSql = $@"
+                    SELECT CAST(0 AS BIT) AS Chon,
+                           tk.MaTaiKhoan, tk.TenDangNhap, 
+                           ISNULL(nv.HoTen, N'') AS HoTen, 
+                           ISNULL(nv.DienThoai, N'') AS DienThoai,
+                           tk.MaVaiTro, vt.TenVaiTro, tk.TrangThai,
+                           CASE 
+                               WHEN tk.LanDangNhapCuoi IS NOT NULL THEN FORMAT(tk.LanDangNhapCuoi, 'dd/MM/yyyy HH:mm')
+                               ELSE N'Chưa đăng nhập'
+                           END AS LanDangNhapCuoiHienThi,
                            ISNULL((
                                SELECT STRING_AGG(k.TenKho, ', ')
                                FROM TaiKhoanKho tkk
@@ -236,60 +420,58 @@ namespace BTL_LTTQ_2.GUI.Forms.NguoiDung
                     FROM TaiKhoan tk
                     INNER JOIN VaiTro vt ON tk.MaVaiTro = vt.MaVaiTro
                     LEFT JOIN NhanVien nv ON tk.MaNV = nv.MaNV
-                    ORDER BY tk.MaTaiKhoan ASC";
+                    {whereSql}
+                    ORDER BY tk.MaTaiKhoan ASC
+                    OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY;";
 
-                DataTable dt = DataProcessing.ReadData(sql);
-                if (dt != null && dt.Rows.Count > 0)
-                {
-                    foreach (DataRow dr in dt.Rows)
-                    {
-                        int maTk = Convert.ToInt32(dr["MaTaiKhoan"]);
-                        string tenDn = dr["TenDangNhap"] != DBNull.Value ? dr["TenDangNhap"].ToString() : "";
-                        string hoTen = dr["HoTen"] != DBNull.Value ? dr["HoTen"].ToString() : "";
-                        string sdt = dr["DienThoai"] != DBNull.Value ? dr["DienThoai"].ToString() : "";
-                        string vaiTro = dr["TenVaiTro"] != DBNull.Value ? dr["TenVaiTro"].ToString() : "";
-                        string kho = dr["KhoPhuTrach"] != DBNull.Value ? dr["KhoPhuTrach"].ToString() : "";
-                        string ngayTao = dr["LanDangNhapCuoi"] != DBNull.Value ? Convert.ToDateTime(dr["LanDangNhapCuoi"]).ToString("dd/MM/yyyy HH:mm") : "20/10/2026 08:30";
-                        string trangThai = dr["TrangThai"] != DBNull.Value ? dr["TrangThai"].ToString() : "HOAT_DONG";
+                DataTable dt = DataProcessing.ReadData(dataSql, parameters.ToArray());
+                dgvNguoiDung.DataSource = dt;
 
-                        ThemDong(maTk, tenDn, hoTen, sdt, vaiTro, kho, ngayTao, trangThai);
-                    }
-                    lblTongSoHang.Text = $"Tổng số người dùng: {dgvNguoiDung.Rows.Count}";
-                    CapNhatTrangThaiHeaderCheckBox();
-                    return;
-                }
+                lblTongSoHang.Text = $"Tổng số người dùng: {tongSoBanGhi}";
+                lblTrangHienTai.Text = $"Trang {trangHienTai} / {tongSoTrang}";
+                btnTrangTruoc.Enabled = trangHienTai > 1;
+                btnTrangSau.Enabled = trangHienTai < tongSoTrang;
+
+                isHeaderChecked = false;
+                dgvNguoiDung.InvalidateCell(colChon.Index, -1);
             }
-            catch
+            catch (Exception ex)
             {
-                // Fallback nạp mẫu giao diện nếu chưa có CSDL
+                MessageBox.Show("Lỗi tải danh sách người dùng: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
-            NapDuLieuMauGiaoDien();
         }
 
-        private void NapDuLieuMauGiaoDien()
+        private void BoLoc_SelectedIndexChanged(object sender, EventArgs e)
         {
-            dgvNguoiDung.Rows.Clear();
-
-            // Mẫu 1: Tài khoản Quản lý
-            ThemDong(1, "quanly", "Nguyễn Văn Quản Trị", "0901000001", "Quản lý", "Toàn quyền tất cả các kho", "20/10/2026 08:30", "HOAT_DONG");
-
-            // Mẫu 2: Tài khoản Thủ kho
-            ThemDong(2, "thukho", "Trần Đình Thủ Kho", "0901000002", "Thủ kho", "Kho trung tâm", "20/10/2026 09:15", "HOAT_DONG");
-
-            // Mẫu 3: Tài khoản Nhân viên kho 1
-            ThemDong(3, "nvkho", "Lê Văn Nhân Viên", "0901000003", "Nhân viên kho", "Kho An Thới", "21/10/2026 14:00", "HOAT_DONG");
-
-            // Mẫu 4: Tài khoản Bị khóa
-            ThemDong(4, "nvtamkhoa", "Phạm Văn Tạm", "0901000004", "Nhân viên kho", "Kho phụ kiện Tuna", "22/10/2026 10:20", "NGUNG_HOAT_DONG");
-
-            lblTongSoHang.Text = $"Tổng số người dùng: {dgvNguoiDung.Rows.Count}";
-            CapNhatTrangThaiHeaderCheckBox();
+            if (dangNapBoLoc) return;
+            trangHienTai = 1;
+            HienThiDanhSach();
         }
 
-        private void ThemDong(int maTk, string tenDn, string hoTen, string sdt, string vaiTro, string kho, string ngayTao, string trangThai)
+        private void cboSoDongMoiTrang_SelectedIndexChanged(object sender, EventArgs e)
         {
-            dgvNguoiDung.Rows.Add(false, maTk, tenDn, hoTen, sdt, vaiTro, kho, ngayTao, trangThai);
+            if (dangNapBoLoc) return;
+            soDongMoiTrang = LaySoDongMoiTrang();
+            trangHienTai = 1;
+            HienThiDanhSach();
+        }
+
+        private void btnTrangTruoc_Click(object sender, EventArgs e)
+        {
+            if (trangHienTai > 1)
+            {
+                trangHienTai--;
+                HienThiDanhSach();
+            }
+        }
+
+        private void btnTrangSau_Click(object sender, EventArgs e)
+        {
+            if (trangHienTai < tongSoTrang)
+            {
+                trangHienTai++;
+                HienThiDanhSach();
+            }
         }
 
         #endregion
@@ -359,14 +541,15 @@ namespace BTL_LTTQ_2.GUI.Forms.NguoiDung
             }
 
             frm.Location = new Point(popupX, popupY);
-            frm.Show();
+            // Gắn form cha để popup tự đóng cùng danh sách người dùng
+            frm.Show(this);
         }
 
         private void btnHuongDanSuDung_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Màn hình Quản lý người dùng cho phép:\n" +
                 "- Xem danh sách tài khoản và phân quyền kho làm việc.\n" +
-                "- Lọc theo vai trò, trạng thái, kho phụ trách và thời gian tạo.\n" +
+                "- Tìm kiếm theo tên đăng nhập, họ tên, điện thoại; lọc theo vai trò, trạng thái, kho phụ trách.\n" +
                 "- Tạo mới người dùng và phân quyền kho (+ Người dùng).\n" +
                 "- Nhấp đúp chuột vào một dòng để xem chi tiết, cập nhật hoặc khóa tài khoản.\n" +
                 "- Tùy biến ẩn/hiện cột hiển thị qua nút 'Hiện cột'.",
@@ -375,31 +558,22 @@ namespace BTL_LTTQ_2.GUI.Forms.NguoiDung
 
         private void txtTimKiem_TextChanged(object sender, EventArgs e)
         {
-            string keyword = txtTimKiem.Text.Trim().ToLower();
-            if (string.IsNullOrEmpty(keyword))
-            {
-                foreach (DataGridViewRow row in dgvNguoiDung.Rows)
-                {
-                    row.Visible = true;
-                }
-            }
-            else
-            {
-                foreach (DataGridViewRow row in dgvNguoiDung.Rows)
-                {
-                    string tenDn = row.Cells["colTenDangNhap"].Value?.ToString().ToLower() ?? "";
-                    string hoTen = row.Cells["colHoTen"].Value?.ToString().ToLower() ?? "";
-                    string sdt = row.Cells["colDienThoai"].Value?.ToString().ToLower() ?? "";
-                    string vaiTro = row.Cells["colVaiTro"].Value?.ToString().ToLower() ?? "";
-                    string kho = row.Cells["colKhoPhuTrach"].Value?.ToString().ToLower() ?? "";
+            // Trì hoãn 300ms để tránh truy vấn lại liên tục khi đang gõ
+            searchDebounceTimer?.Stop();
+            searchDebounceTimer?.Start();
+        }
 
-                    bool match = tenDn.Contains(keyword) || hoTen.Contains(keyword) || sdt.Contains(keyword) || vaiTro.Contains(keyword) || kho.Contains(keyword);
-                    row.Visible = match;
-                }
+        private void txtTimKiem_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                searchDebounceTimer?.Stop();
+                trangHienTai = 1;
+                HienThiDanhSach();
             }
         }
 
         #endregion
     }
 }
-

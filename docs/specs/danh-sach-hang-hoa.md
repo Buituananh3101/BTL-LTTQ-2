@@ -121,3 +121,18 @@
   - Vị trí: Đứng ngay sau cột Tồn kho (`colTonKho`), độ rộng 95px, căn phải (`MiddleRight`), định dạng số `N0`.
   - Mặc định ẩn (`Visible = false`) khi tải danh sách; người dùng bật/tắt hiển thị linh hoạt thông qua form "Hiện cột" (`frmHienCot`, checkbox `chkKhachDat`).
   - Khi xuất file Excel (`.xls`) hoặc `.csv`: Nếu cột đang hiển thị, hệ thống tự động xuất kèm dữ liệu số lượng khách đặt với định dạng số chuẩn.
+
+
+---
+
+## 7. Quy chuẩn Chức năng Xuất File Hàng Hóa (Desktop WinForms - btnXuatFile)
+- **Cơ chế thu thập dữ liệu xuất**:
+  - **Trường hợp 1 (Có dòng được tích chọn CheckBox `colChon`)**: Hệ thống ưu tiên xuất đúng danh sách các mặt hàng đang được người dùng tích chọn trên lưới.
+  - **Trường hợp 2 (Không tích chọn dòng nào - Xuất toàn bộ danh sách)**: Hệ thống tự động truy vấn CSDL theo toàn bộ các tiêu chí bộ lọc hiện tại (từ khóa tìm kiếm, nhóm hàng, ĐVT, nhà cung cấp, vị trí, trạng thái kinh doanh, khoảng ngày tạo, tiêu chí tồn kho) **mà không phân trang** (`sqlXuatFile`), đảm bảo xuất đầy đủ 100% dữ liệu (ví dụ toàn bộ 37 mặt hàng), không bị giới hạn bởi số dòng mỗi trang trên màn hình (20 dòng).
+- **Quy chuẩn định dạng file**:
+  - Hỗ trợ 2 định dạng: Excel (`.xls` - bảng tính HTML Table UTF-8 có border, căn lề và format tiền/số) và CSV (`.csv` - UTF-8 with BOM kèm chỉ thị `sep=,`).
+  - Tự động đồng bộ các cột xuất theo các cột đang hiển thị (`col.Visible = true`) do người dùng tùy biến qua form `frmHienCot`.
+  - Tự động loại bỏ các cột không phải dữ liệu văn bản: Cột chọn CheckBox (`colChon`) và Cột Hình ảnh (`colHinhAnh`).
+  - Định dạng hiển thị chuẩn xác: Căn phải số tiền/số lượng (`N0`), căn giữa ngày tạo (`dd/MM/yyyy HH:mm`) và mã hàng, hiển thị nhãn trạng thái tiếng Việt ("Đang bán" / "Ngừng bán").
+  - Hiển thị thông báo tổng kết rõ ràng số lượng mặt hàng đã xuất thành công kèm đường dẫn file.
+

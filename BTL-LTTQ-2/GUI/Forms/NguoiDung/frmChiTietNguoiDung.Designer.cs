@@ -113,7 +113,7 @@
             this.cboTrangThai.FormattingEnabled = true;
             this.cboTrangThai.Items.AddRange(new object[] {
             "Đang hoạt động",
-            "Ngừng hoạt động"});
+            "Đã khóa"});
             this.cboTrangThai.Location = new System.Drawing.Point(736, 98);
             this.cboTrangThai.Name = "cboTrangThai";
             this.cboTrangThai.Size = new System.Drawing.Size(320, 29);

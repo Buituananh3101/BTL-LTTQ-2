@@ -436,7 +436,7 @@
             this.lblGiamGia.Name = "lblGiamGia";
             this.lblGiamGia.Size = new System.Drawing.Size(63, 17);
             this.lblGiamGia.TabIndex = 4;
-            this.lblGiamGia.Text = "Giảm giá:";
+            this.lblGiamGia.Text = "Giảm giá (%):";
             // 
             // lblTongTienHangVal
             // 

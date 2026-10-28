@@ -49,5 +49,46 @@ namespace BTL_LTTQ_2.Classes
             string hashOfInput = HashPassword(plainPassword);
             return string.Equals(hashOfInput, hashedPassword, StringComparison.OrdinalIgnoreCase);
         }
+
+        /// <summary>
+        /// Kiểm tra chuỗi lưu trong CSDL có phải chuỗi băm SHA-256 dạng hex (64 ký tự 0-9, a-f) hay không
+        /// </summary>
+        public static bool LaChuoiBamSha256(string giaTriLuu)
+        {
+            if (string.IsNullOrEmpty(giaTriLuu) || giaTriLuu.Length != 64)
+            {
+                return false;
+            }
+
+            foreach (char c in giaTriLuu)
+            {
+                bool laHex = (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
+                if (!laHex)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Kiểm tra mật khẩu nhập vào với giá trị lưu trong CSDL (dùng chung cho Đăng nhập và Đổi mật khẩu):
+        /// - Nếu giá trị lưu là chuỗi băm SHA-256: chỉ so sánh SHA256(mật khẩu nhập), không chấp nhận nhập thẳng chuỗi băm.
+        /// - Nếu là dữ liệu cũ dạng văn bản thuần: so sánh trực tiếp (nơi gọi cần nâng cấp sang chuỗi băm khi hợp lệ).
+        /// </summary>
+        public static bool KiemTraMatKhau(string matKhauNhap, string giaTriLuu)
+        {
+            if (string.IsNullOrEmpty(matKhauNhap) || string.IsNullOrEmpty(giaTriLuu))
+            {
+                return false;
+            }
+
+            if (LaChuoiBamSha256(giaTriLuu))
+            {
+                return VerifyPassword(matKhauNhap, giaTriLuu);
+            }
+
+            return string.Equals(matKhauNhap, giaTriLuu, StringComparison.Ordinal);
+        }
     }
 }

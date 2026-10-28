@@ -26,6 +26,8 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
         private bool isHeaderHovered = false;
 
         private Timer searchDebounceTimer;
+        private string sqlXuatFile = "";
+        private List<SqlParameter> parasXuatFile = new List<SqlParameter>();
 
         public frmNhaCungCap()
         {
@@ -443,6 +445,21 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                 if (tongSoTrang <= 0) tongSoTrang = 1;
                 if (trangHienTai > tongSoTrang) trangHienTai = tongSoTrang;
 
+                // Lưu câu lệnh truy vấn phục vụ xuất file toàn bộ (không kèm OFFSET / FETCH)
+                sqlXuatFile = $@"
+                    {cteSql}
+                    SELECT c.MaDonViCapHang, c.MaNcc, c.TenDonVi, c.DienThoai, c.Email,
+                           c.NoCanTraHienTai, c.TongMua, c.TrangThai, c.TenNhom, c.NgayTao
+                    FROM CTE_NhaCungCap c
+                    {whereSql}
+                    ORDER BY c.MaDonViCapHang DESC;";
+
+                parasXuatFile.Clear();
+                foreach (var p in parameters)
+                {
+                    parasXuatFile.Add(new SqlParameter(p.ParameterName, p.Value));
+                }
+
                 int skip = (trangHienTai - 1) * soDongMoiTrang;
                 parameters.Add(new SqlParameter("@Skip", skip));
                 parameters.Add(new SqlParameter("@Take", soDongMoiTrang));
@@ -826,52 +843,211 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
 
         private void btnXuatFile_Click(object sender, EventArgs e)
         {
-            if (dgvNhaCungCap.Rows.Count == 0)
+            if (dgvNhaCungCap.Rows.Count == 0 && tongSoBanGhi == 0)
             {
-                MessageBox.Show("Không có dữ liệu để xuất file!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Không có dữ liệu nhà cung cấp để xuất file!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            // Xác định danh sách dòng cần xuất: Ưu tiên các dòng được tích chọn CheckBox
+            List<DataGridViewRow> danhSachChon = new List<DataGridViewRow>();
+            foreach (DataGridViewRow row in dgvNhaCungCap.Rows)
+            {
+                if (Convert.ToBoolean(row.Cells["colChon"].Value ?? false))
+                {
+                    danhSachChon.Add(row);
+                }
+            }
+
+            bool coDongChon = danhSachChon.Count > 0;
+
+            // Lấy danh sách cột hiển thị cần xuất (bỏ cột CheckBox và cột ID)
+            List<DataGridViewColumn> colsXuat = new List<DataGridViewColumn>();
+            foreach (DataGridViewColumn col in dgvNhaCungCap.Columns)
+            {
+                if (col.Visible && col.Name != "colChon" && col.Name != "colMaDonViCapHang")
+                {
+                    colsXuat.Add(col);
+                }
+            }
+
+            if (colsXuat.Count == 0)
+            {
+                MessageBox.Show("Không có cột nào đang hiển thị để xuất dữ liệu!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Thu thập dữ liệu các dòng cần xuất
+            List<string[]> dataRows = new List<string[]>();
+
+            if (coDongChon)
+            {
+                foreach (DataGridViewRow row in danhSachChon)
+                {
+                    string[] cells = new string[colsXuat.Count];
+                    for (int i = 0; i < colsXuat.Count; i++)
+                    {
+                        cells[i] = row.Cells[colsXuat[i].Index].FormattedValue?.ToString() ?? "";
+                    }
+                    dataRows.Add(cells);
+                }
+            }
+            else
+            {
+                DataTable dtTatCa = null;
+                if (!string.IsNullOrEmpty(sqlXuatFile) && parasXuatFile != null)
+                {
+                    List<SqlParameter> ps = new List<SqlParameter>();
+                    foreach (var p in parasXuatFile)
+                    {
+                        ps.Add(new SqlParameter(p.ParameterName, p.Value));
+                    }
+                    dtTatCa = DataProcessing.ReadData(sqlXuatFile, ps.ToArray());
+                }
+
+                if (dtTatCa != null && dtTatCa.Rows.Count > 0)
+                {
+                    foreach (DataRow dr in dtTatCa.Rows)
+                    {
+                        string[] cells = new string[colsXuat.Count];
+                        for (int i = 0; i < colsXuat.Count; i++)
+                        {
+                            var col = colsXuat[i];
+                            string prop = col.DataPropertyName;
+                            object val = (!string.IsNullOrEmpty(prop) && dtTatCa.Columns.Contains(prop)) ? dr[prop] : null;
+
+                            if (val == null || val == DBNull.Value)
+                            {
+                                cells[i] = "";
+                            }
+                            else if (col.Name == "colTrangThai")
+                            {
+                                string sVal = val.ToString();
+                                cells[i] = (sVal == "HOAT_DONG") ? "Đang hoạt động" : (sVal == "NGUNG_HOAT_DONG" ? "Ngừng hoạt động" : sVal);
+                            }
+                            else if (col.DefaultCellStyle.Format == "N0" && decimal.TryParse(val.ToString(), out decimal numVal))
+                            {
+                                cells[i] = numVal.ToString("N0");
+                            }
+                            else
+                            {
+                                cells[i] = val.ToString();
+                            }
+                        }
+                        dataRows.Add(cells);
+                    }
+                }
+                else
+                {
+                    foreach (DataGridViewRow row in dgvNhaCungCap.Rows)
+                    {
+                        string[] cells = new string[colsXuat.Count];
+                        for (int i = 0; i < colsXuat.Count; i++)
+                        {
+                            cells[i] = row.Cells[colsXuat[i].Index].FormattedValue?.ToString() ?? "";
+                        }
+                        dataRows.Add(cells);
+                    }
+                }
+            }
+
+            if (dataRows.Count == 0)
+            {
+                MessageBox.Show("Không có dữ liệu nhà cung cấp để xuất file!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
-                sfd.Filter = "File CSV (*.csv)|*.csv|Tất cả tệp (*.*)|*.*";
-                sfd.FileName = $"DanhSachNhaCungCap_{DateTime.Now:yyyyMMdd_HHmm}.csv";
+                sfd.Title = coDongChon ? $"Xuất {dataRows.Count} nhà cung cấp đã chọn" : "Xuất danh sách nhà cung cấp";
+                sfd.Filter = "File Excel (*.xls)|*.xls|File CSV (*.csv)|*.csv";
+                sfd.FileName = coDongChon
+                    ? $"DanhSachNhaCungCap_DaChon_{DateTime.Now:yyyyMMdd_HHmm}.xls"
+                    : $"DanhSachNhaCungCap_{DateTime.Now:yyyyMMdd_HHmm}.xls";
 
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
                     try
                     {
-                        StringBuilder sb = new StringBuilder();
-
-                        // Ghi tiêu đề cột (bỏ các cột ẩn và cột hộp kiểm)
-                        List<string> headers = new List<string>();
-                        foreach (DataGridViewColumn col in dgvNhaCungCap.Columns)
+                        string ext = Path.GetExtension(sfd.FileName).ToLowerInvariant();
+                        if (ext == ".xls")
                         {
-                            if (col.Visible && col.Name != "colChon" && col.Name != "colMaDonViCapHang")
+                            StringBuilder sb = new StringBuilder();
+                            sb.AppendLine("<html xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:x=\"urn:schemas-microsoft-com:office:excel\" xmlns=\"http://www.w3.org/TR/REC-html40\">");
+                            sb.AppendLine("<head>");
+                            sb.AppendLine("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />");
+                            sb.AppendLine("<style>");
+                            sb.AppendLine("body { font-family: Segoe UI, Arial; font-size: 10pt; }");
+                            sb.AppendLine("th { background-color: #0078D7; color: #FFFFFF; font-weight: bold; border: 0.5pt solid #CCCCCC; padding: 6px; }");
+                            sb.AppendLine("td { border: 0.5pt solid #E0E0E0; padding: 5px; }");
+                            sb.AppendLine(".num { mso-number-format: \"#,##0\"; text-align: right; }");
+                            sb.AppendLine(".center { text-align: center; }");
+                            sb.AppendLine("</style>");
+                            sb.AppendLine("</head>");
+                            sb.AppendLine("<body>");
+                            sb.AppendLine("<h2>DANH SÁCH NHÀ CUNG CẤP</h2>");
+                            sb.AppendLine($"<p>Thời gian xuất: {DateTime.Now:dd/MM/yyyy HH:mm} | Tổng số: {dataRows.Count} nhà cung cấp</p>");
+                            sb.AppendLine("<table>");
+                            sb.AppendLine("<tr>");
+                            foreach (var col in colsXuat)
                             {
-                                headers.Add($"\"{col.HeaderText}\"");
+                                sb.AppendLine($"<th>{System.Net.WebUtility.HtmlEncode(col.HeaderText)}</th>");
                             }
-                        }
-                        sb.AppendLine(string.Join(",", headers));
+                            sb.AppendLine("</tr>");
 
-                        // Ghi từng dòng dữ liệu
-                        foreach (DataGridViewRow row in dgvNhaCungCap.Rows)
-                        {
-                            List<string> rowValues = new List<string>();
-                            foreach (DataGridViewColumn col in dgvNhaCungCap.Columns)
+                            foreach (var rowValues in dataRows)
                             {
-                                if (col.Visible && col.Name != "colChon" && col.Name != "colMaDonViCapHang")
+                                sb.AppendLine("<tr>");
+                                for (int i = 0; i < colsXuat.Count; i++)
                                 {
-                                    string cellVal = row.Cells[col.Index].FormattedValue?.ToString() ?? "";
-                                    rowValues.Add($"\"{cellVal.Replace("\"", "\"\"")}\"");
+                                    var col = colsXuat[i];
+                                    string cellVal = rowValues[i];
+                                    string cssClass = "";
+                                    if (col.DefaultCellStyle.Alignment == DataGridViewContentAlignment.MiddleRight)
+                                        cssClass = " class=\"num\"";
+                                    else if (col.DefaultCellStyle.Alignment == DataGridViewContentAlignment.MiddleCenter)
+                                        cssClass = " class=\"center\"";
+
+                                    sb.AppendLine($"<td{cssClass}>{System.Net.WebUtility.HtmlEncode(cellVal)}</td>");
                                 }
+                                sb.AppendLine("</tr>");
                             }
-                            sb.AppendLine(string.Join(",", rowValues));
+
+                            sb.AppendLine("</table>");
+                            sb.AppendLine("</body>");
+                            sb.AppendLine("</html>");
+
+                            File.WriteAllText(sfd.FileName, sb.ToString(), Encoding.UTF8);
+                        }
+                        else
+                        {
+                            StringBuilder sb = new StringBuilder();
+                            sb.AppendLine("sep=,");
+
+                            List<string> headers = new List<string>();
+                            foreach (var col in colsXuat)
+                            {
+                                headers.Add($"\"{col.HeaderText.Replace("\"", "\"\"")}\"");
+                            }
+                            sb.AppendLine(string.Join(",", headers));
+
+                            foreach (var rowValues in dataRows)
+                            {
+                                List<string> rowValuesEscaped = new List<string>();
+                                foreach (var val in rowValues)
+                                {
+                                    rowValuesEscaped.Add($"\"{val.Replace("\"", "\"\"")}\"");
+                                }
+                                sb.AppendLine(string.Join(",", rowValuesEscaped));
+                            }
+
+                            File.WriteAllText(sfd.FileName, sb.ToString(), new UTF8Encoding(true));
                         }
 
-                        // Ghi ra file với UTF-8 BOM để Excel hiển thị đúng tiếng Việt
-                        File.WriteAllText(sfd.FileName, sb.ToString(), Encoding.UTF8);
-                        MessageBox.Show("Xuất danh sách nhà cung cấp thành công tại:\n" + sfd.FileName, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        string thongBao = coDongChon
+                            ? $"Xuất danh sách {dataRows.Count:N0} nhà cung cấp đã chọn thành công tại:\n{sfd.FileName}"
+                            : $"Xuất danh sách toàn bộ {dataRows.Count:N0} nhà cung cấp thành công tại:\n{sfd.FileName}";
+                        MessageBox.Show(thongBao, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     catch (Exception ex)
                     {
@@ -894,9 +1070,6 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
             }
         }
 
-
-
-
         // Bấm nút Hiện cột mở form tùy chọn cột xuất hiện ngay dưới nút btnHienCot
         private void btnHienCot_Click(object sender, EventArgs e)
         {
@@ -910,7 +1083,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                 }
             }
 
-            frmHienCotNcc frm = new frmHienCotNcc(this.dgvNhaCungCap);
+            frmHienCotNcc frm = new frmHienCotNcc(dgvNhaCungCap);
             frm.StartPosition = FormStartPosition.Manual;
 
             // Tính toạ độ hiển thị ngay phía dưới nút btnHienCot
@@ -947,7 +1120,7 @@ namespace BTL_LTTQ_2.GUI.Forms.NhaCungCap
                               "3. Thêm mới NCC: Nhấp vào nút '+ Nhà cung cấp'.\n" +
                               "4. Xem / Chỉnh sửa: Nhấp đúp chuột (Double click) vào bất kỳ dòng nhà cung cấp nào trên bảng.\n" +
                               "5. Phân trang: Nhấp nút 'Trước' / 'Sau' hoặc chọn lại số dòng mỗi trang ở góc dưới bảng.\n" +
-                              "6. Xuất file: Nhấp 'Xuất file' để lưu danh sách ra file CSV mở bằng Excel.\n" +
+                              "6. Xuất file: Nhấp 'Xuất file' để lưu danh sách ra file Excel (.xls) hoặc CSV.\n" +
                               "7. Hiện/Ẩn cột: Nhấp nút 'Hiện cột' để bật/tắt các cột hiển thị trên bảng.";
 
             MessageBox.Show(huongDan, "Hướng dẫn sử dụng", MessageBoxButtons.OK, MessageBoxIcon.Information);

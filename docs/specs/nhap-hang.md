@@ -14,7 +14,7 @@
   - `frmHienCotHangNhap.cs`, `.Designer.cs`, `.resx`: Form popup ẩn/hiện cột dữ liệu cho DataGridView `dgvChiTietHang` trong `frmThemPhieuNhap` (quản lý 7 cột: Mã hàng, Tên hàng, Đơn vị tính, Số lượng, Đơn giá, Giảm giá, Thành tiền).
   - `frmChiTietPhieuNhap.cs`, `.Designer.cs`, `.resx`: Form xem chi tiết đơn nhập hàng (mở khi double-click từ danh sách). Hiển thị đầy đủ thông tin header (Mã phiếu, NCC, Kho, Ngày nhập, Trạng thái, Người nhập, Ghi chú), bảng lưới hàng hóa đã nhập đệm đôi `DoubleBuffered`, tổng kết thanh toán. **Cung cấp các nút chức năng ở thanh đáy: `Xóa`, `Xuất file`, `Hoàn thành` (chỉ hiển thị khi là Phiếu tạm `NHAP` để chuyển sang `DA_XAC_NHAN`), `Trả hàng nhập` (chỉ hiển thị khi đã hoàn thành `DA_XAC_NHAN`)** cùng nút `Đóng`.
   - `frmHienCotNhapHang.cs`, `.Designer.cs`, `.resx`: Form popup ẩn/hiện cột cho DataGridView danh sách phiếu nhập hàng `frmNhapHang` (quản lý các cột hiển thị trên danh sách đơn nhập).
-  - `frmTraHangNhap.cs`, `.Designer.cs`, `.resx`: Form trả hàng nhập được kích hoạt từ nút `Trả hàng nhập` trên form chi tiết đơn (kiểm tra chặn âm, chặn vượt số lượng nhập, chặn vượt tồn kho hiện tại, tự động khấu trừ nợ hoặc xác định tiền hoàn lại, bọc Transaction).
+  - `frmTraHangTheoPhieuNhap.cs`, `.Designer.cs`, `.resx`: Form trả hàng nhập được kích hoạt từ nút `Trả hàng nhập` trên form chi tiết đơn (kiểm tra chặn âm, chặn vượt số lượng nhập, chặn vượt tồn kho hiện tại, tự động khấu trừ nợ hoặc xác định tiền hoàn lại, bọc Transaction).
 - **Form cha MDI & Menu**: `BTL-LTTQ-2/GUI/Forms/frmMain.cs` (gắn sự kiện `mnuNhapHang_Click` kiểm tra kích hoạt hoặc tạo mới form `frmNhapHang`).
 - **Truy xuất dữ liệu (DAL)**: `BTL-LTTQ-2/Classes/DataProcessing.cs` (ADO.NET thuần: `ReadData`, `ReadValue`, `ChangeDataTransaction`).
 - **Quản lý phiên đăng nhập**: `BTL-LTTQ-2/Classes/SessionContext.cs` (lấy `MaTaiKhoan`, `MaKhoHienTai`, vai trò).
@@ -39,9 +39,9 @@
 | **5. Thêm mới đơn nhập** | Bấm nút `+ Nhập hàng` (`btnThemPhieuNhap`) | Mở form `frmThemPhieuNhap` dưới dạng Modal Dialog `ShowDialog(this)` chuẩn kích thước 1582x803, bố cục chuẩn khuôn mẫu `frmThemPhieuKiemKho` | Gợi ý tự động mã phiếu `PN...`, chọn NCC, kho, thêm hàng hóa, nhập trực tiếp số lượng trên ô lưới, tính tổng tiền, nợ. Lưu tạm (`NHAP`) hoặc Hoàn thành (`DA_XAC_NHAN`) trong Transaction |
 | **6. Xem chi tiết đơn nhập** | Nhấn đúp chuột (Double Click) vào 1 dòng đơn nhập | Mở form `frmChiTietPhieuNhap` dạng Modal Dialog | Nạp thông tin header, danh sách hàng hóa và tổng kết thanh toán. Cung cấp đúng 3 nút: `Xóa`, `Xuất file`, `Trả hàng nhập` |
 | **7. Xóa đơn nhập** | Bấm nút `Xóa` trên form chi tiết | Xác nhận DialogResult: Nếu phiếu `NHAP` ➜ Xóa cứng; Nếu `DA_XAC_NHAN` ➜ Kiểm tra an toàn tồn kho, chuyển trạng thái `HUY` | Bọc trong Transaction; ghi nhật ký thao tác; nếu hủy làm âm tồn kho thì chặn ngay |
-| **8. Trả hàng nhập** | Bấm nút `Trả hàng nhập` trên form chi tiết | Mở modal dialog `frmTraHangNhap(maPhieuNhap)` | Chỉ mở được với phiếu `DA_XAC_NHAN`. Chuyển sang giao diện trả hàng nhập |
+| **8. Trả hàng nhập** | Bấm nút `Trả hàng nhập` trên form chi tiết | Mở modal dialog `frmTraHangTheoPhieuNhap(maPhieuNhap)` | Chỉ mở được với phiếu `DA_XAC_NHAN`. Chuyển sang giao diện trả hàng nhập |
 | **9. Tùy chọn Ẩn/Hiện cột** | Bấm nút "Hiện cột" | Mở popup `frmHienCotNhapHang` | Bật/tắt `dgv.Columns[col].Visible` tức thì |
-| **10. Xuất file CSV** | Bấm nút "Xuất file" | Hộp thoại `SaveFileDialog` lưu file `.csv` | Xuất đúng các cột đang hiển thị với định dạng UTF-8 BOM đọc tốt trên Microsoft Excel |
+| **10. Xuất file Excel / CSV** | Bấm nút "Xuất file" | Hộp thoại `SaveFileDialog` hỗ trợ lưu file `.xls` (HTML Table UTF-8 chuẩn mở trực tiếp bằng Excel, header màu `#0078D7`, format số `#,##0`) và `.csv` (UTF-8 BOM). Ưu tiên xuất các dòng được tích chọn CheckBox; nếu không chọn dòng nào sẽ xuất toàn bộ dữ liệu thỏa mãn bộ lọc hiện tại | Xuất toàn bộ danh sách phiếu nhập hoặc các phiếu được chọn ra file Excel/CSV |
 
 ---
 
@@ -75,9 +75,9 @@
   - Khối tổng kết thanh toán: Tổng số lượng, Tổng tiền hàng, Giảm giá, Tổng cộng cần trả, Đã trả NCC, Còn nợ NCC.
 - **Ràng buộc quan trọng**: Giữ lại duy nhất 3 nút bấm chức năng ở góc dưới:
   1. `Xóa` (`btnXoaPhieu`): Thực hiện xóa phiếu tạm hoặc chuyển trạng thái sang `HUY` đối với phiếu đã xác nhận (kèm kiểm tra chặn âm tồn kho).
-  2. `Xuất file` (`btnXuatFile`): Xuất thông tin phiếu và bảng hàng hóa ra file CSV/Excel UTF-8 BOM.
+  2. `Xuất file` (`btnXuatFile`): Xuất thông tin chi tiết phiếu và bảng hàng hóa ra file Excel (`.xls` - HTML Table UTF-8 header màu `#0066CC`, format `#,##0`) hoặc CSV (`sep=,` UTF-8 BOM). Tự động lấy tên file `ChiTiet_{maPhieu}_{DateTime.Now:yyyyMMdd_HHmm}.xls`.
   3. `Hoàn thành` (`btnHoanThanh`): Chỉ hiển thị khi phiếu ở trạng thái `NHAP` (Phiếu tạm). Bấm Hoàn thành sẽ hỏi xác nhận, bọc trong Transaction cập nhật `TrangThai = 'DA_XAC_NHAN'`, `NgayXacNhan = GETDATE()`, `MaNVXacNhan`, tự động cộng tồn kho và ghi nhận công nợ NCC.
-  4. `Trả hàng nhập` (`btnTraHangNhap`): Chỉ hiển thị khi phiếu ở trạng thái `DA_XAC_NHAN`. Kích hoạt `frmTraHangNhap` để hoàn trả một phần hoặc toàn bộ lô hàng cho NCC.
+  4. `Trả hàng nhập` (`btnTraHangNhap`): Chỉ hiển thị khi phiếu ở trạng thái `DA_XAC_NHAN`. Kích hoạt `frmTraHangTheoPhieuNhap` để hoàn trả một phần hoặc toàn bộ lô hàng cho NCC.
 
 ### 3.4. Form Lập phiếu nhập hàng (`frmThemPhieuNhap` - Đồng bộ 100% khuôn mẫu `frmThemPhieuKiemKho`):
 - **Kích thước & Thiết lập**:
@@ -93,7 +93,7 @@
        - Kho nhập: ComboBox `cboKhoNhap` (tự động khóa nếu tài khoản đang ở kho chi nhánh).
        - Số hóa đơn: TextBox `txtSoHoaDon`.
        - Ghi chú: TextBox `txtGhiChu` (đa dòng).
-       - Thống kê tổng hợp: Số mặt hàng (`lblSoMatHangVal`), Tổng số lượng (`lblTongSoLuongVal`), Tổng tiền hàng (`lblTongTienHangVal`), Giảm giá (TextBox `txtGiamGia`), Tổng cộng (`lblTongCongVal`), Tiền đã trả (TextBox `txtDaTraNcc`), Cần trả NCC (`lblCanTraNccVal`).
+       - Thống kê tổng hợp: Số mặt hàng (`lblSoMatHangVal`), Tổng số lượng (`lblTongSoLuongVal`), Tổng tiền hàng (`lblTongTienHangVal`), Giảm giá (%) (TextBox `txtGiamGiaTong`), Tổng cộng (`lblTongCongVal`), Tiền đã trả (TextBox `txtTienDaTra`), Cần trả NCC (`lblCanTraNccVal`).
        - Cụm 3 nút bấm ở đáy (Location: Y=732, Size: 100x34): `Bỏ qua` (`btnBoQua`) ➜ `Lưu tạm` (`btnLuuTam`) ➜ `Lưu` (`btnLuu`).
   2. **Panel chọn hàng bên trên (`pnlTop` - Height 150px, Dock = Top)**:
      - Khung `grpChonHang` (1182 x 125):
@@ -103,7 +103,7 @@
        - Nút `Nhập file` (`btnNhapFile`): Nhập danh sách mặt hàng và số lượng từ file.
        - Nút `Hiện cột` (`btnHienCot`): Mở popup `frmHienCotHangNhap` để ẩn/hiện các cột dữ liệu.
   3. **Lưới dữ liệu trung tâm (`dgvChiTietHang` - Dock = Fill)**:
-     - Cột: STT (ReadOnly, MiddleCenter), Mã hàng (ReadOnly, MiddleCenter), Tên hàng (ReadOnly, MiddleLeft), Đơn vị tính (ReadOnly, MiddleCenter), Số lượng (Editable, màu `#FEFCE8`, MiddleRight, định dạng `N0`), Đơn giá (ReadOnly, MiddleRight, `N0`), Giảm giá (ReadOnly, MiddleRight, `N0`), Thành tiền (ReadOnly, MiddleRight, `N0`).
+     - Cột: STT (ReadOnly, MiddleCenter), Mã hàng (ReadOnly, MiddleCenter), Tên hàng (ReadOnly, MiddleLeft), Đơn vị tính (ReadOnly, MiddleCenter), Số lượng (Editable, màu `#FEFCE8`, MiddleRight, định dạng `N0`), Đơn giá (Editable, MiddleRight, `N0`), Giảm giá (%) (Editable, MiddleRight, `N0`), Thành tiền (ReadOnly, MiddleRight, `N0`).
      - Cho phép chỉnh sửa số lượng trực tiếp trên ô lưới; nhấn `Enter` commit dữ liệu và tự động tính toán lại thành tiền dòng cùng các chỉ số tài chính tổng hợp.
      - Nhấp đúp chuột (Double click) vào một dòng trên lưới hiển thị hộp thoại xác nhận xóa mặt hàng khỏi phiếu.
      - **Kiểm tra an toàn cột Số lượng**: Khi thêm hàng mới (`btnThemHang_Click`) hoặc nạp file (`btnNhapFile_Click`), nếu cột 'Số lượng' đang bị ẩn (`!colSoLuong.Visible`), hệ thống chặn thao tác và hiển thị `MessageBox.Show` cảnh báo người dùng bật lại cột trước khi thêm hàng, ngăn chặn hoàn toàn lỗi hệ thống unhandled exception `System.InvalidOperationException: Current cell cannot be set to an invisible cell`.

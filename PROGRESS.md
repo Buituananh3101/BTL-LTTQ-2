@@ -1,18 +1,13 @@
 ﻿# Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-26 – Chuẩn hóa phím Enter/nhận SL kiểm kho và đồng bộ hành vi nút Bỏ qua của 4 form thêm chứng từ (Phiên 56)
+**Cập nhật lần cuối**: 2026-10-28 – Tạo bộ dữ liệu mẫu CSV nhập file cho 6 chức năng (Phiên 67)
 ---
 
 ## Đang làm
-- [x] Tái thiết kế toàn diện `frmNhapKiemKhoFile` (Kiểm kho) và `frmNhapChuyenKhoFile` (Chuyển kho) giống 100% bố cục và giao diện của `frmNhapHangHoaFile` (kích thước 882x453, FixedDialog, panel header, 1. Chọn file, 2. Tùy chọn xử lý trùng mã, thanh tiến trình, thanh thao tác đáy với Tải file mẫu Excel, Thực hiện nhập và Đóng).
-- [x] Xây dựng mới `frmNhapHangNhapFile` (Nhập hàng) và `frmNhapHangTraFile` (Trả hàng nhập) theo đúng 100% khuôn mẫu `frmNhapHangHoaFile`, đăng ký vào `BTL-LTTQ-2.csproj`.
-- [x] Kết nối `btnNhapFile_Click` trong `frmThemPhieuNhap` và `frmThemPhieuTraHang` gọi dialog nhập file chuyên biệt, đồng bộ dữ liệu vào bảng chi tiết.
-- [x] Đồng bộ đặc tả chức năng `docs/specs/nhap-hang.md`, `docs/specs/tra-hang-nhap.md` và `docs/specs/kiem-kho.md`.
-
-
-
-
-- [x] Kiểm tra mã hóa tự động `tools/KiemTraMaHoa.ps1`: 100% file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake.
+- [x] Tạo thư mục DuLieuNhapVaoMau cùng cấp với .agent.
+- [x] Tạo 6 file dữ liệu mẫu .csv chuẩn định dạng cho 6 phân hệ nhập file: Danh sách hàng hóa, Nhà cung cấp, Thêm phiếu kiểm kho, Thêm phiếu chuyển kho, Thêm phiếu nhập hàng, Thêm phiếu trả hàng nhập.
+- [x] Định dạng chuẩn 100% UTF-8 with BOM, CRLF, 0 lỗi Mojibake.
+- [x] Kiểm tra mã hóa tự động 	ools/KiemTraMaHoa.ps1: 100% file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake.
 - [x] Kiểm tra biên dịch mã nguồn C# bằng MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
 
 ## Việc kế tiếp
@@ -24,8 +19,6 @@
    - Form Danh mục Vị trí (`frmViTri`).
    - Form Danh mục Chi nhánh Kho & phân quyền `TaiKhoanKho` (`frmKho`).
    - Form Danh mục Khách hàng (`frmKhachHang`).
-3. **Quản lý Kho & Chứng từ Biến động**:
-   - Form Xuất hủy (`frmXuatHuy`).
 
 ---
 
@@ -41,16 +34,158 @@
 | 6 | **Danh mục Nhà cung cấp** | `frmNhaCungCap`, `frmDonViCapHang`, `frmNhomNhaCungCap`, `frmHienCotNcc`, `frmNhapNhaCungCapFile` | Hoàn thành 100% |
 | 7 | **Phiếu Nhập hàng** | `frmNhapHang`, `frmThemPhieuNhap`, `frmChiTietPhieuNhap`, `frmHienCotNhapHang`, `frmHienCotHangNhap`, `frmNhapHangNhapFile` | Hoàn thành 100% |
 | 8 | **Trả hàng nhập** | `frmTraHangNhap`, `frmThemPhieuTraHang`, `frmChiTietTraHangNhap`, `frmHienCotTraHang`, `frmHienCotHangTra`, `frmNhapHangTraFile` | Hoàn thành 100% |
-| 9 | **Danh mục Đơn vị tính** | `frmDonViTinh`, `frmChiTietDonViTinh`, `frmHienCotDvt`, tạo nhanh từ `frmHangHoa` | Hoàn thành 100% |
+| 9 | **Danh mục Đơn vị tính** | `frmDonViTinh` (trong `DanhSachHangHoa`), tích hợp filter & popup CRUD đồng bộ Nhóm hàng/Vị trí | Hoàn thành 100% |
 | 10 | **Danh mục Cơ bản khác** | CRUD Nhóm hàng, Vị trí, Chi nhánh Kho, Khách hàng | Chưa bắt đầu |
 | 11 | **Kiểm kê & Cân bằng kho** | `frmKiemKho`, nạp tồn sổ sách, sinh phiếu điều chỉnh, khóa vĩnh viễn, `frmThemPhieuKiemKho`, `frmHienCotHangKiem` | Hoàn thành 100% |
 | 12 | **Chuyển kho Liên chi nhánh & Đổi kho** | `frmChuyenKho`, 2 bước Xuất kho ➜ Nhận kho, chặn tồn âm kho nguồn, modal `frmDoiKho` | Hoàn thành 100% |
-| 13 | **Xuất hủy** | `frmXuatHuy` | Chưa bắt đầu |
+| 13 | **Xuất hủy** | Đã hủy bỏ chức năng theo quyết định người dùng | Đã hủy |
 | 14 | **Báo cáo Tồn kho & Thẻ kho** | Báo cáo tồn đa kho (`frmBaoCaoTonKho`), Thẻ kho (`frmBaoCaoTheKho`) từ `vw_BienDongKho`, xuất CSV UTF-8 BOM | Hoàn thành 100% |
 
 ---
 
 ## Nhật ký phiên (Session Logs)
+- **Phiên 67 (2026-10-28) – Tạo bộ dữ liệu mẫu CSV chuẩn cho 6 phân hệ nhập file trong thư mục DuLieuNhapVaoMau**:
+  - **Nhu cầu**: Người dùng yêu cầu tạo thư mục DuLieuNhapVaoMau cùng cấp với .agent chứa các file .csv làm dữ liệu mẫu cho chức năng Nhập file của từng phân hệ (Thêm phiếu kiểm kho, Thêm phiếu chuyển kho, Danh sách hàng hóa, Nhà cung cấp, Thêm phiếu nhập hàng, Thêm phiếu trả hàng nhập).
+  - **Kết quả thực hiện**:
+    1. Tạo thư mục DuLieuNhapVaoMau/ tại thư mục gốc dự án (cùng cấp với .agent).
+    2. Khảo sát chính xác cấu trúc cột đọc dữ liệu của cả 6 Form nhập file (rmNhap*File.cs), xây dựng 6 file CSV mẫu đầy đủ dữ liệu thực tế và khớp 100% với mã hàng nội bộ trong CSDL (GAS45, BEP-DOI, VAN-01, CB-GAS, OXI-MINI):
+       - Mau_DanhSachHangHoa.csv: 11 cột, 11 dòng mẫu sản phẩm gas, bếp, thiết bị an toàn, than sạch.
+       - Mau_NhaCungCap.csv: 9 cột, 7 dòng mẫu nhà cung cấp gas, phụ kiện, khí y tế, PCCC.
+       - Mau_ThemPhieuKiemKho.csv: 5 cột, 5 dòng hàng kiểm đếm thực tế.
+       - Mau_ThemPhieuChuyenKho.csv: 5 cột, 5 dòng hàng chuyển kho liên chi nhánh.
+       - Mau_ThemPhieuNhapHang.csv: 7 cột, 5 dòng hàng nhập kho từ nhà cung cấp.
+       - Mau_ThemPhieuTraHangNhap.csv: 6 cột, 5 dòng hàng trả nhà cung cấp kèm lý do.
+    3. Định dạng chuẩn **UTF-8 with BOM** và ngắt dòng **CRLF** cho toàn bộ file CSV.
+    4. Kiểm tra mã hóa tự động 	ools/KiemTraMaHoa.ps1: 100% file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake.
+    5. Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+- **Phiên 66 (2026-10-27) – Sửa lỗi tiền đã trả/thu NCC nhảy số, chuyển Giảm giá sang % và khắc phục lỗi nhân đơn giá ở Nhập hàng & Trả hàng nhập**:
+  - **Nhu cầu**: Người dùng phản ánh: "khi ấn vào tiền đã trả thì phần tiền cần trả nhà cung cấp bị nhảy lên và không thể xóa, nhập số thì sẽ bị chèn vào phần đầu số tiền (ảnh 1 và ảnh 4). Khi nhập giảm giá vào từng mặt hàng hoặc vào ô giảm giá của phiếu ở góc phải thì chỉ trừ đi số tiền chứ không phải giảm giá theo % (làm giảm giá theo %, tên cột để là Giảm giá (%) và tên label bên grp thông tin cũng để là Giảm giá (%)) (ảnh 2). Khi thêm hàng và nhấn vào cột đơn giá của hàng thì khi kích chuột ra ngoài, số tiền sẽ bị nhân lên 1000 lần (ảnh 3)".
+  - **Kết quả thực hiện**:
+    1. **Khắc phục lỗi ô Tiền đã trả & Cần trả NCC (`frmThemPhieuNhap` và `frmThemPhieuTraHang`)**:
+       - Bỏ việc gán đè `.Text` trực tiếp trong phương thức tính toán tổng kết `CapNhatTongKet` / `TinhToanTongKet`.
+       - Cho phép người dùng xóa trống ô về 0. Tự động `SelectAll()` khi Enter hoặc Click. Chỉ format `N0` khi `Leave`.
+    2. **Đổi tính năng Giảm giá sang tỷ lệ phần trăm (%)**:
+       - Đổi Header cột thành `Giảm giá (%)` và nhãn thông tin thành `Giảm giá (%):` trên `frmThemPhieuNhap`, `frmChiTietPhieuNhap`, `frmThemPhieuTraHang`, `frmChiTietTraHangNhap`, `frmHienCotHangNhap`.
+       - Công thức dòng hàng: `ThanhTien = (SoLuong * DonGia) * (1 - GiamGia / 100)`. Công thức tổng: `TongCong = TongTienHang * (1 - GiamGiaTong / 100)`. Giới hạn hợp lệ [0, 100].
+       - Form chi tiết hiển thị `{GiamGia:N0} %`.
+    3. **Khắc phục triệt để lỗi Đơn giá bị nhân lên khi click ra ngoài**:
+       - Bổ sung `ParseDecimalAnToan(object rawVal)`: Trả về trực tiếp giá trị số nếu là `decimal`/`int`, không qua chuỗi; phân tích chuỗi với InvariantCulture bảo đảm không nuốt dấu chấm thập phân sinh ra nhân 100 lần.
+       - Tự động vào chế độ edit và `SelectAll()` khi người dùng nhấp chuột vào cột Đơn giá hoặc Số lượng.
+    4. **Kiểm tra chất lượng & Đồng bộ**:
+       - Đồng bộ tài liệu đặc tả `docs/specs/nhap-hang.md`, `docs/specs/tra-hang-nhap.md`, `docs/quyet-dinh.md`.
+       - Chạy `tools/KiemTraMaHoa.ps1`: **193/193 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+
+- **Phiên 65 (2026-10-27) – Chuẩn hóa toàn diện định dạng file mẫu Excel của chức năng Nhà cung cấp**:
+  - **Nhu cầu**: Người dùng phản ánh: "Định dạng file mẫu phần tải về file mẫu của chức năng Nhà cung cấp (ảnh 3) đang có giao diện khác với các file mẫu khác (ảnh 1 và 2). Chuẩn hóa file mẫu của Nhà cung cấp cho giao diện xuất ra giống các file mẫu còn lại".
+  - **Nguyên nhân**: File mẫu Nhà cung cấp (`Mau_Nhap_Nha_Cung_Cap.xls`) trước đây xuất bằng thẻ `<table border="1">`, thiếu cấu hình Workbook XML `<x:DisplayGridlines/>`, không có khối CSS styling Segoe UI và tiêu đề `#0078D7`, khiến Excel mở ra với font Aptos Narrow mặc định và viền đen dày, khác biệt hoàn toàn với file mẫu Hàng hóa và Nhập hàng.
+  - **Kết quả thực hiện**:
+    1. **Chuẩn hóa logic xuất file mẫu (`frmNhapNhaCungCapFile.cs`)**:
+       - Bổ sung cấu hình Workbook XML với tên Worksheet `MauNhaCungCap` và kích hoạt `<x:DisplayGridlines/>` hiển thị đường lưới Excel chuẩn mực.
+       - Thêm toàn bộ CSS styling chuẩn hệ thống: Thẻ `th` màu xanh thương hiệu `#0078D7`, chữ trắng Segoe UI 10pt in đậm, padding 6px; thẻ `td` font Segoe UI 9.5pt viền xám nhạt `#E0E0E0`, padding 5px.
+       - Cấu hình lớp định dạng `.text` (`mso-number-format: "\@"`) cho `Mã nhà cung cấp`, `Điện thoại`, `Mã số thuế` chống mất số 0 ở đầu.
+       - Chuẩn hóa 3 dòng dữ liệu mẫu trực quan (Vinamilk, Masan Consumer và Suntory PepsiCo minh họa rõ quy tắc để trống mã nhà cung cấp sẽ tự sinh mã `NCC0000X`).
+    2. **Rà soát & chuẩn hóa giao diện (`frmNhapNhaCungCapFile.Designer.cs`)**:
+       - Chuẩn hóa 100% chuỗi nhãn hiển thị tiếng Việt có dấu rõ ràng, chuẩn mực theo Luật 14.
+    3. **Đồng bộ tài liệu đặc tả & chất lượng**:
+       - Cập nhật mục 3.5 trong `docs/specs/nha-cung-cap.md`.
+       - Chạy `tools/KiemTraMaHoa.ps1`: 100% file (193/193) đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake.
+       - Biên dịch Visual Studio MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+
+- **Phiên 64 (2026-10-27) – Chuẩn hóa định dạng xuất file Excel .xls cho Báo cáo tồn kho và Báo cáo thẻ kho**:
+  - **Nhu cầu**: Người dùng yêu cầu: "Tiếp tục sửa định dạng xuất file của Báo cáo tồn kho và Báo cáo thẻ kho sang .xls".
+  - **Kết quả thực hiện**:
+    1. **Báo cáo tồn kho (`frmBaoCaoTonKho.cs`)**:
+       - `SaveFileDialog` hỗ trợ `File Excel (*.xls)|*.xls|File CSV (*.csv)|*.csv` (mặc định `.xls`).
+       - Tự động lấy toàn bộ kết quả lọc theo câu truy vấn `sqlXuatFile` và `thamSoXuatFile` (không bị giới hạn 20 dòng trang hiện tại).
+       - Bảng HTML Table UTF-8 chuẩn mở bằng Excel không lỗi font: Tiêu đề lớn, dòng thông tin (Kho, Tổng số mặt hàng, Tổng tồn, Tổng giá trị tồn, Cần lưu ý), bảng các cột đang hiển thị; định dạng số `#,##0` căn phải; cảnh báo tồn kho <= 0 tô đỏ in đậm; căn giữa mã/ĐVT/vị trí/trạng thái.
+    2. **Báo cáo thẻ kho (`frmBaoCaoTheKho.cs`)**:
+       - `SaveFileDialog` hỗ trợ `File Excel (*.xls)|*.xls|File CSV (*.csv)|*.csv` (mặc định `.xls`).
+       - Bảng HTML Table UTF-8 chuẩn: Tiêu đề lớn kèm tên hàng hóa, dòng thông tin (Kho, Mặt hàng, Kỳ báo cáo từ ngày... đến ngày...), 4 chỉ số KPI (Tồn đầu kỳ, Tổng nhập trong kỳ, Tổng xuất trong kỳ, Tồn cuối kỳ); bảng chi tiết các dòng phát sinh; dòng Tồn đầu kỳ và Tồn cuối kỳ được highlight nền `#F1F5F9`; tồn lũy kế âm tô đỏ in đậm.
+    3. **Đồng bộ tài liệu đặc tả chức năng**:
+       - Cập nhật mục xuất file trong `docs/specs/bao-cao-ton-kho.md` và `docs/specs/the-kho.md`.
+    4. **Kiểm tra chất lượng**:
+       - Chạy `tools/KiemTraMaHoa.ps1`: **193/193 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch Visual Studio MSBuild CoreCompile: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+
+- **Phiên 63 (2026-10-27) – Chuẩn hóa toàn diện định dạng xuất file Excel .xls cho 3 phân hệ Nhập hàng, Trả hàng nhập và Nhà cung cấp**:
+  - **Nhu cầu**: Người dùng yêu cầu: "Tiếp tục sửa phần xuất file của 3 chức năng Nhập hàng, Trả hàng nhập và Nhà cung cấp sang định dạng .xls" (giống xuất file của Kiểm kho và Chuyển kho, đầy đủ nội dung, giao diện HTML Table UTF-8 chuyên nghiệp).
+  - **Kết quả thực hiện**:
+    1. **Phân hệ Nhà cung cấp (`frmNhaCungCap.cs`)**:
+       - Bổ sung trích xuất dữ liệu không kèm phân trang (`sqlXuatFile`, `parasXuatFile`). Ưu tiên dòng chọn CheckBox; nếu không chọn dòng nào sẽ lấy toàn bộ 100% bản ghi thỏa mãn bộ lọc hiện tại.
+       - Hỗ trợ SaveFileDialog bộ lọc `File Excel (*.xls)|*.xls|File CSV (*.csv)|*.csv` (mặc định `.xls`).
+       - Bảng HTML Table UTF-8 có CSS styling, header `#0078D7` chữ trắng, format tiền tệ `#,##0`, căn giữa mã/ngày/trạng thái; mở bằng Excel không bao giờ lỗi font tiếng Việt.
+    2. **Phân hệ Nhập hàng (`frmNhapHang.cs` & `frmChiTietPhieuNhap.cs`)**:
+       - `frmNhapHang.cs`: Xuất danh sách đơn nhập hàng ra file Excel `.xls` và `.csv`. Đầy đủ các cột: Mã nhập hàng, Thời gian, Kho nhập, Mã NCC, Nhà cung cấp, Cần trả NCC, Tổng tiền, Trạng thái. Tự động truy vấn 100% dữ liệu theo bộ lọc khi không tích chọn CheckBox.
+       - `frmChiTietPhieuNhap.cs`: Xuất chi tiết phiếu nhập ra file `.xls` và `.csv`. Header phiếu gồm: Ngày nhập, Kho hàng, Nhà cung cấp, Người tạo, Người nhập, Trạng thái, Ghi chú; bảng mặt hàng (STT, Mã hàng, Tên hàng, ĐVT, Số lượng, Đơn giá, Giảm giá, Thành tiền với format `#,##0`); bảng tổng kết chân trang (Tổng tiền hàng, Giảm giá, Tổng cộng, Tiền đã trả NCC, Cần trả NCC).
+    3. **Phân hệ Trả hàng nhập (`frmTraHangNhap.cs` & `frmChiTietTraHangNhap.cs`)**:
+       - `frmTraHangNhap.cs`: Xuất danh sách đơn trả hàng ra file Excel `.xls` và `.csv`. Đầy đủ các cột: Mã trả hàng nhập, Thời gian, Kho hàng, Nhà cung cấp, Tổng tiền hàng, Giảm giá, NCC cần trả, NCC đã trả, Trạng thái. Hỗ trợ xuất các dòng đã chọn hoặc 100% dữ liệu theo bộ lọc.
+       - `frmChiTietTraHangNhap.cs`: Xuất chi tiết đơn trả hàng ra file `.xls` và `.csv`. Header phiếu gồm: Trạng thái, Kho hàng, Nhà cung cấp, Người tạo, Người trả, Ngày trả, Mã đơn nhập gốc, Ghi chú; bảng mặt hàng trả (STT, Mã hàng, Tên hàng hóa, ĐVT, Số lượng trả, Giá nhập, Giá trả lại, Thành tiền); bảng tổng kết chân trang (Số lượng mặt hàng, Tổng tiền hàng, Giảm giá, NCC cần trả, NCC đã trả).
+    4. **Đồng bộ tài liệu đặc tả chức năng**:
+       - Cập nhật mục xuất file trong `docs/specs/nha-cung-cap.md`, `docs/specs/nhap-hang.md`, `docs/specs/tra-hang-nhap.md`.
+    5. **Kiểm tra chất lượng**:
+       - Chạy `tools/KiemTraMaHoa.ps1`: **193/193 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch Visual Studio MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+
+- **Phiên 62 (2026-10-27) – Sửa lỗi tải file mẫu và nhập file Chuyển kho / Trả hàng nhập (Invalid column name 'TonCuoi')**:
+  - **Nhu cầu**: Người dùng phản ánh lỗi khi nhấn nút "Tải file mẫu Excel" trên form Nhập dữ liệu chuyển kho từ file: "Lỗi khi lưu file mẫu: Invalid column name 'TonCuoi'".
+  - **Nguyên nhân**: Trong `frmNhapChuyenKhoFile.cs` và `frmNhapHangTraFile.cs`, câu truy vấn tới view `vw_TonKhoHienTai` để nạp danh sách hàng mẫu và tra cứu tồn kho đã gọi tên cột `TonCuoi` thay vì tên cột chuẩn `SoLuongTon` của view.
+  - **Kết quả thực hiện**:
+    1. Chuẩn hóa câu lệnh truy vấn trong `frmNhapChuyenKhoFile.cs`: Đổi toàn bộ `TonCuoi` thành `SoLuongTon` trong cả `sqlMau` (Tải file mẫu) và `sqlHang` (Thực hiện nhập file).
+    2. Rà soát và chuẩn hóa tương tự trong `frmNhapHangTraFile.cs` nhằm ngăn ngừa lỗi phát sinh khi người dùng tải file mẫu hoặc nhập file trả hàng nhập.
+    3. Khôi phục toàn vẹn cấu trúc lớp `frmNhaCungCap.cs` (`btnNhapFile_Click`, `btnHienCot_Click`, `btnHuongDanSuDung_Click`).
+    4. Kiểm tra mã hóa tự động `tools/KiemTraMaHoa.ps1`: 193/193 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake.
+    5. Biên dịch Visual Studio MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+
+- **Phiên 61 (2026-10-27) – Chuẩn hóa định dạng xuất file Chuyển kho sang định dạng Excel .xls giống Kiểm kho (đầy đủ nội dung)**:
+  - **Nhu cầu**: Người dùng yêu cầu: "Đổi định dạng xuất file của form Chuyển kho sang dạng .xls giống xuất file của Kiểm kho ( trong file có đầy đủ nội dung như kiểm kho)".
+  - **Kết quả thực hiện**:
+    1. **Chuẩn hóa màn hình danh sách Chuyển kho (`frmChuyenKho`)**:
+       - Đổi `SaveFileDialog` mặc định sang định dạng Excel: `sfd.Filter = "File Excel (*.xls)|*.xls|File CSV (*.csv)|*.csv"`, tên file mặc định: `DanhSachChuyenKho_DaChon_...xls` (khi có chọn CheckBox) hoặc `DanhSachChuyenKho_...xls`.
+       - Tích hợp hàm `XuatExcelHtmlDanhSach` xuất bảng HTML Table UTF-8 chuẩn mở trực tiếp bằng Microsoft Excel: Tiêu đề lớn `DANH SÁCH PHIẾU CHUYỂN KHO`, dòng thông tin (Thời gian xuất, Tổng số phiếu), đầy đủ 10 cột dữ liệu (Mã chuyển kho, Thời gian, Kho gửi, Kho nhận, Tổng SL chuyển, Tổng SL nhận, Tổng giá trị, Người tạo, Trạng thái, Ghi chú), căn lề và định dạng số `#,##0` chuyên nghiệp.
+       - Tối ưu trích xuất dữ liệu: Lưu trữ câu truy vấn `sqlXuatFile` và `parasXuatFile` không kèm phân trang; khi người dùng không tích chọn CheckBox (`!coDongChon`), hệ thống tự động truy vấn toàn bộ phiếu chuyển thỏa mãn bộ lọc hiện tại, bảo đảm xuất đủ 100% dữ liệu.
+       - Giữ nguyên tùy chọn xuất CSV UTF-8 with BOM (`sep=,`) nếu người dùng chọn đuôi `.csv`.
+    2. **Chuẩn hóa màn hình chi tiết Chuyển kho (`frmChiTietChuyenKho`)**:
+       - Mở rộng hỗ trợ định dạng Excel `.xls`: `sfd.Filter = "File Excel (*.xls)|*.xls|File CSV (*.csv)|*.csv"`, tên file mặc định `ChiTiet_CK...xls`.
+       - Xây dựng hàm `XuatExcelHtmlChiTiet` giống hệt `frmChiTietKiemKho`: Tiêu đề `CHI TIẾT PHIẾU CHUYỂN KHO: {MaPhieu}`, thông tin chứng từ (Trạng thái, Lộ trình, Kho gửi, Kho nhận, Người lập, Ngày lập, Người xuất, Thời điểm xuất, Người nhận, Thời điểm nhận, Ghi chú chuyển, Ghi chú nhận); bảng mặt hàng chi tiết (STT, Mã hàng, Tên hàng, ĐVT, SL chuyển, SL nhận, Hao hụt - tô đỏ khi > 0, Đơn giá chuyển, Thành tiền); bảng thống kê chân trang (Tổng SL chuyển, Tổng SL nhận, Tổng hao hụt, Tổng giá trị).
+    3. **Đồng bộ tài liệu đặc tả chức năng**:
+       - Cập nhật mục 9 trong `docs/specs/chuyen-kho.md`.
+    4. **Kiểm tra chất lượng**:
+       - Chạy `tools/KiemTraMaHoa.ps1`: **193/193 file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake**.
+       - Biên dịch dự án bằng MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+- **Phiên 60 (2026-10-27) – Khắc phục lỗi xuất file chỉ lấy 20 mặt hàng trên màn hình Danh sách Hàng hóa (frmDanhSachHangHoa)**:
+  - **Nhu cầu**: Người dùng phản ánh chức năng Danh sách hàng hóa có 37 hàng nhưng khi xuất ra file chỉ có 20 mặt hàng. Tìm ra lỗi và sửa lại.
+  - **Nguyên nhân**: Trong `frmDanhSachHangHoa.cs`, khi người dùng không tích chọn CheckBox (`!coDongChon`), phương thức `btnXuatFile_Click` chỉ lặp qua `dgvHangHoa.Rows`. Do DataGridView đang áp dụng phân trang CSDL (`OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY`) với kích thước trang mặc định 20 dòng (`soDongMoiTrang = 20`), nên `dgvHangHoa.Rows` tại thời điểm đó chỉ chứa tối đa 20 dòng của trang hiện tại, dẫn đến file xuất ra thiếu mất 17 mặt hàng của các trang sau.
+  - **Kết quả thực hiện**:
+    1. Khai báo `sqlXuatFile` và `thamSoXuatFile` để lưu lại toàn bộ câu lệnh truy vấn lọc không kèm mệnh đề phân trang `OFFSET/FETCH` trong `HienThiDanhSach()`.
+    2. Tái cấu trúc logic `btnXuatFile_Click`:
+       - Khi có dòng được tích chọn CheckBox (`coDongChon == true`): Xuất đúng danh sách các mặt hàng người dùng chủ động chọn.
+       - Khi không tích chọn dòng nào (`coDongChon == false`): Hệ thống tự động truy vấn `sqlXuatFile` lấy toàn bộ dữ liệu thỏa mãn bộ lọc hiện tại (đầy đủ 100% số lượng, ví dụ toàn bộ 37 mặt hàng).
+       - Đồng bộ xuất theo các cột đang hiển thị (`col.Visible = true`) do người dùng tùy biến qua `frmHienCot`, tự động bỏ cột chọn CheckBox và cột Hình ảnh.
+       - Chuẩn hóa định dạng hiển thị cho cả định dạng Excel (`.xls` HTML Table UTF-8) và `.csv` (UTF-8 with BOM kèm `sep=,`): căn phải số tiền/số lượng `N0`, căn giữa ngày tạo `dd/MM/yyyy HH:mm`, hiển thị trạng thái tiếng Việt ("Đang bán" / "Ngừng bán").
+    3. Đồng bộ đặc tả chức năng `docs/specs/danh-sach-hang-hoa.md`.
+    4. Kiểm tra mã hóa tự động `tools/KiemTraMaHoa.ps1`: 100% file có UTF-8 with BOM, 0 lỗi Mojibake.
+    5. Biên dịch Visual Studio MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+
+
+- **Phiên 59 (2026-10-26) – Chuẩn hóa bố cục và logic Báo cáo Thẻ kho (frmBaoCaoTheKho) và Báo cáo Tồn kho (frmBaoCaoTonKho)**:
+  - **Nhu cầu**: Người dùng chỉnh sửa giao diện Báo cáo tồn kho và Thẻ kho; yêu cầu căn chỉnh left menu và cập nhật hoàn thiện logic cho Thẻ kho.
+  - **Kết quả thực hiện**:
+    1. Căn chỉnh `pnlBoLoc` và `grpBoLoc` trong cả 2 form `frmBaoCaoTonKho` và `frmBaoCaoTheKho`: loại bỏ Anchor 4 phía gây lệch menu trái, cố định Size `(360, 717)`, căn chỉnh lề trái các control tại `X = 18`, đưa cụm thời gian phát sinh `grpThoiGianTao` xuống đáy `(18, 593)` chuẩn Điều luật 16.
+    2. Sửa lỗi xung đột thứ tự Z-order Docking giữa `panel1` (Top) và `dgvTheKho` (Fill) trong `frmBaoCaoTheKho.Designer.cs`: đưa `panel1` lên trước `dgvTheKho`, gọi `dgvTheKho.BringToFront()` trong `Load` để hiển thị đầy đủ thông tin mặt hàng và 4 thẻ KPI Thẻ kho.
+    3. Cập nhật logic `frmBaoCaoTheKho.cs`:
+       - Nhận và lưu trữ `maKhoKhoiTao` từ `frmBaoCaoTonKho` hoặc theo `SessionContext.MaKhoHienTai`.
+       - Truy vấn tên kho tương ứng và hiển thị rõ ràng trên banner chi tiết mặt hàng (`Kho: ... | ĐVT: ...`).
+       - Tự động ẩn/hiện cột `Kho` trên bảng dữ liệu tùy theo ngữ cảnh xem toàn hệ thống hay xem một kho cụ thể.
+       - Loại bỏ hoàn toàn tùy chọn lọc "Xuất hủy / Hao hụt" và loại trừ loại chứng từ XUAT_HUY khỏi Thẻ kho theo quyết định người dùng bỏ phân hệ Xuất hủy.
+    4. Cài đặt sự kiện tương tác cho 4 thẻ KPI (`pnlCardTonDau`, `pnlCardNhapKy`, `pnlCardXuatKy`, `pnlCardTonCuoi`): gán con trỏ chuột Hand, click để lọc nhanh loại giao dịch hoặc cuộn tới dòng đầu/cuối.
+       - Chuẩn hóa nút điều hướng `btnQuayLai` tại góc đáy trái `(12, 735)`: hiển thị "Quay lại" khi mở từ Báo cáo tồn kho (nhấn Esc hoặc click để quay về), hiển thị "Đóng" khi mở độc lập từ menu.
+    4. Đồng bộ tài liệu đặc tả `docs/specs/the-kho.md`.
+    5. Kiểm tra mã hóa UTF-8 with BOM: 100% file đạt chuẩn, 0 lỗi Mojibake.
+    6. Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
+
+- **Phiên 58 (2026-10-26) – Chuẩn hóa phân trang SQL Server và DataBinding cho Danh sách Người dùng (rmDanhSachNguoiDung)**:   - **Nhu cầu**: Tiến hành sửa điểm chưa nhất quán số 2: Chuẩn hóa logic phân trang tầng CSDL và cơ chế DataBinding cho DataGridView.   - **Kết quả thực hiện**:     1. Cập nhật [rmDanhSachNguoiDung.Designer.cs](file:///d:/CODE/BTL-LTTQ-2/BTL-LTTQ-2/GUI/Forms/NguoiDung/frmDanhSachNguoiDung.Designer.cs): Khai báo DataPropertyName cho toàn bộ các cột trên dgvNguoiDung (MaTaiKhoan, TenDangNhap, HoTen, DienThoai, TenVaiTro, KhoPhuTrach, LanDangNhapCuoiHienThi, TrangThai).     2. Tái cấu tróc [rmDanhSachNguoiDung.cs](file:///d:/CODE/BTL-LTTQ-2/BTL-LTTQ-2/GUI/Forms/NguoiDung/frmDanhSachNguoiDung.cs):        - Chuyển từ phân trang in-memory sang phân trang SQL Server chuẩn với COUNT(1) và OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY.        - Bỏ hàm add dòng thủ công Rows.Add(...), chuyển sang dgvNguoiDung.DataSource = dt theo chuẩn toàn hệ thống.        - Tích hổp ComboboxHelper.CaiDatTimKiem cho cboKho hổ trổ tìm kho nhanh.        - Chuẩn hóa màu trạng thái 'KHOA' sang màu Xám nhạt (Color.FromArgb(100, 116, 139)) theo chuẩn nhóm 3 của Rule 15b.     3. Kiểm tra mã hóa font chữ 	ools/KiemTraMaHoa.ps1: 100% file UTF-8 with BOM, 0 lỗi font.     4. Biên dịch Rebuild: **0 Warning(s), 0 Error(s)**.
+- **Phiên 57 (2026-10-26) – Chuẩn hóa tìm kiếm tức thời Search Debounce Timer cho Danh sách Hàng hóa (rmDanhSachHangHoa)**:   - **Nhu cầu**: Rà soát độ đồng nhất giữa các đoạn code có logic tương tự trên toàn bộ hệ thống; tiến hành sửa điểm chưa nhất quán số 1 (Search Debounce Timer).   - **Kết quả thực hiện**:     1. Bổ sung searchDebounceTimer (300ms) và sự kiện 	xtTimKiem_KeyDown (phím Enter) vào [rmDanhSachHangHoa.cs](file:///d:/CODE/BTL-LTTQ-2/BTL-LTTQ-2/GUI/Forms/DanhSachHangHoa/frmDanhSachHangHoa.cs).     2. Cập nhật 	xtTimKiem_TextChanged sang cơ chế Stop() / Start() timer, khẮc phỤc triểt để hiện tưồng gửi truy vấn SQL Server liên tỤc theo tứng phím gõ, đồng nhất hoàn toàn với các form danh sách khác (rmNhapHang, rmChuyenKho, rmKiemKho, rmTraHangNhap, rmNhaCungCap, rmBaoCaoTonKho).     3. Kiểm tra tự động mã hóa 	ools/KiemTraMaHoa.ps1: 100% file UTF-8 with BOM, 0 lỗi Mojibake.     4. Biên dịch Rebuild bằng dotnet msbuild: **0 Warning(s), 0 Error(s)**.
 - **Phiên 56 (2026-10-26) – Chuẩn hóa phím Enter/nhận SL kiểm kho và đồng bộ hành vi nút Bỏ qua của 4 form thêm chứng từ**:
   - **Nhu cầu**: Người dùng phản ánh:
     1. Trong form `frmThemPhieuKiemKho`: khi thêm 1, 2 hàng hóa thủ công thì nhập số lượng và ấn Enter thì số lượng không nhận.

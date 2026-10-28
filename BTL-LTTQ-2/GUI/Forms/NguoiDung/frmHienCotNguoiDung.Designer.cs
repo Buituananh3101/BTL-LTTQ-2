@@ -141,7 +141,7 @@
             this.chkNgayTao.Name = "chkNgayTao";
             this.chkNgayTao.Size = new System.Drawing.Size(123, 25);
             this.chkNgayTao.TabIndex = 8;
-            this.chkNgayTao.Text = "Thời gian tạo";
+            this.chkNgayTao.Text = "Đăng nhập cuối";
             this.chkNgayTao.UseVisualStyleBackColor = true;
             // 
             // chkTrangThai

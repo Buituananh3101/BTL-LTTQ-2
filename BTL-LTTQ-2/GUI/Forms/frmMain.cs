@@ -4,6 +4,7 @@ using BTL_LTTQ_2.GUI.Forms.ChuyenKho;
 using BTL_LTTQ_2.GUI.Forms.DoiKho;
 using BTL_LTTQ_2.GUI.Forms.NhaCungCap;
 using BTL_LTTQ_2.GUI.Forms.NhapHang;
+using BTL_LTTQ_2.GUI.Forms.TraHangNhap;
 using BTL_LTTQ_2.GUI.Forms.DangNhap;
 using BTL_LTTQ_2.GUI.Forms.NguoiDung;
 using System;
@@ -108,9 +109,14 @@ namespace BTL_LTTQ_2.GUI.Forms
                 mnuNhaCungCap.Visible = false;
                 mnuBaoCaoTheKho.Visible = false;
             }
+
+            // Ẩn các đường phân cách bị treo khi mục menu đi kèm bị ẩn
+            // (dùng Available vì Visible của mục con trả về false khi menu cha chưa mở)
+            toolStripSeparator4.Available = mnuNhaCungCap.Available;
+            toolStripSeparator2.Available = mnuDoiKho.Available;
         }
 
-                private void mnuNguoiDung_Click(object sender, EventArgs e)
+        private void mnuNguoiDung_Click(object sender, EventArgs e)
         {
             foreach (Form form in this.MdiChildren)
             {
@@ -215,14 +221,14 @@ namespace BTL_LTTQ_2.GUI.Forms
             // Kiểm tra xem form danh sách trả hàng nhập đã mở chưa, nếu đã mở thì kích hoạt (Active) lên trước
             foreach (Form form in this.MdiChildren)
             {
-                if (form is BTL_LTTQ_2.GUI.Forms.TraHangNhap.frmTraHangNhap)
+                if (form is frmTraHangNhap)
                 {
                     form.Activate();
                     return;
                 }
             }
 
-            BTL_LTTQ_2.GUI.Forms.TraHangNhap.frmTraHangNhap frm = new BTL_LTTQ_2.GUI.Forms.TraHangNhap.frmTraHangNhap();
+            frmTraHangNhap frm = new frmTraHangNhap();
             frm.MdiParent = this;
             frm.Show();
         }
@@ -298,7 +304,7 @@ namespace BTL_LTTQ_2.GUI.Forms
                         {
                             dshh.HienThiDanhSach();
                         }
-                        else if (form is BTL_LTTQ_2.GUI.Forms.TraHangNhap.frmTraHangNhap thn)
+                        else if (form is frmTraHangNhap thn)
                         {
                             thn.LoadData();
                         }
