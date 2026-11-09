@@ -290,3 +290,19 @@
      - 100% file mã nguồn và tài liệu lưu định dạng **UTF-8 with BOM** và CRLF. 0 Mojibake.
      - Biên dịch MSBuild: **Build succeeded. 0 Warning(s), 0 Error(s)**.
 
+
+- **2026-11-09 (Phiên 67) – Tối ưu hóa triển khai độc lập và chuẩn hóa Script CSDL trọn gói (`TaoCSDL_DayDu.sql`)**:
+  1. **Khởi tạo Script CSDL trọn gói 1-Click (`docs/TaoCSDL_DayDu.sql`)**:
+     - Tự động hóa qua công cụ nâng cấp `tools/XuatScriptCSDL.ps1` sử dụng thư viện SQL Server Management Objects (SMO).
+     - Quy trình thực thi gồm 4 phần tuần tự, triệt tiêu hoàn toàn lỗi ràng buộc phụ thuộc (dependency cycle):
+       * Phần 1: Tạo CSDL `QuanLyKhoPhuQuocLTTQ` Collation `Vietnamese_CI_AS` và 30 bảng nghiệp vụ (kèm Primary Keys, Identity, Defaults, Checks, Indexes, không kèm FK).
+       * Phần 2: Nạp toàn bộ dữ liệu mẫu (Data) với cơ chế bảo vệ `IDENTITY_INSERT ON/OFF`.
+       * Phần 3: Tạo toàn bộ 52 ràng buộc khóa ngoại (Foreign Keys) sau khi dữ liệu đã hiện diện.
+       * Phần 4: Tạo 2 View nghiệp vụ tồn kho động (`vw_BienDongKho`, `vw_TonKhoHienTai`).
+     - Script độc lập 100%, UTF-8 with BOM, dung lượng ~13MB (chứa đầy đủ dữ liệu ảnh và danh mục), chạy được trên mọi phiên bản SQL Server 2016+ qua SSMS hoặc Azure Data Studio chỉ bằng 1 phím F5.
+  2. **Biên dịch bản Release độc lập (`bin/Release/`)**:
+     - Biên dịch thành công bản Release độc lập qua `dotnet build` / MSBuild với **0 Warning, 0 Error**.
+     - Sản phẩm gồm: `BTL-LTTQ-2.exe` (914 KB) và file cấu hình `BTL-LTTQ-2.exe.config`. Không có phụ thuộc DLL bên ngoài.
+  3. **Soạn thảo Hướng dẫn Triển khai (`HUONG_DAN_CAI_DAT.md`)**:
+     - Hướng dẫn chi tiết 3 bước cài đặt (chạy script SQL, kiểm tra App.config nếu tên instance khác SQLEXPRESS, khởi chạy).
+     - Liệt kê đầy đủ 3 tài khoản demo ứng với 3 cấp vai trò doanh nghiệp (`quanly`, `thukho`, `nvkho` / mật khẩu `123456`) và hướng dẫn khắc phục sự cố kết nối.

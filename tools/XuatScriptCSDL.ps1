@@ -202,9 +202,18 @@ foreach ($vName in $orderedViewNames) {
 [void]$sb.AppendLine("PRINT N'=================================================================';")
 [void]$sb.AppendLine("GO")
 
+# Chuẩn hóa dữ liệu lịch sử bị lỗi font (nếu có) trước khi ghi ra đĩa
+$rawSql = $sb.ToString()
+$rawSql = $rawSql.Replace(
+    "N'ng nh?p', N'TaiKhoan', N'1', N'ng nh?p thnh cng v?i ti kho?n quanly (Quản lý)'",
+    "N'Đăng nhập', N'TaiKhoan', N'1', N'Đăng nhập thành công với tài khoản quanly (Quản lý)'"
+)
+# Thay thế chuỗi ghi chú phân quyền mặc định bị lỗi mã hóa UTF-8 kép
+$rawSql = [regex]::Replace($rawSql, "N'Kh[^']*?t[^']*?o ph[^']*?n quy[^']*?n m[^']*?c [^']*?nh h[^']*? th[^']*?ng'", "N'Khởi tạo phân quyền mặc định hệ thống'")
+
 $full = [System.IO.Path]::GetFullPath($Out)
 $utf8Bom = New-Object System.Text.UTF8Encoding $true
-[System.IO.File]::WriteAllText($full, $sb.ToString(), $utf8Bom)
+[System.IO.File]::WriteAllText($full, $rawSql, $utf8Bom)
 
 $sizeMb = [math]::Round((Get-Item $full).Length / 1KB, 2)
 Write-Host "==> [THANH CONG] Đã tạo file: $full ($sizeMb KB)" -ForegroundColor Green
