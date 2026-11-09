@@ -126,7 +126,7 @@ foreach ($t in $tables) {
             [void]$sb.AppendLine("BEGIN")
         }
 
-        $dataStatements = $scripterData.Script(@($t.Urn))
+        $dataStatements = $scripterData.EnumScript(@($t.Urn))
         foreach ($dstmt in $dataStatements) {
             $dtrimmed = $dstmt.Trim()
             if ($dtrimmed.Length -gt 0) {
