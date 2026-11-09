@@ -1,6 +1,6 @@
 ﻿# Tiến độ dự án BTL-LTTQ-2
 
-**Cập nhật lần cuối**: 2026-10-28 – Tạo bộ dữ liệu mẫu CSV nhập file cho 6 chức năng (Phiên 67)
+**Cập nhật lần cuối**: 2026-11-09 – Tối ưu hóa triển khai độc lập, tạo Script CSDL trọn gói TaoCSDL_DayDu.sql và tài liệu hướng dẫn cài đặt (Phiên 67)
 ---
 
 ## Đang làm
@@ -1380,3 +1380,20 @@
 - **Phiên 14 (2026-10-23) – Thiết kế và hiện thực trọn vẹn Phân hệ Trả hàng nhập (`GUI/Forms/TraHangNhap/`) theo Design System & chuẩn giao diện KiotViet**:
   - Tạo mới 4 Form: `frmTraHangNhap`, `frmThemPhieuTraHang`, `frmChiTietTraHangNhap` (chỉ 2 nút: Xóa và Xuất file), `frmHienCotTraHang`. Bổ sung cột `MaPhieuNhap INT NULL` vào bảng `PhieuTraHangNhap`.
 
+
+- **Phiên 67 (2026-11-09) – Tối ưu hóa triển khai độc lập và tạo Script CSDL trọn gói TaoCSDL_DayDu.sql**:
+  - **Nhu cầu**: Người dùng hỏi về khả năng triển khai hệ thống trên máy khác và tình trạng CSDL. Yêu cầu triển khai tối ưu hóa hoàn chỉnh để mang sang máy khác chạy được ngay.
+  - **Kết quả thực hiện**:
+    1. **Khởi tạo Script CSDL trọn gói 1-Click (docs/TaoCSDL_DayDu.sql)**:
+       - Tự động hóa qua công cụ nâng cấp 	ools/XuatScriptCSDL.ps1 sử dụng thư viện SQL Server Management Objects (SMO).
+       - Cấu trúc gồm 4 phần tuần tự không lỗi khóa ngoại: Tạo CSDL & 30 bảng ➜ Nạp toàn bộ dữ liệu mẫu ban đầu ➜ Thiết lập 52 khóa ngoại ➜ Tạo 2 View tồn kho động (w_BienDongKho, w_TonKhoHienTai).
+       - Chuẩn UTF-8 with BOM, Collation Vietnamese_CI_AS, dung lượng ~13MB, chạy F5 trên SSMS/Azure Data Studio là xong.
+    2. **Biên dịch Release độc lập**:
+       - Build thành công in/Release/BTL-LTTQ-2.exe (914 KB) và BTL-LTTQ-2.exe.config. Không có phụ thuộc DLL bên ngoài.
+    3. **Soạn thảo Hướng dẫn Triển khai (HUONG_DAN_CAI_DAT.md)**:
+       - Hướng dẫn 3 bước cài đặt (chạy script SQL, kiểm tra connection string trong App.config nếu tên instance khác SQLEXPRESS, chạy app).
+       - Cung cấp sẵn 3 tài khoản demo ứng với 3 cấp vai trò doanh nghiệp (quanly, 	hukho, 
+vkho / mật khẩu 123456).
+    4. **Kiểm tra chất lượng**:
+       - Chạy 	ools/KiemTraMaHoa.ps1: 100% file đạt chuẩn UTF-8 with BOM, 0 lỗi Mojibake.
+       - Biên dịch MSBuild/dotnet build: 0 Warning, 0 Error.
